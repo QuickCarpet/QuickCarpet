@@ -1,0 +1,11 @@
+{
+  "required": true,
+  "package": "",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "quickcarpet",
+  "name": "QuickCarpet",
+  "description": "Powerful toolbox with ultimate control for technical mc!",
+  "version": "1.0.0",
+  "side": "universal",
+  "initializers": [
+    "quickcarpet.QuickCarpet"
+  ],
+  "requires": {
+    "fabric": "*"
+  },
+  "mixins": {
+    "client": "quickcarpet.client.json",
+    "common": "quickcarpet.common.json"
+  }
+}
