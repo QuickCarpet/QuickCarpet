@@ -3,7 +3,6 @@
   "package": "quickcarpet.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MixinIntegratedServer",
     "MixinMinecraftDedicatedServer",
     "MixinMinecraftServer",
     "MixinServerCommandManager"
