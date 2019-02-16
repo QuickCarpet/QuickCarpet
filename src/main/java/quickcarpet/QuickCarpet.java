@@ -9,11 +9,6 @@ import quickcarpet.helper.TickSpeed;
 
 public class QuickCarpet implements ModInitializer {
 
-    @Override
-    public void onInitialize() {
-
-    }
-
     public static MinecraftServer minecraft_server;
 
     public static void init(MinecraftServer server) //Constructor of this static single ton class
@@ -21,8 +16,7 @@ public class QuickCarpet implements ModInitializer {
         QuickCarpet.minecraft_server = server;
     }
 
-    public static void onServerLoaded(MinecraftServer server)
-    {
+    public static void onServerLoaded(MinecraftServer server) {
         QuickCarpetSettings.apply_settings_from_conf(server);
     }
 
@@ -37,5 +31,10 @@ public class QuickCarpet implements ModInitializer {
         CarpetCloneCommand.register(dispatcher);
         CarpetSetBlockCommand.register(dispatcher);
         CounterCommand.register(dispatcher);
+    }
+
+    @Override
+    public void onInitialize() {
+
     }
 }

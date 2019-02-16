@@ -11,7 +11,7 @@ import quickcarpet.QuickCarpet;
 public abstract class MixinMinecraftDedicatedServer {
 
     @Inject(method = "setupServer", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/util/UserCache;setUseRemote(Z)V"))
-    private void onSetupServerDedicated(CallbackInfoReturnable<Boolean> cir){
-        QuickCarpet.onServerLoaded((MinecraftDedicatedServer)(Object)this);
+    private void onSetupServerDedicated(CallbackInfoReturnable<Boolean> cir) {
+        QuickCarpet.onServerLoaded((MinecraftDedicatedServer) (Object) this);
     }
 }

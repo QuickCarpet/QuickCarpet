@@ -38,8 +38,8 @@ public abstract class MixinStructure {
     }
 
     @Redirect(method = "method_15172", at = @At(value = "INVOKE",
-              target = "Lnet/minecraft/world/IWorld;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z", ordinal = 0),
-              slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/class_3829;method_16825(Ljava/lang/Object;)V")))
+            target = "Lnet/minecraft/world/IWorld;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z", ordinal = 0),
+            slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/class_3829;method_16825(Ljava/lang/Object;)V")))
     private boolean cancelSetBlockState1(IWorld iWorld, BlockPos var1, BlockState var2, int var3) {
         return false;
     }
@@ -48,17 +48,17 @@ public abstract class MixinStructure {
             target = "Lnet/minecraft/world/IWorld;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z", ordinal = 0),
             slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/class_3829;method_16825(Ljava/lang/Object;)V")))
     private void newSetBlockState1(IWorld iWorld_1, BlockPos blockPos_1, StructurePlacementData structurePlacementData_1,
-                                  int int_1, CallbackInfoReturnable<Boolean> cir, List list_1, MutableIntBoundingBox mutableIntBoundingBox_1,
-                                  List list_2, List list_3, int int_2, int int_3, int int_4, int int_5, int int_6, int int_7,
-                                  List list_4, Iterator var16, Structure.StructureBlockInfo structure$StructureBlockInfo_1,
-                                  BlockPos blockPos_2) {
+                                   int int_1, CallbackInfoReturnable<Boolean> cir, List list_1, MutableIntBoundingBox mutableIntBoundingBox_1,
+                                   List list_2, List list_3, int int_2, int int_3, int int_4, int int_5, int int_6, int int_7,
+                                   List list_4, Iterator var16, Structure.StructureBlockInfo structure$StructureBlockInfo_1,
+                                   BlockPos blockPos_2) {
         iWorld_1.setBlockState(blockPos_2, Blocks.BARRIER.getDefaultState(), 4 | (QuickCarpetSettings.getBool("fillUpdates") ? 0 : 1024));
     }
 
     @Redirect(method = "method_15172", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/IWorld;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"),
-                                                slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/world/IWorld;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z", ordinal = 3)))
-    private boolean addifSetBlockState(IWorld iWorld, BlockPos var1, BlockState var2, int var3){
-        return iWorld.setBlockState(var1, var2, var3 | (QuickCarpetSettings.getBool("fillUpdates")?0:1024));
+            slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/world/IWorld;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z", ordinal = 3)))
+    private boolean addifSetBlockState(IWorld iWorld, BlockPos var1, BlockState var2, int var3) {
+        return iWorld.setBlockState(var1, var2, var3 | (QuickCarpetSettings.getBool("fillUpdates") ? 0 : 1024));
     }
 
 }

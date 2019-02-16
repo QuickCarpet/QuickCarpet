@@ -21,14 +21,13 @@ public class QuickCarpetSettings {
     private static final Map<String, CarpetSettingEntry> settings_store;
     public static boolean locked = false;
     public static boolean skipGenerationChecks = false;
+    // Static store
+    public static boolean b_hopperCounters = false;
 
     static {
         settings_store = new HashMap<>();
         set_defaults();
     }
-
-    // Static store
-    public static boolean b_hopperCounters = false;
 
     private static CarpetSettingEntry rule(String s1, String s2, String s3) {
         return CarpetSettingEntry.create(s1, s2, s3);
