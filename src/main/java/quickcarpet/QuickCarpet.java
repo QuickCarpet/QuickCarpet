@@ -36,5 +36,6 @@ public class QuickCarpet implements ModInitializer {
         CarpetFillCommand.register(dispatcher);
         CarpetCloneCommand.register(dispatcher);
         CarpetSetBlockCommand.register(dispatcher);
+        CounterCommand.register(dispatcher);
     }
 }

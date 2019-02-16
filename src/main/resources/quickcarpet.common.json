@@ -10,7 +10,8 @@
     "MixinServerWorld",
     "MixinServerChunkManager",
     "MixinStructure",
-    "MixinWorld"
+    "MixinWorld",
+    "MixinHopperBlockEntity"
   ],
   "injectors": {
     "defaultRequire": 1

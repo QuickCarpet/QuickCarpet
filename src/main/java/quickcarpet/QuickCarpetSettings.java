@@ -27,6 +27,9 @@ public class QuickCarpetSettings {
         set_defaults();
     }
 
+    // Static store
+    public static boolean b_hopperCounters = false;
+
     private static CarpetSettingEntry rule(String s1, String s2, String s3) {
         return CarpetSettingEntry.create(s1, s2, s3);
     }
@@ -45,9 +48,16 @@ public class QuickCarpetSettings {
                         .extraInfo("This is an replica of /setblock command for fillUpdates")
                         .isACommand(),
                 rule("fillUpdates", "creative", "fill/clone/setblock and structure blocks cause block updates").defaultTrue(),
-                rule("fillLimit",             "creative","Customizable fill/clone volume limit")
-                        .choices("32768","32768 250000 1000000")
+                rule("fillLimit", "creative", "Customizable fill/clone volume limit")
+                        .choices("32768", "32768 250000 1000000")
                         .setNotStrict(),
+                rule("hopperCounters", "commands creative survival", "hoppers pointing to wool will count items passing through them")
+                        .extraInfo("Enables /counter command, and actions while placing red and green carpets on wool blocks",
+                                "Use /counter <color?> reset to reset the counter, and /counter <color?> to query",
+                                "In survival, place green carpet on same color wool to query, red to reset the counters",
+                                "Counters are global and shared between players, 16 channels available",
+                                "Items counted are destroyed, count up to one stack per tick per hopper")
+                        .isACommand().boolAccelerate().defaultFalse(),
         };
         for (CarpetSettingEntry rule : RuleList) {
             settings_store.put(rule.getName(), rule);
