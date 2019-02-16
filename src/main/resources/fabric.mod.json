@@ -2,7 +2,7 @@
   "id": "quickcarpet",
   "name": "QuickCarpet",
   "description": "Powerful toolbox with ultimate control for technical mc!",
-  "version": "1.0.0",
+  "version": "${version}",
   "side": "universal",
   "initializers": [
     "quickcarpet.QuickCarpet"
