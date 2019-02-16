@@ -5,6 +5,8 @@ import net.fabricmc.api.ModInitializer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import quickcarpet.commands.CarpetCommand;
+import quickcarpet.commands.TickCommand;
+import quickcarpet.helper.TickSpeed;
 
 public class QuickCarpet implements ModInitializer {
 
@@ -25,7 +27,12 @@ public class QuickCarpet implements ModInitializer {
         QuickCarpetSettings.apply_settings_from_conf(server);
     }
 
+    public static void tick(MinecraftServer server) {
+        TickSpeed.tick(server);
+    }
+
     public static void registerCarpetCommands(CommandDispatcher<ServerCommandSource> dispatcher) {
         CarpetCommand.register(dispatcher);
+        TickCommand.register(dispatcher);
     }
 }

@@ -5,7 +5,10 @@
   "mixins": [
     "MixinMinecraftDedicatedServer",
     "MixinMinecraftServer",
-    "MixinServerCommandManager"
+    "MixinServerCommandManager",
+    "MixinServerPlayNetworkHandler",
+    "MixinServerWorld",
+    "MixinServerChunkManager"
   ],
   "injectors": {
     "defaultRequire": 1

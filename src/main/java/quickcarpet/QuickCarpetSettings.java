@@ -33,7 +33,7 @@ public class QuickCarpetSettings {
 
     private static void set_defaults() {
         CarpetSettingEntry[] RuleList = new CarpetSettingEntry[]{
-
+                rule("commandTick", "commands", "Enables /tick command to control game speed").isACommand(),
         };
         for (CarpetSettingEntry rule : RuleList) {
             settings_store.put(rule.getName(), rule);
