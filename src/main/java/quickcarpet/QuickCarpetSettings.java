@@ -33,7 +33,21 @@ public class QuickCarpetSettings {
 
     private static void set_defaults() {
         CarpetSettingEntry[] RuleList = new CarpetSettingEntry[]{
-                rule("commandTick", "commands", "Enables /tick command to control game speed").isACommand(),
+                rule("commandTick", "commands", "Enables /tick command to control game speed")
+                        .isACommand(),
+                rule("commandCarpetFill", "creative", "Enables /carpetfill command")
+                        .extraInfo("This is an replica of /fill command for fillUpdates and fillLimits")
+                        .isACommand(),
+                rule("commandCarpetClone", "creative", "Enables /carpetclone command")
+                        .extraInfo("This is an replica of /clone command for fillUpdates and fillLimits")
+                        .isACommand(),
+                rule("commandCarpetSetBlock", "creative", "Enables /carpetclone command")
+                        .extraInfo("This is an replica of /setblock command for fillUpdates")
+                        .isACommand(),
+                rule("fillUpdates", "creative", "fill/clone/setblock and structure blocks cause block updates").defaultTrue(),
+                rule("fillLimit",             "creative","Customizable fill/clone volume limit")
+                        .choices("32768","32768 250000 1000000")
+                        .setNotStrict(),
         };
         for (CarpetSettingEntry rule : RuleList) {
             settings_store.put(rule.getName(), rule);

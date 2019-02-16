@@ -4,8 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
-import quickcarpet.commands.CarpetCommand;
-import quickcarpet.commands.TickCommand;
+import quickcarpet.commands.*;
 import quickcarpet.helper.TickSpeed;
 
 public class QuickCarpet implements ModInitializer {
@@ -34,5 +33,8 @@ public class QuickCarpet implements ModInitializer {
     public static void registerCarpetCommands(CommandDispatcher<ServerCommandSource> dispatcher) {
         CarpetCommand.register(dispatcher);
         TickCommand.register(dispatcher);
+        CarpetFillCommand.register(dispatcher);
+        CarpetCloneCommand.register(dispatcher);
+        CarpetSetBlockCommand.register(dispatcher);
     }
 }
