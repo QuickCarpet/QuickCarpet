@@ -7,7 +7,6 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.Dynamic2CommandExceptionType;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import com.sun.istack.internal.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
@@ -67,7 +66,7 @@ public class CarpetFillCommand {
         }))))));
     }
 
-    private static int method_13354(ServerCommandSource serverCommandSource_1, MutableIntBoundingBox mutableIntBoundingBox_1, BlockArgument blockArgument_1, CarpetFillCommand.class_3058 fillCommand$class_3058_1, @Nullable Predicate<CachedBlockPosition> predicate_1) throws CommandSyntaxException {
+    private static int method_13354(ServerCommandSource serverCommandSource_1, MutableIntBoundingBox mutableIntBoundingBox_1, BlockArgument blockArgument_1, CarpetFillCommand.class_3058 fillCommand$class_3058_1, Predicate<CachedBlockPosition> predicate_1) throws CommandSyntaxException {
         int int_1 = mutableIntBoundingBox_1.getBlockCountX() * mutableIntBoundingBox_1.getBlockCountY() * mutableIntBoundingBox_1.getBlockCountZ();
         if (int_1 > QuickCarpetSettings.getInt("fillLimit")) // [CM] replaces 32768
         {

@@ -7,7 +7,6 @@ import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.Dynamic2CommandExceptionType;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import com.sun.istack.internal.Nullable;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
@@ -212,10 +211,9 @@ public class CarpetCloneCommand {
     static class class_3024 {
         public final BlockPos field_13496;
         public final BlockState field_13495;
-        @Nullable
         public final CompoundTag field_13494;
 
-        public class_3024(BlockPos blockPos_1, BlockState blockState_1, @Nullable CompoundTag compoundTag_1) {
+        public class_3024(BlockPos blockPos_1, BlockState blockState_1, CompoundTag compoundTag_1) {
             this.field_13496 = blockPos_1;
             this.field_13495 = blockState_1;
             this.field_13494 = compoundTag_1;

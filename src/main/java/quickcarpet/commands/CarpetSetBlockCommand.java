@@ -5,7 +5,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import com.sun.istack.internal.Nullable;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.pattern.CachedBlockPosition;
 import net.minecraft.class_3829;
@@ -41,7 +40,7 @@ public class CarpetSetBlockCommand {
         })))));
     }
 
-    private static int method_13620(ServerCommandSource serverCommandSource_1, BlockPos blockPos_1, BlockArgument blockArgument_1, CarpetSetBlockCommand.class_3121 setBlockCommand$class_3121_1, @Nullable Predicate<CachedBlockPosition> predicate_1) throws CommandSyntaxException {
+    private static int method_13620(ServerCommandSource serverCommandSource_1, BlockPos blockPos_1, BlockArgument blockArgument_1, CarpetSetBlockCommand.class_3121 setBlockCommand$class_3121_1, Predicate<CachedBlockPosition> predicate_1) throws CommandSyntaxException {
         ServerWorld serverWorld_1 = serverCommandSource_1.getWorld();
         if (predicate_1 != null && !predicate_1.test(new CachedBlockPosition(serverWorld_1, blockPos_1, true))) {
             throw FAILED_EXCEPTION.create();
@@ -70,7 +69,6 @@ public class CarpetSetBlockCommand {
     }
 
     interface class_3120 {
-        @Nullable
         BlockArgument filter(MutableIntBoundingBox var1, BlockPos var2, BlockArgument var3, ServerWorld var4);
     }
 
