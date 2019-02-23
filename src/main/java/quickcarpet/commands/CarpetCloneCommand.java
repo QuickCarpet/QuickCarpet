@@ -11,7 +11,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.pattern.CachedBlockPosition;
-import net.minecraft.class_3829;
 import net.minecraft.command.arguments.BlockPosArgumentType;
 import net.minecraft.command.arguments.BlockPredicateArgumentType;
 import net.minecraft.nbt.CompoundTag;
@@ -19,6 +18,7 @@ import net.minecraft.server.command.ServerCommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableTextComponent;
+import net.minecraft.util.Clearable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableIntBoundingBox;
 import quickcarpet.QuickCarpetSettings;
@@ -134,7 +134,7 @@ public class CarpetCloneCommand {
                         while (var25.hasNext()) {
                             blockPos_9 = (BlockPos) var25.next();
                             BlockEntity blockEntity_2 = serverWorld_1.getBlockEntity(blockPos_9);
-                            class_3829.method_16825(blockEntity_2);
+                            Clearable.clear(blockEntity_2);
                             serverWorld_1.setBlockState(blockPos_9, Blocks.BARRIER.getDefaultState(), 2 | (QuickCarpetSettings.getBool("fillUpdates")?0:1024));
                         }
 
@@ -156,7 +156,7 @@ public class CarpetCloneCommand {
                     while (var30.hasNext()) {
                         CarpetCloneCommand.class_3024 cloneCommand$class_3024_1 = (CarpetCloneCommand.class_3024) var30.next();
                         BlockEntity blockEntity_3 = serverWorld_1.getBlockEntity(cloneCommand$class_3024_1.field_13496);
-                        class_3829.method_16825(blockEntity_3);
+                        Clearable.clear(blockEntity_3);
                         serverWorld_1.setBlockState(cloneCommand$class_3024_1.field_13496, Blocks.BARRIER.getDefaultState(), 2 | (QuickCarpetSettings.getBool("fillUpdates")?0:1024));
                     }
 
@@ -192,7 +192,7 @@ public class CarpetCloneCommand {
                             serverWorld_1.updateNeighbors(cloneCommand$class_3024_4.field_13496, cloneCommand$class_3024_4.field_13495.getBlock());
                         }
 
-                        serverWorld_1.getBlockTickScheduler().method_8666(mutableIntBoundingBox_1, blockPos_5);
+                        serverWorld_1.method_14196().method_8666(mutableIntBoundingBox_1, blockPos_5);
                     }
 
                     if (int_5 == 0) {

@@ -11,7 +11,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.pattern.CachedBlockPosition;
-import net.minecraft.class_3829;
 import net.minecraft.command.arguments.BlockArgument;
 import net.minecraft.command.arguments.BlockArgumentType;
 import net.minecraft.command.arguments.BlockPosArgumentType;
@@ -22,6 +21,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.command.SetBlockCommand;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableTextComponent;
+import net.minecraft.util.Clearable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableIntBoundingBox;
 import quickcarpet.QuickCarpetSettings;
@@ -106,7 +106,7 @@ public class CarpetFillCommand {
                 BlockArgument blockArgument_2 = fillCommand$class_3058_1.field_13654.filter(mutableIntBoundingBox_1, blockPos_1, blockArgument_1, serverWorld_1);
                 if (blockArgument_2 != null) {
                     BlockEntity blockEntity_1 = serverWorld_1.getBlockEntity(blockPos_1);
-                    class_3829.method_16825(blockEntity_1);
+                    Clearable.clear(blockEntity_1);
                     if (blockArgument_2.setBlockState(serverWorld_1, blockPos_1, 2 | (QuickCarpetSettings.getBool("fillUpdates")?0:1024))) {
                         list_1.add(blockPos_1.toImmutable());
                         ++int_2;

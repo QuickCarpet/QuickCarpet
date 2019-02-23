@@ -1,7 +1,7 @@
 package quickcarpet.mixin;
 
 import net.minecraft.server.network.ServerPlayNetworkHandler;
-import net.minecraft.server.network.packet.PlayerLookC2SPacket;
+import net.minecraft.server.network.packet.PlayerInputC2SPacket;
 import net.minecraft.server.network.packet.PlayerMoveServerMessage;
 import net.minecraft.server.world.ServerWorld;
 import org.spongepowered.asm.mixin.Mixin;
@@ -26,9 +26,9 @@ public abstract class MixinServerPlayNetworkHandler {
     }
 
     // CommandTick - added new if statement
-    @Inject(method = "onPlayerLook", at = @At(value = "TAIL"))
-    private void resetActiveTime2(PlayerLookC2SPacket playerLookC2SPacket_1, CallbackInfo ci) {
-        if (playerLookC2SPacket_1.getYaw() != 0.0F || playerLookC2SPacket_1.getPitch() != 0.0F || playerLookC2SPacket_1.isJumping() || playerLookC2SPacket_1.isSneaking()) {
+    @Inject(method = "onPlayerInput", at = @At(value = "TAIL"))
+    private void resetActiveTime2(PlayerInputC2SPacket playerLookC2SPacket_1, CallbackInfo ci) {
+        if (playerLookC2SPacket_1.getSideways() != 0.0F || playerLookC2SPacket_1.getForward() != 0.0F || playerLookC2SPacket_1.isJumping() || playerLookC2SPacket_1.isSneaking()) {
             TickSpeed.reset_player_active_timeout();
         }
     }

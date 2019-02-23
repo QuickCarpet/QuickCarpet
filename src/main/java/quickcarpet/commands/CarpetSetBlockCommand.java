@@ -7,7 +7,6 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.pattern.CachedBlockPosition;
-import net.minecraft.class_3829;
 import net.minecraft.command.arguments.BlockArgument;
 import net.minecraft.command.arguments.BlockArgumentType;
 import net.minecraft.command.arguments.BlockPosArgumentType;
@@ -15,6 +14,7 @@ import net.minecraft.server.command.ServerCommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableTextComponent;
+import net.minecraft.util.Clearable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableIntBoundingBox;
 import quickcarpet.QuickCarpetSettings;
@@ -51,7 +51,7 @@ public class CarpetSetBlockCommand {
                 boolean_2 = !blockArgument_1.getBlockState().isAir();
             } else {
                 BlockEntity blockEntity_1 = serverWorld_1.getBlockEntity(blockPos_1);
-                class_3829.method_16825(blockEntity_1);
+                Clearable.clear(blockEntity_1);
                 boolean_2 = true;
             }
 
