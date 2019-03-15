@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import quickcarpet.helper.TickSpeed;
 
-@Mixin(ServerChunkManager.class)
+//@Mixin(ServerChunkManager.class)
 public abstract class MixinServerChunkManager {
 
     /*

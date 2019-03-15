@@ -23,7 +23,7 @@ import quickcarpet.helper.TickSpeed;
 import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 
-@Mixin(ServerWorld.class)
+//@Mixin(ServerWorld.class)
 public abstract class MixinServerWorld //extends World
 {
 

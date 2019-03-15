@@ -7,8 +7,6 @@
     "MixinMinecraftServer",
     "MixinServerCommandManager",
     "MixinServerPlayNetworkHandler",
-    "MixinServerWorld",
-    "MixinServerChunkManager",
     "MixinStructure",
     "MixinWorld",
     "MixinHopperBlockEntity"
