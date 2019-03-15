@@ -5,6 +5,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.TextComponent;
+import net.minecraft.text.TranslatableTextComponent;
 import quickcarpet.QuickCarpet;
 import quickcarpet.utils.Messenger;
 
@@ -164,6 +165,82 @@ public class TickSpeed {
         }
 
 
+    }
+    
+    // EDD's Tick warping stuff
+    private static final String SS = "\u00A7", RED = SS + 'c', GREEN = SS + 'a', RESET = SS + 'r', CYAN =  SS + 'b';
+    
+    public static boolean isWarping;
+    public static float serverTPS = 20.0F;
+    
+    public static long ms_per_tick = (long)(1000 / serverTPS),
+            warn_time = (long)(serverTPS * 200),
+            last_sleep = 0,
+            elapsed_ticks = 0,
+            ticksToWarp = 0,
+            warpedTicks = 0,
+            warpStartMs = 0;
+    
+    public static int sendUsage(ServerCommandSource source)
+    {
+        return send(source, "Server TPS = " + GREEN + serverTPS);
+    }
+    
+    public static void updateTPS()
+    {
+        ms_per_tick = (long)(1000 / serverTPS);
+        warn_time = (long)(serverTPS * 200);
+    }
+    
+    public static int send(ServerCommandSource source, String s)
+    {
+        source.sendFeedback(new TranslatableTextComponent("" + s), true);
+        return 1;
+    }
+    
+    public static int setWarp(ServerCommandSource source, int ticks)
+    {
+        if (ticks <= 0)
+        {
+            ticksToWarp = 0;
+            warpStartMs = 0;
+            isWarping = ticks == 0;
+            return 1;
+        }
+        
+        warpStartMs = System.currentTimeMillis();
+        warpedTicks = 0;
+        ticksToWarp = ticks;
+        ms_per_tick = 1;
+        isWarping = true;
+        return send(source, "Warping " + GREEN + ticks + RESET + " ticks...");
+    }
+    
+    public static void processWarp(MinecraftServer server)
+    {
+        if (isWarping)
+        {
+            --ticksToWarp;
+            ++warpedTicks;
+            
+            if (ticksToWarp <= 0)
+            {
+                ticksToWarp = 0;
+                isWarping = false;
+                long msDiff = System.currentTimeMillis() - warpStartMs;
+                float secs = msDiff / 1000F;
+                float mspt = msDiff / (float)warpedTicks;
+                server.getPlayerManager().sendToAll(new TranslatableTextComponent(String.format('[' + CYAN + "TPS" + RESET + "] Done in %s%.2f%ss (%s%.2f%smspt)", GREEN, secs, RESET, GREEN, mspt, RESET)));
+                updateTPS();
+            }
+        }
+    }
+    
+    public static int setRate(ServerCommandSource source, float tps)
+    {
+        serverTPS = tps <= 0 ? 0.1F : tps;
+        updateTPS();
+        return send(source, "Server TPS = " + GREEN + serverTPS);
     }
 
 }

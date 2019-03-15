@@ -67,12 +67,13 @@ public abstract class MixinMinecraftServer
     }
     
     // Called during game start
-    @Inject(method = "method_3748", at = @At(value = "INVOKE", shift = At.Shift.BEFORE,
-            target = "Lnet/minecraft/server/MinecraftServer;tick(Ljava/util/function/BooleanSupplier;)V"))
+    /*
+    @Inject(method = "method_3748", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/server/MinecraftServer;tick(Ljava/util/function/BooleanSupplier;)V"))
     private void carpetTick(BooleanSupplier booleanSupplier_1, CallbackInfo ci)
     {
         QuickCarpet.tick((MinecraftServer) (Object) this);
     }
+    */
     
     // Cancel a while statement
     @Redirect(method = "run", at = @At(value = "FIELD", target = "Lnet/minecraft/server/MinecraftServer;running:Z"))
@@ -81,9 +82,6 @@ public abstract class MixinMinecraftServer
         return false;
     }
     
-    // For commandTick
-    public long actualTimeReference = SystemUtil.getMeasuringTimeMs();
-    
     // Replaced the above cancelled while statement with this one
     @Inject(method = "run", at = @At(value = "INVOKE", shift = At.Shift.AFTER,
             target = "Lnet/minecraft/server/MinecraftServer;setFavicon(Lnet/minecraft/server/ServerMetadata;)V"))
@@ -91,30 +89,16 @@ public abstract class MixinMinecraftServer
     {
         while (this.running)
         {
-            // CommandTick - added if statement
-            if (TickSpeed.time_warp_start_time != 0)
-            {
-                if (TickSpeed.continueWarp())
-                {
-                    this.method_3748( () -> true );
-                    this.timeReference = SystemUtil.getMeasuringTimeMs();
-                    this.actualTimeReference = SystemUtil.getMeasuringTimeMs();
-                    this.field_4547 = true;
-                }
-                continue;
-            }
-            
             long long_1 = SystemUtil.getMeasuringTimeMs() - this.timeReference;
-            if (long_1 > 2000L && this.timeReference - this.field_4557 >= 15000L)
+            if (long_1 > TickSpeed.warn_time && this.timeReference - this.field_4557 >= 15000L) // Replaced 2000L
             {
-                long long_2 = long_1 / TickSpeed.mspt;//50L;
+                long long_2 = long_1 / TickSpeed.ms_per_tick;//50L;
                 LOGGER.warn("Can't keep up! Is the server overloaded? Running {}ms or {} ticks behind", long_1, long_2);
-                this.timeReference += long_2 * TickSpeed.mspt;//50L;
+                this.timeReference += long_2 * TickSpeed.ms_per_tick;//50L;
                 this.field_4557 = this.timeReference;
             }
             
-            this.actualTimeReference = SystemUtil.getMeasuringTimeMs();
-            this.timeReference += TickSpeed.mspt;//50L;
+            this.timeReference += TickSpeed.ms_per_tick;//50L;
             if (this.field_4597)
             {
                 this.field_4597 = false;
@@ -123,6 +107,9 @@ public abstract class MixinMinecraftServer
             
             this.profiler.startTick();
             this.profiler.push("tick");
+            // [CM] Tick warping
+            TickSpeed.processWarp((MinecraftServer)(Object)this);
+            
             this.method_3748(this::shouldKeepTicking);
             this.profiler.swap("nextTickWait");
             this.method_16208();
@@ -130,7 +117,7 @@ public abstract class MixinMinecraftServer
             this.profiler.endTick();
             this.field_4547 = true;
         }
-
+        
     }
-
+    
 }

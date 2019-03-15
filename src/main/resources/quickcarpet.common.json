@@ -6,7 +6,6 @@
     "MixinMinecraftDedicatedServer",
     "MixinMinecraftServer",
     "MixinServerCommandManager",
-    "MixinServerPlayNetworkHandler",
     "MixinStructure",
     "MixinWorld",
     "MixinHopperBlockEntity"
