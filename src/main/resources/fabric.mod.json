@@ -7,9 +7,6 @@
   "initializers": [
     "quickcarpet.QuickCarpet"
   ],
-  "requires": {
-    "fabric": "*"
-  },
   "mixins": {
     "client": "quickcarpet.client.json",
     "common": "quickcarpet.common.json"
