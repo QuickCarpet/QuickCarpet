@@ -28,15 +28,15 @@ public class CarpetSetBlockCommand {
         commandDispatcher_1.register((LiteralArgumentBuilder)((LiteralArgumentBuilder) ServerCommandManager.literal("carpetsetblock").requires((player) ->
                 QuickCarpetSettings.getBool("")
         )).then(ServerCommandManager.argument("pos", BlockPosArgumentType.create()).then(((RequiredArgumentBuilder)((RequiredArgumentBuilder)((RequiredArgumentBuilder)ServerCommandManager.argument("block", BlockArgumentType.create()).executes((commandContext_1) -> {
-            return method_13620((ServerCommandSource)commandContext_1.getSource(), BlockPosArgumentType.getValidPosArgument(commandContext_1, "pos"), BlockArgumentType.method_9655(commandContext_1, "block"), CarpetSetBlockCommand.class_3121.REPLACE, (Predicate)null);
+            return method_13620((ServerCommandSource)commandContext_1.getSource(), BlockPosArgumentType.getValidPosArgument(commandContext_1, "pos"), BlockArgumentType.getBlockArgument(commandContext_1, "block"), CarpetSetBlockCommand.class_3121.REPLACE, (Predicate)null);
         })).then(ServerCommandManager.literal("destroy").executes((commandContext_1) -> {
-            return method_13620((ServerCommandSource)commandContext_1.getSource(), BlockPosArgumentType.getValidPosArgument(commandContext_1, "pos"), BlockArgumentType.method_9655(commandContext_1, "block"), CarpetSetBlockCommand.class_3121.DESTROY, (Predicate)null);
+            return method_13620((ServerCommandSource)commandContext_1.getSource(), BlockPosArgumentType.getValidPosArgument(commandContext_1, "pos"), BlockArgumentType.getBlockArgument(commandContext_1, "block"), CarpetSetBlockCommand.class_3121.DESTROY, (Predicate)null);
         }))).then(ServerCommandManager.literal("keep").executes((commandContext_1) -> {
-            return method_13620((ServerCommandSource)commandContext_1.getSource(), BlockPosArgumentType.getValidPosArgument(commandContext_1, "pos"), BlockArgumentType.method_9655(commandContext_1, "block"), CarpetSetBlockCommand.class_3121.REPLACE, (cachedBlockPosition_1) -> {
+            return method_13620((ServerCommandSource)commandContext_1.getSource(), BlockPosArgumentType.getValidPosArgument(commandContext_1, "pos"), BlockArgumentType.getBlockArgument(commandContext_1, "block"), CarpetSetBlockCommand.class_3121.REPLACE, (cachedBlockPosition_1) -> {
                 return cachedBlockPosition_1.getWorld().isAir(cachedBlockPosition_1.getBlockPos());
             });
         }))).then(ServerCommandManager.literal("replace").executes((commandContext_1) -> {
-            return method_13620((ServerCommandSource)commandContext_1.getSource(), BlockPosArgumentType.getValidPosArgument(commandContext_1, "pos"), BlockArgumentType.method_9655(commandContext_1, "block"), CarpetSetBlockCommand.class_3121.REPLACE, (Predicate)null);
+            return method_13620((ServerCommandSource)commandContext_1.getSource(), BlockPosArgumentType.getValidPosArgument(commandContext_1, "pos"), BlockArgumentType.getBlockArgument(commandContext_1, "block"), CarpetSetBlockCommand.class_3121.REPLACE, (Predicate)null);
         })))));
     }
 
