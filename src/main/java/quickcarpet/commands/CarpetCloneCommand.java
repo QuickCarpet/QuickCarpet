@@ -218,7 +218,7 @@ public class CarpetCloneCommand
                             serverWorld_1.updateNeighbors(cloneCommand$class_3024_4.field_13496, cloneCommand$class_3024_4.field_13495.getBlock());
                         }
                         
-                        serverWorld_1.method_14196().method_8666(mutableIntBoundingBox_1, blockPos_5);
+                        serverWorld_1.method_14196().copyScheduledTicks(mutableIntBoundingBox_1, blockPos_5);
                     }
                     
                     if (int_5 == 0)
