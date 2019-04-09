@@ -1,14 +1,35 @@
 {
+  "schemaVersion": 1,
   "id": "quickcarpet",
+  "version": "${version}",
+
   "name": "QuickCarpet",
   "description": "Powerful toolbox with ultimate control for technical mc!",
-  "version": "${version}",
-  "side": "universal",
-  "initializers": [
-    "quickcarpet.QuickCarpet"
+  "authors": [
+    "DeadlyMC"
   ],
-  "mixins": {
-    "client": "quickcarpet.client.json",
-    "common": "quickcarpet.common.json"
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+
+  "license": "CC0-1.0",
+  "icon": "assets/modid/icon.png",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "quickcarpet.QuickCarpet"
+    ]
+  },
+  "mixins": [
+    "quickcarpet.mixins.json"
+  ],
+
+  "requires": {
+    "fabricloader": ">=0.4.0"
+  },
+  "suggests": {
+    "flamingo": "*"
   }
 }
