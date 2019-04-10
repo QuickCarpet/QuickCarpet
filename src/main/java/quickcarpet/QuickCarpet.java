@@ -31,6 +31,7 @@ public class QuickCarpet implements ModInitializer {
         CarpetCloneCommand.register(dispatcher);
         CarpetSetBlockCommand.register(dispatcher);
         CounterCommand.register(dispatcher);
+        PlayerCommand.register(dispatcher);
     }
 
     @Override

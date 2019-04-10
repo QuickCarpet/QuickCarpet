@@ -8,7 +8,9 @@
     "MixinServerCommandManager",
     "MixinStructure",
     "MixinWorld",
-    "MixinHopperBlockEntity"
+    "MixinHopperBlockEntity",
+    "MixinServerPlayerEntity",
+    "MixinPlayerManager"
   ],
   "client": [
     "MixinIntegratedServer"
