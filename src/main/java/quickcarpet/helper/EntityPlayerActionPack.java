@@ -90,7 +90,7 @@ public class EntityPlayerActionPack
         setSprinting(false);
         forward = 0.0F;
         strafing = 0.0F;
-        player.doJump(false);
+        player.setJumping(false);
 
 
         return this;
@@ -104,11 +104,11 @@ public class EntityPlayerActionPack
             {
                 jumpCooldown = jumpInterval;
                 //jumpOnce();
-                player.doJump(true);
+                player.setJumping(true);
             }
             else
             {
-                player.doJump(false);
+                player.setJumping(false);
             }
         }
         
