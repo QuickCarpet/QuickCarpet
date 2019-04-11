@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 
 public class QuickCarpetSettings {
 
-    public static final String carpetVersion = "v1.5.1";
+    public static final String carpetVersion = "v1.6.0";
     public static final Logger LOG = LogManager.getLogger();
     public static final CarpetSettingEntry FalseEntry = CarpetSettingEntry.create("void", "all", "Error").choices("None", "");
     public static final String[] default_tags = {"tnt", "fix", "survival", "creative", "experimental", "optimizations", "feature", "commands"}; //tab completion only
