@@ -57,7 +57,8 @@ public class QuickCarpetSettings {
                                 "Counters are global and shared between players, 16 channels available",
                                 "Items counted are destroyed, count up to one stack per tick per hopper")
                         .isACommand().boolAccelerate().defaultFalse(),
-                rule("commandPlayer",         "commands", "Enables /player command to control/spawn players").isACommand(),
+                rule("commandPlayer", "commands", "Enables /player command to control/spawn players").isACommand(),
+                rule("commandLog",    "commands", "Enables /log command to monitor events in the game via chat and overlays").isACommand(),
         };
         for (CarpetSettingEntry rule : RuleList) {
             settings_store.put(rule.getName(), rule);

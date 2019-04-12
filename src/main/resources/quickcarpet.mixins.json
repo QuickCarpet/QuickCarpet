@@ -10,7 +10,9 @@
     "MixinWorld",
     "MixinHopperBlockEntity",
     "MixinServerPlayerEntity",
-    "MixinPlayerManager"
+    "MixinPlayerManager",
+    "MixinPrimedTNTEntity",
+    "MixinMinecraftClient"
   ],
   "client": [
     "MixinIntegratedServer"

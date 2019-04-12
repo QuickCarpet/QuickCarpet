@@ -6,6 +6,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import quickcarpet.commands.*;
 import quickcarpet.helper.TickSpeed;
+import quickcarpet.logging.LoggerRegistry;
 
 public class QuickCarpet implements ModInitializer {
 
@@ -23,6 +24,11 @@ public class QuickCarpet implements ModInitializer {
     public static void tick(MinecraftServer server) {
         TickSpeed.tick(server);
     }
+    
+    public static void onGameStarted()
+    {
+        LoggerRegistry.initLoggers();
+    }
 
     public static void registerCarpetCommands(CommandDispatcher<ServerCommandSource> dispatcher) {
         CarpetCommand.register(dispatcher);
@@ -32,6 +38,7 @@ public class QuickCarpet implements ModInitializer {
         CarpetSetBlockCommand.register(dispatcher);
         CounterCommand.register(dispatcher);
         PlayerCommand.register(dispatcher);
+        LogCommand.register(dispatcher);
     }
 
     @Override
