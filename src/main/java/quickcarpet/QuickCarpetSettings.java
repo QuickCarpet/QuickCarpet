@@ -59,6 +59,7 @@ public class QuickCarpetSettings {
                         .isACommand().boolAccelerate().defaultFalse(),
                 rule("commandPlayer", "commands", "Enables /player command to control/spawn players").isACommand(),
                 rule("commandLog",    "commands", "Enables /log command to monitor events in the game via chat and overlays").isACommand(),
+                rule("explosionNoBlockDamage", "tnt", "Explosions won't destroy blocks"),
         };
         for (CarpetSettingEntry rule : RuleList) {
             settings_store.put(rule.getName(), rule);

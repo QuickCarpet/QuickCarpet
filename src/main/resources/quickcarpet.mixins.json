@@ -12,7 +12,8 @@
     "MixinServerPlayerEntity",
     "MixinPlayerManager",
     "MixinPrimedTNTEntity",
-    "MixinMinecraftClient"
+    "MixinMinecraftClient",
+    "MixinExplosion"
   ],
   "client": [
     "MixinIntegratedServer"
