@@ -2,7 +2,7 @@ package quickcarpet.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import net.minecraft.server.command.ServerCommandManager;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.TextComponent;
 import net.minecraft.util.DyeColor;
@@ -14,23 +14,23 @@ public class CounterCommand {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher)
     {
-        LiteralArgumentBuilder<ServerCommandSource> literalargumentbuilder = ServerCommandManager.literal("counter").executes((context)
+        LiteralArgumentBuilder<ServerCommandSource> literalargumentbuilder = CommandManager.literal("counter").executes((context)
                 -> listAllCounters(context.getSource(), false)).requires((player) ->
                 QuickCarpetSettings.getBool("hopperCounters"));
 
         literalargumentbuilder.
-                then((ServerCommandManager.literal("reset").executes( (p_198489_1_)->
+                then((CommandManager.literal("reset").executes( (p_198489_1_)->
                         resetCounter(p_198489_1_.getSource(), null))));
         for (DyeColor enumDyeColor: DyeColor.values())
         {
             String color = enumDyeColor.toString();
             literalargumentbuilder.
-                    then((ServerCommandManager.literal(color).executes( (p_198489_1_)-> displayCounter(p_198489_1_.getSource(), color, false))));
-            literalargumentbuilder.then(ServerCommandManager.literal(color).
-                    then(ServerCommandManager.literal("reset").executes((context) ->
+                    then((CommandManager.literal(color).executes( (p_198489_1_)-> displayCounter(p_198489_1_.getSource(), color, false))));
+            literalargumentbuilder.then(CommandManager.literal(color).
+                    then(CommandManager.literal("reset").executes((context) ->
                             resetCounter(context.getSource(), color))));
-            literalargumentbuilder.then(ServerCommandManager.literal(color).
-                    then(ServerCommandManager.literal("realtime").executes((context) ->
+            literalargumentbuilder.then(CommandManager.literal(color).
+                    then(CommandManager.literal("realtime").executes((context) ->
                             displayCounter(context.getSource(), color, true))));
         }
         dispatcher.register(literalargumentbuilder);

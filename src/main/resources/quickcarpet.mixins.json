@@ -5,7 +5,7 @@
   "mixins": [
     "MixinMinecraftDedicatedServer",
     "MixinMinecraftServer",
-    "MixinServerCommandManager",
+    "MixinCommandManager",
     "MixinStructure",
     "MixinWorld",
     "MixinHopperBlockEntity",

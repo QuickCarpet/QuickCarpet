@@ -15,8 +15,8 @@ import quickcarpet.utils.Messenger;
 import java.util.*;
 
 import static com.mojang.brigadier.arguments.StringArgumentType.getString;
-import static net.minecraft.server.command.ServerCommandManager.argument;
-import static net.minecraft.server.command.ServerCommandManager.literal;
+import static net.minecraft.server.command.CommandManager.argument;
+import static net.minecraft.server.command.CommandManager.literal;
 
 public class LogCommand
 {

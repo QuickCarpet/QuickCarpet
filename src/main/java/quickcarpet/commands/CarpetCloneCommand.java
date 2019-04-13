@@ -15,7 +15,7 @@ import net.minecraft.block.pattern.CachedBlockPosition;
 import net.minecraft.command.arguments.BlockPosArgumentType;
 import net.minecraft.command.arguments.BlockPredicateArgumentType;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.command.ServerCommandManager;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableTextComponent;
@@ -43,42 +43,42 @@ public class CarpetCloneCommand
     
     public static void register(CommandDispatcher<ServerCommandSource> commandDispatcher_1)
     {
-        commandDispatcher_1.register((LiteralArgumentBuilder) ((LiteralArgumentBuilder) ServerCommandManager.literal("carpetclone").requires((player) -> QuickCarpetSettings.getBool("commandCarpetClone"))).then(ServerCommandManager.argument("begin", BlockPosArgumentType.create()).then(ServerCommandManager.argument("end", BlockPosArgumentType.create()).then(((RequiredArgumentBuilder) ((RequiredArgumentBuilder) ((RequiredArgumentBuilder) ServerCommandManager.argument("destination", BlockPosArgumentType.create()).executes((commandContext_1) -> {
-            return method_13090((ServerCommandSource) commandContext_1.getSource(), BlockPosArgumentType.getValidPosArgument(commandContext_1, "begin"), BlockPosArgumentType.getValidPosArgument(commandContext_1, "end"), BlockPosArgumentType.getValidPosArgument(commandContext_1, "destination"), (cachedBlockPosition_1) -> {
+        commandDispatcher_1.register((LiteralArgumentBuilder) ((LiteralArgumentBuilder) CommandManager.literal("carpetclone").requires((player) -> QuickCarpetSettings.getBool("commandCarpetClone"))).then(CommandManager.argument("begin", BlockPosArgumentType.create()).then(CommandManager.argument("end", BlockPosArgumentType.create()).then(((RequiredArgumentBuilder) ((RequiredArgumentBuilder) ((RequiredArgumentBuilder) CommandManager.argument("destination", BlockPosArgumentType.create()).executes((commandContext_1) -> {
+            return method_13090((ServerCommandSource) commandContext_1.getSource(), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "begin"), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "end"), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "destination"), (cachedBlockPosition_1) -> {
                 return true;
             }, CarpetCloneCommand.class_3025.NORMAL);
-        })).then(((LiteralArgumentBuilder) ((LiteralArgumentBuilder) ((LiteralArgumentBuilder) ServerCommandManager.literal("replace").executes((commandContext_1) -> {
-            return method_13090((ServerCommandSource) commandContext_1.getSource(), BlockPosArgumentType.getValidPosArgument(commandContext_1, "begin"), BlockPosArgumentType.getValidPosArgument(commandContext_1, "end"), BlockPosArgumentType.getValidPosArgument(commandContext_1, "destination"), (cachedBlockPosition_1) -> {
+        })).then(((LiteralArgumentBuilder) ((LiteralArgumentBuilder) ((LiteralArgumentBuilder) CommandManager.literal("replace").executes((commandContext_1) -> {
+            return method_13090((ServerCommandSource) commandContext_1.getSource(), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "begin"), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "end"), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "destination"), (cachedBlockPosition_1) -> {
                 return true;
             }, CarpetCloneCommand.class_3025.NORMAL);
-        })).then(ServerCommandManager.literal("force").executes((commandContext_1) -> {
-            return method_13090((ServerCommandSource) commandContext_1.getSource(), BlockPosArgumentType.getValidPosArgument(commandContext_1, "begin"), BlockPosArgumentType.getValidPosArgument(commandContext_1, "end"), BlockPosArgumentType.getValidPosArgument(commandContext_1, "destination"), (cachedBlockPosition_1) -> {
+        })).then(CommandManager.literal("force").executes((commandContext_1) -> {
+            return method_13090((ServerCommandSource) commandContext_1.getSource(), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "begin"), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "end"), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "destination"), (cachedBlockPosition_1) -> {
                 return true;
             }, CarpetCloneCommand.class_3025.FORCE);
-        }))).then(ServerCommandManager.literal("move").executes((commandContext_1) -> {
-            return method_13090((ServerCommandSource) commandContext_1.getSource(), BlockPosArgumentType.getValidPosArgument(commandContext_1, "begin"), BlockPosArgumentType.getValidPosArgument(commandContext_1, "end"), BlockPosArgumentType.getValidPosArgument(commandContext_1, "destination"), (cachedBlockPosition_1) -> {
+        }))).then(CommandManager.literal("move").executes((commandContext_1) -> {
+            return method_13090((ServerCommandSource) commandContext_1.getSource(), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "begin"), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "end"), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "destination"), (cachedBlockPosition_1) -> {
                 return true;
             }, CarpetCloneCommand.class_3025.MOVE);
-        }))).then(ServerCommandManager.literal("normal").executes((commandContext_1) -> {
-            return method_13090((ServerCommandSource) commandContext_1.getSource(), BlockPosArgumentType.getValidPosArgument(commandContext_1, "begin"), BlockPosArgumentType.getValidPosArgument(commandContext_1, "end"), BlockPosArgumentType.getValidPosArgument(commandContext_1, "destination"), (cachedBlockPosition_1) -> {
+        }))).then(CommandManager.literal("normal").executes((commandContext_1) -> {
+            return method_13090((ServerCommandSource) commandContext_1.getSource(), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "begin"), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "end"), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "destination"), (cachedBlockPosition_1) -> {
                 return true;
             }, CarpetCloneCommand.class_3025.NORMAL);
-        })))).then(((LiteralArgumentBuilder) ((LiteralArgumentBuilder) ((LiteralArgumentBuilder) ServerCommandManager.literal("masked").executes((commandContext_1) -> {
-            return method_13090((ServerCommandSource) commandContext_1.getSource(), BlockPosArgumentType.getValidPosArgument(commandContext_1, "begin"), BlockPosArgumentType.getValidPosArgument(commandContext_1, "end"), BlockPosArgumentType.getValidPosArgument(commandContext_1, "destination"), IS_AIR_PREDICATE, CarpetCloneCommand.class_3025.NORMAL);
-        })).then(ServerCommandManager.literal("force").executes((commandContext_1) -> {
-            return method_13090((ServerCommandSource) commandContext_1.getSource(), BlockPosArgumentType.getValidPosArgument(commandContext_1, "begin"), BlockPosArgumentType.getValidPosArgument(commandContext_1, "end"), BlockPosArgumentType.getValidPosArgument(commandContext_1, "destination"), IS_AIR_PREDICATE, CarpetCloneCommand.class_3025.FORCE);
-        }))).then(ServerCommandManager.literal("move").executes((commandContext_1) -> {
-            return method_13090((ServerCommandSource) commandContext_1.getSource(), BlockPosArgumentType.getValidPosArgument(commandContext_1, "begin"), BlockPosArgumentType.getValidPosArgument(commandContext_1, "end"), BlockPosArgumentType.getValidPosArgument(commandContext_1, "destination"), IS_AIR_PREDICATE, CarpetCloneCommand.class_3025.MOVE);
-        }))).then(ServerCommandManager.literal("normal").executes((commandContext_1) -> {
-            return method_13090((ServerCommandSource) commandContext_1.getSource(), BlockPosArgumentType.getValidPosArgument(commandContext_1, "begin"), BlockPosArgumentType.getValidPosArgument(commandContext_1, "end"), BlockPosArgumentType.getValidPosArgument(commandContext_1, "destination"), IS_AIR_PREDICATE, CarpetCloneCommand.class_3025.NORMAL);
-        })))).then(ServerCommandManager.literal("filtered").then(((RequiredArgumentBuilder) ((RequiredArgumentBuilder) ((RequiredArgumentBuilder) ServerCommandManager.argument("filter", BlockPredicateArgumentType.create()).executes((commandContext_1) -> {
-            return method_13090((ServerCommandSource) commandContext_1.getSource(), BlockPosArgumentType.getValidPosArgument(commandContext_1, "begin"), BlockPosArgumentType.getValidPosArgument(commandContext_1, "end"), BlockPosArgumentType.getValidPosArgument(commandContext_1, "destination"), BlockPredicateArgumentType.getPredicateArgument(commandContext_1, "filter"), CarpetCloneCommand.class_3025.NORMAL);
-        })).then(ServerCommandManager.literal("force").executes((commandContext_1) -> {
-            return method_13090((ServerCommandSource) commandContext_1.getSource(), BlockPosArgumentType.getValidPosArgument(commandContext_1, "begin"), BlockPosArgumentType.getValidPosArgument(commandContext_1, "end"), BlockPosArgumentType.getValidPosArgument(commandContext_1, "destination"), BlockPredicateArgumentType.getPredicateArgument(commandContext_1, "filter"), CarpetCloneCommand.class_3025.FORCE);
-        }))).then(ServerCommandManager.literal("move").executes((commandContext_1) -> {
-            return method_13090((ServerCommandSource) commandContext_1.getSource(), BlockPosArgumentType.getValidPosArgument(commandContext_1, "begin"), BlockPosArgumentType.getValidPosArgument(commandContext_1, "end"), BlockPosArgumentType.getValidPosArgument(commandContext_1, "destination"), BlockPredicateArgumentType.getPredicateArgument(commandContext_1, "filter"), CarpetCloneCommand.class_3025.MOVE);
-        }))).then(ServerCommandManager.literal("normal").executes((commandContext_1) -> {
-            return method_13090((ServerCommandSource) commandContext_1.getSource(), BlockPosArgumentType.getValidPosArgument(commandContext_1, "begin"), BlockPosArgumentType.getValidPosArgument(commandContext_1, "end"), BlockPosArgumentType.getValidPosArgument(commandContext_1, "destination"), BlockPredicateArgumentType.getPredicateArgument(commandContext_1, "filter"), CarpetCloneCommand.class_3025.NORMAL);
+        })))).then(((LiteralArgumentBuilder) ((LiteralArgumentBuilder) ((LiteralArgumentBuilder) CommandManager.literal("masked").executes((commandContext_1) -> {
+            return method_13090((ServerCommandSource) commandContext_1.getSource(), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "begin"), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "end"), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "destination"), IS_AIR_PREDICATE, CarpetCloneCommand.class_3025.NORMAL);
+        })).then(CommandManager.literal("force").executes((commandContext_1) -> {
+            return method_13090((ServerCommandSource) commandContext_1.getSource(), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "begin"), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "end"), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "destination"), IS_AIR_PREDICATE, CarpetCloneCommand.class_3025.FORCE);
+        }))).then(CommandManager.literal("move").executes((commandContext_1) -> {
+            return method_13090((ServerCommandSource) commandContext_1.getSource(), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "begin"), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "end"), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "destination"), IS_AIR_PREDICATE, CarpetCloneCommand.class_3025.MOVE);
+        }))).then(CommandManager.literal("normal").executes((commandContext_1) -> {
+            return method_13090((ServerCommandSource) commandContext_1.getSource(), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "begin"), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "end"), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "destination"), IS_AIR_PREDICATE, CarpetCloneCommand.class_3025.NORMAL);
+        })))).then(CommandManager.literal("filtered").then(((RequiredArgumentBuilder) ((RequiredArgumentBuilder) ((RequiredArgumentBuilder) CommandManager.argument("filter", BlockPredicateArgumentType.create()).executes((commandContext_1) -> {
+            return method_13090((ServerCommandSource) commandContext_1.getSource(), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "begin"), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "end"), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "destination"), BlockPredicateArgumentType.getBlockPredicate(commandContext_1, "filter"), CarpetCloneCommand.class_3025.NORMAL);
+        })).then(CommandManager.literal("force").executes((commandContext_1) -> {
+            return method_13090((ServerCommandSource) commandContext_1.getSource(), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "begin"), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "end"), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "destination"), BlockPredicateArgumentType.getBlockPredicate(commandContext_1, "filter"), CarpetCloneCommand.class_3025.FORCE);
+        }))).then(CommandManager.literal("move").executes((commandContext_1) -> {
+            return method_13090((ServerCommandSource) commandContext_1.getSource(), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "begin"), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "end"), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "destination"), BlockPredicateArgumentType.getBlockPredicate(commandContext_1, "filter"), CarpetCloneCommand.class_3025.MOVE);
+        }))).then(CommandManager.literal("normal").executes((commandContext_1) -> {
+            return method_13090((ServerCommandSource) commandContext_1.getSource(), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "begin"), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "end"), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "destination"), BlockPredicateArgumentType.getBlockPredicate(commandContext_1, "filter"), CarpetCloneCommand.class_3025.NORMAL);
         }))))))));
     }
     

@@ -2,7 +2,7 @@ package quickcarpet.helper;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.command.ServerCommandManager;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.TextComponent;
 import net.minecraft.text.TranslatableTextComponent;
@@ -87,7 +87,7 @@ public class TickSpeed {
         time_warp_start_time = 0;
         if (tick_warp_callback != null)
         {
-            ServerCommandManager icommandmanager = tick_warp_sender.getMinecraftServer().getCommandManager();
+            CommandManager icommandmanager = tick_warp_sender.getMinecraftServer().getCommandManager();
             try
             {
                 int j = icommandmanager.execute(tick_warp_sender, tick_warp_callback);

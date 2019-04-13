@@ -11,8 +11,8 @@ import quickcarpet.helper.TickSpeed;
 
 import static com.mojang.brigadier.arguments.FloatArgumentType.floatArg;
 import static com.mojang.brigadier.arguments.FloatArgumentType.getFloat;
-import static net.minecraft.server.command.ServerCommandManager.argument;
-import static net.minecraft.server.command.ServerCommandManager.literal;
+import static net.minecraft.server.command.CommandManager.argument;
+import static net.minecraft.server.command.CommandManager.literal;
 
 public class TickCommand {
 

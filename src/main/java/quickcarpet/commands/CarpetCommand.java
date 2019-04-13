@@ -6,7 +6,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.CommandSource;
-import net.minecraft.server.command.ServerCommandManager;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.TextComponent;
 import quickcarpet.QuickCarpetSettings;
@@ -20,19 +20,19 @@ public class CarpetCommand {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher)
     {
-        LiteralArgumentBuilder<ServerCommandSource> literalargumentbuilder = ServerCommandManager.literal("carpet").requires((player) ->
+        LiteralArgumentBuilder<ServerCommandSource> literalargumentbuilder = CommandManager.literal("carpet").requires((player) ->
                 player.hasPermissionLevel(2) && !QuickCarpetSettings.locked);
 
         literalargumentbuilder.executes((context)->listAllSettings(context.getSource())).
-                then(ServerCommandManager.literal("list").
+                then(CommandManager.literal("list").
                         executes( (c) -> listSettings(c.getSource(),
                                 "All CarpetMod Settings",
                                 QuickCarpetSettings.findAll(null))).
-                        then(ServerCommandManager.literal("defaults").
+                        then(CommandManager.literal("defaults").
                                 executes( (c)-> listSettings(c.getSource(),
                                         "Current CarpetMod Startup Settings from carpet.conf",
                                         QuickCarpetSettings.findStartupOverrides(c.getSource().getMinecraftServer())))).
-                        then(ServerCommandManager.argument("tag", StringArgumentType.word()).
+                        then(CommandManager.argument("tag", StringArgumentType.word()).
                                 suggests( (c, b)-> CommandSource.suggestMatching(QuickCarpetSettings.default_tags, b)).
                                 executes( (c) -> listSettings(c.getSource(),
                                         String.format("CarpetMod Settings matching \"%s\"", StringArgumentType.getString(c, "tag")),
@@ -40,19 +40,19 @@ public class CarpetCommand {
 
         for (QuickCarpetSettings.CarpetSettingEntry rule: QuickCarpetSettings.getAllCarpetSettings())
         {
-            literalargumentbuilder.then(ServerCommandManager.literal(rule.getName()).executes( (context) ->
+            literalargumentbuilder.then(CommandManager.literal(rule.getName()).executes( (context) ->
                     displayRuleMenu(context.getSource(),rule)));
-            literalargumentbuilder.then(ServerCommandManager.literal("removeDefault").
-                    then(ServerCommandManager.literal(rule.getName()).executes((context) ->
+            literalargumentbuilder.then(CommandManager.literal("removeDefault").
+                    then(CommandManager.literal(rule.getName()).executes((context) ->
                             removeDefault(context.getSource(), rule))));
-            literalargumentbuilder.then(ServerCommandManager.literal(rule.getName()).
-                    then(ServerCommandManager.argument("value", StringArgumentType.word()).
+            literalargumentbuilder.then(CommandManager.literal(rule.getName()).
+                    then(CommandManager.argument("value", StringArgumentType.word()).
                             suggests((c, b)-> CommandSource.suggestMatching(rule.getOptions(),b)).
                             executes((context) ->
                                     setRule(context.getSource(), rule, StringArgumentType.getString(context, "value")))));
-            literalargumentbuilder.then(ServerCommandManager.literal("setDefault").
-                    then(ServerCommandManager.literal(rule.getName()).
-                            then(ServerCommandManager.argument("value", StringArgumentType.word()).
+            literalargumentbuilder.then(CommandManager.literal("setDefault").
+                    then(CommandManager.literal(rule.getName()).
+                            then(CommandManager.argument("value", StringArgumentType.word()).
                                     suggests((c, b)-> CommandSource.suggestMatching(rule.getOptions(),b)).
                                     executes((context) ->
                                             setDefault(context.getSource(), rule, StringArgumentType.getString(context, "value"))))));

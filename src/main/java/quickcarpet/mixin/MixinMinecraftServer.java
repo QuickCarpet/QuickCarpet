@@ -6,7 +6,7 @@ import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 import com.mojang.datafixers.DataFixer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.WorldGenerationProgressListenerFactory;
-import net.minecraft.server.command.ServerCommandManager;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.util.SystemUtil;
 import net.minecraft.util.UserCache;
 import net.minecraft.util.profiler.DisableableProfiler;
@@ -58,7 +58,7 @@ public abstract class MixinMinecraftServer
     // Called during game start
     @Inject(method = "<init>", at = @At(value = "RETURN"))
     private void onMinecraftServerCTOR(File file_1, Proxy proxy_1, DataFixer dataFixer_1,
-            ServerCommandManager serverCommandManager_1, YggdrasilAuthenticationService yggdrasilAuthenticationService_1,
+            CommandManager serverCommandManager_1, YggdrasilAuthenticationService yggdrasilAuthenticationService_1,
             MinecraftSessionService minecraftSessionService_1, GameProfileRepository gameProfileRepository_1,
             UserCache userCache_1, WorldGenerationProgressListenerFactory worldGenerationProgressListenerFactory_1,
             String string_1, CallbackInfo ci)

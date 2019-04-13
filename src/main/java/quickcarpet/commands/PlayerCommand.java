@@ -27,8 +27,8 @@ import java.util.Set;
 
 import static com.mojang.brigadier.arguments.StringArgumentType.getString;
 import static com.mojang.brigadier.arguments.StringArgumentType.word;
-import static net.minecraft.server.command.ServerCommandManager.argument;
-import static net.minecraft.server.command.ServerCommandManager.literal;
+import static net.minecraft.server.command.CommandManager.argument;
+import static net.minecraft.server.command.CommandManager.literal;
 
 public class PlayerCommand
 {
@@ -218,7 +218,7 @@ public static void register(CommandDispatcher<ServerCommandSource> dispatcher)
         DimensionType dim;
         try
         {
-            pos = Vec3ArgumentType.getVec3Argument(context, "position");
+            pos = Vec3ArgumentType.getVec3(context, "position");
         }
         catch (IllegalArgumentException e)
         {
@@ -226,7 +226,7 @@ public static void register(CommandDispatcher<ServerCommandSource> dispatcher)
         }
         try
         {
-            facing = RotationArgumentType.getRotationArgument(context, "direction").toAbsoluteRotation(context.getSource());
+            facing = RotationArgumentType.getRotation(context, "direction").toAbsoluteRotation(context.getSource());
         }
         catch (IllegalArgumentException e)
         {
