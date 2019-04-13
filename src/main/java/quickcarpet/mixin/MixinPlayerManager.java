@@ -61,7 +61,7 @@ public abstract class MixinPlayerManager
     }
     
     @Inject(method = "method_14613", at = @At(value = "INVOKE", shift = At.Shift.BEFORE,
-            target = "Ljava/util/Iterator;hasNext()Z"), locals = LocalCapture.PRINT)
+            target = "Ljava/util/Iterator;hasNext()Z"), locals = LocalCapture.CAPTURE_FAILHARD)
     private void newWhileLoop(GameProfile gameProfile_1, CallbackInfoReturnable<ServerPlayerEntity> cir, UUID uUID_1,
             List list_1, Iterator var5)
     {
