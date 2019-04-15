@@ -55,6 +55,10 @@ public abstract class MixinMinecraftServer
     @Shadow
     protected abstract void method_16208();
     
+    @Shadow private boolean field_19249;
+    
+    @Shadow private long field_19248;
+    
     // Called during game start
     @Inject(method = "<init>", at = @At(value = "RETURN"))
     private void onMinecraftServerCTOR(File file_1, Proxy proxy_1, DataFixer dataFixer_1,
@@ -90,28 +94,28 @@ public abstract class MixinMinecraftServer
         while (this.running)
         {
             long long_1 = SystemUtil.getMeasuringTimeMs() - this.timeReference;
-            if (long_1 > TickSpeed.warn_time && this.timeReference - this.field_4557 >= 15000L) // Replaced 2000L
+            if (long_1 > TickSpeed.warn_time/*2000L*/ && this.timeReference - this.field_4557 >= 15000L)
             {
                 long long_2 = long_1 / TickSpeed.ms_per_tick;//50L;
                 LOGGER.warn("Can't keep up! Is the server overloaded? Running {}ms or {} ticks behind", long_1, long_2);
                 this.timeReference += long_2 * TickSpeed.ms_per_tick;//50L;
                 this.field_4557 = this.timeReference;
             }
-            
+        
             this.timeReference += TickSpeed.ms_per_tick;//50L;
             if (this.field_4597)
             {
                 this.field_4597 = false;
                 this.profiler.getController().enable();
             }
-            
+        
             this.profiler.startTick();
             this.profiler.push("tick");
-            // [CM] Tick warping
             TickSpeed.processWarp((MinecraftServer)(Object)this);
-            
             this.method_3748(this::shouldKeepTicking);
             this.profiler.swap("nextTickWait");
+            this.field_19249 = true;
+            this.field_19248 = Math.max(SystemUtil.getMeasuringTimeMs() + 20L, this.timeReference);
             this.method_16208();
             this.profiler.pop();
             this.profiler.endTick();
