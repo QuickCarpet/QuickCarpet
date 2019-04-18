@@ -75,7 +75,7 @@ public class CarpetFillCommand {
             List<BlockPos> list_1 = Lists.newArrayList();
             ServerWorld serverWorld_1 = serverCommandSource_1.getWorld();
             int int_2 = 0;
-            Iterator var9 = BlockPos.iterateBoxPositions(mutableIntBoundingBox_1.minX, mutableIntBoundingBox_1.minY, mutableIntBoundingBox_1.minZ, mutableIntBoundingBox_1.maxX, mutableIntBoundingBox_1.maxY, mutableIntBoundingBox_1.maxZ).iterator();
+            Iterator var9 = BlockPos.iterate(mutableIntBoundingBox_1.minX, mutableIntBoundingBox_1.minY, mutableIntBoundingBox_1.minZ, mutableIntBoundingBox_1.maxX, mutableIntBoundingBox_1.maxY, mutableIntBoundingBox_1.maxZ).iterator();
 
             while (true) {
                 BlockPos blockPos_1;
