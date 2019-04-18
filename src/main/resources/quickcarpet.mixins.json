@@ -13,7 +13,8 @@
     "MixinPlayerManager",
     "MixinPrimedTNTEntity",
     "MixinMinecraftClient",
-    "MixinExplosion"
+    "MixinExplosion",
+    "IServerChunkManager"
   ],
   "client": [
     "MixinIntegratedServer"
