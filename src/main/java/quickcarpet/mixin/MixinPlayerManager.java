@@ -30,7 +30,7 @@ public abstract class MixinPlayerManager
     @Final
     private MinecraftServer server;
     
-    @Inject(method = "method_14600", at = @At(value = "RETURN", shift = At.Shift.BEFORE))
+    @Inject(method = "loadPlayerData", at = @At(value = "RETURN", shift = At.Shift.BEFORE))
     private void fixStartingPos(ServerPlayerEntity serverPlayerEntity_1, CallbackInfoReturnable<CompoundTag> cir)
     {
         if (serverPlayerEntity_1 instanceof ServerPlayerEntityFake)
@@ -54,13 +54,13 @@ public abstract class MixinPlayerManager
         }
     }
     
-    @Redirect(method = "method_14613", at = @At(value = "INVOKE", target = "Ljava/util/Iterator;hasNext()Z"))
+    @Redirect(method = "createPlayer", at = @At(value = "INVOKE", target = "Ljava/util/Iterator;hasNext()Z"))
     private boolean cancelWhileLoop(Iterator iterator)
     {
         return false;
     }
     
-    @Inject(method = "method_14613", at = @At(value = "INVOKE", shift = At.Shift.BEFORE,
+    @Inject(method = "createPlayer", at = @At(value = "INVOKE", shift = At.Shift.BEFORE,
             target = "Ljava/util/Iterator;hasNext()Z"), locals = LocalCapture.CAPTURE_FAILHARD)
     private void newWhileLoop(GameProfile gameProfile_1, CallbackInfoReturnable<ServerPlayerEntity> cir, UUID uUID_1,
             List list_1, Iterator var5)
