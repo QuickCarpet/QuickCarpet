@@ -39,6 +39,7 @@ public class QuickCarpet implements ModInitializer {
         CounterCommand.register(dispatcher);
         PlayerCommand.register(dispatcher);
         LogCommand.register(dispatcher);
+        SpawnCommand.register(dispatcher);
     }
 
     @Override
