@@ -45,7 +45,7 @@ public class ServerPlayerEntityFake extends ServerPlayerEntity
             instance.removed = false;
             worldIn.spawnEntity(instance);
             instance.setWorld(worldIn);
-            server.getPlayerManager().method_14606(instance, old_world);
+            server.getPlayerManager().sendWorldInfo(instance, old_world);
             instance.networkHandler.requestTeleport(d0, d1, d2, (float) yaw, (float) pitch);
             instance.interactionManager.setWorld(worldIn);
         }
@@ -62,7 +62,7 @@ public class ServerPlayerEntityFake extends ServerPlayerEntity
     
     public static ServerPlayerEntityFake createShadow(MinecraftServer server, ServerPlayerEntity player)
     {
-        player.getServer().getPlayerManager().method_14611(player);
+        player.getServer().getPlayerManager().remove(player);
         player.networkHandler.disconnect(new TranslatableTextComponent("multiplayer.disconnect.duplicate_login"));
         ServerWorld worldIn = server.getWorld(player.dimension);
         ServerPlayerInteractionManager interactionManagerIn = new ServerPlayerInteractionManager(worldIn);
@@ -91,7 +91,7 @@ public class ServerPlayerEntityFake extends ServerPlayerEntity
     public void kill()
     {
         //super.onKillCommand();
-        this.getServer().getPlayerManager().method_14611(this);
+        this.getServer().getPlayerManager().remove(this);
     }
     
     @Override
@@ -110,6 +110,6 @@ public class ServerPlayerEntityFake extends ServerPlayerEntity
     public void onDeath(DamageSource cause)
     {
         super.onDeath(cause);
-        getServer().getPlayerManager().method_14611(this);
+        getServer().getPlayerManager().remove(this);
     }
 }
