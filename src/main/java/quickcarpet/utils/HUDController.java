@@ -10,6 +10,7 @@ import net.minecraft.text.TextComponent;
 import net.minecraft.util.Pair;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.dimension.DimensionType;
+import quickcarpet.helper.HopperCounter;
 import quickcarpet.helper.Mobcaps;
 import quickcarpet.helper.TickSpeed;
 import quickcarpet.logging.LoggerRegistry;
@@ -56,8 +57,8 @@ public class HUDController
         if (LoggerRegistry.__mobcaps)
             log_mobcaps();
 
-        // if(LoggerRegistry.__counter)
-           // log_counter(server);
+        if(LoggerRegistry.__counter)
+            log_counter(server);
 
         if (LoggerRegistry.__packets)
             LoggerRegistry.getLogger("packets").log(HUDController::packetCounter,
@@ -133,7 +134,7 @@ public class HUDController
         components.remove(components.size()-1);
         return new TextComponent[]{Messenger.c(components.toArray(new Object[0]))};
     }
-    /*
+
     private static void log_counter(MinecraftServer server)
     {
         List<Object> commandParams = new ArrayList<>();
@@ -146,9 +147,9 @@ public class HUDController
     {
         HopperCounter counter = HopperCounter.getCounter(color);
         List<TextComponent> res = counter == null ? Collections.emptyList() : counter.format(server, false, true);
-        return new TextComponent[]{ Messenger.m(null, res.toArray(new Object[0]))};
+        return new TextComponent[]{ Messenger.c(res.toArray(new Object[0]))};
     }
-    */
+
     private static TextComponent [] packetCounter()
     {
         TextComponent [] ret =  new TextComponent[]{

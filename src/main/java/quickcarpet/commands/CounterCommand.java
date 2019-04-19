@@ -2,6 +2,7 @@ package quickcarpet.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import net.minecraft.command.CommandException;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.TextComponent;
@@ -21,6 +22,8 @@ public class CounterCommand {
         literalargumentbuilder.
                 then((CommandManager.literal("reset").executes( (p_198489_1_)->
                         resetCounter(p_198489_1_.getSource(), null))));
+        literalargumentbuilder.
+                then(CommandManager.literal("realtime").executes(c -> listAllCounters(c.getSource(), true)));
         for (DyeColor enumDyeColor: DyeColor.values())
         {
             String color = enumDyeColor.toString();
@@ -38,7 +41,9 @@ public class CounterCommand {
 
     private static int displayCounter(ServerCommandSource source, String color, boolean realtime)
     {
-        for (TextComponent message: HopperCounter.query_hopper_stats_for_color(source.getMinecraftServer(), color, realtime, false))
+        HopperCounter counter = HopperCounter.getCounter(color);
+        if (counter == null) throw new CommandException(Messenger.s("Unknown wool color"));
+        for (TextComponent message : counter.format(source.getMinecraftServer(), realtime, false))
         {
             source.sendFeedback(message, false);
         }
@@ -47,13 +52,16 @@ public class CounterCommand {
 
     private static int resetCounter(ServerCommandSource source, String color)
     {
-        HopperCounter.reset_hopper_counter(source.getMinecraftServer(), color);
         if (color == null)
         {
+            HopperCounter.resetAll(source.getMinecraftServer());
             Messenger.m(source, "w Restarted all counters");
         }
         else
         {
+            HopperCounter counter = HopperCounter.getCounter(color);
+            if (counter == null) throw new CommandException(Messenger.s("Unknown wool color"));
+            counter.reset(source.getMinecraftServer());
             Messenger.m(source, "w Restarted "+color+" counter");
         }
         return 1;
@@ -61,7 +69,7 @@ public class CounterCommand {
 
     private static int listAllCounters(ServerCommandSource source, boolean realtime)
     {
-        for (TextComponent message: HopperCounter.query_hopper_all_stats(source.getMinecraftServer(), realtime))
+        for (TextComponent message: HopperCounter.formatAll(source.getMinecraftServer(), realtime))
         {
             source.sendFeedback(message, false);
         }
