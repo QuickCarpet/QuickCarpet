@@ -1,9 +1,9 @@
 package quickcarpet.logging;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.TextComponent;
+import quickcarpet.QuickCarpet;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -12,9 +12,6 @@ import java.util.function.Supplier;
 
 public class Logger
 {
-    // Reference to the minecraft server. Used to look players up by name.
-    private MinecraftServer server;
-
     // The set of subscribed and online players.
     private Map<String, String> subscribedOnlinePlayers;
 
@@ -33,9 +30,8 @@ public class Logger
     // The map of player names to the log handler used
     private Map<String, LogHandler> handlers;
 
-    public Logger(MinecraftServer server, String logName, String def, String [] options, LogHandler defaultHandler)
+    public Logger(String logName, String def, String [] options, LogHandler defaultHandler)
     {
-        this.server = server;
         subscribedOnlinePlayers = new HashMap<>();
         subscribedOfflinePlayers = new HashMap<>();
         this.logName = logName;
@@ -189,7 +185,7 @@ public class Logger
      */
     protected ServerPlayerEntity playerFromName(String name)
     {
-        return server.getPlayerManager().getPlayer(name);
+        return QuickCarpet.minecraft_server.getPlayerManager().getPlayer(name);
     }
 
     // ----- Event Handlers ----- //

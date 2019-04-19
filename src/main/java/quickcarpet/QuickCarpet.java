@@ -16,7 +16,6 @@ public class QuickCarpet implements ModInitializer {
     public static void init(MinecraftServer server) //Constructor of this static single ton class
     {
         QuickCarpet.minecraft_server = server;
-        LoggerRegistry.initLoggers(server);
     }
 
     public static void onServerLoaded(MinecraftServer server) {
@@ -29,6 +28,7 @@ public class QuickCarpet implements ModInitializer {
     }
     
     public static void onGameStarted() {
+        LoggerRegistry.initLoggers();
     }
 
     public static void registerCarpetCommands(CommandDispatcher<ServerCommandSource> dispatcher) {

@@ -1,7 +1,6 @@
 package quickcarpet.logging;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.DyeColor;
 import quickcarpet.QuickCarpetSettings;
 
@@ -30,20 +29,20 @@ public class LoggerRegistry
     // public static boolean __weather;
     // public static boolean __tileTickLimit;
 
-    public static void initLoggers(MinecraftServer server)
+    public static void initLoggers()
     {
-        registerLogger("tnt", new Logger(server, "tnt", "brief", new String[]{"brief", "full"}, LogHandler.CHAT));
-        // registerLogger("projectiles", new Logger(server, "projectiles", "full",  new String[]{"brief", "full"}, LogHandler.CHAT));
-        // registerLogger("fallingBlocks",new Logger(server, "fallingBlocks", "brief", new String[]{"brief", "full"}, LogHandler.CHAT));
-        // registerLogger("kills", new Logger(server, "kills", null, null, LogHandler.CHAT));
-        // registerLogger("damage", new Logger(server, "damage", "all", new String[]{"all","players","me"}, LogHandler.CHAT));
-        // registerLogger("weather", new Logger(server, "weather", null, null, LogHandler.CHAT));
-        // registerLogger("tileTickLimit", new Logger(server, "tileTickLimit", null, null, LogHandler.CHAT));
+        registerLogger("tnt", new Logger("tnt", "brief", new String[]{"brief", "full"}, LogHandler.CHAT));
+        // registerLogger("projectiles", new Logger("projectiles", "full",  new String[]{"brief", "full"}, LogHandler.CHAT));
+        // registerLogger("fallingBlocks",new Logger("fallingBlocks", "brief", new String[]{"brief", "full"}, LogHandler.CHAT));
+        // registerLogger("kills", new Logger("kills", null, null, LogHandler.CHAT));
+        // registerLogger("damage", new Logger("damage", "all", new String[]{"all","players","me"}, LogHandler.CHAT));
+        // registerLogger("weather", new Logger("weather", null, null, LogHandler.CHAT));
+        // registerLogger("tileTickLimit", new Logger("tileTickLimit", null, null, LogHandler.CHAT));
 
-        registerLogger("tps", new Logger(server, "tps", null, null, LogHandler.HUD));
-        registerLogger("packets", new Logger(server, "packets", null, null, LogHandler.HUD));
-        registerLogger("counter",new Logger(server, "counter","white", Arrays.stream(DyeColor.values()).map(Object::toString).toArray(String[]::new), LogHandler.HUD));
-        registerLogger("mobcaps", new Logger(server, "mobcaps", "dynamic",new String[]{"dynamic", "overworld", "nether","end"}, LogHandler.HUD));
+        registerLogger("tps", new Logger("tps", null, null, LogHandler.HUD));
+        registerLogger("packets", new Logger("packets", null, null, LogHandler.HUD));
+        registerLogger("counter",new Logger("counter","white", Arrays.stream(DyeColor.values()).map(Object::toString).toArray(String[]::new), LogHandler.HUD));
+        registerLogger("mobcaps", new Logger("mobcaps", "dynamic",new String[]{"dynamic", "overworld", "nether","end"}, LogHandler.HUD));
     }
 
     /**
