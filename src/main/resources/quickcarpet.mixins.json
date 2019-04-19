@@ -19,7 +19,9 @@
     "MixinClientConnection"
   ],
   "client": [
-    "MixinIntegratedServer"
+    "MixinIntegratedServer",
+    "MixinInGameHud",
+    "MixinPlayerListHud"
   ],
   "injectors": {
     "defaultRequire": 1
