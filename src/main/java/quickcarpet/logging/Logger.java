@@ -1,8 +1,9 @@
 package quickcarpet.logging;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.TextComponent;
-import quickcarpet.QuickCarpet;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -11,6 +12,9 @@ import java.util.function.Supplier;
 
 public class Logger
 {
+    // Reference to the minecraft server. Used to look players up by name.
+    private MinecraftServer server;
+
     // The set of subscribed and online players.
     private Map<String, String> subscribedOnlinePlayers;
 
@@ -24,13 +28,21 @@ public class Logger
 
     private String[] options;
 
-    public Logger(String logName, String def, String [] options)
+    private LogHandler defaultHandler;
+
+    // The map of player names to the log handler used
+    private Map<String, LogHandler> handlers;
+
+    public Logger(MinecraftServer server, String logName, String def, String [] options, LogHandler defaultHandler)
     {
+        this.server = server;
         subscribedOnlinePlayers = new HashMap<>();
         subscribedOfflinePlayers = new HashMap<>();
         this.logName = logName;
         this.default_option = def;
         this.options = options;
+        this.defaultHandler = defaultHandler;
+        handlers = new HashMap<>();
     }
 
     public String getDefault()
@@ -39,10 +51,6 @@ public class Logger
     }
     public String [] getOptions()
     {
-        if (options == null)
-        {
-            return new String[0];
-        }
         return options;
     }
     public String getLogName()
@@ -53,7 +61,7 @@ public class Logger
     /**
      * Subscribes the player with the given logName to the logger.
      */
-    public void addPlayer(String playerName, String option)
+    public void addPlayer(String playerName, String option, LogHandler handler)
     {
         if (playerFromName(playerName) != null)
         {
@@ -63,6 +71,10 @@ public class Logger
         {
             subscribedOfflinePlayers.put(playerName, option);
         }
+        if (handler == null)
+            handler = defaultHandler;
+        handlers.put(playerName, handler);
+        handler.onAddPlayer(playerName);
         LoggerRegistry.setAccess(this);
     }
 
@@ -71,9 +83,27 @@ public class Logger
      */
     public void removePlayer(String playerName)
     {
+        handlers.getOrDefault(playerName, defaultHandler).onRemovePlayer(playerName);
         subscribedOnlinePlayers.remove(playerName);
         subscribedOfflinePlayers.remove(playerName);
+        handlers.remove(playerName);
         LoggerRegistry.setAccess(this);
+    }
+
+    /**
+     * Sets the LogHandler for the given player
+     */
+    public void setHandler(String playerName, LogHandler newHandler)
+    {
+        if (newHandler == null)
+            newHandler = defaultHandler;
+        LogHandler oldHandler = handlers.getOrDefault(playerName, defaultHandler);
+        if (oldHandler != newHandler)
+        {
+            oldHandler.onRemovePlayer(playerName);
+            handlers.put(playerName, newHandler);
+            newHandler.onAddPlayer(playerName);
+        }
     }
 
     /**
@@ -90,16 +120,17 @@ public class Logger
      */
     @FunctionalInterface
     public interface lMessage { TextComponent[] get(String playerOption, PlayerEntity player);}
-    public void log(lMessage messagePromise)
+    public void logNoCommand(lMessage messagePromise) {log(messagePromise, (Object[])null);}
+    public void log(lMessage messagePromise, Object... commandParams)
     {
         for (Map.Entry<String,String> en : subscribedOnlinePlayers.entrySet())
         {
-            PlayerEntity player = playerFromName(en.getKey());
+            ServerPlayerEntity player = playerFromName(en.getKey());
             if (player != null)
             {
                 TextComponent [] messages = messagePromise.get(en.getValue(),player);
                 if (messages != null)
-                    sendPlayerMessage(player, messages);
+                    sendPlayerMessage(en.getKey(), player, messages, commandParams);
             }
         }
     }
@@ -110,12 +141,13 @@ public class Logger
      */
     @FunctionalInterface
     public interface lMessageIgnorePlayer { TextComponent [] get(String playerOption);}
-    public void log(lMessageIgnorePlayer messagePromise)
+    public void logNoCommand(lMessageIgnorePlayer messagePromise) {log(messagePromise, (Object[])null);}
+    public void log(lMessageIgnorePlayer messagePromise, Object... commandParams)
     {
         Map<String, TextComponent[]> cannedMessages = new HashMap<>();
         for (Map.Entry<String,String> en : subscribedOnlinePlayers.entrySet())
         {
-            PlayerEntity player = playerFromName(en.getKey());
+            ServerPlayerEntity player = playerFromName(en.getKey());
             if (player != null)
             {
                 String option = en.getValue();
@@ -125,38 +157,39 @@ public class Logger
                 }
                 TextComponent [] messages = cannedMessages.get(option);
                 if (messages != null)
-                    sendPlayerMessage(player, messages);
+                    sendPlayerMessage(en.getKey(), player, messages, commandParams);
             }
         }
     }
     /**
      * guarantees that message is evaluated once, so independent from the player and chosen option
      */
-    public void log(Supplier<TextComponent[]> messagePromise)
+    public void logNoCommand(Supplier<TextComponent[]> messagePromise) {log(messagePromise, (Object[])null);}
+    public void log(Supplier<TextComponent[]> messagePromise, Object... commandParams)
     {
         TextComponent [] cannedMessages = null;
         for (Map.Entry<String,String> en : subscribedOnlinePlayers.entrySet())
         {
-            PlayerEntity player = playerFromName(en.getKey());
+            ServerPlayerEntity player = playerFromName(en.getKey());
             if (player != null)
             {
                 if (cannedMessages == null) cannedMessages = messagePromise.get();
-                sendPlayerMessage(player, cannedMessages);
+                sendPlayerMessage(en.getKey(), player, cannedMessages, commandParams);
             }
         }
     }
 
-    public void sendPlayerMessage(PlayerEntity player, TextComponent ... messages)
+    public void sendPlayerMessage(String playerName, ServerPlayerEntity player, TextComponent[] messages, Object[] commandParams)
     {
-        Arrays.stream(messages).forEach(player::appendCommandFeedback);
+        handlers.getOrDefault(playerName, defaultHandler).handle(player, messages, commandParams);
     }
 
     /**
-     * Gets the {@code EntityPlayer} instance for a player given their UUID. Returns null if they are offline.
+     * Gets the {@code PlayerEntity} instance for a player given their UUID. Returns null if they are offline.
      */
-    protected PlayerEntity playerFromName(String name)
+    protected ServerPlayerEntity playerFromName(String name)
     {
-        return QuickCarpet.minecraft_server.getPlayerManager().getPlayer(name);
+        return server.getPlayerManager().getPlayer(name);
     }
 
     // ----- Event Handlers ----- //
@@ -164,7 +197,7 @@ public class Logger
     public void onPlayerConnect(PlayerEntity player)
     {
         // If the player was subscribed to the log and offline, move them to the set of online subscribers.
-        String playerName = player.getName().getString();
+        String playerName = player.getEntityName();
         if (subscribedOfflinePlayers.containsKey(playerName))
         {
             subscribedOnlinePlayers.put(playerName, subscribedOfflinePlayers.get(playerName));
@@ -176,7 +209,7 @@ public class Logger
     public void onPlayerDisconnect(PlayerEntity player)
     {
         // If the player was subscribed to the log, move them to the set of offline subscribers.
-        String playerName = player.getName().getString();
+        String playerName = player.getEntityName();
         if (subscribedOnlinePlayers.containsKey(playerName))
         {
             subscribedOfflinePlayers.put(playerName, subscribedOnlinePlayers.get(playerName));

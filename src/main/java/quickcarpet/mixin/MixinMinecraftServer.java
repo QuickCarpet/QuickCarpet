@@ -123,5 +123,12 @@ public abstract class MixinMinecraftServer
         }
         
     }
-    
+
+    @Inject(
+        method = "Lnet/minecraft/server/MinecraftServer;method_3748(Ljava/util/function/BooleanSupplier;)V",
+        at = @At(value = "FIELD", target = "net/minecraft/server/MinecraftServer.ticks:I", ordinal = 0)
+    )
+    private void onTick(BooleanSupplier booleanSupplier_1, CallbackInfo ci) {
+        QuickCarpet.tick((MinecraftServer) (Object) this);
+    }
 }

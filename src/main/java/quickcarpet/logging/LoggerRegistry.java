@@ -1,9 +1,12 @@
 package quickcarpet.logging;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.DyeColor;
 import quickcarpet.QuickCarpetSettings;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -16,29 +19,31 @@ public class LoggerRegistry
     private static Map<String, Map<String, String>> playerSubscriptions = new HashMap<>();
     //statics to quickly asses if its worth even to call each one
     public static boolean __tnt;
-    public static boolean __projectiles;
-    public static boolean __fallingBlocks;
-    public static boolean __kills;
+    // public static boolean __projectiles;
+    // public static boolean __fallingBlocks;
+    // public static boolean __kills;
     public static boolean __tps;
     public static boolean __counter;
     public static boolean __mobcaps;
-    public static boolean __damage;
+    // public static boolean __damage;
     public static boolean __packets;
-    public static boolean __weather;
+    // public static boolean __weather;
+    // public static boolean __tileTickLimit;
 
-    public static void initLoggers()
+    public static void initLoggers(MinecraftServer server)
     {
-        registerLogger("tnt", new Logger("tnt", "brief", new String[]{"brief", "full"}));
-        //registerLogger("projectiles", new Logger("projectiles", "brief",  new String[]{"brief", "full"}));
-        //registerLogger("fallingBlocks",new Logger("fallingBlocks", "brief", new String[]{"brief", "full"}));
-        //registerLogger("kills", new Logger("kills", null, null));
-        //registerLogger("damage", new Logger("damage", "all", new String[]{"all","players","me"}));
-        //registerLogger("weather", new Logger("weather", null, null));
+        registerLogger("tnt", new Logger(server, "tnt", "brief", new String[]{"brief", "full"}, LogHandler.CHAT));
+        // registerLogger("projectiles", new Logger(server, "projectiles", "full",  new String[]{"brief", "full"}, LogHandler.CHAT));
+        // registerLogger("fallingBlocks",new Logger(server, "fallingBlocks", "brief", new String[]{"brief", "full"}, LogHandler.CHAT));
+        // registerLogger("kills", new Logger(server, "kills", null, null, LogHandler.CHAT));
+        // registerLogger("damage", new Logger(server, "damage", "all", new String[]{"all","players","me"}, LogHandler.CHAT));
+        // registerLogger("weather", new Logger(server, "weather", null, null, LogHandler.CHAT));
+        // registerLogger("tileTickLimit", new Logger(server, "tileTickLimit", null, null, LogHandler.CHAT));
 
-        //registerLogger("tps", new HUDLogger("tps", null, null));
-        //registerLogger("packets", new HUDLogger("packets", null, null));
-        //registerLogger("counter",new HUDLogger("counter","white", Arrays.stream(DyeColor.values()).map(Object::toString).toArray(String[]::new)));
-        //registerLogger("mobcaps", new HUDLogger("mobcaps", "dynamic",new String[]{"dynamic", "overworld", "nether","end"}));
+        registerLogger("tps", new Logger(server, "tps", null, null, LogHandler.HUD));
+        registerLogger("packets", new Logger(server, "packets", null, null, LogHandler.HUD));
+        registerLogger("counter",new Logger(server, "counter","white", Arrays.stream(DyeColor.values()).map(Object::toString).toArray(String[]::new), LogHandler.HUD));
+        registerLogger("mobcaps", new Logger(server, "mobcaps", "dynamic",new String[]{"dynamic", "overworld", "nether","end"}, LogHandler.HUD));
     }
 
     /**
@@ -54,13 +59,13 @@ public class LoggerRegistry
     /**
      * Subscribes the player with name playerName to the log with name logName.
      */
-    public static void subscribePlayer(String playerName, String logName, String option)
+    public static void subscribePlayer(String playerName, String logName, String option, LogHandler handler)
     {
         if (!playerSubscriptions.containsKey(playerName)) playerSubscriptions.put(playerName, new HashMap<>());
         Logger log = loggerRegistry.get(logName);
         if (option == null) option = log.getDefault();
         playerSubscriptions.get(playerName).put(logName,option);
-        log.addPlayer(playerName, option);
+        log.addPlayer(playerName, option, handler);
     }
 
     /**
@@ -80,7 +85,7 @@ public class LoggerRegistry
     /**
      * If the player is not subscribed to the log, then subscribe them. Otherwise, unsubscribe them.
      */
-    public static boolean togglePlayerSubscription(String playerName, String logName)
+    public static boolean togglePlayerSubscription(String playerName, String logName, LogHandler handler)
     {
         if (playerSubscriptions.containsKey(playerName) && playerSubscriptions.get(playerName).containsKey(logName))
         {
@@ -89,7 +94,7 @@ public class LoggerRegistry
         }
         else
         {
-            subscribePlayer(playerName, logName, null);
+            subscribePlayer(playerName, logName, null, handler);
             return true;
         }
     }
