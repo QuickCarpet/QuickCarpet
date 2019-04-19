@@ -70,15 +70,6 @@ public abstract class MixinMinecraftServer
         QuickCarpet.init((MinecraftServer) (Object) this);
     }
     
-    // Called during game start
-    /*
-    @Inject(method = "method_3748", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/server/MinecraftServer;tick(Ljava/util/function/BooleanSupplier;)V"))
-    private void carpetTick(BooleanSupplier booleanSupplier_1, CallbackInfo ci)
-    {
-        QuickCarpet.tick((MinecraftServer) (Object) this);
-    }
-    */
-    
     // Cancel a while statement
     @Redirect(method = "run", at = @At(value = "FIELD", target = "Lnet/minecraft/server/MinecraftServer;running:Z"))
     private boolean cancelRunLoop(MinecraftServer server)
@@ -123,5 +114,12 @@ public abstract class MixinMinecraftServer
         }
         
     }
-    
+
+    @Inject(
+        method = "Lnet/minecraft/server/MinecraftServer;method_3748(Ljava/util/function/BooleanSupplier;)V",
+        at = @At(value = "FIELD", target = "net/minecraft/server/MinecraftServer.ticks:I", shift = At.Shift.AFTER, ordinal = 0)
+    )
+    private void onTick(BooleanSupplier booleanSupplier_1, CallbackInfo ci) {
+        QuickCarpet.tick((MinecraftServer) (Object) this);
+    }
 }

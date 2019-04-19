@@ -14,6 +14,7 @@ import net.minecraft.util.math.Vec3d;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -250,11 +251,11 @@ public class Messenger {
 
     //simple text
 
-    public static TextComponent s(String text)
+    public static TextComponent s(@Nonnull String text)
     {
         return s(text,"");
     }
-    public static TextComponent s(String text, String style)
+    public static TextComponent s(@Nonnull String text, @Nonnull String style)
     {
         TextComponent message = new StringTextComponent(text);
         _applyStyleToTextComponent(message, style);

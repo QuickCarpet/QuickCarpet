@@ -14,7 +14,9 @@
     "MixinPrimedTNTEntity",
     "MixinMinecraftClient",
     "MixinExplosion",
-    "IServerChunkManager"
+    "IServerChunkManager",
+    "IPlayerListHeaderS2CPacket",
+    "MixinClientConnection"
   ],
   "client": [
     "MixinIntegratedServer"

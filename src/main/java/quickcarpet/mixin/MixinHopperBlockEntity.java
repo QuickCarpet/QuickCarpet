@@ -51,7 +51,7 @@ public abstract class MixinHopperBlockEntity extends LootableContainerBlockEntit
                 for (int i = 0; i < this.getInvSize(); ++i) {
                     if (!this.getInvStack(i).isEmpty()) {
                         ItemStack itemstack = this.getInvStack(i);//.copy();
-                        HopperCounter.count_hopper_items(this.getWorld(), wool_color, itemstack);
+                        HopperCounter.COUNTERS.get(wool_color).add(this.getWorld().getServer(), itemstack);
                         this.setInvStack(i, ItemStack.EMPTY);
                     }
                 }

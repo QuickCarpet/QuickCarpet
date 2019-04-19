@@ -7,6 +7,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import quickcarpet.commands.*;
 import quickcarpet.helper.TickSpeed;
 import quickcarpet.logging.LoggerRegistry;
+import quickcarpet.utils.HUDController;
 
 public class QuickCarpet implements ModInitializer {
 
@@ -23,10 +24,10 @@ public class QuickCarpet implements ModInitializer {
 
     public static void tick(MinecraftServer server) {
         TickSpeed.tick(server);
+        HUDController.update_hud(server);
     }
     
-    public static void onGameStarted()
-    {
+    public static void onGameStarted() {
         LoggerRegistry.initLoggers();
     }
 

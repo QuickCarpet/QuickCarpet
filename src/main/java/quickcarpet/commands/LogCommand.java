@@ -173,7 +173,7 @@ public class LogCommand
             Messenger.m(source, "r Unknown logger: ","rb "+logName);
             return 0;
         }
-        boolean subscribed = LoggerRegistry.togglePlayerSubscription(player_name, logName);
+        boolean subscribed = LoggerRegistry.togglePlayerSubscription(player_name, logName, null);
         if (subscribed)
         {
             Messenger.m(source, "gi "+player_name+" subscribed to " + logName + ".");
@@ -197,7 +197,7 @@ public class LogCommand
             Messenger.m(source, "r Unknown logger: ","rb "+logname);
             return 0;
         }
-        LoggerRegistry.subscribePlayer(player_name, logname, option);
+        LoggerRegistry.subscribePlayer(player_name, logname, option, null);
         if (option!=null)
         {
             Messenger.m(source, "gi Subscribed to " + logname + "(" + option + ")");
