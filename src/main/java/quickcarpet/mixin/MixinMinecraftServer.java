@@ -115,7 +115,7 @@ public abstract class MixinMinecraftServer
             this.method_3748(this::shouldKeepTicking);
             this.profiler.swap("nextTickWait");
             this.field_19249 = true;
-            this.field_19248 = Math.max(SystemUtil.getMeasuringTimeMs() + 20L, this.timeReference);
+            this.field_19248 = Math.max(SystemUtil.getMeasuringTimeMs() + 50L, this.timeReference);
             this.method_16208();
             this.profiler.pop();
             this.profiler.endTick();
