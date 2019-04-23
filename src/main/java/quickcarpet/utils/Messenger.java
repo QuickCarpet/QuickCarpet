@@ -223,7 +223,7 @@ public class Messenger {
     }
     public static void m(PlayerEntity player, Object ... fields)
     {
-        player.appendCommandFeedback(Messenger.c(fields));
+        player.sendMessage(Messenger.c(fields));
     }
 
     /*
@@ -267,7 +267,7 @@ public class Messenger {
 
     public static void send(PlayerEntity player, Collection<TextComponent> lines)
     {
-        lines.forEach(player::appendCommandFeedback);
+        lines.forEach(player::sendMessage);
     }
     public static void send(ServerCommandSource source, Collection<TextComponent> lines)
     {
@@ -279,21 +279,21 @@ public class Messenger {
     {
         if (server == null)
             LOG.error("Message not delivered: "+message);
-        server.appendCommandFeedback(new StringTextComponent(message));
+        server.sendMessage(new StringTextComponent(message));
         TextComponent txt = c("gi "+message);
         for (PlayerEntity entityplayer : server.getPlayerManager().getPlayerList())
         {
-            entityplayer.appendCommandFeedback(txt);
+            entityplayer.sendMessage(txt);
         }
     }
     public static void print_server_message(MinecraftServer server, TextComponent message)
     {
         if (server == null)
             LOG.error("Message not delivered: "+message.getString());
-        server.appendCommandFeedback(message);
+        server.sendMessage(message);
         for (PlayerEntity entityplayer : server.getPlayerManager().getPlayerList())
         {
-            entityplayer.appendCommandFeedback(message);
+            entityplayer.sendMessage(message);
         }
     }
 }

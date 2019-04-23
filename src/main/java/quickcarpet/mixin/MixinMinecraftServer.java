@@ -39,15 +39,15 @@ public abstract class MixinMinecraftServer
     @Shadow
     private long field_4557;
     @Shadow
-    private boolean field_4597;
+    private boolean profilerStartQueued;
     @Shadow
     @Final
     private DisableableProfiler profiler;
     @Shadow
-    private volatile boolean field_4547;
+    private volatile boolean loading;
     
     @Shadow
-    protected abstract void method_3748(BooleanSupplier booleanSupplier_1);
+    protected abstract void tick(BooleanSupplier booleanSupplier_1);
     
     @Shadow
     protected abstract boolean shouldKeepTicking();
@@ -94,29 +94,29 @@ public abstract class MixinMinecraftServer
             }
         
             this.timeReference += TickSpeed.ms_per_tick;//50L;
-            if (this.field_4597)
+            if (this.profilerStartQueued)
             {
-                this.field_4597 = false;
+                this.profilerStartQueued = false;
                 this.profiler.getController().enable();
             }
         
             this.profiler.startTick();
             this.profiler.push("tick");
             TickSpeed.processWarp((MinecraftServer)(Object)this);
-            this.method_3748(this::shouldKeepTicking);
+            this.tick(this::shouldKeepTicking);
             this.profiler.swap("nextTickWait");
             this.field_19249 = true;
             this.field_19248 = Math.max(SystemUtil.getMeasuringTimeMs() + 50L, this.timeReference);
             this.method_16208();
             this.profiler.pop();
             this.profiler.endTick();
-            this.field_4547 = true;
+            this.loading = true;
         }
         
     }
 
     @Inject(
-        method = "Lnet/minecraft/server/MinecraftServer;method_3748(Ljava/util/function/BooleanSupplier;)V",
+        method = "Lnet/minecraft/server/MinecraftServer;tick(Ljava/util/function/BooleanSupplier;)V",
         at = @At(value = "FIELD", target = "net/minecraft/server/MinecraftServer.ticks:I", shift = At.Shift.AFTER, ordinal = 0)
     )
     private void onTick(BooleanSupplier booleanSupplier_1, CallbackInfo ci) {
