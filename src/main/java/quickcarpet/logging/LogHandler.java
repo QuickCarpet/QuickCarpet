@@ -20,7 +20,7 @@ public abstract class LogHandler
         @Override
         public void handle(ServerPlayerEntity player, TextComponent[] message, Object[] commandParams)
         {
-            Arrays.stream(message).forEach(m -> player.sendChatMessage(m, ChatMessageType.GAME_INFO));
+            Arrays.stream(message).forEach(m -> player.sendChatMessage(m, ChatMessageType.CHAT));
         }
     };
     public static final LogHandler HUD = new LogHandler()
