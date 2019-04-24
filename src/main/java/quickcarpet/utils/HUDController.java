@@ -76,8 +76,8 @@ public class HUDController
     private static void log_tps(MinecraftServer server)
     {
         double MSPT = MathHelper.average(server.lastTickLengths) * 1.0E-6D;
-        double TPS = 1000.0 / Math.max(TickSpeed.isWarping ? 0.0 : (1000.0 / TickSpeed.serverTPS), MSPT);
-        String color = Messenger.heatmap_color(MSPT, TickSpeed.mspt);
+        double TPS = 1000.0 / Math.max(TickSpeed.isWarping ? 0.0 : TickSpeed.ms_per_tick, MSPT);
+        String color = Messenger.heatmap_color(MSPT, TickSpeed.ms_per_tick);
         TextComponent[] message = new TextComponent[]{Messenger.c(
                 "g TPS: ", String.format(Locale.US, "%s %.1f",color, TPS),
                 "g  MSPT: ", String.format(Locale.US,"%s %.1f", color, MSPT))};
