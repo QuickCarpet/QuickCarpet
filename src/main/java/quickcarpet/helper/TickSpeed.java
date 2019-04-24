@@ -204,8 +204,6 @@ public class TickSpeed {
         if (ticks <= 0)
         {
             ticksToWarp = 0;
-            warpStartMs = 0;
-            isWarping = ticks == 0;
             return 1;
         }
         
