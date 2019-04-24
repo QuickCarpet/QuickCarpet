@@ -5,6 +5,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.TextComponent;
+import net.minecraft.text.TextFormat;
 import net.minecraft.text.TranslatableTextComponent;
 import quickcarpet.QuickCarpet;
 import quickcarpet.utils.Messenger;
@@ -230,7 +231,9 @@ public class TickSpeed {
                 long msDiff = System.currentTimeMillis() - warpStartMs;
                 float secs = msDiff / 1000F;
                 float mspt = msDiff / (float)warpedTicks;
-                server.getPlayerManager().sendToAll(new TranslatableTextComponent(String.format('[' + CYAN + "TPS" + RESET + "] Done in %s%.2f%ss (%s%.2f%smspt)", GREEN, secs, RESET, GREEN, mspt, RESET)));
+                int tps = (int) (1000 / mspt);
+                //server.getPlayerManager().sendToAll(new TranslatableTextComponent(String.format('[' + CYAN + "TPS" + RESET + "] Done in %s%.2f%ss (%s%.2f%smspt)", GREEN, secs, RESET, GREEN, mspt, RESET)));
+                server.getPlayerManager().sendToAll(new TranslatableTextComponent("... Time warp completed with " + TextFormat.AQUA + tps + " tps" + TextFormat.RESET + ", or " + TextFormat.GREEN + mspt + " mspt"));
                 updateTPS();
             }
         }
