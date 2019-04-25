@@ -1,4 +1,4 @@
-package quickcarpet.mixin;
+package quickcarpet.mixin.skyblock;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.chunk.ProtoChunk;

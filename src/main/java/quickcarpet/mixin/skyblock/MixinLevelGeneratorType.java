@@ -1,4 +1,4 @@
-package quickcarpet.mixin;
+package quickcarpet.mixin.skyblock;
 
 import net.minecraft.world.level.LevelGeneratorType;
 import org.spongepowered.asm.mixin.Mixin;
