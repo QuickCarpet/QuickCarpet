@@ -16,7 +16,10 @@
     "MixinExplosion",
     "IServerChunkManager",
     "IPlayerListHeaderS2CPacket",
-    "MixinClientConnection"
+    "MixinClientConnection",
+    "MixinLevelGeneratorType",
+    "MixinOverworldDimension",
+    "IProtoChunk"
   ],
   "client": [
     "MixinIntegratedServer",
