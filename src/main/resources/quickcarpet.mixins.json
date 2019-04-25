@@ -16,7 +16,13 @@
     "MixinExplosion",
     "IServerChunkManager",
     "IPlayerListHeaderS2CPacket",
-    "MixinClientConnection"
+    "MixinClientConnection",
+    "skyblock.MixinLevelGeneratorType",
+    "skyblock.MixinOverworldDimension",
+    "skyblock.MixinTheNetherDimension",
+    "skyblock.MixinTheEndDimension",
+    "skyblock.IProtoChunk",
+    "skyblock.IStructurePiece"
   ],
   "client": [
     "MixinIntegratedServer",

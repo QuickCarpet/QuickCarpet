@@ -20,7 +20,8 @@ dependencies {
 	modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
-	// modCompile "net.fabricmc:fabric:${project.fabric_version}"
+	// Currently only used for resource pack support for the translation of "generator.skyblock"
+	modCompile "net.fabricmc:fabric:${project.fabric_version}"
 
 	// fix crash
 	compile "org.lwjgl:lwjgl-jemalloc:3.2.1"
