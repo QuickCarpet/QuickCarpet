@@ -22,7 +22,8 @@
     "skyblock.MixinTheNetherDimension",
     "skyblock.MixinTheEndDimension",
     "skyblock.IProtoChunk",
-    "skyblock.IStructurePiece"
+    "skyblock.IStructurePiece",
+    "skyblock.MixinTradeOffers"
   ],
   "client": [
     "MixinIntegratedServer",
