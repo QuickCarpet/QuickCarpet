@@ -63,6 +63,7 @@ public class QuickCarpetSettings {
                 rule("commandLog",    "commands", "Enables /log command to monitor events in the game via chat and overlays").isACommand(),
                 rule("commandSpawn",  "commands", "Enables /spawn command for spawn tracking").isACommand(),
                 rule("explosionNoBlockDamage", "tnt", "Explosions won't destroy blocks"),
+                rule("silverFishDropGravel",  "experimental", "Silverfish drop a gravel item when breaking out of a block"),
         };
         for (CarpetSettingEntry rule : RuleList) {
             settings_store.put(rule.getName(), rule);

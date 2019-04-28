@@ -18,7 +18,8 @@
     "IServerChunkManager",
     "IPlayerListHeaderS2CPacket",
     "MixinClientConnection",
-    "MixinServerChunkManager"
+    "MixinServerChunkManager",
+    "MixinInfestedBlock"
   ],
   "client": [
     "MixinIntegratedServer",
