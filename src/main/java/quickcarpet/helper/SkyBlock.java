@@ -14,6 +14,7 @@ import net.minecraft.util.BlockRotation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.ChunkRegion;
+import net.minecraft.world.Heightmap;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biomes;
@@ -28,6 +29,7 @@ import net.minecraft.world.level.LevelGeneratorType;
 import quickcarpet.mixin.skyblock.IProtoChunk;
 import quickcarpet.mixin.skyblock.IStructurePiece;
 
+import java.util.EnumSet;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
@@ -66,6 +68,7 @@ public class SkyBlock {
             chunk.removeBlockEntity(bePos);
         }
         ((IProtoChunk) chunk).getLightSources().clear();
+        Heightmap.populateHeightmaps(chunk, EnumSet.allOf(Heightmap.Type.class));
         processStronghold(chunk, world);
     }
 
