@@ -19,7 +19,10 @@
     "IPlayerListHeaderS2CPacket",
     "MixinClientConnection",
     "MixinServerChunkManager",
-    "MixinInfestedBlock"
+    "MixinInfestedBlock",
+    "MixinSpawnRestriction",
+    "MixinEndCityFeature",
+    "MixinFloatingIslandsChunkGenerator"
   ],
   "client": [
     "MixinIntegratedServer",
