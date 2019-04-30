@@ -23,6 +23,7 @@ public class QuickCarpetSettings {
     public static boolean skipGenerationChecks = false;
     // Static store
     public static boolean b_hopperCounters = false;
+    public static boolean b_shulkerSpawningInEndCities = false;
 
     static {
         settings_store = new HashMap<>();
@@ -62,6 +63,7 @@ public class QuickCarpetSettings {
                 rule("commandSpawn",  "commands", "Enables /spawn command for spawn tracking").isACommand(),
                 rule("explosionNoBlockDamage", "tnt", "Explosions won't destroy blocks"),
                 rule("silverFishDropGravel",  "experimental", "Silverfish drop a gravel item when breaking out of a block"),
+                rule("shulkerSpawningInEndCities", "feature experimental", "Shulkers will respawn in end cities").boolAccelerate(),
         };
         for (CarpetSettingEntry rule : RuleList) {
             settings_store.put(rule.getName(), rule);

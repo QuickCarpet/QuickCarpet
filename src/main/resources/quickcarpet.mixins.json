@@ -24,7 +24,10 @@
     "skyblock.IProtoChunk",
     "skyblock.IStructurePiece",
     "skyblock.MixinTradeOffers",
-    "skyblock.MixinInfestedBlock"
+    "skyblock.MixinInfestedBlock",
+    "skyblock.MixinSpawnRestriction",
+    "skyblock.MixinEndCityFeature",
+    "skyblock.MixinFloatingIslandsChunkGenerator"
   ],
   "client": [
     "MixinIntegratedServer",
