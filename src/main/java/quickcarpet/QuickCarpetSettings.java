@@ -37,6 +37,8 @@ public class QuickCarpetSettings {
         CarpetSettingEntry[] RuleList = new CarpetSettingEntry[]{
                 rule("commandTick", "commands", "Enables /tick command to control game speed")
                         .isACommand(),
+                rule("commandPing", "commands", "Enables /ping for players to get their ping")
+                        .isACommand(),
                 rule("commandCarpetFill", "creative", "Enables /carpetfill command")
                         .extraInfo("This is an replica of /fill command for fillUpdates and fillLimits")
                         .isACommand(),
