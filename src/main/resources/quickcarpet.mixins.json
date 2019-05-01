@@ -8,6 +8,7 @@
     "MixinCommandManager",
     "MixinStructure",
     "MixinWorld",
+    "MixinServerWorld",
     "MixinHopperBlockEntity",
     "MixinServerPlayerEntity",
     "MixinPlayerManager",
@@ -16,7 +17,8 @@
     "MixinExplosion",
     "IServerChunkManager",
     "IPlayerListHeaderS2CPacket",
-    "MixinClientConnection"
+    "MixinClientConnection",
+    "MixinServerChunkManager"
   ],
   "client": [
     "MixinIntegratedServer",
