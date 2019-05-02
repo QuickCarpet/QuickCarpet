@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 
 public class QuickCarpetSettings {
 
-    public static final String carpetVersion = "v1.8.0+skyblock.5";
+    public static final String carpetVersion = "v1.8.0+skyblock.6";
     public static final Logger LOG = LogManager.getLogger();
     public static final CarpetSettingEntry FalseEntry = CarpetSettingEntry.create("void", "all", "Error").choices("None", "");
     public static final String[] default_tags = {"tnt", "fix", "survival", "creative", "experimental", "optimizations", "feature", "commands"}; //tab completion only
@@ -64,8 +64,8 @@ public class QuickCarpetSettings {
                 rule("commandLog",    "commands", "Enables /log command to monitor events in the game via chat and overlays").isACommand(),
                 rule("commandSpawn",  "commands", "Enables /spawn command for spawn tracking").isACommand(),
                 rule("explosionNoBlockDamage", "tnt", "Explosions won't destroy blocks"),
-                rule("silverFishDropGravel",  "experimental", "Silverfish drop a gravel item when breaking out of a block"),
-                rule("shulkerSpawningInEndCities", "feature experimental", "Shulkers will respawn in end cities").boolAccelerate(),
+                rule("silverFishDropGravel",  "experimental", "Silverfish drop a gravel item when breaking out of a block").defaultTrue(),
+                rule("shulkerSpawningInEndCities", "feature experimental", "Shulkers will respawn in end cities").defaultTrue().boolAccelerate(),
         };
         for (CarpetSettingEntry rule : RuleList) {
             settings_store.put(rule.getName(), rule);
