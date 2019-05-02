@@ -1,4 +1,4 @@
-package quickcarpet.mixin.skyblock;
+package quickcarpet.mixin;
 
 import net.minecraft.entity.EntityCategory;
 import net.minecraft.util.math.BlockPos;

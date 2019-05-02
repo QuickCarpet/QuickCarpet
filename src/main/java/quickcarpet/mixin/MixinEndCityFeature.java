@@ -1,4 +1,4 @@
-package quickcarpet.mixin.skyblock;
+package quickcarpet.mixin;
 
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.Dynamic;

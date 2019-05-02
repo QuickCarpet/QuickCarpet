@@ -1,4 +1,4 @@
-package quickcarpet.mixin.skyblock;
+package quickcarpet.mixin;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

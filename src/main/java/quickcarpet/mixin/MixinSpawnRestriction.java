@@ -1,4 +1,4 @@
-package quickcarpet.mixin.skyblock;
+package quickcarpet.mixin;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnRestriction;
@@ -14,8 +14,7 @@ public abstract class MixinSpawnRestriction
     {
     }
     
-    static
-    {
+    static {
         register(EntityType.SHULKER, SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES);
     }
 }

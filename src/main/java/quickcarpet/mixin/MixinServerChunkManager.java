@@ -1,26 +1,17 @@
 package quickcarpet.mixin;
 
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.ObjectBidirectionalIterator;
-import net.minecraft.entity.EntityCategory;
-import net.minecraft.server.world.ChunkHolder;
 import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.chunk.WorldChunk;
-import net.minecraft.world.level.LevelProperties;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-import quickcarpet.helper.TickSpeed;
+import quickcarpet.utils.CarpetProfiler;
 
-//@Mixin(ServerChunkManager.class)
+@Mixin(ServerChunkManager.class)
 public abstract class MixinServerChunkManager {
 
     /*
@@ -45,4 +36,23 @@ public abstract class MixinServerChunkManager {
         }
     }
     */
+
+    @Shadow @Final private ServerWorld world;
+
+    @Inject(
+        method = "tickChunks",
+        at = @At(value = "CONSTANT", args = "stringValue=spawner")
+    )
+    private void startSpawning(CallbackInfo ci) {
+        CarpetProfiler.startSection(this.world, CarpetProfiler.SectionType.SPAWNING);
+    }
+
+    @Inject(
+        method = "tickChunks",
+        slice = @Slice(from = @At(value = "CONSTANT", args = "stringValue=spawner")),
+        at = @At(value = "INVOKE", target="Lnet/minecraft/util/profiler/Profiler;pop()V", ordinal = 0)
+    )
+    private void endSpawning(CallbackInfo ci) {
+        CarpetProfiler.endSection(this.world);
+    }
 }

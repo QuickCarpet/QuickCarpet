@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 
 public class QuickCarpetSettings {
 
-    public static final String carpetVersion = "v1.7.1-Skyblock.5";
+    public static final String carpetVersion = "v1.8.0+skyblock.5";
     public static final Logger LOG = LogManager.getLogger();
     public static final CarpetSettingEntry FalseEntry = CarpetSettingEntry.create("void", "all", "Error").choices("None", "");
     public static final String[] default_tags = {"tnt", "fix", "survival", "creative", "experimental", "optimizations", "feature", "commands"}; //tab completion only
@@ -37,6 +37,8 @@ public class QuickCarpetSettings {
     private static void set_defaults() {
         CarpetSettingEntry[] RuleList = new CarpetSettingEntry[]{
                 rule("commandTick", "commands", "Enables /tick command to control game speed")
+                        .isACommand(),
+                rule("commandPing", "commands", "Enables /ping for players to get their ping")
                         .isACommand(),
                 rule("commandCarpetFill", "creative", "Enables /carpetfill command")
                         .extraInfo("This is an replica of /fill command for fillUpdates and fillLimits")
