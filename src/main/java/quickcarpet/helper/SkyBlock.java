@@ -11,6 +11,7 @@ import net.minecraft.structure.StructurePiece;
 import net.minecraft.structure.StructureStart;
 import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
+import net.minecraft.util.PackedIntegerArray;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.ChunkRegion;
@@ -30,6 +31,7 @@ import quickcarpet.mixin.skyblock.IProtoChunk;
 import quickcarpet.mixin.skyblock.IStructurePiece;
 
 import java.util.EnumSet;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
@@ -68,8 +70,12 @@ public class SkyBlock {
             chunk.removeBlockEntity(bePos);
         }
         ((IProtoChunk) chunk).getLightSources().clear();
-        Heightmap.populateHeightmaps(chunk, EnumSet.allOf(Heightmap.Type.class));
+        long[] emptyHeightmap = new PackedIntegerArray(9, 256).getStorage();
+        for (Map.Entry<Heightmap.Type, Heightmap> heightmapEntry : chunk.getHeightmaps()) {
+            heightmapEntry.getValue().setTo(emptyHeightmap);
+        }
         processStronghold(chunk, world);
+        Heightmap.populateHeightmaps(chunk, EnumSet.allOf(Heightmap.Type.class));
     }
 
     private static void processStronghold(ProtoChunk chunk, IWorld world) {
