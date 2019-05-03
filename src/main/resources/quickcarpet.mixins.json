@@ -31,5 +31,6 @@
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "refmap": "quickcarpet-refmap.json"
 }
