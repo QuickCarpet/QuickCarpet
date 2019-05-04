@@ -28,7 +28,10 @@
     "MixinPistonBlock",
     "MixinPlayerEntity",
     "MixinDispenserBehaviorFireCharge",
-    "MixinSpawnHelper"
+    "MixinSpawnHelper",
+    "MixinFloatingIslandsChunkGenerator",
+    "ICustomPayloadC2SPacket",
+    "MixinServerPlayNetworkHandler"
   ],
   "client": [
     "MixinIntegratedServer",
