@@ -22,7 +22,8 @@
     "MixinInfestedBlock",
     "MixinSpawnRestriction",
     "MixinEndCityFeature",
-    "MixinFloatingIslandsChunkGenerator"
+    "MixinFloatingIslandsChunkGenerator",
+    "MixinPlayerEntity"
   ],
   "client": [
     "MixinIntegratedServer",
