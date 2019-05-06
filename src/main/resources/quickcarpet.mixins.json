@@ -23,6 +23,9 @@
     "MixinSpawnRestriction",
     "MixinEndCityFeature",
     "MixinFloatingIslandsChunkGenerator",
+    "ICraftingInventory",
+    "MixinCraftingTableBlock",
+    "MixinPistonBlock",
     "MixinPlayerEntity",
     "MixinDispenserBehaviorFireCharge"
   ],
