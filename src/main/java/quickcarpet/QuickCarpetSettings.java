@@ -70,6 +70,8 @@ public class QuickCarpetSettings {
                         .extraInfo("Holding obsidian in either hand won't let you through at all"),
                 rule("fireChargeConvertsToNetherrack", "feature experimental", "Fire charges from dispensers convert cobblestone to netherrack"),
                 rule("autoCraftingTable", "feature experimental", "Automatic crafting table"),
+                rule("commandCameramode",     "commands", "Enables /c and /s commands to quickly switch between camera and survival modes").isACommand()
+                        .extraInfo("/c and /s commands are available to all players regardless of their permission levels"),
         };
         for (CarpetSettingEntry rule : RuleList) {
             settings_store.put(rule.getName(), rule);
