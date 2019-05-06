@@ -67,7 +67,8 @@ public class QuickCarpetSettings {
                 rule("silverFishDropGravel",  "experimental", "Silverfish drop a gravel item when breaking out of a block"),
                 rule("shulkerSpawningInEndCities", "feature experimental", "Shulkers will respawn in end cities").boolAccelerate(),
                 rule("portalCreativeDelay", "creative", "Portals won't let a creative player go through instantly")
-                        .extraInfo("Holding obsidian in either hand won't let you through at all")
+                        .extraInfo("Holding obsidian in either hand won't let you through at all"),
+                rule("fireChargeConvertsToNetherrack", "feature experimental", "Fire charges from dispensers convert cobblestone to netherrack"),
         };
         for (CarpetSettingEntry rule : RuleList) {
             settings_store.put(rule.getName(), rule);
