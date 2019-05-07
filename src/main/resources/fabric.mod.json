@@ -2,20 +2,18 @@
   "schemaVersion": 1,
   "id": "quickcarpet",
   "version": "${version}",
-
   "name": "QuickCarpet",
   "description": "Powerful toolbox with ultimate control for technical mc!",
   "authors": [
-    "DeadlyMC"
+    "DeadlyMC",
+    "skyrising"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "homepage": "https://discord.gg/scicraft",
+    "sources": "https://github.com/DeadlyMC/QuickCarpet114",
+    "issues": "https://github.com/DeadlyMC/QuickCarpet114/issues"
   },
-
   "license": "CC0-1.0",
-  "icon": "assets/modid/icon.png",
-
   "environment": "*",
   "entrypoints": {
     "main": [
@@ -25,12 +23,10 @@
   "mixins": [
     "quickcarpet.mixins.json"
   ],
-
   "requires": {
     "fabricloader": ">=0.4.0"
   },
   "suggests": {
-    "fabric": "*",
-    "flamingo": "*"
+    "fabric": "*"
   }
 }

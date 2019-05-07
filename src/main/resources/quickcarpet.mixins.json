@@ -23,6 +23,11 @@
     "MixinSpawnRestriction",
     "MixinEndCityFeature",
     "MixinFloatingIslandsChunkGenerator",
+    "ICraftingInventory",
+    "MixinCraftingTableBlock",
+    "MixinPistonBlock",
+    "MixinPlayerEntity",
+    "MixinDispenserBehaviorFireCharge",
     "skyblock.MixinLevelGeneratorType",
     "skyblock.MixinOverworldDimension",
     "skyblock.MixinTheNetherDimension",
@@ -38,5 +43,6 @@
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "refmap": "quickcarpet-refmap.json"
 }
