@@ -7,9 +7,9 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.pattern.CachedBlockPosition;
+import net.minecraft.command.arguments.BlockPosArgumentType;
 import net.minecraft.command.arguments.BlockStateArgument;
 import net.minecraft.command.arguments.BlockStateArgumentType;
-import net.minecraft.command.arguments.BlockPosArgumentType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
@@ -17,7 +17,7 @@ import net.minecraft.text.TranslatableTextComponent;
 import net.minecraft.util.Clearable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableIntBoundingBox;
-import quickcarpet.QuickCarpetSettings;
+import quickcarpet.settings.Settings;
 
 import java.util.function.Predicate;
 
@@ -26,7 +26,7 @@ public class CarpetSetBlockCommand {
 
     public static void register(CommandDispatcher<ServerCommandSource> commandDispatcher_1) {
         commandDispatcher_1.register((LiteralArgumentBuilder)((LiteralArgumentBuilder) CommandManager.literal("carpetsetblock").requires((player) ->
-                QuickCarpetSettings.getBool("")
+                Settings.commandCarpetSetBlock
         )).then(CommandManager.argument("pos", BlockPosArgumentType.create()).then(((RequiredArgumentBuilder)((RequiredArgumentBuilder)((RequiredArgumentBuilder)CommandManager.argument("block", BlockStateArgumentType.create()).executes((commandContext_1) -> {
             return method_13620((ServerCommandSource)commandContext_1.getSource(), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "pos"), BlockStateArgumentType.getBlockState(commandContext_1, "block"), CarpetSetBlockCommand.class_3121.REPLACE, (Predicate)null);
         })).then(CommandManager.literal("destroy").executes((commandContext_1) -> {
@@ -55,10 +55,10 @@ public class CarpetSetBlockCommand {
                 boolean_2 = true;
             }
 
-            if (boolean_2 && !blockArgument_1.setBlockState(serverWorld_1, blockPos_1, 2 | (QuickCarpetSettings.getBool("fillUpdates")?0:128))) {
+            if (boolean_2 && !blockArgument_1.setBlockState(serverWorld_1, blockPos_1, 2 | (Settings.fillUpdates ? 0 : 128))) {
                 throw FAILED_EXCEPTION.create();
             } else {
-                if (QuickCarpetSettings.getBool("fillUpdates"))
+                if (Settings.fillUpdates)
                 {
                     serverWorld_1.updateNeighbors(blockPos_1, blockArgument_1.getBlockState().getBlock());
                 }

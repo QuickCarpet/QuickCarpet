@@ -10,7 +10,7 @@ import net.minecraft.world.gen.chunk.FloatingIslandsChunkGeneratorConfig;
 import net.minecraft.world.gen.chunk.SurfaceChunkGenerator;
 import net.minecraft.world.gen.feature.Feature;
 import org.spongepowered.asm.mixin.Mixin;
-import quickcarpet.QuickCarpetSettings;
+import quickcarpet.settings.Settings;
 
 import java.util.List;
 
@@ -25,7 +25,7 @@ public abstract class MixinFloatingIslandsChunkGenerator extends SurfaceChunkGen
     @Override
     public List<Biome.SpawnEntry> getEntitySpawnList(EntityCategory entityCategory_1, BlockPos blockPos_1)
     {
-        if (QuickCarpetSettings.b_shulkerSpawningInEndCities && EntityCategory.MONSTER == entityCategory_1)
+        if (Settings.shulkerSpawningInEndCities && EntityCategory.MONSTER == entityCategory_1)
         {
             if (Feature.END_CITY.isInsideStructure(this.world, blockPos_1))
             {

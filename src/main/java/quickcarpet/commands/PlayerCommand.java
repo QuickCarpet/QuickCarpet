@@ -17,8 +17,8 @@ import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.dimension.DimensionType;
-import quickcarpet.QuickCarpetSettings;
 import quickcarpet.patches.ServerPlayerEntityFake;
+import quickcarpet.settings.Settings;
 import quickcarpet.utils.Messenger;
 
 import java.util.Arrays;
@@ -35,7 +35,7 @@ public class PlayerCommand
 public static void register(CommandDispatcher<ServerCommandSource> dispatcher)
     {
         LiteralArgumentBuilder<ServerCommandSource> literalargumentbuilder = literal("player").
-                requires((player) -> QuickCarpetSettings.getBool("commandPlayer")).
+                requires((player) -> Settings.commandPlayer).
                 then(argument("player", word()).
                         suggests( (c, b) -> CommandSource.suggestMatching(getPlayers(c.getSource()), b)).
                         /*

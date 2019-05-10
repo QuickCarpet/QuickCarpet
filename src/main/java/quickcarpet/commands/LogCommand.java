@@ -7,9 +7,9 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
-import quickcarpet.QuickCarpetSettings;
 import quickcarpet.logging.Logger;
 import quickcarpet.logging.LoggerRegistry;
+import quickcarpet.settings.Settings;
 import quickcarpet.utils.Messenger;
 
 import java.util.*;
@@ -23,7 +23,7 @@ public class LogCommand
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher)
     {
         LiteralArgumentBuilder<ServerCommandSource> literalargumentbuilder = literal("log").
-                requires((player) -> QuickCarpetSettings.getBool("commandLog")).
+                requires((player) -> Settings.commandLog).
                 executes((context) -> listLogs(context.getSource())).
                 then(literal("clear").
                         executes( (c) -> unsubFromAll(c.getSource(), c.getSource().getName())).

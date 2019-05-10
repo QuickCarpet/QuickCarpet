@@ -7,8 +7,8 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.TextComponent;
 import net.minecraft.util.DyeColor;
-import quickcarpet.QuickCarpetSettings;
 import quickcarpet.helper.HopperCounter;
+import quickcarpet.settings.Settings;
 import quickcarpet.utils.Messenger;
 
 public class CounterCommand {
@@ -17,7 +17,7 @@ public class CounterCommand {
     {
         LiteralArgumentBuilder<ServerCommandSource> literalargumentbuilder = CommandManager.literal("counter").executes((context)
                 -> listAllCounters(context.getSource(), false)).requires((player) ->
-                QuickCarpetSettings.getBool("hopperCounters"));
+                Settings.hopperCounters);
 
         literalargumentbuilder.
                 then((CommandManager.literal("reset").executes( (p_198489_1_)->

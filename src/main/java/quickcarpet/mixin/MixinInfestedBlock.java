@@ -11,7 +11,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import quickcarpet.QuickCarpetSettings;
+
+import static quickcarpet.settings.Settings.silverFishDropGravel;
 
 @Mixin(InfestedBlock.class)
 public abstract class MixinInfestedBlock extends Block
@@ -26,7 +27,7 @@ public abstract class MixinInfestedBlock extends Block
     private void onOnStacksDropped(BlockState blockState_1, World world_1, BlockPos blockPos_1,
             ItemStack itemStack_1, CallbackInfo ci)
     {
-        if (QuickCarpetSettings.getBool("silverFishDropGravel"))
+        if (silverFishDropGravel)
         {
             dropStack(world_1, blockPos_1, new ItemStack(Blocks.GRAVEL));
         }

@@ -5,8 +5,8 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.server.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
-import quickcarpet.QuickCarpetSettings;
 import quickcarpet.helper.TickSpeed;
+import quickcarpet.settings.Settings;
 import quickcarpet.utils.CarpetProfiler;
 
 import static com.mojang.brigadier.arguments.FloatArgumentType.floatArg;
@@ -20,7 +20,7 @@ public class TickCommand {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         LiteralArgumentBuilder<ServerCommandSource> literalargumentbuilder = literal("tick").
-                requires((player) -> QuickCarpetSettings.getBool("commandTick")).
+                requires((player) -> Settings.commandTick).
                 then(literal("rate").
                         executes((c) -> TickSpeed.sendUsage(c.getSource())).
                         then(argument("rate", floatArg(0.1F, 500.0F)).
