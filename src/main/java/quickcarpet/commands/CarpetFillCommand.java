@@ -15,11 +15,11 @@ import net.minecraft.command.arguments.BlockPosArgumentType;
 import net.minecraft.command.arguments.BlockPredicateArgumentType;
 import net.minecraft.command.arguments.BlockStateArgument;
 import net.minecraft.command.arguments.BlockStateArgumentType;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.command.SetBlockCommand;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.TranslatableTextComponent;
 import net.minecraft.util.Clearable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableIntBoundingBox;
@@ -32,13 +32,13 @@ import java.util.function.Predicate;
 
 public class CarpetFillCommand {
 
-    private static final Dynamic2CommandExceptionType TOOBIG_EXCEPTION = new Dynamic2CommandExceptionType((object_1, object_2) -> new TranslatableTextComponent("commands.fill.toobig", object_1, object_2));
+    private static final Dynamic2CommandExceptionType TOOBIG_EXCEPTION = new Dynamic2CommandExceptionType((object_1, object_2) -> new TranslatableComponent("commands.fill.toobig", object_1, object_2));
     private static final BlockStateArgument field_13648;
     private static final SimpleCommandExceptionType FAILED_EXCEPTION;
 
     static {
         field_13648 = new BlockStateArgument(Blocks.AIR.getDefaultState(), Collections.emptySet(), null);
-        FAILED_EXCEPTION = new SimpleCommandExceptionType(new TranslatableTextComponent("commands.fill.failed"));
+        FAILED_EXCEPTION = new SimpleCommandExceptionType(new TranslatableComponent("commands.fill.failed"));
     }
 
     public static void register(CommandDispatcher<ServerCommandSource> commandDispatcher_1) {
@@ -93,7 +93,7 @@ public class CarpetFillCommand {
                             throw FAILED_EXCEPTION.create();
                         }
 
-                        serverCommandSource_1.sendFeedback(new TranslatableTextComponent("commands.fill.success", int_2), true);
+                        serverCommandSource_1.sendFeedback(new TranslatableComponent("commands.fill.success", int_2), true);
                         return int_2;
                     }
 

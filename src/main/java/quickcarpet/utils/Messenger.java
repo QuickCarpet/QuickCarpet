@@ -1,14 +1,14 @@
 package quickcarpet.utils;
 
+import net.minecraft.ChatFormat;
 import net.minecraft.entity.EntityCategory;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.chat.ClickEvent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.StringTextComponent;
-import net.minecraft.text.TextComponent;
-import net.minecraft.text.TextFormat;
-import net.minecraft.text.event.ClickEvent;
-import net.minecraft.text.event.HoverEvent;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.apache.logging.log4j.LogManager;
@@ -52,7 +52,7 @@ public class Messenger {
      / = action added to the previous component
      */
 
-    private static TextComponent _applyStyleToTextComponent(TextComponent comp, String style)
+    private static Component _applyStyleToTextComponent(Component comp, String style)
     {
         //could be rewritten to be more efficient
         comp.getStyle().setItalic(style.indexOf('i')>=0);
@@ -60,23 +60,23 @@ public class Messenger {
         comp.getStyle().setUnderline(style.indexOf('u')>=0);
         comp.getStyle().setBold(style.indexOf('b')>=0);
         comp.getStyle().setObfuscated(style.indexOf('o')>=0);
-        comp.getStyle().setColor(TextFormat.WHITE);
-        if (style.indexOf('w')>=0) comp.getStyle().setColor(TextFormat.WHITE); // not needed
-        if (style.indexOf('y')>=0) comp.getStyle().setColor(TextFormat.YELLOW);
-        if (style.indexOf('m')>=0) comp.getStyle().setColor(TextFormat.LIGHT_PURPLE);
-        if (style.indexOf('r')>=0) comp.getStyle().setColor(TextFormat.RED);
-        if (style.indexOf('c')>=0) comp.getStyle().setColor(TextFormat.AQUA);
-        if (style.indexOf('l')>=0) comp.getStyle().setColor(TextFormat.GREEN);
-        if (style.indexOf('t')>=0) comp.getStyle().setColor(TextFormat.BLUE);
-        if (style.indexOf('f')>=0) comp.getStyle().setColor(TextFormat.DARK_GRAY);
-        if (style.indexOf('g')>=0) comp.getStyle().setColor(TextFormat.GRAY);
-        if (style.indexOf('d')>=0) comp.getStyle().setColor(TextFormat.GOLD);
-        if (style.indexOf('p')>=0) comp.getStyle().setColor(TextFormat.DARK_PURPLE);
-        if (style.indexOf('n')>=0) comp.getStyle().setColor(TextFormat.DARK_RED);
-        if (style.indexOf('q')>=0) comp.getStyle().setColor(TextFormat.DARK_AQUA);
-        if (style.indexOf('e')>=0) comp.getStyle().setColor(TextFormat.DARK_GREEN);
-        if (style.indexOf('v')>=0) comp.getStyle().setColor(TextFormat.DARK_BLUE);
-        if (style.indexOf('k')>=0) comp.getStyle().setColor(TextFormat.BLACK);
+        comp.getStyle().setColor(ChatFormat.WHITE);
+        if (style.indexOf('w')>=0) comp.getStyle().setColor(ChatFormat.WHITE); // not needed
+        if (style.indexOf('y')>=0) comp.getStyle().setColor(ChatFormat.YELLOW);
+        if (style.indexOf('m')>=0) comp.getStyle().setColor(ChatFormat.LIGHT_PURPLE);
+        if (style.indexOf('r')>=0) comp.getStyle().setColor(ChatFormat.RED);
+        if (style.indexOf('c')>=0) comp.getStyle().setColor(ChatFormat.AQUA);
+        if (style.indexOf('l')>=0) comp.getStyle().setColor(ChatFormat.GREEN);
+        if (style.indexOf('t')>=0) comp.getStyle().setColor(ChatFormat.BLUE);
+        if (style.indexOf('f')>=0) comp.getStyle().setColor(ChatFormat.DARK_GRAY);
+        if (style.indexOf('g')>=0) comp.getStyle().setColor(ChatFormat.GRAY);
+        if (style.indexOf('d')>=0) comp.getStyle().setColor(ChatFormat.GOLD);
+        if (style.indexOf('p')>=0) comp.getStyle().setColor(ChatFormat.DARK_PURPLE);
+        if (style.indexOf('n')>=0) comp.getStyle().setColor(ChatFormat.DARK_RED);
+        if (style.indexOf('q')>=0) comp.getStyle().setColor(ChatFormat.DARK_AQUA);
+        if (style.indexOf('e')>=0) comp.getStyle().setColor(ChatFormat.DARK_GREEN);
+        if (style.indexOf('v')>=0) comp.getStyle().setColor(ChatFormat.DARK_BLUE);
+        if (style.indexOf('k')>=0) comp.getStyle().setColor(ChatFormat.BLACK);
         return comp;
     }
     public static String heatmap_color(double actual, double reference)
@@ -103,11 +103,11 @@ public class Messenger {
         return "w";
     }
 
-    private static TextComponent _getChatComponentFromDesc(String message, TextComponent previous_message)
+    private static Component _getChatComponentFromDesc(String message, Component previous_message)
     {
         if (message.equalsIgnoreCase(""))
         {
-            return new StringTextComponent("");
+            return new TextComponent("");
         }
         String parts[] = message.split("\\s", 2);
         String desc = parts[0];
@@ -137,27 +137,27 @@ public class Messenger {
                 previous_message.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, c(message.substring(1))));
             return previous_message;
         }
-        TextComponent txt = new StringTextComponent(str);
+        Component txt = new TextComponent(str);
         return _applyStyleToTextComponent(txt, desc);
     }
-    public static TextComponent tp(String desc, Vec3d pos) { return tp(desc, pos.x, pos.y, pos.z); }
-    public static TextComponent tp(String desc, BlockPos pos) { return tp(desc, pos.getX(), pos.getY(), pos.getZ()); }
-    public static TextComponent tp(String desc, double x, double y, double z) { return tp(desc, (float)x, (float)y, (float)z);}
-    public static TextComponent tp(String desc, float x, float y, float z)
+    public static Component tp(String desc, Vec3d pos) { return tp(desc, pos.x, pos.y, pos.z); }
+    public static Component tp(String desc, BlockPos pos) { return tp(desc, pos.getX(), pos.getY(), pos.getZ()); }
+    public static Component tp(String desc, double x, double y, double z) { return tp(desc, (float)x, (float)y, (float)z);}
+    public static Component tp(String desc, float x, float y, float z)
     {
         return _getCoordsTextComponent(desc, x, y, z, false);
     }
-    public static TextComponent tp(String desc, int x, int y, int z)
+    public static Component tp(String desc, int x, int y, int z)
     {
         return _getCoordsTextComponent(desc, (float)x, (float)y, (float)z, true);
     }
 
     /// to be continued
-    public static TextComponent dbl(String style, double double_value)
+    public static Component dbl(String style, double double_value)
     {
         return c(String.format("%s %.1f",style,double_value),String.format("^w %f",double_value));
     }
-    public static TextComponent dbls(String style, double ... doubles)
+    public static Component dbls(String style, double ... doubles)
     {
         StringBuilder str = new StringBuilder(style + " [ ");
         String prefix = "";
@@ -169,7 +169,7 @@ public class Messenger {
         str.append(" ]");
         return c(str.toString());
     }
-    public static TextComponent dblf(String style, double ... doubles)
+    public static Component dblf(String style, double ... doubles)
     {
         StringBuilder str = new StringBuilder(style + " [ ");
         String prefix = "";
@@ -181,7 +181,7 @@ public class Messenger {
         str.append(" ]");
         return c(str.toString());
     }
-    public static TextComponent dblt(String style, double ... doubles)
+    public static Component dblt(String style, double ... doubles)
     {
         List<Object> components = new ArrayList<>();
         components.add(style+" [ ");
@@ -199,7 +199,7 @@ public class Messenger {
         return c(components.toArray(new Object[0]));
     }
 
-    private static TextComponent _getCoordsTextComponent(String style, float x, float y, float z, boolean isInt)
+    private static Component _getCoordsTextComponent(String style, float x, float y, float z, boolean isInt)
     {
         String text;
         String command;
@@ -229,20 +229,20 @@ public class Messenger {
     /*
     composes single line, multicomponent message, and returns as one chat messagge
      */
-    public static TextComponent c(Object ... fields)
+    public static Component c(Object ... fields)
     {
-        TextComponent message = new StringTextComponent("");
-        TextComponent previous_component = null;
+        Component message = new TextComponent("");
+        Component previous_component = null;
         for (Object o: fields)
         {
-            if (o instanceof TextComponent)
+            if (o instanceof Component)
             {
-                message.append((TextComponent)o);
-                previous_component = (TextComponent)o;
+                message.append((Component)o);
+                previous_component = (Component)o;
                 continue;
             }
             String txt = o.toString();
-            TextComponent comp = _getChatComponentFromDesc(txt,previous_component);
+            Component comp = _getChatComponentFromDesc(txt,previous_component);
             if (comp != previous_component) message.append(comp);
             previous_component = comp;
         }
@@ -251,13 +251,13 @@ public class Messenger {
 
     //simple text
 
-    public static TextComponent s(@Nonnull String text)
+    public static Component s(@Nonnull String text)
     {
         return s(text,"");
     }
-    public static TextComponent s(@Nonnull String text, @Nonnull String style)
+    public static Component s(@Nonnull String text, @Nonnull String style)
     {
-        TextComponent message = new StringTextComponent(text);
+        Component message = new TextComponent(text);
         _applyStyleToTextComponent(message, style);
         return message;
     }
@@ -265,11 +265,11 @@ public class Messenger {
 
 
 
-    public static void send(PlayerEntity player, Collection<TextComponent> lines)
+    public static void send(PlayerEntity player, Collection<Component> lines)
     {
         lines.forEach(player::sendMessage);
     }
-    public static void send(ServerCommandSource source, Collection<TextComponent> lines)
+    public static void send(ServerCommandSource source, Collection<Component> lines)
     {
         lines.stream().forEachOrdered((s) -> source.sendFeedback(s, false));
     }
@@ -279,14 +279,14 @@ public class Messenger {
     {
         if (server == null)
             LOG.error("Message not delivered: "+message);
-        server.sendMessage(new StringTextComponent(message));
-        TextComponent txt = c("gi "+message);
+        server.sendMessage(new TextComponent(message));
+        Component txt = c("gi "+message);
         for (PlayerEntity entityplayer : server.getPlayerManager().getPlayerList())
         {
             entityplayer.sendMessage(txt);
         }
     }
-    public static void print_server_message(MinecraftServer server, TextComponent message)
+    public static void print_server_message(MinecraftServer server, Component message)
     {
         if (server == null)
             LOG.error("Message not delivered: "+message.getString());

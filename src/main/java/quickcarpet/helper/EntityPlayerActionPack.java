@@ -147,7 +147,7 @@ public class EntityPlayerActionPack
             this.isHittingBlock = false;
             this.curBlockDamageMP = 0.0F;
             player.getEntityWorld().setBlockBreakingProgress(player.getEntityId(), this.currentBlock, -1);
-            player.method_7350();
+            player.resetLastAttackedTicks();
             blockHitDelay = 0;
             this.currentBlock = new BlockPos(-1,-1,-1);
         }

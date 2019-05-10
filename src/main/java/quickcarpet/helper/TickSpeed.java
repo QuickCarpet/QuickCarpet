@@ -1,12 +1,12 @@
 package quickcarpet.helper;
 
+import net.minecraft.ChatFormat;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.TextComponent;
-import net.minecraft.text.TextFormat;
-import net.minecraft.text.TranslatableTextComponent;
 import quickcarpet.QuickCarpet;
 import quickcarpet.utils.Messenger;
 
@@ -50,7 +50,7 @@ public class TickSpeed {
         }
     }
 
-    public static TextComponent tickrate_advance(PlayerEntity player, int advance, String callback, ServerCommandSource source)
+    public static Component tickrate_advance(PlayerEntity player, int advance, String callback, ServerCommandSource source)
     {
         if (0 == advance)
         {
@@ -195,7 +195,7 @@ public class TickSpeed {
     
     public static int send(ServerCommandSource source, String s)
     {
-        source.sendFeedback(new TranslatableTextComponent("" + s), true);
+        source.sendFeedback(new TranslatableComponent("" + s), true);
         return 1;
     }
     
@@ -230,8 +230,8 @@ public class TickSpeed {
                 float secs = msDiff / 1000F;
                 float mspt = msDiff / (float)warpedTicks;
                 int tps = (int) (1000 / mspt);
-                //server.getPlayerManager().sendToAll(new TranslatableTextComponent(String.format('[' + CYAN + "TPS" + RESET + "] Done in %s%.2f%ss (%s%.2f%smspt)", GREEN, secs, RESET, GREEN, mspt, RESET)));
-                server.getPlayerManager().sendToAll(new TranslatableTextComponent("... Time warp completed with " + TextFormat.AQUA + tps + " tps" + TextFormat.RESET + ", or " + TextFormat.GREEN + mspt + " mspt"));
+                //server.getPlayerManager().sendToAll(new TranslatableComponent(String.format('[' + CYAN + "TPS" + RESET + "] Done in %s%.2f%ss (%s%.2f%smspt)", GREEN, secs, RESET, GREEN, mspt, RESET)));
+                server.getPlayerManager().sendToAll(new TranslatableComponent("... Time warp completed with " + ChatFormat.AQUA + tps + " tps" + ChatFormat.RESET + ", or " + ChatFormat.GREEN + mspt + " mspt"));
                 updateTPS();
             }
         }
