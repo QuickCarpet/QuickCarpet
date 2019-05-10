@@ -2,7 +2,7 @@ package quickcarpet.logging;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DyeColor;
-import quickcarpet.QuickCarpetSettings;
+import org.apache.logging.log4j.LogManager;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -12,6 +12,7 @@ import java.util.Set;
 
 public class LoggerRegistry
 {
+    private static org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger();
     // Map from logger names to loggers.
     private static Map<String, Logger> loggerRegistry = new HashMap<>();
     // Map from player names to the set of names of the logs that player is subscribed to.
@@ -121,11 +122,11 @@ public class LoggerRegistry
         }
         catch (IllegalAccessException e)
         {
-            QuickCarpetSettings.LOG.error("Cannot change logger quick access field");
+            LOGGER.error("Cannot change logger quick access field");
         }
         catch (NoSuchFieldException e)
         {
-            QuickCarpetSettings.LOG.error("Wrong logger name");
+            LOGGER.error("Wrong logger name");
         }
     }
     /**

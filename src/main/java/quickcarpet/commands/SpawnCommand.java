@@ -9,8 +9,8 @@ import net.minecraft.text.TextComponent;
 import net.minecraft.util.Pair;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.dimension.DimensionType;
-import quickcarpet.QuickCarpetSettings;
 import quickcarpet.helper.Mobcaps;
+import quickcarpet.settings.Settings;
 import quickcarpet.utils.Messenger;
 
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ import static net.minecraft.server.command.CommandManager.literal;
 public class SpawnCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         LiteralArgumentBuilder<ServerCommandSource> builder = literal("spawn").
-                requires((player) -> QuickCarpetSettings.getBool("commandSpawn")).
+                requires((player) -> Settings.commandSpawn).
                 then(literal("mobcaps").
                     executes(c -> sendMobcaps(c.getSource(), null)).
                     then(argument("dimension", DimensionArgumentType.create()).

@@ -12,9 +12,9 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import quickcarpet.QuickCarpetSettings;
 import quickcarpet.helper.HopperCounter;
 import quickcarpet.helper.WoolTool;
+import quickcarpet.settings.Settings;
 
 @Mixin(HopperBlockEntity.class)
 public abstract class MixinHopperBlockEntity extends LootableContainerBlockEntity {
@@ -41,7 +41,7 @@ public abstract class MixinHopperBlockEntity extends LootableContainerBlockEntit
     @Inject(method = "insert", at = @At("HEAD"), cancellable = true)
     private void onInsert(CallbackInfoReturnable<Boolean> cir)
     {
-        if (QuickCarpetSettings.b_hopperCounters) {
+        if (Settings.hopperCounters) {
             DyeColor wool_color = WoolTool.getWoolColorAtPosition(
                     getWorld(),
                     new BlockPos(getHopperX(), getHopperY(), getHopperZ()).offset(this.getCachedState().get(HopperBlock.FACING)));

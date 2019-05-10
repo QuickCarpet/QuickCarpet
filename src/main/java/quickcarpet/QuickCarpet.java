@@ -7,11 +7,11 @@ import net.minecraft.server.command.ServerCommandSource;
 import quickcarpet.commands.*;
 import quickcarpet.helper.TickSpeed;
 import quickcarpet.logging.LoggerRegistry;
+import quickcarpet.settings.Settings;
 import quickcarpet.utils.CarpetRegistry;
 import quickcarpet.utils.HUDController;
 
 public class QuickCarpet implements ModInitializer {
-
     public static MinecraftServer minecraft_server;
 
     public static void init(MinecraftServer server) //Constructor of this static single ton class
@@ -20,7 +20,7 @@ public class QuickCarpet implements ModInitializer {
     }
 
     public static void onServerLoaded(MinecraftServer server) {
-        QuickCarpetSettings.apply_settings_from_conf(server);
+        Settings.MANAGER.init(server);
     }
 
     public static void tick(MinecraftServer server) {

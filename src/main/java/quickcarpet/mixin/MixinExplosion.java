@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-import quickcarpet.QuickCarpetSettings;
+import quickcarpet.settings.Settings;
 
 import java.util.Collection;
 import java.util.List;
@@ -30,9 +30,9 @@ public abstract class MixinExplosion
     
     @Inject(method = "collectBlocksAndDamageEntities", at = @At(value = "INVOKE",
             target = "Ljava/util/List;addAll(Ljava/util/Collection;)Z"), locals = LocalCapture.CAPTURE_FAILHARD)
-    private void newAffectedBlocks(CallbackInfo ci, Set set_1)
+    private void newAffectedBlocks(CallbackInfo ci, Set<BlockPos> set_1)
     {
-        if (!QuickCarpetSettings.getBool("explosionNoBlockDamage"))
+        if (!Settings.explosionNoBlockDamage)
         {
             this.affectedBlocks.addAll(set_1);
         }

@@ -22,7 +22,7 @@ import net.minecraft.text.TranslatableTextComponent;
 import net.minecraft.util.Clearable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableIntBoundingBox;
-import quickcarpet.QuickCarpetSettings;
+import quickcarpet.settings.Settings;
 
 import java.util.Deque;
 import java.util.Iterator;
@@ -43,7 +43,7 @@ public class CarpetCloneCommand
     
     public static void register(CommandDispatcher<ServerCommandSource> commandDispatcher_1)
     {
-        commandDispatcher_1.register((LiteralArgumentBuilder) ((LiteralArgumentBuilder) CommandManager.literal("carpetclone").requires((player) -> QuickCarpetSettings.getBool("commandCarpetClone"))).then(CommandManager.argument("begin", BlockPosArgumentType.create()).then(CommandManager.argument("end", BlockPosArgumentType.create()).then(((RequiredArgumentBuilder) ((RequiredArgumentBuilder) ((RequiredArgumentBuilder) CommandManager.argument("destination", BlockPosArgumentType.create()).executes((commandContext_1) -> {
+        commandDispatcher_1.register((LiteralArgumentBuilder) ((LiteralArgumentBuilder) CommandManager.literal("carpetclone").requires((player) -> Settings.commandCarpetClone)).then(CommandManager.argument("begin", BlockPosArgumentType.create()).then(CommandManager.argument("end", BlockPosArgumentType.create()).then(((RequiredArgumentBuilder) ((RequiredArgumentBuilder) ((RequiredArgumentBuilder) CommandManager.argument("destination", BlockPosArgumentType.create()).executes((commandContext_1) -> {
             return method_13090((ServerCommandSource) commandContext_1.getSource(), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "begin"), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "end"), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "destination"), (cachedBlockPosition_1) -> {
                 return true;
             }, CarpetCloneCommand.class_3025.NORMAL);
@@ -94,9 +94,9 @@ public class CarpetCloneCommand
         else
         {
             int int_1 = mutableIntBoundingBox_1.getBlockCountX() * mutableIntBoundingBox_1.getBlockCountY() * mutableIntBoundingBox_1.getBlockCountZ();
-            if (int_1 > QuickCarpetSettings.getInt("fillLimit")) // [CM] replaces 32768
+            if (int_1 > Settings.fillLimit) // [CM] replaces 32768
             {
-                throw TOOBIG_EXCEPTION.create(QuickCarpetSettings.getInt("fillLimit"), int_1);
+                throw TOOBIG_EXCEPTION.create(Settings.fillLimit, int_1);
             }
             else
             {
@@ -154,7 +154,7 @@ public class CarpetCloneCommand
                             blockPos_9 = (BlockPos) var25.next();
                             BlockEntity blockEntity_2 = serverWorld_1.getBlockEntity(blockPos_9);
                             Clearable.clear(blockEntity_2);
-                            serverWorld_1.setBlockState(blockPos_9, Blocks.BARRIER.getDefaultState(), 2 | (QuickCarpetSettings.getBool("fillUpdates") ? 0 : 1024));
+                            serverWorld_1.setBlockState(blockPos_9, Blocks.BARRIER.getDefaultState(), 2 | (Settings.fillUpdates ? 0 : 1024));
                         }
                         
                         var25 = deque_1.iterator();
@@ -162,7 +162,7 @@ public class CarpetCloneCommand
                         while (var25.hasNext())
                         {
                             blockPos_9 = (BlockPos) var25.next();
-                            serverWorld_1.setBlockState(blockPos_9, Blocks.AIR.getDefaultState(), 3 | (QuickCarpetSettings.getBool("fillUpdates") ? 0 : 1024));
+                            serverWorld_1.setBlockState(blockPos_9, Blocks.AIR.getDefaultState(), 3 | (Settings.fillUpdates ? 0 : 1024));
                         }
                     }
                     
@@ -178,7 +178,7 @@ public class CarpetCloneCommand
                         CarpetCloneCommand.class_3024 cloneCommand$class_3024_1 = (CarpetCloneCommand.class_3024) var30.next();
                         BlockEntity blockEntity_3 = serverWorld_1.getBlockEntity(cloneCommand$class_3024_1.field_13496);
                         Clearable.clear(blockEntity_3);
-                        serverWorld_1.setBlockState(cloneCommand$class_3024_1.field_13496, Blocks.BARRIER.getDefaultState(), 2 | (QuickCarpetSettings.getBool("fillUpdates") ? 0 : 1024));
+                        serverWorld_1.setBlockState(cloneCommand$class_3024_1.field_13496, Blocks.BARRIER.getDefaultState(), 2 | (Settings.fillUpdates ? 0 : 1024));
                     }
                     
                     int_5 = 0;
@@ -188,13 +188,13 @@ public class CarpetCloneCommand
                     while (var32.hasNext())
                     {
                         cloneCommand$class_3024_4 = (CarpetCloneCommand.class_3024) var32.next();
-                        if (serverWorld_1.setBlockState(cloneCommand$class_3024_4.field_13496, cloneCommand$class_3024_4.field_13495, 2 | (QuickCarpetSettings.getBool("fillUpdates") ? 0 : 1024)))
+                        if (serverWorld_1.setBlockState(cloneCommand$class_3024_4.field_13496, cloneCommand$class_3024_4.field_13495, 2 | (Settings.fillUpdates ? 0 : 1024)))
                         {
                             ++int_5;
                         }
                     }
                     
-                    for (var32 = list_2.iterator(); var32.hasNext(); serverWorld_1.setBlockState(cloneCommand$class_3024_4.field_13496, cloneCommand$class_3024_4.field_13495, 2 | (QuickCarpetSettings.getBool("fillUpdates") ? 0 : 1024)))
+                    for (var32 = list_2.iterator(); var32.hasNext(); serverWorld_1.setBlockState(cloneCommand$class_3024_4.field_13496, cloneCommand$class_3024_4.field_13495, 2 | (Settings.fillUpdates ? 0 : 1024)))
                     {
                         cloneCommand$class_3024_4 = (CarpetCloneCommand.class_3024) var32.next();
                         BlockEntity blockEntity_4 = serverWorld_1.getBlockEntity(cloneCommand$class_3024_4.field_13496);
@@ -210,7 +210,7 @@ public class CarpetCloneCommand
                     
                     var32 = list_5.iterator();
                     
-                    if (QuickCarpetSettings.getBool("fillUpdates"))
+                    if (Settings.fillUpdates)
                     {
                         while (var32.hasNext())
                         {

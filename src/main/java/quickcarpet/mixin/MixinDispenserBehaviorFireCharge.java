@@ -13,13 +13,13 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import quickcarpet.QuickCarpetSettings;
+import quickcarpet.settings.Settings;
 
 @Mixin(targets = "net/minecraft/block/dispenser/DispenserBehavior$3")
 public class MixinDispenserBehaviorFireCharge extends ItemDispenserBehavior {
     @Inject(method = "dispenseStack(Lnet/minecraft/util/math/BlockPointer;Lnet/minecraft/item/ItemStack;)Lnet/minecraft/item/ItemStack;", at = @At("HEAD"), cancellable = true)
     private void convertNetherrack(BlockPointer pointer, ItemStack stack, CallbackInfoReturnable<ItemStack> cir) {
-        if (!QuickCarpetSettings.getBool("fireChargeConvertsToNetherrack")) return;
+        if (!Settings.fireChargeConvertsToNetherrack) return;
         World world = pointer.getWorld();
         Direction direction = pointer.getBlockState().get(DispenserBlock.FACING);
         BlockPos front = pointer.getBlockPos().offset(direction);

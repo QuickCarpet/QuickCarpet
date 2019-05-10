@@ -1,198 +1,203 @@
 package quickcarpet.commands;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.CommandSource;
-import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.TextComponent;
-import quickcarpet.QuickCarpetSettings;
+import quickcarpet.Build;
+import quickcarpet.settings.ParsedRule;
+import quickcarpet.settings.RuleCategory;
+import quickcarpet.settings.Settings;
 import quickcarpet.utils.Messenger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static net.minecraft.server.command.CommandManager.argument;
+import static net.minecraft.server.command.CommandManager.literal;
+
 public class CarpetCommand {
+    private static ImmutableList<String> RULE_CATEGORIES = Arrays.stream(RuleCategory.values())
+            .map(c -> c.lowerCase)
+            .collect(ImmutableList.toImmutableList());
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher)
     {
-        LiteralArgumentBuilder<ServerCommandSource> literalargumentbuilder = CommandManager.literal("carpet").requires((player) ->
-                player.hasPermissionLevel(2) && !QuickCarpetSettings.locked);
+        LiteralArgumentBuilder<ServerCommandSource> carpet = literal("carpet").requires((player) ->
+                player.hasPermissionLevel(2));
 
-        literalargumentbuilder.executes((context)->listAllSettings(context.getSource())).
-                then(CommandManager.literal("list").
+        carpet.executes((context)->listAllSettings(context.getSource())).
+                then(literal("list").
                         executes( (c) -> listSettings(c.getSource(),
-                                "All CarpetMod Settings",
-                                QuickCarpetSettings.findAll(null))).
-                        then(CommandManager.literal("defaults").
+                                "All " + Build.NAME + " Settings",
+                                Settings.MANAGER.getRules())).
+                        then(literal("defaults").
                                 executes( (c)-> listSettings(c.getSource(),
-                                        "Current CarpetMod Startup Settings from carpet.conf",
-                                        QuickCarpetSettings.findStartupOverrides(c.getSource().getMinecraftServer())))).
-                        then(CommandManager.argument("tag", StringArgumentType.word()).
-                                suggests( (c, b)-> CommandSource.suggestMatching(QuickCarpetSettings.default_tags, b)).
+                                        "Current " + Build.NAME + " Startup Settings from carpet.conf",
+                                        Settings.MANAGER.getSavedRules()))).
+                        then(argument("search", StringArgumentType.word()).
+                                suggests( (c, b)-> CommandSource.suggestMatching(RULE_CATEGORIES, b)).
                                 executes( (c) -> listSettings(c.getSource(),
-                                        String.format("CarpetMod Settings matching \"%s\"", StringArgumentType.getString(c, "tag")),
-                                        QuickCarpetSettings.findAll(StringArgumentType.getString(c, "tag"))))));
+                                        String.format("" + Build.NAME + " Settings matching \"%s\"", StringArgumentType.getString(c, "search")),
+                                        Settings.MANAGER.getRulesMatching(StringArgumentType.getString(c, "search"))))));
 
-        for (QuickCarpetSettings.CarpetSettingEntry rule: QuickCarpetSettings.getAllCarpetSettings())
-        {
-            literalargumentbuilder.then(CommandManager.literal(rule.getName()).executes( (context) ->
-                    displayRuleMenu(context.getSource(),rule)));
-            literalargumentbuilder.then(CommandManager.literal("removeDefault").
-                    then(CommandManager.literal(rule.getName()).executes((context) ->
-                            removeDefault(context.getSource(), rule))));
-            literalargumentbuilder.then(CommandManager.literal(rule.getName()).
-                    then(CommandManager.argument("value", StringArgumentType.word()).
-                            suggests((c, b)-> CommandSource.suggestMatching(rule.getOptions(),b)).
-                            executes((context) ->
-                                    setRule(context.getSource(), rule, StringArgumentType.getString(context, "value")))));
-            literalargumentbuilder.then(CommandManager.literal("setDefault").
-                    then(CommandManager.literal(rule.getName()).
-                            then(CommandManager.argument("value", StringArgumentType.word()).
-                                    suggests((c, b)-> CommandSource.suggestMatching(rule.getOptions(),b)).
-                                    executes((context) ->
-                                            setDefault(context.getSource(), rule, StringArgumentType.getString(context, "value"))))));
+        LiteralArgumentBuilder<ServerCommandSource> removeDefault = literal("removeDefault").requires(s -> !Settings.MANAGER.locked);
+        LiteralArgumentBuilder<ServerCommandSource> setDefault = literal("setDefault").requires(s -> !Settings.MANAGER.locked);
+        for (ParsedRule rule : Settings.MANAGER.getRules()) {
+            carpet.then(literal(rule.name)
+                .executes(c -> displayRuleMenu(c.getSource(), rule))
+                .then(argument("value", rule.getArgumentType())
+                    .suggests((c, b) -> CommandSource.suggestMatching(rule.options, b))
+                    .requires(s -> !Settings.MANAGER.locked)
+                    .executes(c -> setRule((ServerCommandSource) c.getSource(), rule, c.getArgument("value", rule.type)))
+                )
+            );
+            removeDefault.then(literal(rule.name)
+                    .requires(s -> rule.hasSavedValue())
+                    .executes(c -> removeDefault(c.getSource(), rule)));
+            setDefault.then(literal(rule.name).then(argument("value", rule.getArgumentType())
+                .suggests((c, b) -> CommandSource.suggestMatching(rule.options, b))
+                .executes(c -> setDefault((ServerCommandSource) c.getSource(), rule, c.getArgument("value", rule.type)))
+            ));
         }
-        dispatcher.register(literalargumentbuilder);
+        carpet.then(removeDefault);
+        carpet.then(setDefault);
+        dispatcher.register(carpet);
     }
 
-    private static int displayRuleMenu(ServerCommandSource source, QuickCarpetSettings.CarpetSettingEntry rule)
-    {
+    private static int displayRuleMenu(ServerCommandSource source, ParsedRule<?> rule) {
         PlayerEntity player;
-        try
-        {
+        try {
             player = source.getPlayer();
-        }
-        catch (CommandSyntaxException e)
-        {
-            Messenger.m(source, "w "+rule.getName() +" is set to: ","wb "+rule.getStringValue());
+        } catch (CommandSyntaxException e) {
+            Messenger.m(source, "w " + rule.name + " is set to: ","wb " + rule.getAsString());
             return 1;
         }
 
         Messenger.m(player, "");
-        Messenger.m(player, "wb "+rule.getName(),"!/carpet "+rule.getName(),"^g refresh");
-        Messenger.m(player, "w "+rule.getToast());
+        Messenger.m(player, "wb " + rule.name, "!/carpet " + rule.name, "^g refresh");
+        Messenger.m(player, "w "+rule.description);
 
-        Arrays.stream(rule.getInfo()).forEach(s -> Messenger.m(player, "g  "+s));
-
-        List<TextComponent> tags = new ArrayList<>();
-        tags.add(Messenger.c("w Tags: "));
-        for (String t: rule.getTags())
-        {
-            tags.add(Messenger.c("c ["+t+"]", "^g list all "+t+" settings","!/carpet list "+t));
-            tags.add(Messenger.c("w , "));
+        for (String info : rule.extraInfo) {
+            Messenger.m(player, "g  " + info);
         }
-        tags.remove(tags.size()-1);
-        Messenger.m(player, tags.toArray(new Object[0]));
 
-        Messenger.m(player, "w Current value: ",String.format("%s %s (%s value)",rule.getBoolValue()?"lb":"nb", rule.getStringValue(),rule.isDefault()?"default":"modified"));
+        List<TextComponent> categories = new ArrayList<>();
+        categories.add(Messenger.c("w Categories: "));
+        for (String name : RULE_CATEGORIES) {
+            categories.add(Messenger.c("c ["+ name +"]", "^g list all "+ name +" settings","!/carpet list " + name));
+            categories.add(Messenger.c("w , "));
+        }
+        categories.remove(categories.size()-1);
+        Messenger.m(player, categories.toArray(new Object[0]));
+
+        Messenger.m(player, "w Current value: ",String.format("%s %s (%s value)",rule.getBoolValue()?"lb":"nb", rule.getAsString(),rule.isDefault()?"default":"modified"));
         List<TextComponent> options = new ArrayList<>();
         options.add(Messenger.c("w Options: ", "y [ "));
-        for (String o: rule.getOptions())
-        {
-            options.add(Messenger.c(
-                    String.format("%s%s %s",(o.equals(rule.getDefault()))?"u":"", (o.equals(rule.getStringValue()))?"bl":"y", o ),
-                    "^g switch to "+o,
-                    String.format("?/carpet %s %s",rule.getName(),o)));
+        for (String o: rule.options) {
+            options.add(makeSetRuleButton(rule, o, false));
             options.add(Messenger.c("w  "));
         }
         options.remove(options.size()-1);
         options.add(Messenger.c("y  ]"));
         Messenger.m(player, options.toArray(new Object[0]));
-
         return 1;
     }
 
-    private static int setRule(ServerCommandSource source, QuickCarpetSettings.CarpetSettingEntry rule, String newValue)
-    {
-        QuickCarpetSettings.set(rule.getName(), newValue);
-        Messenger.m(source, "w "+rule.toString()+", ", "c [change permanently?]",
-                "^w Click to keep the settings in carpet.conf to save across restarts",
-                "?/carpet setDefault "+rule.getName()+" "+rule.getStringValue());
-        return 1;
+    private static TextComponent makeSetRuleButton(ParsedRule<?> rule, String option, boolean brackets) {
+        String color = "";
+        if (option.equals(rule.defaultAsString) && !brackets) color += "u";
+        color += option.equals(rule.getAsString()) ? "bl" : "y";
+        String baseText = color + (brackets ? " [" : " ") + option + (brackets ? "]" : "");
+        if (Settings.MANAGER.locked) {
+            return Messenger.c(baseText, "^g Settings are locked");
+        }
+        return Messenger.c(baseText, "^g Switch to " + option, "?/carpet " + rule.name + " " + option);
     }
-    private static int setDefault(ServerCommandSource source, QuickCarpetSettings.CarpetSettingEntry rule, String defaultValue)
-    {
-        QuickCarpetSettings.setDefaultRule(source.getMinecraftServer(), rule.getName(), defaultValue);
-        Messenger.m(source ,"gi rule "+ rule.getName()+" will now default to "+ defaultValue);
-        return 1;
-    }
-    private static int removeDefault(ServerCommandSource source, QuickCarpetSettings.CarpetSettingEntry rule)
-    {
-        QuickCarpetSettings.removeDefaultRule(source.getMinecraftServer(), rule.getName());
-        Messenger.m(source ,"gi rule "+ rule.getName()+" defaults to Vanilla");
+
+    private static <T> int setRule(ServerCommandSource source, ParsedRule<T> rule, T newValue) {
+        try {
+            rule.set(newValue);
+            Messenger.m(source, "w "+ rule.toString() + ", ", "c [change permanently?]",
+                    "^w Click to keep the settings in carpet.conf to save across restarts",
+                    "?/carpet setDefault " + rule.name + " " + rule.getAsString());
+        } catch (IllegalArgumentException e) {
+            throw new CommandException(Messenger.c("r Invalid value: " + e.getMessage()));
+        }
         return 1;
     }
 
+    private static <T> int setDefault(ServerCommandSource source, ParsedRule<T> rule, T defaultValue) {
+        try {
+            rule.set(defaultValue);
+            rule.save();
+            Messenger.m(source ,"gi rule " + rule.name + " will now default to "+ defaultValue);
+        } catch (IllegalArgumentException e) {
+            throw new CommandException(Messenger.c("r Invalid value: " + e.getMessage()));
+        }
+        return 1;
+    }
 
-    private static TextComponent displayInteractiveSetting(QuickCarpetSettings.CarpetSettingEntry e)
-    {
+    private static int removeDefault(ServerCommandSource source, ParsedRule rule) {
+        rule.resetToDefault();
+        rule.save();
+        Messenger.m(source ,"gi rule " + rule.name + " defaults to " + rule.getAsString());
+        return 1;
+    }
+
+    private static TextComponent displayInteractiveSetting(ParsedRule<?> rule) {
         List<Object> args = new ArrayList<>();
-        args.add("w - "+e.getName()+" ");
-        args.add("!/carpet "+e.getName());
-        args.add("^y "+e.getToast());
-        for (String option: e.getOptions())
-        {
-            String style = e.isDefault()?"g":(option.equalsIgnoreCase(e.getDefault())?"y":"e");
-            if (option.equalsIgnoreCase(e.getDefault()))
-                style = style+"b";
-            else if (option.equalsIgnoreCase(e.getStringValue()))
-                style = style+"u";
-            args.add(style+" ["+option+"]");
-            if (!option.equalsIgnoreCase(e.getStringValue()))
-            {
-                args.add("!/carpet " + e.getName() + " " + option);
-                args.add("^w switch to " + option);
-            }
+        args.add("w - " + rule.name + " ");
+        args.add("!/carpet " + rule.name);
+        args.add("^y " + rule.description);
+        for (String option : rule.options) {
+            args.add(makeSetRuleButton(rule, option, true));
             args.add("w  ");
         }
         args.remove(args.size()-1);
         return Messenger.c(args.toArray(new Object[0]));
     }
 
-    private static int listSettings(ServerCommandSource source, String title, QuickCarpetSettings.CarpetSettingEntry[] settings_list)
-    {
-        try
-        {
+    private static int listSettings(ServerCommandSource source, String title, Iterable<ParsedRule<?>> rules) {
+        try {
             PlayerEntity player = source.getPlayer();
             Messenger.m(player,String.format("wb %s:",title));
-            Arrays.stream(settings_list).forEach(e -> Messenger.m(player,displayInteractiveSetting(e)));
-
-        }
-        catch (CommandSyntaxException e)
-        {
+            for (ParsedRule rule : rules) {
+                Messenger.m(player,displayInteractiveSetting(rule));
+            }
+        } catch (CommandSyntaxException e) {
             Messenger.m(source, "w s:"+title);
-            Arrays.stream(settings_list).forEach(r -> Messenger.m(source, "w  - "+ r.toString()));
+            for (ParsedRule rule : rules) {
+                Messenger.m(source, "w  - "+ rule.toString());
+            }
         }
         return 1;
     }
-    private static int listAllSettings(ServerCommandSource source)
-    {
-        listSettings(source, "Current CarpetMod Settings", QuickCarpetSettings.find_nondefault(source.getMinecraftServer()));
 
-        Messenger.m(source, "Carpet Mod version: "+QuickCarpetSettings.carpetVersion);
-        try
-        {
+    private static int listAllSettings(ServerCommandSource source) {
+        listSettings(source, "Current " + Build.NAME + " Settings", Settings.MANAGER.getNonDefault());
+
+        Messenger.m(source, "e " + Build.NAME + " version: " + Build.VERSION);
+        try {
             PlayerEntity player = source.getPlayer();
-            List<Object> tags = new ArrayList<>();
-            tags.add("w Browse Categories:\n");
-            for (String t : QuickCarpetSettings.default_tags)
-            {
-                tags.add("c [" + t+"]");
-                tags.add("^g list all " + t + " settings");
-                tags.add("!/carpet list " + t);
-                tags.add("w  ");
+            List<String> categories = new ArrayList<>();
+            categories.add("w Browse Categories:\n");
+            for (String name : RULE_CATEGORIES) {
+                categories.add("c [" + name + "]");
+                categories.add("^g list all " + name + " nsettings");
+                categories.add("!/carpet list " + name);
+                categories.add("w  ");
             }
-            tags.remove(tags.size() - 1);
-            Messenger.m(player, tags.toArray(new Object[0]));
-        }
-        catch (CommandSyntaxException e)
-        {
-        }
+            categories.remove(categories.size() - 1);
+            Messenger.m(player, categories.toArray(new Object[0]));
+        } catch (CommandSyntaxException ignored) {}
         return 1;
     }
 }

@@ -11,11 +11,10 @@ import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.pattern.CachedBlockPosition;
-import net.minecraft.command.arguments.BlockStateArgument;
-import net.minecraft.command.arguments.BlockStateArgumentType;
 import net.minecraft.command.arguments.BlockPosArgumentType;
 import net.minecraft.command.arguments.BlockPredicateArgumentType;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.command.arguments.BlockStateArgument;
+import net.minecraft.command.arguments.BlockStateArgumentType;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.command.SetBlockCommand;
@@ -24,7 +23,7 @@ import net.minecraft.text.TranslatableTextComponent;
 import net.minecraft.util.Clearable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableIntBoundingBox;
-import quickcarpet.QuickCarpetSettings;
+import quickcarpet.settings.Settings;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -33,20 +32,18 @@ import java.util.function.Predicate;
 
 public class CarpetFillCommand {
 
-    private static final Dynamic2CommandExceptionType TOOBIG_EXCEPTION = new Dynamic2CommandExceptionType((object_1, object_2) -> {
-        return new TranslatableTextComponent("commands.fill.toobig", new Object[]{object_1, object_2});
-    });
+    private static final Dynamic2CommandExceptionType TOOBIG_EXCEPTION = new Dynamic2CommandExceptionType((object_1, object_2) -> new TranslatableTextComponent("commands.fill.toobig", object_1, object_2));
     private static final BlockStateArgument field_13648;
     private static final SimpleCommandExceptionType FAILED_EXCEPTION;
 
     static {
-        field_13648 = new BlockStateArgument(Blocks.AIR.getDefaultState(), Collections.emptySet(), (CompoundTag) null);
-        FAILED_EXCEPTION = new SimpleCommandExceptionType(new TranslatableTextComponent("commands.fill.failed", new Object[0]));
+        field_13648 = new BlockStateArgument(Blocks.AIR.getDefaultState(), Collections.emptySet(), null);
+        FAILED_EXCEPTION = new SimpleCommandExceptionType(new TranslatableTextComponent("commands.fill.failed"));
     }
 
     public static void register(CommandDispatcher<ServerCommandSource> commandDispatcher_1) {
         commandDispatcher_1.register((LiteralArgumentBuilder) ((LiteralArgumentBuilder) CommandManager.literal("carpetfill").requires((player) ->
-            QuickCarpetSettings.getBool("commandCarpetFill")
+            Settings.commandCarpetFill
         )).then(CommandManager.argument("from", BlockPosArgumentType.create()).then(CommandManager.argument("to", BlockPosArgumentType.create()).then(((RequiredArgumentBuilder) ((RequiredArgumentBuilder) ((RequiredArgumentBuilder) ((RequiredArgumentBuilder) ((RequiredArgumentBuilder) CommandManager.argument("block", BlockStateArgumentType.create()).executes((commandContext_1) -> {
             return method_13354((ServerCommandSource) commandContext_1.getSource(), new MutableIntBoundingBox(BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "from"), BlockPosArgumentType.getLoadedBlockPos(commandContext_1, "to")), BlockStateArgumentType.getBlockState(commandContext_1, "block"), CarpetFillCommand.class_3058.REPLACE, (Predicate) null);
         })).then(((LiteralArgumentBuilder) CommandManager.literal("replace").executes((commandContext_1) -> {
@@ -68,9 +65,9 @@ public class CarpetFillCommand {
 
     private static int method_13354(ServerCommandSource serverCommandSource_1, MutableIntBoundingBox mutableIntBoundingBox_1, BlockStateArgument blockArgument_1, CarpetFillCommand.class_3058 fillCommand$class_3058_1, Predicate<CachedBlockPosition> predicate_1) throws CommandSyntaxException {
         int int_1 = mutableIntBoundingBox_1.getBlockCountX() * mutableIntBoundingBox_1.getBlockCountY() * mutableIntBoundingBox_1.getBlockCountZ();
-        if (int_1 > QuickCarpetSettings.getInt("fillLimit")) // [CM] replaces 32768
+        if (int_1 > Settings.fillLimit) // [CM] replaces 32768
         {
-            throw TOOBIG_EXCEPTION.create(QuickCarpetSettings.getInt("fillLimit"), int_1);
+            throw TOOBIG_EXCEPTION.create(Settings.fillLimit, int_1);
         } else {
             List<BlockPos> list_1 = Lists.newArrayList();
             ServerWorld serverWorld_1 = serverCommandSource_1.getWorld();
@@ -83,7 +80,7 @@ public class CarpetFillCommand {
                     if (!var9.hasNext()) {
                         var9 = list_1.iterator();
 
-                        if (QuickCarpetSettings.getBool("fillUpdates"))
+                        if (Settings.fillUpdates)
                         {
                             while (var9.hasNext()) {
                                 blockPos_1 = (BlockPos) var9.next();
@@ -96,7 +93,7 @@ public class CarpetFillCommand {
                             throw FAILED_EXCEPTION.create();
                         }
 
-                        serverCommandSource_1.sendFeedback(new TranslatableTextComponent("commands.fill.success", new Object[]{int_2}), true);
+                        serverCommandSource_1.sendFeedback(new TranslatableTextComponent("commands.fill.success", int_2), true);
                         return int_2;
                     }
 
@@ -107,7 +104,7 @@ public class CarpetFillCommand {
                 if (blockArgument_2 != null) {
                     BlockEntity blockEntity_1 = serverWorld_1.getBlockEntity(blockPos_1);
                     Clearable.clear(blockEntity_1);
-                    if (blockArgument_2.setBlockState(serverWorld_1, blockPos_1, 2 | (QuickCarpetSettings.getBool("fillUpdates")?0:1024))) {
+                    if (blockArgument_2.setBlockState(serverWorld_1, blockPos_1, 2 | (Settings.fillUpdates?0:1024))) {
                         list_1.add(blockPos_1.toImmutable());
                         ++int_2;
                     }

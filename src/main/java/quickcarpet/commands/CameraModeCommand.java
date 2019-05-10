@@ -9,7 +9,7 @@ import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.world.GameMode;
-import quickcarpet.QuickCarpetSettings;
+import quickcarpet.settings.Settings;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
@@ -19,13 +19,13 @@ public class CameraModeCommand
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher)
     {
         LiteralArgumentBuilder<ServerCommandSource> camera = literal("c").
-                requires((player) -> QuickCarpetSettings.getBool("commandCameramode")).
+                requires((player) -> Settings.commandCameramode).
                 executes((c) -> cameraMode(c.getSource(), c.getSource().getPlayer())).
                 then(argument("player", EntityArgumentType.player()).
                         executes( (c) -> cameraMode(c.getSource(), EntityArgumentType.getPlayer(c, "player"))));
 
         LiteralArgumentBuilder<ServerCommandSource> survival = literal("s").
-                requires((player) -> QuickCarpetSettings.getBool("commandCameramode")).
+                requires((player) -> Settings.commandCameramode).
                 executes((c) -> survivalMode(
                         c.getSource(),
                         c.getSource().getPlayer())).
