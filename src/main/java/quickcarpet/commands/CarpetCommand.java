@@ -7,9 +7,9 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.TextComponent;
 import quickcarpet.Build;
 import quickcarpet.settings.ParsedRule;
 import quickcarpet.settings.RuleCategory;
@@ -89,7 +89,7 @@ public class CarpetCommand {
             Messenger.m(player, "g  " + info);
         }
 
-        List<TextComponent> categories = new ArrayList<>();
+        List<Component> categories = new ArrayList<>();
         categories.add(Messenger.c("w Categories: "));
         for (String name : RULE_CATEGORIES) {
             categories.add(Messenger.c("c ["+ name +"]", "^g list all "+ name +" settings","!/carpet list " + name));
@@ -99,7 +99,7 @@ public class CarpetCommand {
         Messenger.m(player, categories.toArray(new Object[0]));
 
         Messenger.m(player, "w Current value: ",String.format("%s %s (%s value)",rule.getBoolValue()?"lb":"nb", rule.getAsString(),rule.isDefault()?"default":"modified"));
-        List<TextComponent> options = new ArrayList<>();
+        List<Component> options = new ArrayList<>();
         options.add(Messenger.c("w Options: ", "y [ "));
         for (String o: rule.options) {
             options.add(makeSetRuleButton(rule, o, false));
@@ -111,7 +111,7 @@ public class CarpetCommand {
         return 1;
     }
 
-    private static TextComponent makeSetRuleButton(ParsedRule<?> rule, String option, boolean brackets) {
+    private static Component makeSetRuleButton(ParsedRule<?> rule, String option, boolean brackets) {
         String color = "";
         if (option.equals(rule.defaultAsString) && !brackets) color += "u";
         color += option.equals(rule.getAsString()) ? "bl" : "y";
@@ -152,7 +152,7 @@ public class CarpetCommand {
         return 1;
     }
 
-    private static TextComponent displayInteractiveSetting(ParsedRule<?> rule) {
+    private static Component displayInteractiveSetting(ParsedRule<?> rule) {
         List<Object> args = new ArrayList<>();
         args.add("w - " + rule.name + " ");
         args.add("!/carpet " + rule.name);

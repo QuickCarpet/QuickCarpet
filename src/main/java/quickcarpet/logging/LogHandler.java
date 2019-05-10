@@ -1,8 +1,8 @@
 package quickcarpet.logging;
 
+import net.minecraft.network.chat.ChatMessageType;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.ChatMessageType;
-import net.minecraft.text.TextComponent;
 import quickcarpet.QuickCarpet;
 import quickcarpet.utils.HUDController;
 
@@ -18,7 +18,7 @@ public abstract class LogHandler
     public static final LogHandler CHAT = new LogHandler()
     {
         @Override
-        public void handle(ServerPlayerEntity player, TextComponent[] message, Object[] commandParams)
+        public void handle(ServerPlayerEntity player, Component[] message, Object[] commandParams)
         {
             Arrays.stream(message).forEach(m -> player.sendChatMessage(m, ChatMessageType.CHAT));
         }
@@ -26,9 +26,9 @@ public abstract class LogHandler
     public static final LogHandler HUD = new LogHandler()
     {
         @Override
-        public void handle(ServerPlayerEntity player, TextComponent[] message, Object[] commandParams)
+        public void handle(ServerPlayerEntity player, Component[] message, Object[] commandParams)
         {
-            for (TextComponent m : message)
+            for (Component m : message)
                 HUDController.addMessage(player, m);
         }
 
@@ -71,7 +71,7 @@ public abstract class LogHandler
         return CREATORS.keySet().stream().sorted().collect(Collectors.toList());
     }
 
-    public abstract void handle(ServerPlayerEntity player, TextComponent[] message, Object[] commandParams);
+    public abstract void handle(ServerPlayerEntity player, Component[] message, Object[] commandParams);
 
     public void onAddPlayer(String playerName) {}
 

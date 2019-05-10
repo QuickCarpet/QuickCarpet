@@ -2,10 +2,10 @@ package quickcarpet.patches;
 
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.Packet;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.TextComponent;
 
 public class ServerPlayNetworkHandlerFake extends ServerPlayNetworkHandler
 {
@@ -20,7 +20,7 @@ public class ServerPlayNetworkHandlerFake extends ServerPlayNetworkHandler
     }
     
     @Override
-    public void disconnect(TextComponent message)
+    public void disconnect(Component message)
     {
     }
 }

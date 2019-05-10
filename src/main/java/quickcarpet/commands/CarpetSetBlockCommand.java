@@ -10,10 +10,10 @@ import net.minecraft.block.pattern.CachedBlockPosition;
 import net.minecraft.command.arguments.BlockPosArgumentType;
 import net.minecraft.command.arguments.BlockStateArgument;
 import net.minecraft.command.arguments.BlockStateArgumentType;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.TranslatableTextComponent;
 import net.minecraft.util.Clearable;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MutableIntBoundingBox;
@@ -22,7 +22,7 @@ import quickcarpet.settings.Settings;
 import java.util.function.Predicate;
 
 public class CarpetSetBlockCommand {
-    private static final SimpleCommandExceptionType FAILED_EXCEPTION = new SimpleCommandExceptionType(new TranslatableTextComponent("commands.setblock.failed", new Object[0]));
+    private static final SimpleCommandExceptionType FAILED_EXCEPTION = new SimpleCommandExceptionType(new TranslatableComponent("commands.setblock.failed", new Object[0]));
 
     public static void register(CommandDispatcher<ServerCommandSource> commandDispatcher_1) {
         commandDispatcher_1.register((LiteralArgumentBuilder)((LiteralArgumentBuilder) CommandManager.literal("carpetsetblock").requires((player) ->
@@ -62,7 +62,7 @@ public class CarpetSetBlockCommand {
                 {
                     serverWorld_1.updateNeighbors(blockPos_1, blockArgument_1.getBlockState().getBlock());
                 }
-                serverCommandSource_1.sendFeedback(new TranslatableTextComponent("commands.setblock.success", new Object[]{blockPos_1.getX(), blockPos_1.getY(), blockPos_1.getZ()}), true);
+                serverCommandSource_1.sendFeedback(new TranslatableComponent("commands.setblock.success", new Object[]{blockPos_1.getX(), blockPos_1.getY(), blockPos_1.getZ()}), true);
                 return 1;
             }
         }

@@ -5,9 +5,9 @@ import it.unimi.dsi.fastutil.objects.Object2LongLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.text.TextComponent;
-import net.minecraft.text.TranslatableTextComponent;
 import net.minecraft.util.DyeColor;
 import quickcarpet.utils.Messenger;
 
@@ -61,12 +61,12 @@ public class HopperCounter
         }
     }
 
-    public static List<TextComponent> formatAll(MinecraftServer server, boolean realtime)
+    public static List<Component> formatAll(MinecraftServer server, boolean realtime)
     {
-        List<TextComponent> text = new ArrayList<>();
+        List<Component> text = new ArrayList<>();
 
         for (HopperCounter counter : COUNTERS.values()) {
-            List<TextComponent> temp = counter.format(server, realtime, false);
+            List<Component> temp = counter.format(server, realtime, false);
             if (temp.size() > 1) {
                 if (!text.isEmpty()) text.add(Messenger.s(""));
                 text.addAll(temp);
@@ -78,7 +78,7 @@ public class HopperCounter
         return text;
     }
 
-    public List<TextComponent> format(MinecraftServer server, boolean realTime, boolean brief) {
+    public List<Component> format(MinecraftServer server, boolean realTime, boolean brief) {
         if (counter.isEmpty()) {
             if (brief) {
                 return Collections.singletonList(Messenger.c("g "+color+": -, -/h, - min "));
@@ -101,7 +101,7 @@ public class HopperCounter
                             color.getName(), total, total * (20 * 60 * 60) / ticks, ticks / (20.0 * 60.0))));
         }
         return counter.object2LongEntrySet().stream().map(e -> {
-            TextComponent itemName = new TranslatableTextComponent(e.getKey().getTranslationKey());
+            Component itemName = new TranslatableComponent(e.getKey().getTranslationKey());
             long count = e.getLongValue();
             return Messenger.c("w - ", itemName, String.format("w : %d, %.1f/h",
                     count,

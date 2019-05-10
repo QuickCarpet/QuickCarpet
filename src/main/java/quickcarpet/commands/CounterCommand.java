@@ -3,9 +3,9 @@ package quickcarpet.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.command.CommandException;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.TextComponent;
 import net.minecraft.util.DyeColor;
 import quickcarpet.helper.HopperCounter;
 import quickcarpet.settings.Settings;
@@ -43,7 +43,7 @@ public class CounterCommand {
     {
         HopperCounter counter = HopperCounter.getCounter(color);
         if (counter == null) throw new CommandException(Messenger.s("Unknown wool color"));
-        for (TextComponent message : counter.format(source.getMinecraftServer(), realtime, false))
+        for (Component message : counter.format(source.getMinecraftServer(), realtime, false))
         {
             source.sendFeedback(message, false);
         }
@@ -69,7 +69,7 @@ public class CounterCommand {
 
     private static int listAllCounters(ServerCommandSource source, boolean realtime)
     {
-        for (TextComponent message: HopperCounter.formatAll(source.getMinecraftServer(), realtime))
+        for (Component message: HopperCounter.formatAll(source.getMinecraftServer(), realtime))
         {
             source.sendFeedback(message, false);
         }

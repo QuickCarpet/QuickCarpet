@@ -7,11 +7,11 @@ import net.minecraft.client.network.packet.EntitySetHeadYawS2CPacket;
 import net.minecraft.client.network.packet.PlayerListS2CPacket;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.network.NetworkSide;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.network.ServerPlayerInteractionManager;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.TranslatableTextComponent;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.dimension.DimensionType;
 import quickcarpet.utils.IServerPlayerEntity;
@@ -36,7 +36,7 @@ public class ServerPlayerEntityFake extends ServerPlayerEntity
         }
         ServerPlayerEntityFake instance = new ServerPlayerEntityFake(server, worldIn, gameprofile, interactionManagerIn);
         instance.fixStartingPosition = () -> instance.setPositionAndAngles(d0, d1, d2, (float) yaw, (float) pitch);
-        server.getPlayerManager().onPlayerConnect(new ClientConnectionFake(NetworkSide.CLIENT), instance);
+        server.getPlayerManager().onPlayerConnect(new ClientConnectionFake(NetworkSide.SERVERBOUND), instance);
         if (instance.dimension != dimension) //player was logged in in a different dimension
         {
             ServerWorld old_world = server.getWorld(instance.dimension);
@@ -63,12 +63,12 @@ public class ServerPlayerEntityFake extends ServerPlayerEntity
     public static ServerPlayerEntityFake createShadow(MinecraftServer server, ServerPlayerEntity player)
     {
         player.getServer().getPlayerManager().remove(player);
-        player.networkHandler.disconnect(new TranslatableTextComponent("multiplayer.disconnect.duplicate_login"));
+        player.networkHandler.disconnect(new TranslatableComponent("multiplayer.disconnect.duplicate_login"));
         ServerWorld worldIn = server.getWorld(player.dimension);
         ServerPlayerInteractionManager interactionManagerIn = new ServerPlayerInteractionManager(worldIn);
         GameProfile gameprofile = player.getGameProfile();
         ServerPlayerEntityFake playerShadow = new ServerPlayerEntityFake(server, worldIn, gameprofile, interactionManagerIn);
-        server.getPlayerManager().onPlayerConnect(new ClientConnectionFake(NetworkSide.CLIENT), playerShadow);
+        server.getPlayerManager().onPlayerConnect(new ClientConnectionFake(NetworkSide.SERVERBOUND), playerShadow);
         
         playerShadow.setHealth(player.getHealth());
         playerShadow.networkHandler.requestTeleport(player.x, player.y, player.z, player.yaw, player.pitch);
@@ -77,7 +77,7 @@ public class ServerPlayerEntityFake extends ServerPlayerEntity
         playerShadow.stepHeight = 0.6F;
         
         server.getPlayerManager().sendToDimension(new EntitySetHeadYawS2CPacket(playerShadow, (byte) (player.headYaw * 256 / 360)), playerShadow.dimension);
-        server.getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.ADD, playerShadow));
+        server.getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.ADD_PLAYER, playerShadow));
         player.getServerWorld().method_14178().updateCameraPosition(playerShadow);
         return playerShadow;
     }
