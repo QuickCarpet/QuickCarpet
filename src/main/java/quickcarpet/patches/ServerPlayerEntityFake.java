@@ -9,12 +9,14 @@ import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.network.NetworkSide;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.ServerTask;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.network.ServerPlayerInteractionManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.dimension.DimensionType;
 import quickcarpet.utils.IServerPlayerEntity;
+import quickcarpet.utils.Messenger;
 
 public class ServerPlayerEntityFake extends ServerPlayerEntity
 {
@@ -90,8 +92,9 @@ public class ServerPlayerEntityFake extends ServerPlayerEntity
     @Override
     public void kill()
     {
-        //super.onKillCommand();
-        this.getServer().getPlayerManager().remove(this);
+        this.server.method_18858(new ServerTask(this.server.getTicks(), () -> {
+            this.networkHandler.onDisconnected(Messenger.s("Killed"));
+        }));
     }
     
     @Override
@@ -110,6 +113,7 @@ public class ServerPlayerEntityFake extends ServerPlayerEntity
     public void onDeath(DamageSource cause)
     {
         super.onDeath(cause);
-        getServer().getPlayerManager().remove(this);
+        setHealth(20);
+        kill();
     }
 }
