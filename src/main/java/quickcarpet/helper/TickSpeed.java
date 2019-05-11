@@ -28,6 +28,7 @@ public class TickSpeed {
     public static boolean is_paused = false;
     public static boolean is_superHot = false;
 
+
     static {
         new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "minecraft.performance.mspt", 20, TickSpeed::getMSPT);
         new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "minecraft.performance.tps", 20, TickSpeed::getTPS);
@@ -171,8 +172,9 @@ public class TickSpeed {
 
             }
         }
-    }
 
+
+    }
     
     // EDD's Tick warping stuff
     private static final String SS = "\u00A7", RED = SS + 'c', GREEN = SS + 'a', RESET = SS + 'r', CYAN =  SS + 'b';
@@ -256,7 +258,7 @@ public class TickSpeed {
     }
 
     public static double calculateTPS(double mspt) {
-        return 1000.0D / Math.max((TickSpeed.time_warp_start_time != 0)?0.0:TickSpeed.mspt, mspt);
+        return 1000.0D / Math.max(TickSpeed.isWarping ? 0.0 : TickSpeed.ms_per_tick, mspt);
     }
 
     public static double getTPS() {
