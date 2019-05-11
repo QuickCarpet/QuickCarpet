@@ -28,6 +28,7 @@
     "MixinPistonBlock",
     "MixinPlayerEntity",
     "MixinDispenserBehaviorFireCharge",
+    "MixinSpawnHelper",
     "skyblock.MixinLevelGeneratorType",
     "skyblock.MixinOverworldDimension",
     "skyblock.MixinTheNetherDimension",

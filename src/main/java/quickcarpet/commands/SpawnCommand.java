@@ -2,16 +2,20 @@ package quickcarpet.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.command.arguments.BlockPosArgumentType;
 import net.minecraft.command.arguments.DimensionArgumentType;
 import net.minecraft.entity.EntityCategory;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.Pair;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.dimension.DimensionType;
 import quickcarpet.helper.Mobcaps;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.Messenger;
+import quickcarpet.utils.SpawnTracker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +33,56 @@ public class SpawnCommand {
                     then(argument("dimension", DimensionArgumentType.create()).
                         executes(c -> sendMobcaps(c.getSource(), c.getArgument("dimension", DimensionType.class)))
                     )
+                ).
+                then(literal("tracking").
+                    executes(c -> sendTrackingReport(c.getSource())).
+                    then(literal("start").
+                        executes(c -> startTracking(c.getSource(),null, null)).
+                        then(argument("min", BlockPosArgumentType.create()).
+                        then(argument("max", BlockPosArgumentType.create()).
+                            executes(c -> startTracking(c.getSource(),
+                                BlockPosArgumentType.getBlockPos(c, "min"),
+                                BlockPosArgumentType.getBlockPos(c, "max")
+                            ))))
+                    ).
+                    then(literal("stop").
+                        executes(c -> stopTracking(c.getSource()))
+                    )
                 );
         dispatcher.register(builder);
+    }
+
+    private static int sendTrackingReport(ServerCommandSource source) throws CommandSyntaxException {
+        SpawnTracker tracker = SpawnTracker.getTracker(source.getPlayer());
+        if (tracker == null) {
+            Messenger.m(source, "d No tracker active");
+            return 1;
+        }
+        tracker.sendReport();
+        return 1;
+    }
+
+    private static int startTracking(ServerCommandSource source, BlockPos min, BlockPos max) throws CommandSyntaxException {
+        SpawnTracker tracker = SpawnTracker.getOrCreateTracker(source.getPlayer(), min, max);
+        if (tracker.isActive()) {
+            Messenger.m(source, "d Tracking already active");
+            return 1;
+        }
+        tracker.start();
+        Messenger.m(source, "e Tracking started");
+        return 1;
+    }
+
+    private static int stopTracking(ServerCommandSource source) throws CommandSyntaxException {
+        SpawnTracker tracker = SpawnTracker.getTracker(source.getPlayer());
+        if (tracker == null) {
+            Messenger.m(source, "d No tracker active");
+            return 1;
+        }
+        tracker.stop();
+        Messenger.m(source, "e Tracking stopped");
+        tracker.sendReport();
+        return 1;
     }
 
     private static int sendMobcaps(ServerCommandSource source, DimensionType dimension) {
