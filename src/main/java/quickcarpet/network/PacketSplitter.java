@@ -1,8 +1,12 @@
 package quickcarpet.network;
 
 import io.netty.buffer.Unpooled;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.packet.CustomPayloadS2CPacket;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.network.listener.PacketListener;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.packet.CustomPayloadC2SPacket;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
@@ -18,12 +22,18 @@ public class PacketSplitter {
     public static final int MAX_PAYLOAD_PER_PACKET_S2C = MAX_TOTAL_PER_PACKET_S2C - 5;
     public static final int MAX_TOTAL_PER_PACKET_C2S = 32767;
     public static final int MAX_PAYLOAD_PER_PACKET_C2S = MAX_TOTAL_PER_PACKET_C2S - 5;
-    public static final int DEFAULT_MAX_RECEIVE_SIZE = 104876;
+    public static final int DEFAULT_MAX_RECEIVE_SIZE_C2S = 1048576;
+    public static final int DEFAULT_MAX_RECEIVE_SIZE_S2C = 67108864;
 
-    private static final Map<Pair<ServerPlayerEntity, Identifier>, ReadingSession> readingSessions = new HashMap<>();
+    private static final Map<Pair<PacketListener, Identifier>, ReadingSession> readingSessions = new HashMap<>();
 
-    public static void send(ServerPlayerEntity player, Identifier channel, PacketByteBuf packet) {
-        send(packet, MAX_PAYLOAD_PER_PACKET_S2C, buf -> player.networkHandler.sendPacket(new CustomPayloadS2CPacket(channel, buf)));
+    public static void send(ServerPlayNetworkHandler networkHandler, Identifier channel, PacketByteBuf packet) {
+        send(packet, MAX_PAYLOAD_PER_PACKET_S2C, buf -> networkHandler.sendPacket(new CustomPayloadS2CPacket(channel, buf)));
+    }
+
+    @Environment(EnvType.CLIENT)
+    public static void send(ClientPlayNetworkHandler networkHandler, Identifier channel, PacketByteBuf packet) {
+        send(packet, MAX_PAYLOAD_PER_PACKET_C2S, buf -> networkHandler.sendPacket(new CustomPayloadC2SPacket(channel, buf)));
     }
 
     public static void send(PacketByteBuf packet, int payloadLimit, Consumer<PacketByteBuf> sender) {
@@ -40,21 +50,32 @@ public class PacketSplitter {
         packet.release();
     }
 
-    public static PacketByteBuf receive(ServerPlayerEntity player, CustomPayloadC2SPacket message) {
-        return receive(player, message, DEFAULT_MAX_RECEIVE_SIZE);
+    public static PacketByteBuf receive(ServerPlayNetworkHandler networkHandler, CustomPayloadC2SPacket message) {
+        return receive(networkHandler, message, DEFAULT_MAX_RECEIVE_SIZE_C2S);
     }
 
-    public static PacketByteBuf receive(ServerPlayerEntity player, CustomPayloadC2SPacket message, int maxLength) {
+    public static PacketByteBuf receive(ServerPlayNetworkHandler networkHandler, CustomPayloadC2SPacket message, int maxLength) {
         ICustomPayloadC2SPacket messageAccessor = (ICustomPayloadC2SPacket) message;
-        Pair<ServerPlayerEntity, Identifier> key = Pair.of(player, messageAccessor.getChannel());
+        Pair<PacketListener, Identifier> key = Pair.of(networkHandler, messageAccessor.getChannel());
         return readingSessions.computeIfAbsent(key, ReadingSession::new).receive(messageAccessor.getData(), maxLength);
     }
 
+    @Environment(EnvType.CLIENT)
+    public static PacketByteBuf receive(ClientPlayNetworkHandler networkHandler, CustomPayloadS2CPacket message) {
+        return receive(networkHandler, message, DEFAULT_MAX_RECEIVE_SIZE_S2C);
+    }
+
+    @Environment(EnvType.CLIENT)
+    public static PacketByteBuf receive(ClientPlayNetworkHandler networkHandler, CustomPayloadS2CPacket message, int maxLength) {
+        Pair<PacketListener, Identifier> key = Pair.of(networkHandler, message.getChannel());
+        return readingSessions.computeIfAbsent(key, ReadingSession::new).receive(message.getData(), maxLength);
+    }
+
     private static class ReadingSession {
-        private final Pair<ServerPlayerEntity, Identifier> key;
+        private final Pair<PacketListener, Identifier> key;
         private int expectedSize = -1;
         private PacketByteBuf received;
-        private ReadingSession(Pair<ServerPlayerEntity, Identifier> key) {
+        private ReadingSession(Pair<PacketListener, Identifier> key) {
             this.key = key;
         }
 
