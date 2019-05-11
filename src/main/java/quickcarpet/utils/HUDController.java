@@ -8,7 +8,6 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Pair;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.dimension.DimensionType;
 import quickcarpet.helper.HopperCounter;
 import quickcarpet.helper.Mobcaps;
@@ -75,8 +74,8 @@ public class HUDController
     }
     private static void log_tps(MinecraftServer server)
     {
-        double MSPT = MathHelper.average(server.lastTickLengths) * 1.0E-6D;
-        double TPS = 1000.0 / Math.max(TickSpeed.isWarping ? 0.0 : TickSpeed.ms_per_tick, MSPT);
+        double MSPT = TickSpeed.getMSPT();
+        double TPS = TickSpeed.calculateTPS(MSPT);
         String color = Messenger.heatmap_color(MSPT, TickSpeed.ms_per_tick);
         Component[] message = new Component[]{Messenger.c(
                 "g TPS: ", String.format(Locale.US, "%s %.1f",color, TPS),

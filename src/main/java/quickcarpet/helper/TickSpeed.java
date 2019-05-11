@@ -7,7 +7,9 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.util.math.MathHelper;
 import quickcarpet.QuickCarpet;
+import quickcarpet.pubsub.PubSubInfoProvider;
 import quickcarpet.utils.Messenger;
 
 public class TickSpeed {
@@ -25,6 +27,12 @@ public class TickSpeed {
     public static boolean process_entities = true;
     public static boolean is_paused = false;
     public static boolean is_superHot = false;
+
+
+    static {
+        new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "minecraft.performance.mspt", 20, TickSpeed::getMSPT);
+        new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "minecraft.performance.tps", 20, TickSpeed::getTPS);
+    }
 
     public static void reset_player_active_timeout()
     {
@@ -244,4 +252,16 @@ public class TickSpeed {
         return send(source, "Server TPS = " + GREEN + serverTPS);
     }
 
+
+    public static double getMSPT() {
+        return MathHelper.average(QuickCarpet.minecraft_server.lastTickLengths) * 1.0E-6D;
+    }
+
+    public static double calculateTPS(double mspt) {
+        return 1000.0D / Math.max(TickSpeed.isWarping ? 0.0 : TickSpeed.ms_per_tick, mspt);
+    }
+
+    public static double getTPS() {
+        return calculateTPS(getMSPT());
+    }
 }

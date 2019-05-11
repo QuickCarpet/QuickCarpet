@@ -8,6 +8,8 @@ import quickcarpet.commands.*;
 import quickcarpet.helper.TickSpeed;
 import quickcarpet.logging.LoggerRegistry;
 import quickcarpet.network.PluginChannelManager;
+import quickcarpet.pubsub.PubSubManager;
+import quickcarpet.pubsub.PubSubMessenger;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.CarpetRegistry;
 import quickcarpet.utils.HUDController;
@@ -15,11 +17,14 @@ import quickcarpet.utils.HUDController;
 public class QuickCarpet implements ModInitializer {
     public static MinecraftServer minecraft_server;
     public static PluginChannelManager pluginChannels;
+    public static final PubSubManager PUBSUB = new PubSubManager();
+    public static final PubSubMessenger PUBSUB_MESSENGER = new PubSubMessenger(PUBSUB);
 
     public static void init(MinecraftServer server) //Constructor of this static single ton class
     {
         minecraft_server = server;
         pluginChannels = new PluginChannelManager(server);
+        pluginChannels.register(PUBSUB_MESSENGER);
     }
 
     public static void onServerLoaded(MinecraftServer server) {
