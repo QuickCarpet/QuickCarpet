@@ -27,7 +27,8 @@
     "MixinCraftingTableBlock",
     "MixinPistonBlock",
     "MixinPlayerEntity",
-    "MixinDispenserBehaviorFireCharge"
+    "MixinDispenserBehaviorFireCharge",
+    "MixinSpawnHelper"
   ],
   "client": [
     "MixinIntegratedServer",
