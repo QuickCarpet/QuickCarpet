@@ -32,6 +32,7 @@
     "MixinFloatingIslandsChunkGenerator",
     "ICustomPayloadC2SPacket",
     "MixinServerPlayNetworkHandler",
+    "MixinThreadedAnvilChunkStorage",
     "skyblock.MixinLevelGeneratorType",
     "skyblock.MixinOverworldDimension",
     "skyblock.MixinTheNetherDimension",
