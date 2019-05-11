@@ -8,6 +8,7 @@ import quickcarpet.commands.*;
 import quickcarpet.helper.TickSpeed;
 import quickcarpet.logging.LoggerRegistry;
 import quickcarpet.network.PluginChannelManager;
+import quickcarpet.network.channels.StructureChannel;
 import quickcarpet.pubsub.PubSubManager;
 import quickcarpet.pubsub.PubSubMessenger;
 import quickcarpet.settings.Settings;
@@ -25,6 +26,7 @@ public class QuickCarpet implements ModInitializer {
         minecraft_server = server;
         pluginChannels = new PluginChannelManager(server);
         pluginChannels.register(PUBSUB_MESSENGER);
+        pluginChannels.register(new StructureChannel());
     }
 
     public static void onServerLoaded(MinecraftServer server) {
@@ -34,6 +36,7 @@ public class QuickCarpet implements ModInitializer {
     public static void tick(MinecraftServer server) {
         TickSpeed.tick(server);
         HUDController.update_hud(server);
+        StructureChannel.instance.tick();
     }
     
     public static void onGameStarted() {

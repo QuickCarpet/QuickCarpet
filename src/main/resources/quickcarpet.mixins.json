@@ -31,7 +31,8 @@
     "MixinSpawnHelper",
     "MixinFloatingIslandsChunkGenerator",
     "ICustomPayloadC2SPacket",
-    "MixinServerPlayNetworkHandler"
+    "MixinServerPlayNetworkHandler",
+    "MixinThreadedAnvilChunkStorage"
   ],
   "client": [
     "MixinIntegratedServer",
