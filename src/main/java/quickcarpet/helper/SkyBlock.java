@@ -13,6 +13,7 @@ import net.minecraft.util.BlockMirror;
 import net.minecraft.util.BlockRotation;
 import net.minecraft.util.PackedIntegerArray;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.ChunkRegion;
 import net.minecraft.world.Heightmap;
@@ -108,7 +109,7 @@ public class SkyBlock {
             BlockMirror mirror = access.getMirror();
             if (mirror != BlockMirror.NONE) state = state.mirror(mirror);
             BlockRotation rotation = piece.getRotation();
-            if (rotation != BlockRotation.ROT_0) state = state.rotate(rotation);
+            if (rotation != BlockRotation.NONE) state = state.rotate(rotation);
 
             setBlockInChunk(chunk, pos, state);
         }
