@@ -80,35 +80,51 @@ public abstract class MixinMinecraftServer
     }
     
     // Replaced the above cancelled while statement with this one
+    // could possibly just inject that mspt selection at the beginning of the loop, but then adding all mspt's to
+    // replace 50L will be a hassle
     @Inject(method = "run", at = @At(value = "INVOKE", shift = At.Shift.AFTER,
             target = "Lnet/minecraft/server/MinecraftServer;setFavicon(Lnet/minecraft/server/ServerMetadata;)V"))
     private void modifiedRunLoop(CallbackInfo ci)
     {
         while (this.running)
         {
-            long long_1 = SystemUtil.getMeasuringTimeMs() - this.timeReference;
-            if (long_1 > TickSpeed.warn_time/*2000L*/ && this.timeReference - this.field_4557 >= 15000L)
+            //long long_1 = SystemUtil.getMeasuringTimeMs() - this.timeReference;
+            //CM deciding on tick speed
+            long mspt = 0L;
+            long long_1 = 0L;
+            if (TickSpeed.time_warp_start_time != 0 && TickSpeed.continueWarp())
             {
-                long long_2 = long_1 / TickSpeed.ms_per_tick;//50L;
+                //making sure server won't flop after the warp or if the warp is interrupted
+                this.timeReference = this.field_4557 = SystemUtil.getMeasuringTimeMs();
+            }
+            else
+            {
+                mspt = TickSpeed.mspt; // regular tick
+                long_1 = SystemUtil.getMeasuringTimeMs() - this.timeReference;
+            }
+            //end tick deciding
+            //smoothed out delay to include mcpt component. With 50L gives defaults.
+            if (long_1 > /*2000L*/1000L+20*mspt && this.timeReference - this.field_4557 >= /*15000L*/10000L+100*mspt)
+            {
+                long long_2 = long_1 / mspt;//50L;
                 LOGGER.warn("Can't keep up! Is the server overloaded? Running {}ms or {} ticks behind", long_1, long_2);
-                this.timeReference += long_2 * TickSpeed.ms_per_tick;//50L;
+                this.timeReference += long_2 * mspt;//50L;
                 this.field_4557 = this.timeReference;
             }
-        
-            this.timeReference += TickSpeed.ms_per_tick;//50L;
+            
+            this.timeReference += mspt;//50L;
             if (this.profilerStartQueued)
             {
                 this.profilerStartQueued = false;
                 this.profiler.getController().enable();
             }
-        
+            
             this.profiler.startTick();
             this.profiler.push("tick");
-            TickSpeed.processWarp((MinecraftServer)(Object)this);
             this.tick(this::shouldKeepTicking);
             this.profiler.swap("nextTickWait");
             this.field_19249 = true;
-            this.field_19248 = Math.max(SystemUtil.getMeasuringTimeMs() + 50L, this.timeReference);
+            this.field_19248 = Math.max(SystemUtil.getMeasuringTimeMs() + /*50L*/ mspt, this.timeReference);
             this.method_16208();
             this.profiler.pop();
             this.profiler.endTick();
