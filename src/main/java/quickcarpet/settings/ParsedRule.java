@@ -11,6 +11,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.server.command.CommandSource;
+import quickcarpet.utils.Reflection;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -36,7 +37,7 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
     private T saved;
     private String savedAsString;
 
-    ParsedRule(SettingsManager manager, Field field, Rule rule) throws IllegalAccessException, InstantiationException {
+    ParsedRule(SettingsManager manager, Field field, Rule rule) {
         this.manager = manager;
         this.rule = rule;
         this.field = field;
@@ -45,8 +46,8 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
         this.description = rule.desc();
         this.extraInfo = ImmutableList.copyOf(rule.extra());
         this.categories = ImmutableList.copyOf(rule.category());
-        this.validator = ((Class<Validator<T>>) rule.validator()).newInstance();
-        this.onChange = ((Class<ChangeListener<T>>) rule.onChange()).newInstance();
+        this.validator = Reflection.callPrivateConstructor(rule.validator());
+        this.onChange = Reflection.callPrivateConstructor(rule.onChange());
         this.defaultValue = get();
         this.defaultAsString = convertToString(this.defaultValue);
         if (this.type == boolean.class) {
