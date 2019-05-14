@@ -1,6 +1,8 @@
 package quickcarpet.settings;
 
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import quickcarpet.utils.BetterPotionListener;
+import quickcarpet.utils.Trades;
 
 import static quickcarpet.settings.RuleCategory.*;
 
@@ -99,6 +101,20 @@ public class Settings {
     
     @Rule(desc = "Better potions", category = {EXPERIMENTAL, FEATURE}, onChange = BetterPotionListener.class)
     public static boolean betterPotions = false;
+
+    @Rule(desc = "Add trades to the wandering trader for Skyblock", category = {EXPERIMENTAL, FEATURE}, onChange = WanderingTraderSkyblockTradesChange.class)
+    public static boolean wanderingTraderSkyblockTrades = false;
+
+    private static class WanderingTraderSkyblockTradesChange implements ChangeListener<Boolean> {
+        @Override
+        public void onChange(ParsedRule<Boolean> rule) {
+            if (wanderingTraderSkyblockTrades) {
+                Trades.mergeWanderingTraderOffers(Trades.getSkyblockWanderingTraderOffers());
+            } else {
+                Trades.mergeWanderingTraderOffers(new Int2ObjectOpenHashMap<>());
+            }
+        }
+    }
 
     static {
         MANAGER.parse();

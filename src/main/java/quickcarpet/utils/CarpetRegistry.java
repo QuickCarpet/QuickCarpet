@@ -16,7 +16,9 @@ import java.util.function.Supplier;
 public class CarpetRegistry {
     // Initializes Reflection
     public static final BlockEntityType<CraftingTableBlockEntity> CRAFTING_TABLE_BLOCK_ENTITY_TYPE = registerBlockEntity("carpet:crafting_table", CraftingTableBlockEntity::new, Blocks.CRAFTING_TABLE);
-    
+
+    public static final Int2ObjectMap<TradeOffers.Factory[]> VANILLA_WANDERING_TRADER_OFFERS = new Int2ObjectOpenHashMap<>(TradeOffers.WANDERING_TRADER_TRADES);
+
     public static Potion SUPER_LONG_NIGHT_VISION;
     public static Potion SUPER_LONG_INVISIBILITY;
     public static Potion SUPER_LONG_LEAPING;

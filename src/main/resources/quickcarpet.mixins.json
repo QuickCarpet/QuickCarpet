@@ -35,7 +35,6 @@
     "skyblock.MixinTheEndDimension",
     "skyblock.IProtoChunk",
     "skyblock.IStructurePiece",
-    "skyblock.MixinTradeOffers",
     "skyblock.MixinPotions",
     "skyblock.MixinBrewingRecipeRegistry",
     "skyblock.IMixinBrewingRecipeRegistry"
