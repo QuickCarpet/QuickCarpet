@@ -35,7 +35,10 @@
     "skyblock.MixinTheEndDimension",
     "skyblock.IProtoChunk",
     "skyblock.IStructurePiece",
-    "skyblock.MixinTradeOffers"
+    "skyblock.MixinTradeOffers",
+    "skyblock.MixinPotions",
+    "skyblock.MixinBrewingRecipeRegistry",
+    "skyblock.IMixinBrewingRecipeRegistry"
   ],
   "client": [
     "MixinIntegratedServer",

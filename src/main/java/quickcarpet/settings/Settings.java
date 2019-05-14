@@ -1,5 +1,7 @@
 package quickcarpet.settings;
 
+import quickcarpet.utils.BetterPotionListener;
+
 import static quickcarpet.settings.RuleCategory.*;
 
 public class Settings {
@@ -94,6 +96,9 @@ public class Settings {
 
     @Rule(desc = "Automatic crafting table", category = {FEATURE, EXPERIMENTAL})
     public static boolean autoCraftingTable = false;
+    
+    @Rule(desc = "Better potions", category = {EXPERIMENTAL, FEATURE}, onChange = BetterPotionListener.class)
+    public static boolean betterPotions = false;
 
     static {
         MANAGER.parse();
