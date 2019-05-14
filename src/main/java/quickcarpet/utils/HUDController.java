@@ -76,7 +76,7 @@ public class HUDController
     {
         double MSPT = TickSpeed.getMSPT();
         double TPS = TickSpeed.calculateTPS(MSPT);
-        String color = Messenger.heatmap_color(MSPT, TickSpeed.ms_per_tick);
+        String color = Messenger.heatmap_color(MSPT,TickSpeed.mspt);
         Component[] message = new Component[]{Messenger.c(
                 "g TPS: ", String.format(Locale.US, "%s %.1f",color, TPS),
                 "g  MSPT: ", String.format(Locale.US,"%s %.1f", color, MSPT))};

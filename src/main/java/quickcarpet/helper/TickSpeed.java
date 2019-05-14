@@ -13,7 +13,7 @@ import quickcarpet.pubsub.PubSubInfoProvider;
 import quickcarpet.utils.Messenger;
 
 public class TickSpeed {
-
+    
     public static final int PLAYER_GRACE = 2;
     public static float tickrate = 20.0f;
     public static long mspt = 50l;
@@ -27,13 +27,12 @@ public class TickSpeed {
     public static boolean process_entities = true;
     public static boolean is_paused = false;
     public static boolean is_superHot = false;
-
-
+    
     static {
         new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "minecraft.performance.mspt", 20, TickSpeed::getMSPT);
         new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "minecraft.performance.tps", 20, TickSpeed::getTPS);
     }
-
+    
     public static void reset_player_active_timeout()
     {
         if (player_active_timeout < PLAYER_GRACE)
@@ -41,12 +40,12 @@ public class TickSpeed {
             player_active_timeout = PLAYER_GRACE;
         }
     }
-
+    
     public static void add_ticks_to_run_in_pause(int ticks)
     {
         player_active_timeout = PLAYER_GRACE+ticks;
     }
-
+    
     public static void tickrate(float rate)
     {
         tickrate = rate;
@@ -57,7 +56,7 @@ public class TickSpeed {
             tickrate = 1000.0f;
         }
     }
-
+    
     public static Component tickrate_advance(PlayerEntity player, int advance, String callback, ServerCommandSource source)
     {
         if (0 == advance)
@@ -79,10 +78,10 @@ public class TickSpeed {
         tick_warp_sender = source;
         return Messenger.c("gi Warp speed ....");
     }
-
+    
     public static void finish_time_warp()
     {
-
+        
         long completed_ticks = time_warp_scheduled_ticks - time_bias;
         double milis_to_complete = System.nanoTime()-time_warp_start_time;
         if (milis_to_complete == 0.0)
@@ -100,7 +99,7 @@ public class TickSpeed {
             try
             {
                 int j = icommandmanager.execute(tick_warp_sender, tick_warp_callback);
-
+                
                 if (j < 1)
                 {
                     if (time_advancerer != null)
@@ -129,9 +128,9 @@ public class TickSpeed {
             Messenger.print_server_message(QuickCarpet.minecraft_server, String.format("... Time warp completed with %d tps, or %.2f mspt",tps, mspt ));
         }
         time_bias = 0;
-
+        
     }
-
+    
     public static boolean continueWarp()
     {
         if (time_bias > 0)
@@ -149,7 +148,7 @@ public class TickSpeed {
             return false;
         }
     }
-
+    
     public static void tick(MinecraftServer server)
     {
         process_entities = true;
@@ -169,12 +168,11 @@ public class TickSpeed {
             if (player_active_timeout <= 0)
             {
                 process_entities = false;
-
+                
             }
         }
-
-
     }
+    
     
     // EDD's Tick warping stuff
     private static final String SS = "\u00A7", RED = SS + 'c', GREEN = SS + 'a', RESET = SS + 'r', CYAN =  SS + 'b';
@@ -258,7 +256,7 @@ public class TickSpeed {
     }
 
     public static double calculateTPS(double mspt) {
-        return 1000.0D / Math.max(TickSpeed.isWarping ? 0.0 : TickSpeed.ms_per_tick, mspt);
+        return 1000.0D / Math.max((TickSpeed.time_warp_start_time != 0)?0.0:TickSpeed.mspt, mspt);
     }
 
     public static double getTPS() {
