@@ -30,15 +30,11 @@ public class SettingsManager {
 
     void parse() {
         if (parsed) throw new IllegalStateException("Already parsed");
-        try {
-            for (Field f : this.settingsClass.getDeclaredFields()) {
-                Rule rule = f.getAnnotation(Rule.class);
-                if (rule == null) continue;
-                ParsedRule parsed = new ParsedRule(this, f, rule);
-                rules.put(parsed.name, parsed);
-            }
-        } catch (ReflectiveOperationException e) {
-            throw new RuntimeException(e);
+        for (Field f : this.settingsClass.getDeclaredFields()) {
+            Rule rule = f.getAnnotation(Rule.class);
+            if (rule == null) continue;
+            ParsedRule parsed = new ParsedRule(this, f, rule);
+            rules.put(parsed.name, parsed);
         }
         this.parsed = true;
     }
