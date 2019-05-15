@@ -8,7 +8,6 @@ import net.minecraft.village.TradeOffers;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
-import java.lang.invoke.MethodType;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -18,12 +17,13 @@ public class Reflection {
     public static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
 
     private static final Class<? extends TradeOffers.Factory> SELL_ITEM_FACTORY_CLASS = TradeOffers.WANDERING_TRADER_TRADES.get(1)[0].getClass();
-    private static final MethodType SELL_ITEM_FACTORY_CONSTRUCTOR_TYPE = MethodType.methodType(void.class, ItemStack.class, int.class, int.class, int.class, int.class, float.class);
     private static final MethodHandle newSellItemFactoryHandle = getNewSellItemFactoryHandle();
 
     private static MethodHandle getNewSellItemFactoryHandle() {
         try {
-            return LOOKUP.findConstructor(SELL_ITEM_FACTORY_CLASS, SELL_ITEM_FACTORY_CONSTRUCTOR_TYPE);
+            Constructor<?> c = SELL_ITEM_FACTORY_CLASS.getDeclaredConstructor(ItemStack.class, int.class, int.class, int.class, int.class, float.class);
+            c.setAccessible(true);
+            return LOOKUP.unreflectConstructor(c);
         } catch (ReflectiveOperationException e) {
             e.printStackTrace();
             return null;
