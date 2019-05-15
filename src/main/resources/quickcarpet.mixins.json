@@ -13,7 +13,6 @@
     "MixinServerPlayerEntity",
     "MixinPlayerManager",
     "MixinPrimedTNTEntity",
-    "MixinMinecraftClient",
     "MixinExplosion",
     "IServerChunkManager",
     "IPlayerListHeaderS2CPacket",
@@ -46,7 +45,8 @@
   "client": [
     "MixinIntegratedServer",
     "MixinInGameHud",
-    "MixinPlayerListHud"
+    "MixinPlayerListHud",
+    "MixinMinecraftClient"
   ],
   "injectors": {
     "defaultRequire": 1
