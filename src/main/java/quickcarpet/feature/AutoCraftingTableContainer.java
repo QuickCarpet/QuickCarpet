@@ -74,11 +74,6 @@ public class AutoCraftingTableContainer extends CraftingTableContainer {
             super(inv, 0, 124, 35);
         }
 
-
-        public ItemStack onTakeItem(PlayerEntity player, ItemStack stack) {
-            return blockEntity.takeInvStack(0, stack.getAmount());
-        }
-
         @Override
         public boolean canInsert(ItemStack itemStack_1) {
             return false;
