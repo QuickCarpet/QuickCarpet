@@ -21,6 +21,8 @@ import quickcarpet.mixin.ICraftingInventory;
 import quickcarpet.utils.CarpetRegistry;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class CraftingTableBlockEntity extends LockableContainerBlockEntity implements SidedInventory, RecipeUnlocker, RecipeInputProvider {
@@ -28,6 +30,7 @@ public class CraftingTableBlockEntity extends LockableContainerBlockEntity imple
     private static final int[] INPUT_SLOTS = {1, 2, 3, 4, 5, 6, 7, 8, 9};
     public DefaultedList<ItemStack> inventory;
     public ItemStack output = ItemStack.EMPTY;
+    private List<AutoCraftingTableContainer> openContainers = new ArrayList<>();
 
     public CraftingTableBlockEntity() {
         this(CarpetRegistry.CRAFTING_TABLE_BLOCK_ENTITY_TYPE);
@@ -63,7 +66,9 @@ public class CraftingTableBlockEntity extends LockableContainerBlockEntity imple
 
     @Override
     protected Container createContainer(int id, PlayerInventory playerInventory) {
-        return new AutoCraftingTableContainer(id, playerInventory, this);
+        AutoCraftingTableContainer container = new AutoCraftingTableContainer(id, playerInventory, this);
+        this.openContainers.add(container);
+        return container;
     }
 
     @Override
@@ -134,6 +139,7 @@ public class CraftingTableBlockEntity extends LockableContainerBlockEntity imple
     public void setInvStack(int slot, ItemStack stack) {
         if (slot == 0) return;
         inventory.set(slot - 1, stack);
+        for (AutoCraftingTableContainer c : openContainers) c.onContentChanged(this);
     }
 
     @Override
@@ -193,5 +199,9 @@ public class CraftingTableBlockEntity extends LockableContainerBlockEntity imple
         }
         markDirty();
         return recipe.getOutput().copy();
+    }
+
+    public void onContainerClose(AutoCraftingTableContainer container) {
+        this.openContainers.remove(container);
     }
 }
