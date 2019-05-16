@@ -21,10 +21,7 @@ dependencies {
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	// Currently only used for resource pack support for the translation of "generator.skyblock"
-	modCompile "net.fabricmc:fabric:${project.fabric_version}"
-
-	// fix crash
-	compile "org.lwjgl:lwjgl-jemalloc:3.2.1"
+	// modCompile "net.fabricmc:fabric:${project.fabric_version}"
 
 	// javax.annotation.Nullable/Nonnull
 	compileOnly "com.google.code.findbugs:jsr305:3.0.1"
