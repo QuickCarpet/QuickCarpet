@@ -22,9 +22,6 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	// modCompile "net.fabricmc:fabric:${project.fabric_version}"
 
-	// fix crash
-	compile "org.lwjgl:lwjgl-jemalloc:3.2.1"
-
 	// javax.annotation.Nullable/Nonnull
 	compileOnly "com.google.code.findbugs:jsr305:3.0.1"
 }

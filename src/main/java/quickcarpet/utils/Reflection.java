@@ -57,16 +57,25 @@ public class Reflection {
      */
     public static <T extends BlockEntity> BlockEntityType.Builder<T> newBlockEntityTypeBuilder(Supplier<T> supplier, Block... blocks) {
         try {
-            return BlockEntityType.Builder.create(supplier); // 1.14
-        } catch (NoSuchMethodError e) {
-            Method m = Arrays.stream(BlockEntityType.Builder.class.getMethods()).filter(x -> x.getReturnType() == BlockEntityType.Builder.class).findFirst().get();
+            return newBlockEntityTypeBuilder_1_14(supplier);
+        } catch (ReflectiveOperationException | IllegalArgumentException e1) {
             try {
-                return (BlockEntityType.Builder<T>) m.invoke(null, supplier, blocks); // 1.14.1
-            } catch (ReflectiveOperationException e1) {
-                e1.addSuppressed(e);
-                throw new RuntimeException(e1);
+                return newBlockEntityTypeBuilder_1_14_1(supplier, blocks);
+            } catch (ReflectiveOperationException e2) {
+                e2.addSuppressed(e1);
+                throw new RuntimeException(e2);
             }
         }
+    }
+
+    private static <T extends BlockEntity> BlockEntityType.Builder<T> newBlockEntityTypeBuilder_1_14(Supplier<T> supplier) throws ReflectiveOperationException {
+        Method m = Arrays.stream(BlockEntityType.Builder.class.getMethods()).filter(x -> x.getReturnType() == BlockEntityType.Builder.class).findFirst().get();
+        return (BlockEntityType.Builder<T>) m.invoke(null, supplier);
+    }
+
+    private static <T extends BlockEntity> BlockEntityType.Builder<T> newBlockEntityTypeBuilder_1_14_1(Supplier<T> supplier, Block... blocks) throws ReflectiveOperationException {
+        Method m = Arrays.stream(BlockEntityType.Builder.class.getMethods()).filter(x -> x.getReturnType() == BlockEntityType.Builder.class).findFirst().get();
+        return (BlockEntityType.Builder<T>) m.invoke(null, supplier, blocks);
     }
 
     public static <T> T callPrivateConstructor(Class<T> cls) {
