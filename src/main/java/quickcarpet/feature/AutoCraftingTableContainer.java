@@ -2,7 +2,6 @@ package quickcarpet.feature;
 
 import net.minecraft.container.CraftingTableContainer;
 import net.minecraft.container.Slot;
-import net.minecraft.container.SlotActionType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
@@ -40,8 +39,17 @@ public class AutoCraftingTableContainer extends CraftingTableContainer {
     }
 
     @Override
-    public ItemStack onSlotClick(int slotId, int int_2, SlotActionType action, PlayerEntity player) {
-        return super.onSlotClick(slotId, int_2, action, player);
+    public ItemStack transferSlot(PlayerEntity player, int slot) {
+        if (slot == 0) {
+            ItemStack before = this.blockEntity.getInvStack(0).copy();
+            ItemStack current = before.copy();
+            if (!this.insertItem(current, 10, 46, true)) {
+                return ItemStack.EMPTY;
+            }
+            this.blockEntity.takeInvStack(0, before.getAmount() - current.getAmount());
+            return this.blockEntity.getInvStack(0);
+        }
+        return super.transferSlot(player, slot);
     }
 
     public void close(PlayerEntity player) {
