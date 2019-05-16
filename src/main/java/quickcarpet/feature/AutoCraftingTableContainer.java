@@ -1,18 +1,23 @@
 package quickcarpet.feature;
 
+import net.minecraft.client.network.packet.GuiSlotUpdateS2CPacket;
 import net.minecraft.container.CraftingTableContainer;
 import net.minecraft.container.Slot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.network.ServerPlayNetworkHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
 
 public class AutoCraftingTableContainer extends CraftingTableContainer {
     private final CraftingTableBlockEntity blockEntity;
+    private final PlayerEntity player;
 
     AutoCraftingTableContainer(int id, PlayerInventory playerInventory, CraftingTableBlockEntity blockEntity) {
         super(id, playerInventory);
         this.blockEntity = blockEntity;
+        this.player = playerInventory.player;
         slotList.clear();
         this.addSlot(new OutputSlot(this.blockEntity));
 
@@ -34,8 +39,11 @@ public class AutoCraftingTableContainer extends CraftingTableContainer {
     }
 
     @Override
-    public void onContentChanged(Inventory inventory_1) {
-
+    public void onContentChanged(Inventory inv) {
+        if (this.player instanceof ServerPlayerEntity) {
+            ServerPlayNetworkHandler netHandler = ((ServerPlayerEntity) this.player).networkHandler;
+            netHandler.sendPacket(new GuiSlotUpdateS2CPacket(this.syncId, 0, this.blockEntity.getInvStack(0)));
+        }
     }
 
     @Override
@@ -58,6 +66,7 @@ public class AutoCraftingTableContainer extends CraftingTableContainer {
             player.dropItem(playerInventory.getCursorStack(), false);
             playerInventory.setCursorStack(ItemStack.EMPTY);
         }
+        this.blockEntity.onContainerClose(this);
     }
 
     private class OutputSlot extends Slot {
