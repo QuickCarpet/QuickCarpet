@@ -34,6 +34,7 @@
     "MixinThreadedAnvilChunkStorage",
     "MixinWorldChunk",
     "MixinPistonBlockEntity",
+<<<<<<< HEAD
     "skyblock.MixinLevelGeneratorType",
     "skyblock.MixinOverworldDimension",
     "skyblock.MixinTheNetherDimension",
@@ -43,6 +44,9 @@
     "skyblock.MixinPotions",
     "skyblock.MixinBrewingRecipeRegistry",
     "skyblock.IMixinBrewingRecipeRegistry"
+=======
+    "MixinItemEntity"
+>>>>>>> 3c9d36a... added stackableShulkers from fabric-carpet
   ],
   "client": [
     "MixinIntegratedServer",
