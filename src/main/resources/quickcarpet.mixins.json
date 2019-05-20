@@ -32,7 +32,8 @@
     "ICustomPayloadC2SPacket",
     "MixinServerPlayNetworkHandler",
     "MixinThreadedAnvilChunkStorage",
-<<<<<<< HEAD
+    "MixinWorldChunk",
+    "MixinPistonBlockEntity",
     "skyblock.MixinLevelGeneratorType",
     "skyblock.MixinOverworldDimension",
     "skyblock.MixinTheNetherDimension",
@@ -42,10 +43,6 @@
     "skyblock.MixinPotions",
     "skyblock.MixinBrewingRecipeRegistry",
     "skyblock.IMixinBrewingRecipeRegistry"
-=======
-    "MixinWorldChunk",
-    "MixinPistonBlockEntity"
->>>>>>> 2f01497... added movableTE's (With help from 2no)
   ],
   "client": [
     "MixinIntegratedServer",
