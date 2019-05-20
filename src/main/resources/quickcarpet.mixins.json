@@ -33,7 +33,8 @@
     "MixinServerPlayNetworkHandler",
     "MixinThreadedAnvilChunkStorage",
     "MixinWorldChunk",
-    "MixinPistonBlockEntity"
+    "MixinPistonBlockEntity",
+    "MixinItemEntity"
   ],
   "client": [
     "MixinIntegratedServer",

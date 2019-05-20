@@ -97,6 +97,13 @@ public class Settings {
     
     @Rule(desc = "Pistons can push tile entities, like hoppers, chests etc.", category = {FEATURE, EXPERIMENTAL})
     public static boolean movableTE = false;
+    
+    @Rule(
+        desc = "Empty shulker boxes can stack to 64 when dropped on the ground",
+        extra = "To move them around between inventories, use shift click to move entire stacks",
+        category = SURVIVAL
+    )
+    public static boolean stackableShulkerBoxes = false;
 
     static {
         MANAGER.parse();
