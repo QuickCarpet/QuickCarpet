@@ -43,7 +43,9 @@
     "skyblock.IStructurePiece",
     "skyblock.MixinPotions",
     "skyblock.MixinBrewingRecipeRegistry",
-    "skyblock.IMixinBrewingRecipeRegistry"
+    "skyblock.IMixinBrewingRecipeRegistry",
+    "skyblock.MixinDaylightDetectorBlock",
+    "skyblock.MixinDaylightDetectorBlockEntity"
   ],
   "client": [
     "MixinIntegratedServer",

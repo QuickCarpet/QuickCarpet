@@ -125,6 +125,12 @@ public class Settings {
         category = SURVIVAL
     )
     public static boolean stackableShulkerBoxes = false;
+    
+    @Rule(
+       desc = "Blocklight Detector. Right click a daylight sensor with a light source to toggle. No visual indicator besides redstone power is given.",
+       category = {FEATURE, EXPERIMENTAL}
+    )
+    public static boolean blockLightDetector = false;
 
     static {
         MANAGER.parse();
