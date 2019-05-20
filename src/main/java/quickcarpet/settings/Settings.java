@@ -99,6 +99,7 @@ public class Settings {
     @Rule(desc = "Automatic crafting table", category = {FEATURE, EXPERIMENTAL})
     public static boolean autoCraftingTable = false;
     
+<<<<<<< HEAD
     @Rule(desc = "Better potions", category = {EXPERIMENTAL, FEATURE}, onChange = BetterPotionListener.class)
     public static boolean betterPotions = false;
 
@@ -115,6 +116,10 @@ public class Settings {
             }
         }
     }
+=======
+    @Rule(desc = "Pistons can push tile entities, like hoppers, chests etc.", category = {FEATURE, EXPERIMENTAL})
+    public static boolean movableTE = false;
+>>>>>>> 2f01497... added movableTE's (With help from 2no)
 
     static {
         MANAGER.parse();
