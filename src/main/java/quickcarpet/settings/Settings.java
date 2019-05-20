@@ -94,6 +94,9 @@ public class Settings {
 
     @Rule(desc = "Automatic crafting table", category = {FEATURE, EXPERIMENTAL})
     public static boolean autoCraftingTable = false;
+    
+    @Rule(desc = "Pistons can push tile entities, like hoppers, chests etc.", category = {FEATURE, EXPERIMENTAL})
+    public static boolean movableTE = false;
 
     static {
         MANAGER.parse();
