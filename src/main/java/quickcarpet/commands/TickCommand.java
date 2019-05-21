@@ -58,7 +58,12 @@ public class TickCommand {
                 then(literal("entities").
                         executes((c) -> healthEntities(c.getSource(), 100)).
                         then(argument("ticks", integer(20,24000)).
-                                executes((c) -> healthEntities(c.getSource(), getInteger(c, "ticks")))));
+                                executes((c) -> healthEntities(c.getSource(), getInteger(c, "ticks"))))).
+                then(literal("measure").
+                        executes(c -> measureCurrent(c.getSource())).
+                        then(argument("ticks", integer(10, 24000)).
+                                executes(c -> measure(c.getSource(), getInteger(c, "ticks")))))
+                ;
 
         dispatcher.register(literalargumentbuilder);
     }
@@ -104,5 +109,35 @@ public class TickCommand {
     {
         CarpetProfiler.startTickReport(CarpetProfiler.ReportType.ENTITIES, ticks);
         return 1;
+    }
+
+    private static int measureCurrent(ServerCommandSource source) {
+        printMSPTStats(source, TickSpeed.getMSPTStats());
+        return 1;
+    }
+
+    private static int measure(ServerCommandSource source, int ticks) {
+        TickSpeed.startMeasurement(source, ticks);
+        return 1;
+    }
+
+    public static void printMSPTStats(ServerCommandSource source, TickSpeed.MSPTStatistics stats) {
+        Messenger.m(source, "e Statistics collected over ", "c " + stats.count + " ", "e ticks", "g :");
+        Messenger.m(source, "w Load average (1m/5m/15m) [mspt]", "g : ",
+            String.format("c %.3f", TickSpeed.getExponential1MinuteMSPT()), "g , ",
+            String.format("c %.3f", TickSpeed.getExponential5MinuteMSPT()), "g , ",
+            String.format("c %.3f", TickSpeed.getExponential15MinuteMSPT())
+        );
+        Messenger.m(source, "w min, avg, max [mspt]", "g : ",
+                String.format("c %.3f", stats.min), "g , ",
+                String.format("c %.3f±%.3f", stats.mean, stats.stdDev), "g , ",
+                String.format("c %.3f", stats.max)
+        );
+        Messenger.m(source, "w Ticks >50ms", "g : ", String.format("c %.1f%%", stats.lagPercentage));
+        Messenger.m(source, "w 90th%, 95th%, 99th% [mspt]", "g : ",
+                String.format("c %.3f", stats.percentile90), "g , ",
+                String.format("c %.3f", stats.percentile95), "g , ",
+                String.format("c %.3f", stats.percentile99)
+                );
     }
 }

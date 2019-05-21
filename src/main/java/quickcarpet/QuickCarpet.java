@@ -31,6 +31,7 @@ public class QuickCarpet implements ModInitializer {
 
     public static void onServerLoaded(MinecraftServer server) {
         Settings.MANAGER.init(server);
+        TickSpeed.resetLoadAvg = true;
     }
 
     public static void tick(MinecraftServer server) {
