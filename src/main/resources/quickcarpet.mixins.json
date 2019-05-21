@@ -31,13 +31,18 @@
     "MixinFloatingIslandsChunkGenerator",
     "ICustomPayloadC2SPacket",
     "MixinServerPlayNetworkHandler",
-    "MixinThreadedAnvilChunkStorage"
+    "MixinThreadedAnvilChunkStorage",
+    "MixinWorldChunk",
+    "MixinPistonBlockEntity",
+    "MixinItemEntity"
   ],
   "client": [
     "MixinIntegratedServer",
     "MixinInGameHud",
     "MixinPlayerListHud",
-    "MixinMinecraftClient"
+    "MixinMinecraftClient",
+    "MixinBlockEntityRenderDispatcher",
+    "MixinPistonBlockEntityRenderer"
   ],
   "injectors": {
     "defaultRequire": 1
