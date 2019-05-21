@@ -9,8 +9,13 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.util.math.MathHelper;
 import quickcarpet.QuickCarpet;
+import quickcarpet.commands.TickCommand;
 import quickcarpet.pubsub.PubSubInfoProvider;
 import quickcarpet.utils.Messenger;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TickSpeed {
     
@@ -29,7 +34,7 @@ public class TickSpeed {
     public static boolean is_superHot = false;
     
     static {
-        new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "minecraft.performance.mspt", 20, TickSpeed::getMSPT);
+        new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "minecraft.performance.mspt", 20, TickSpeed::getCurrentMSPT);
         new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "minecraft.performance.tps", 20, TickSpeed::getTPS);
     }
     
@@ -171,6 +176,11 @@ public class TickSpeed {
                 
             }
         }
+        int ticks = server.getTicks();
+        if (ticks > 100 && ticks % 100 == 0) { // ignore spike at server start
+            updateLoadAvg();
+        }
+        Measurement.tickAll();
     }
     
     
@@ -251,8 +261,131 @@ public class TickSpeed {
     }
 
 
-    public static double getMSPT() {
+    public static double getCurrentMSPT() {
         return MathHelper.average(QuickCarpet.minecraft_server.lastTickLengths) * 1.0E-6D;
+    }
+
+    public static boolean resetLoadAvg = true;
+    private static double loadAvg1min;
+    private static final double exp1min = 1 / Math.exp(5. / (1 * 60.));
+    private static double loadAvg5min;
+    private static final double exp5min = 1 / Math.exp(5. / (5 * 60.));
+    private static double loadAvg15min;
+    private static final double exp15min = 1 / Math.exp(5. / (15 * 60.));
+
+    private static void updateLoadAvg() {
+        double currentLoad = getCurrentMSPT();
+        if (resetLoadAvg) {
+            loadAvg1min = currentLoad;
+            loadAvg5min = currentLoad;
+            loadAvg15min = currentLoad;
+            resetLoadAvg = false;
+            return;
+        }
+        loadAvg1min = loadAvg1min * exp1min + currentLoad * (1 - exp1min);
+        loadAvg5min = loadAvg1min * exp5min + currentLoad * (1 - exp5min);
+        loadAvg15min = loadAvg1min * exp15min + currentLoad * (1 - exp15min);
+    }
+
+    public static MSPTStatistics getMSPTStats() {
+        return new MSPTStatistics(QuickCarpet.minecraft_server.lastTickLengths);
+    }
+
+    public static class MSPTStatistics {
+        public final int count;
+        public final double min;
+        public final double max;
+        public final double mean;
+        public final double variance;
+        public final double stdDev;
+        public final double lagPercentage;
+        public final double percentile90;
+        public final double percentile95;
+        public final double percentile99;
+
+        private MSPTStatistics(long[] lastTickLengths) {
+            this.count = lastTickLengths.length;
+            long min = Long.MAX_VALUE;
+            long max = 0;
+            long total = 0;
+            int lagTicks = 0;
+            for (long tick : lastTickLengths) {
+                if (tick < min) min = tick;
+                else if (tick > max) max = tick;
+                total += tick;
+                if (tick > 50000000) lagTicks++;
+            }
+            double mean = (double) total / lastTickLengths.length;
+            double variance = 0;
+            for (long lastTickLength : lastTickLengths) {
+                double r = lastTickLength - mean;
+                variance += r * r;
+            }
+            variance /= lastTickLengths.length;
+            this.min = min / 1e6;
+            this.max = max / 1e6;
+            this.mean = mean / 1e6;
+            this.variance = variance / 1e6;
+            this.stdDev = Math.sqrt(variance) / 1e6;
+            this.lagPercentage = 100. * lagTicks / lastTickLengths.length;
+            long[] sorted = Arrays.copyOf(lastTickLengths, lastTickLengths.length);
+            Arrays.sort(sorted);
+            this.percentile90 = sorted[(90 * sorted.length) / 100 - 1] / 1e6;
+            this.percentile95 = sorted[(95 * sorted.length) / 100 - 1] / 1e6;
+            this.percentile99 = sorted[(99 * sorted.length) / 100 - 1] / 1e6;
+        }
+
+        @Override
+        public String toString() {
+            return String.format("min=%.3f, max=%.3f, avg=%.3f, stdDev=%.3f, >50=%.3f%%, 90%%=%.3f, 95%%=%.3f, 99%%=%.3f",
+                    min, max, mean, stdDev, lagPercentage, percentile90, percentile95, percentile99);
+        }
+    }
+
+    private static class Measurement {
+        private static Map<ServerCommandSource, Measurement> measurements = new HashMap<>();
+        public final ServerCommandSource source;
+        public final int length;
+        public final long[] tickLengths;
+        private int ticksRecorded;
+
+        private Measurement(ServerCommandSource source, int length) {
+            this.source = source;
+            this.length = length;
+            this.tickLengths = new long[length];
+            measurements.put(source, this);
+        }
+
+        private void tick() {
+            if (ticksRecorded >= length) {
+                TickCommand.printMSPTStats(source, new MSPTStatistics(tickLengths));
+                measurements.remove(source);
+                return;
+            }
+            int previous = (QuickCarpet.minecraft_server.getTicks() - 1) % 100;
+            tickLengths[ticksRecorded++] = QuickCarpet.minecraft_server.lastTickLengths[previous];
+        }
+
+        private static void tickAll() {
+            for (Measurement m : measurements.values()) m.tick();
+        }
+    }
+
+    public static void startMeasurement(ServerCommandSource source, int ticks) {
+        if (Measurement.measurements.containsKey(source)) return;
+        new Measurement(source, ticks);
+    }
+
+    public static double getExponential1MinuteMSPT() {
+        return loadAvg1min;
+    }
+
+    public static double getExponential5MinuteMSPT() {
+        return loadAvg5min;
+    }
+
+    public static double getExponential15MinuteMSPT() {
+        return loadAvg15min;
     }
 
     public static double calculateTPS(double mspt) {
@@ -260,6 +393,6 @@ public class TickSpeed {
     }
 
     public static double getTPS() {
-        return calculateTPS(getMSPT());
+        return calculateTPS(getCurrentMSPT());
     }
 }

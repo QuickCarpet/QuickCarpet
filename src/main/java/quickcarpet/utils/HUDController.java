@@ -74,7 +74,7 @@ public class HUDController
     }
     private static void log_tps(MinecraftServer server)
     {
-        double MSPT = TickSpeed.getMSPT();
+        double MSPT = TickSpeed.getCurrentMSPT();
         double TPS = TickSpeed.calculateTPS(MSPT);
         String color = Messenger.heatmap_color(MSPT,TickSpeed.mspt);
         Component[] message = new Component[]{Messenger.c(
