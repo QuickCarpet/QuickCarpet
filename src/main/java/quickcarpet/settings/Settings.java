@@ -132,6 +132,9 @@ public class Settings {
     )
     public static boolean blockLightDetector = false;
 
+    @Rule(desc = "Optimizes spawning", category = {OPTIMIZATIONS, EXPERIMENTAL})
+    public static boolean optimizedSpawning = false;
+
     static {
         MANAGER.parse();
     }
