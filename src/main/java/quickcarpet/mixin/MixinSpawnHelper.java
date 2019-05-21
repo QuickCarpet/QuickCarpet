@@ -3,8 +3,12 @@ package quickcarpet.mixin;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCategory;
+import net.minecraft.entity.EntityType;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BoundingBox;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.SpawnHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
@@ -16,6 +20,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+import quickcarpet.settings.Settings;
+import quickcarpet.utils.SpawnEntityCache;
 import quickcarpet.utils.SpawnTracker;
 
 @Mixin(SpawnHelper.class)
@@ -28,6 +34,9 @@ public class MixinSpawnHelper {
     private static boolean onSuccessfulSpawn(World world, Entity entity) {
         if (world.spawnEntity(entity)) {
             SpawnTracker.registerSpawn(entity);
+            if (Settings.optimizedSpawning) {
+                ((SpawnEntityCache) world).setCachedEntity(entity.getType(), null);
+            }
             return true;
         }
         return false;
@@ -42,5 +51,37 @@ public class MixinSpawnHelper {
         if (spawnEntry == null) return; // no type selected yet
         Vec3d pos = new Vec3d(blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5);
         SpawnTracker.registerAttempt(world.getDimension().getType(), pos, spawnEntry.type);
+    }
+
+    @Redirect(
+        method = "spawnEntitiesInChunk",
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;doesNotCollide(Lnet/minecraft/util/math/BoundingBox;)Z")
+    )
+    private static boolean doesNotCollide(World world, BoundingBox bbox) {
+        if (!Settings.optimizedSpawning) return world.doesNotCollide(bbox);
+        BlockPos.Mutable blockpos = new BlockPos.Mutable();
+        for (int x = MathHelper.floor(bbox.minX), maxx = MathHelper.ceil(bbox.maxX); x <= maxx; x++) {
+            for (int z = MathHelper.floor(bbox.minZ), maxz = MathHelper.ceil(bbox.maxZ); z <= maxz; z++) {
+                for (int y = MathHelper.floor(bbox.minY), maxy = MathHelper.ceil(bbox.maxY); y <= maxy; y++) {
+                    blockpos.set(x, y, z);
+                    if (world.getBlockState(blockpos).getCollisionShape(world, blockpos) != VoxelShapes.empty())
+                        return world.doesNotCollide(bbox);
+                }
+            }
+        }
+        return true;
+    }
+
+    @Redirect(method = "spawnEntitiesInChunk", at = @At(
+            value = "INVOKE",
+            target = "Lnet/minecraft/entity/EntityType;create(Lnet/minecraft/world/World;)Lnet/minecraft/entity/Entity;"
+    ))
+    private static Entity create(EntityType type, World world) {
+        if (!Settings.optimizedSpawning) return type.create(world);
+        Entity cached = ((SpawnEntityCache) world).getCachedEntity(type);
+        if (cached != null) return cached;
+        cached = type.create(world);
+        ((SpawnEntityCache) world).setCachedEntity(type, cached);
+        return cached;
     }
 }

@@ -2,6 +2,7 @@ package quickcarpet.mixin;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityType;
 import net.minecraft.util.Tickable;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Final;
@@ -10,11 +11,14 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import quickcarpet.utils.CarpetProfiler;
+import quickcarpet.utils.SpawnEntityCache;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 
 @Mixin(World.class)
-public abstract class MixinWorld {
+public abstract class MixinWorld implements SpawnEntityCache {
 
     @Shadow @Final public boolean isClient;
 
@@ -65,5 +69,17 @@ public abstract class MixinWorld {
         if (!this.isClient) {
             CarpetProfiler.endEntity((World) (Object) this);
         }
+    }
+
+    private final Map<EntityType<?>, Entity> CACHED_ENTITIES = new HashMap<>();
+
+    @Override
+    public <T extends Entity> T getCachedEntity(EntityType<T> type) {
+        return (T) CACHED_ENTITIES.get(type);
+    }
+
+    @Override
+    public <T extends Entity> void setCachedEntity(EntityType<T> type, T entity) {
+        CACHED_ENTITIES.put(type, entity);
     }
 }

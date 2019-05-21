@@ -95,6 +95,9 @@ public class Settings {
     @Rule(desc = "Automatic crafting table", category = {FEATURE, EXPERIMENTAL})
     public static boolean autoCraftingTable = false;
 
+    @Rule(desc = "Optimizes spawning", category = {OPTIMIZATIONS, EXPERIMENTAL})
+    public static boolean optimizedSpawning = false;
+
     static {
         MANAGER.parse();
     }
