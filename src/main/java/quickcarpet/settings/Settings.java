@@ -95,8 +95,8 @@ public class Settings {
     @Rule(desc = "Automatic crafting table", category = {FEATURE, EXPERIMENTAL})
     public static boolean autoCraftingTable = false;
     
-    @Rule(desc = "Pistons can push tile entities, like hoppers, chests etc.", category = {FEATURE, EXPERIMENTAL})
-    public static boolean movableTE = false;
+    @Rule(desc = "Pistons can push block entities, like hoppers, chests etc.", category = {FEATURE, EXPERIMENTAL})
+    public static boolean movableBlockEntities = false;
     
     @Rule(
         desc = "Empty shulker boxes can stack to 64 when dropped on the ground",

@@ -50,7 +50,7 @@ public abstract class MixinWorldChunk implements IWorldChunk
     private BlockEntity ifGetBlockEntity(WorldChunk worldChunk, BlockPos blockPos_1,
             WorldChunk.CreationType worldChunk$CreationType_1)
     {
-        if (!Settings.movableTE)
+        if (!Settings.movableBlockEntities)
         {
             return this.getBlockEntity(blockPos_1, WorldChunk.CreationType.CHECK);
         }
@@ -108,7 +108,7 @@ public abstract class MixinWorldChunk implements IWorldChunk
             
             if (!this.world.isClient)
             {
-                if (!(oldBlock instanceof PistonExtensionBlock))//this is a movableTE special case, if condition wasn't there it would remove the blockentity that was carried for some reason
+                if (!(oldBlock instanceof PistonExtensionBlock))//this is a movableBlockEntities special case, if condition wasn't there it would remove the blockentity that was carried for some reason
                     oldBlockState.onBlockRemoved(this.world, blockPos_1, newBlockState, boolean_1);//this kills it
             }
             else if (oldBlock != newBlock && oldBlock instanceof BlockEntityProvider)
