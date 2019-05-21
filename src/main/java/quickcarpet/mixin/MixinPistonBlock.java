@@ -47,7 +47,7 @@ public class MixinPistonBlock extends FacingBlock
     {
         Block block_1 = blockState_1.getBlock();
         //Make CommandBlocks movable, either use instanceof CommandBlock or the 3 cmd block objects,
-        if (quickcarpet.settings.Settings.movableTE && block_1 instanceof CommandBlock)
+        if (quickcarpet.settings.Settings.movableBlockEntities && block_1 instanceof CommandBlock)
         {
             cir.setReturnValue(true);
         }
@@ -70,7 +70,7 @@ public class MixinPistonBlock extends FacingBlock
         }
         else
         {
-            return !(quickcarpet.settings.Settings.movableTE && isPushableTileEntityBlock(block));
+            return !(quickcarpet.settings.Settings.movableBlockEntities && isPushableTileEntityBlock(block));
         }
     }
     @Inject(method = "move", at = @At(value = "INVOKE", shift = At.Shift.BEFORE,
@@ -81,7 +81,7 @@ public class MixinPistonBlock extends FacingBlock
             Direction direction_2, Set set_1)
     {
         //Get the blockEntities and remove them from the world before any magic starts to happen
-        if (quickcarpet.settings.Settings.movableTE)
+        if (quickcarpet.settings.Settings.movableBlockEntities)
         {
             list1_BlockEntities.set(Lists.<BlockEntity>newArrayList());
             for (int i = 0; i < list_1.size(); ++i)
@@ -111,7 +111,7 @@ public class MixinPistonBlock extends FacingBlock
     {
         BlockEntity blockEntityPiston = PistonExtensionBlock.createBlockEntityPiston((BlockState) list_2.get(int_3),
                 direction_1, boolean_1, false);
-        if (quickcarpet.settings.Settings.movableTE)
+        if (quickcarpet.settings.Settings.movableBlockEntities)
             ((IPistonBlockEntity) blockEntityPiston).setCarriedBlockEntity(list1_BlockEntities.get().get(int_3));
         world_1.setBlockEntity(blockPos_4, blockEntityPiston);
     }

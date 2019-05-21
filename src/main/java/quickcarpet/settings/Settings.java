@@ -117,7 +117,7 @@ public class Settings {
     }
 
     @Rule(desc = "Pistons can push tile entities, like hoppers, chests etc.", category = {FEATURE, EXPERIMENTAL})
-    public static boolean movableTE = false;
+    public static boolean movableBlockEntities = false;
     
     @Rule(
         desc = "Empty shulker boxes can stack to 64 when dropped on the ground",
@@ -125,7 +125,7 @@ public class Settings {
         category = SURVIVAL
     )
     public static boolean stackableShulkerBoxes = false;
-    
+
     @Rule(
        desc = "Blocklight Detector. Right click a daylight sensor with a light source to toggle. No visual indicator besides redstone power is given.",
        category = {FEATURE, EXPERIMENTAL}

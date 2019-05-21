@@ -23,7 +23,7 @@ public abstract class MixinPistonBlockEntityRenderer extends BlockEntityRenderer
             float float_1, int int_1, CallbackInfo ci)
     {
         if (!((IPistonBlockEntity) pistonBlockEntity_1).isRenderModeSet())
-            ((IPistonBlockEntity) pistonBlockEntity_1).setRenderCarriedBlockEntity(Settings.movableTE && ((IPistonBlockEntity) pistonBlockEntity_1).getCarriedBlockEntity() != null);
+            ((IPistonBlockEntity) pistonBlockEntity_1).setRenderCarriedBlockEntity(Settings.movableBlockEntities && ((IPistonBlockEntity) pistonBlockEntity_1).getCarriedBlockEntity() != null);
     }
     
     @Inject(method = "method_3576", at = @At("RETURN"))
