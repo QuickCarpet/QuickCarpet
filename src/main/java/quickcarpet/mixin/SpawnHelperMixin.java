@@ -60,9 +60,15 @@ public class SpawnHelperMixin {
     private static boolean doesNotCollide(World world, BoundingBox bbox) {
         if (!Settings.optimizedSpawning) return world.doesNotCollide(bbox);
         BlockPos.Mutable blockpos = new BlockPos.Mutable();
-        for (int x = MathHelper.floor(bbox.minX), maxx = MathHelper.ceil(bbox.maxX); x <= maxx; x++) {
-            for (int z = MathHelper.floor(bbox.minZ), maxz = MathHelper.ceil(bbox.maxZ); z <= maxz; z++) {
-                for (int y = MathHelper.floor(bbox.minY), maxy = MathHelper.ceil(bbox.maxY); y <= maxy; y++) {
+        int minX = MathHelper.floor(bbox.minX);
+        int minY = MathHelper.floor(bbox.minY);
+        int minZ = MathHelper.floor(bbox.minZ);
+        int maxX = MathHelper.floor(bbox.maxX);
+        int maxY = MathHelper.floor(bbox.maxY);
+        int maxZ = MathHelper.floor(bbox.maxZ);
+        for (int x = minX; x <= maxX; x++) {
+            for (int z = minZ; z <= maxZ; z++) {
+                for (int y = minY; y <= maxY; y++) {
                     blockpos.set(x, y, z);
                     if (world.getBlockState(blockpos).getCollisionShape(world, blockpos) != VoxelShapes.empty())
                         return world.doesNotCollide(bbox);
