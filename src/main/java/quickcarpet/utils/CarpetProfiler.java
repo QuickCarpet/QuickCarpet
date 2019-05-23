@@ -35,6 +35,8 @@ public class CarpetProfiler
         SPAWNING("Spawning", false),
         BLOCKS("Blocks", false),
         FLUIDS("Fluids", false),
+        RANDOM_TICKS("Random Ticks", false),
+        BLOCK_EVENTS("Block Events", false),
         ENTITIES("Entities", false),
         BLOCK_ENTITIES("Block Entities", false),
         VILLAGES("Villages", false),
