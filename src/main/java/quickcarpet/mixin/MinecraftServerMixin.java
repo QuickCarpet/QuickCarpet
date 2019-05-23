@@ -69,7 +69,7 @@ public abstract class MinecraftServerMixin
             UserCache userCache_1, WorldGenerationProgressListenerFactory worldGenerationProgressListenerFactory_1,
             String string_1, CallbackInfo ci)
     {
-        QuickCarpet.init((MinecraftServer) (Object) this);
+        QuickCarpet.getInstance().init((MinecraftServer) (Object) this);
     }
     
     // Cancel a while statement
@@ -138,7 +138,7 @@ public abstract class MinecraftServerMixin
         at = @At(value = "FIELD", target = "net/minecraft/server/MinecraftServer.ticks:I", shift = At.Shift.AFTER, ordinal = 0)
     )
     private void onTick(BooleanSupplier booleanSupplier_1, CallbackInfo ci) {
-        QuickCarpet.tick((MinecraftServer) (Object) this);
+        QuickCarpet.getInstance().tick((MinecraftServer) (Object) this);
         CarpetProfiler.startTick();
     }
 

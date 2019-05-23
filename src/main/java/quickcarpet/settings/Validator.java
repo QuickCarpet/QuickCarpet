@@ -2,7 +2,7 @@ package quickcarpet.settings;
 
 import java.util.Optional;
 
-interface Validator<T> {
+public interface Validator<T> {
     /**
      * Validate the new value of a rule
      * @param value The new value

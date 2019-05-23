@@ -4,9 +4,13 @@ import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import quickcarpet.commands.*;
 import quickcarpet.helper.TickSpeed;
 import quickcarpet.logging.LoggerRegistry;
+import quickcarpet.module.ModuleHost;
+import quickcarpet.module.QuickCarpetModule;
 import quickcarpet.network.PluginChannelManager;
 import quickcarpet.network.channels.StructureChannel;
 import quickcarpet.pubsub.PubSubManager;
@@ -15,37 +19,61 @@ import quickcarpet.settings.Settings;
 import quickcarpet.utils.CarpetRegistry;
 import quickcarpet.utils.HUDController;
 
-public class QuickCarpet implements ModInitializer {
-    public static MinecraftServer minecraft_server;
-    public static PluginChannelManager pluginChannels;
-    public static final PubSubManager PUBSUB = new PubSubManager();
-    public static final PubSubMessenger PUBSUB_MESSENGER = new PubSubMessenger(PUBSUB);
+import java.util.Set;
+import java.util.TreeSet;
 
-    public static void init(MinecraftServer server) //Constructor of this static single ton class
+public final class QuickCarpet implements ModInitializer, ModuleHost {
+    private static final Logger LOG = LogManager.getLogger();
+    private static QuickCarpet instance;
+
+    public static final PubSubManager PUBSUB = new PubSubManager();
+    public static MinecraftServer minecraft_server;
+
+    public PluginChannelManager pluginChannels;
+    public final Set<QuickCarpetModule> modules = new TreeSet<>();
+    private final PubSubMessenger pubSubMessenger = new PubSubMessenger(PUBSUB);
+
+    public QuickCarpet() {
+        instance = this;
+    }
+
+    public static QuickCarpet getInstance() {
+        return instance;
+    }
+
+    public void init(MinecraftServer server)
     {
         minecraft_server = server;
         pluginChannels = new PluginChannelManager(server);
-        pluginChannels.register(PUBSUB_MESSENGER);
+        pluginChannels.register(pubSubMessenger);
         pluginChannels.register(new StructureChannel());
+        for (QuickCarpetModule m : modules) m.onServerInit(server);
     }
 
-    public static void onServerLoaded(MinecraftServer server) {
+    public void onServerLoaded(MinecraftServer server) {
         Settings.MANAGER.init(server);
         TickSpeed.resetLoadAvg = true;
+        for (QuickCarpetModule m : modules) m.onServerLoaded(server);
     }
 
-    public static void tick(MinecraftServer server) {
+    public void tick(MinecraftServer server) {
         TickSpeed.tick(server);
         HUDController.update_hud(server);
         StructureChannel.instance.tick();
+        for (QuickCarpetModule m : modules) m.tick(server);
     }
     
-    public static void onGameStarted() {
+    public void onGameStarted() {
         LoggerRegistry.initLoggers();
         CarpetRegistry.init();
+        Settings.MANAGER.parse();
+        for (QuickCarpetModule m : modules) {
+            m.onGameStarted();
+            LOG.info(Build.NAME + " module " + m.getId() + " version " + m.getVersion() + " initialized");
+        }
     }
 
-    public static void registerCarpetCommands(CommandDispatcher<ServerCommandSource> dispatcher) {
+    public void registerCarpetCommands(CommandDispatcher<ServerCommandSource> dispatcher) {
         CarpetCommand.register(dispatcher);
         TickCommand.register(dispatcher);
         CarpetFillCommand.register(dispatcher);
@@ -57,6 +85,13 @@ public class QuickCarpet implements ModInitializer {
         SpawnCommand.register(dispatcher);
         PingCommand.register(dispatcher);
         CameraModeCommand.register(dispatcher);
+        for (QuickCarpetModule m : modules) m.registerCommands(dispatcher);
+    }
+
+    @Override
+    public void registerModule(QuickCarpetModule module) {
+        LOG.info(Build.NAME + " module " + module.getId() + " version " + module.getVersion() + " registered");
+        modules.add(module);
     }
 
     @Override

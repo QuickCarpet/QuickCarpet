@@ -16,6 +16,6 @@ public class ServerPlayNetworkHandlerMixin {
 
     @Inject(method = "onCustomPayload", at = @At("HEAD"))
     private void processCustomPacket(CustomPayloadC2SPacket packet, CallbackInfo ci) {
-        QuickCarpet.pluginChannels.process(this.player, packet);
+        QuickCarpet.getInstance().pluginChannels.process(this.player, packet);
     }
 }

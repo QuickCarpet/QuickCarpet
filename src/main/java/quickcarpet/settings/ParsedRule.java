@@ -11,9 +11,12 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.server.command.CommandSource;
+import quickcarpet.module.QuickCarpetModule;
 import quickcarpet.utils.Reflection;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.Optional;
@@ -23,6 +26,7 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
     public final Rule rule;
     public final Field field;
 
+    public final String shortName;
     public final String name;
     public final String description;
     public final ImmutableList<String> extraInfo;
@@ -38,10 +42,12 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
     private String savedAsString;
 
     ParsedRule(SettingsManager manager, Field field, Rule rule) {
+        if ((field.getModifiers() & Modifier.STATIC) == 0) throw new IllegalArgumentException(field + " is not static");
         this.manager = manager;
         this.rule = rule;
         this.field = field;
-        this.name = rule.name().isEmpty() ? field.getName() : rule.name();
+        this.shortName = SettingsManager.getDefaultRuleName(field, rule);
+        this.name = manager.getRuleName(field, rule);
         this.type = (Class<T>) field.getType();
         this.description = rule.desc();
         this.extraInfo = ImmutableList.copyOf(rule.extra());
@@ -83,6 +89,12 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
             }
         };
         throw new IllegalStateException("Unknown type " + type.getSimpleName());
+    }
+
+    @Nullable
+    public QuickCarpetModule getModule() {
+        if (!(manager instanceof ModuleSettingsManager)) return null;
+        return ((ModuleSettingsManager) manager).module;
     }
 
     public void set(String value) {
@@ -138,7 +150,7 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
 
     public void save() {
         rememberSaved();
-        this.manager.save();
+        Settings.MANAGER.save();
     }
 
     void load(String value) {
