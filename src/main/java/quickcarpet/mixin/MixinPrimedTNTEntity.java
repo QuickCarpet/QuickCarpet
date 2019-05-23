@@ -3,17 +3,16 @@ package quickcarpet.mixin;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.PrimedTntEntity;
+import net.minecraft.entity.TntEntity;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import quickcarpet.logging.LoggerRegistry;
 import quickcarpet.logging.loghelpers.TNTLogHelper;
 
-@Mixin(PrimedTntEntity.class)
+@Mixin(TntEntity.class)
 public abstract class MixinPrimedTNTEntity extends Entity
 {
     private TNTLogHelper logHelper = null;
