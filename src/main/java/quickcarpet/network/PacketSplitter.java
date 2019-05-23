@@ -11,7 +11,7 @@ import net.minecraft.server.network.packet.CustomPayloadC2SPacket;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 import org.apache.commons.lang3.tuple.Pair;
-import quickcarpet.mixin.ICustomPayloadC2SPacket;
+import quickcarpet.mixin.CustomPayloadC2SPacketAccessor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -55,7 +55,7 @@ public class PacketSplitter {
     }
 
     public static PacketByteBuf receive(ServerPlayNetworkHandler networkHandler, CustomPayloadC2SPacket message, int maxLength) {
-        ICustomPayloadC2SPacket messageAccessor = (ICustomPayloadC2SPacket) message;
+        CustomPayloadC2SPacketAccessor messageAccessor = (CustomPayloadC2SPacketAccessor) message;
         Pair<PacketListener, Identifier> key = Pair.of(networkHandler, messageAccessor.getChannel());
         return readingSessions.computeIfAbsent(key, ReadingSession::new).receive(messageAccessor.getData(), maxLength);
     }

@@ -24,12 +24,15 @@ import net.minecraft.world.biome.source.BiomeSource;
 import net.minecraft.world.biome.source.BiomeSourceType;
 import net.minecraft.world.biome.source.VanillaLayeredBiomeSource;
 import net.minecraft.world.biome.source.VanillaLayeredBiomeSourceConfig;
-import net.minecraft.world.chunk.*;
+import net.minecraft.world.chunk.ChunkSection;
+import net.minecraft.world.chunk.ChunkStatus;
+import net.minecraft.world.chunk.ProtoChunk;
+import net.minecraft.world.chunk.WorldChunk;
 import net.minecraft.world.dimension.TheEndDimension;
 import net.minecraft.world.gen.chunk.*;
 import net.minecraft.world.level.LevelGeneratorType;
-import quickcarpet.mixin.skyblock.IProtoChunk;
-import quickcarpet.mixin.skyblock.IStructurePiece;
+import quickcarpet.mixin.skyblock.ProtoChunkAccessor;
+import quickcarpet.mixin.skyblock.StructurePieceAccessor;
 
 import java.util.EnumSet;
 import java.util.Map;
@@ -70,7 +73,7 @@ public class SkyBlock {
         for (BlockPos bePos : chunk.getBlockEntityPositions()) {
             chunk.removeBlockEntity(bePos);
         }
-        ((IProtoChunk) chunk).getLightSources().clear();
+        ((ProtoChunkAccessor) chunk).getLightSources().clear();
         long[] emptyHeightmap = new PackedIntegerArray(9, 256).getStorage();
         for (Map.Entry<Heightmap.Type, Heightmap> heightmapEntry : chunk.getHeightmaps()) {
             heightmapEntry.getValue().setTo(emptyHeightmap);
@@ -98,12 +101,12 @@ public class SkyBlock {
     }
 
     private static BlockPos getBlockInStructurePiece(StructurePiece piece, int x, int y, int z) {
-        IStructurePiece access = (IStructurePiece) piece;
+        StructurePieceAccessor access = (StructurePieceAccessor) piece;
         return new BlockPos(access.invokeApplyXTransform(x, z), access.invokeApplyYTransform(y), access.invokeApplyZTransform(x, z));
     }
 
     private static void setBlockInStructure(StructurePiece piece, ProtoChunk chunk, BlockState state, int x, int y, int z) {
-        IStructurePiece access = (IStructurePiece) piece;
+        StructurePieceAccessor access = (StructurePieceAccessor) piece;
         BlockPos pos = getBlockInStructurePiece(piece, x, y, z);
         if (piece.getBoundingBox().contains(pos)) {
             BlockMirror mirror = access.getMirror();

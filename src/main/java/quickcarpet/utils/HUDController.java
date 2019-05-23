@@ -14,7 +14,7 @@ import quickcarpet.helper.Mobcaps;
 import quickcarpet.helper.TickSpeed;
 import quickcarpet.logging.LoggerRegistry;
 import quickcarpet.logging.loghelpers.PacketCounter;
-import quickcarpet.mixin.IPlayerListHeaderS2CPacket;
+import quickcarpet.mixin.PlayerListHeaderS2CPacketAccessor;
 
 import java.util.*;
 
@@ -37,8 +37,8 @@ public class HUDController
     public static void clear_player(PlayerEntity player)
     {
         PlayerListHeaderS2CPacket packet = new PlayerListHeaderS2CPacket();
-        ((IPlayerListHeaderS2CPacket)packet).setHeader(new TextComponent(""));
-        ((IPlayerListHeaderS2CPacket)packet).setFooter(new TextComponent(""));
+        ((PlayerListHeaderS2CPacketAccessor)packet).setHeader(new TextComponent(""));
+        ((PlayerListHeaderS2CPacketAccessor)packet).setFooter(new TextComponent(""));
         ((ServerPlayerEntity)player).networkHandler.sendPacket(packet);
     }
 
@@ -67,8 +67,8 @@ public class HUDController
         for (PlayerEntity player: player_huds.keySet())
         {
             PlayerListHeaderS2CPacket packet = new PlayerListHeaderS2CPacket();
-            ((IPlayerListHeaderS2CPacket)packet).setHeader(new TextComponent(""));
-            ((IPlayerListHeaderS2CPacket)packet).setFooter(Messenger.c(player_huds.get(player).toArray(new Object[0])));
+            ((PlayerListHeaderS2CPacketAccessor)packet).setHeader(new TextComponent(""));
+            ((PlayerListHeaderS2CPacketAccessor)packet).setFooter(Messenger.c(player_huds.get(player).toArray(new Object[0])));
             ((ServerPlayerEntity)player).networkHandler.sendPacket(packet);
         }
     }

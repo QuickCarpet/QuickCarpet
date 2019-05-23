@@ -16,7 +16,7 @@ import net.minecraft.recipe.*;
 import net.minecraft.util.DefaultedList;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.math.Direction;
-import quickcarpet.mixin.ICraftingInventory;
+import quickcarpet.mixin.CraftingInventoryAccessor;
 import quickcarpet.utils.CarpetRegistry;
 
 import javax.annotation.Nullable;
@@ -40,7 +40,7 @@ public class CraftingTableBlockEntity extends LockableContainerBlockEntity imple
     private CraftingTableBlockEntity(BlockEntityType<?> type) {
         super(type);
         this.inventory = DefaultedList.create(9, ItemStack.EMPTY);
-        ((ICraftingInventory) craftingInventory).setInventory(this.inventory);
+        ((CraftingInventoryAccessor) craftingInventory).setInventory(this.inventory);
     }
 
     @Override
