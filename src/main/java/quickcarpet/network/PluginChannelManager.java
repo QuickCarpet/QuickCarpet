@@ -12,7 +12,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import quickcarpet.mixin.ICustomPayloadC2SPacket;
+import quickcarpet.mixin.CustomPayloadC2SPacketAccessor;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -56,7 +56,7 @@ public class PluginChannelManager {
     }
 
     public void process(ServerPlayerEntity player, CustomPayloadC2SPacket packet) {
-        ICustomPayloadC2SPacket packetAccessor = (ICustomPayloadC2SPacket) packet;
+        CustomPayloadC2SPacketAccessor packetAccessor = (CustomPayloadC2SPacketAccessor) packet;
         Identifier channel = packetAccessor.getChannel();
         PacketByteBuf payload = packetAccessor.getData();
         switch(channel.toString()) {

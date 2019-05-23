@@ -6,7 +6,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Pair;
 import net.minecraft.world.dimension.DimensionType;
 import quickcarpet.QuickCarpet;
-import quickcarpet.mixin.IServerChunkManager;
+import quickcarpet.mixin.ServerChunkManagerAccessor;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -17,7 +17,7 @@ public class Mobcaps {
     }
 
     public static Map<EntityCategory, Pair<Integer, Integer>> getMobcaps(ServerWorld world) {
-        int chunks = ((IServerChunkManager) world.method_14178()).getTicketManager().getLevelCount();
+        int chunks = ((ServerChunkManagerAccessor) world.method_14178()).getTicketManager().getLevelCount();
         Object2IntMap<EntityCategory> mobs = world.getMobCountsByCategory();
         EnumMap<EntityCategory, Pair<Integer, Integer>> mobcaps = new EnumMap<>(EntityCategory.class);
         for (EntityCategory category : EntityCategory.values()) {
