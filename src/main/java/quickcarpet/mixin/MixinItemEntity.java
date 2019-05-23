@@ -33,12 +33,6 @@ public abstract class MixinItemEntity extends Entity implements IItemEntity
     }
     
     @Override
-    public int getAge()
-    {
-        return this.age;
-    }
-    
-    @Override
     public int getPickupDelay()
     {
         return this.pickupDelay;
@@ -84,7 +78,7 @@ public abstract class MixinItemEntity extends Entity implements IItemEntity
             self.setStack(selfStack);
             
             this.pickupDelay = Math.max(((IItemEntity) other).getPickupDelay(), this.pickupDelay);
-            this.age = Math.min(other.getAge(), this.age);
+            this.age = Math.min(((MixinItemEntity) (Object) other).age, this.age);
             
             otherStack.subtractAmount(amount);
             if (otherStack.isEmpty())
