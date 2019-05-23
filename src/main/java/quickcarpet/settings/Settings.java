@@ -3,7 +3,7 @@ package quickcarpet.settings;
 import static quickcarpet.settings.RuleCategory.*;
 
 public class Settings {
-    public static final SettingsManager MANAGER = new SettingsManager(Settings.class);
+    public static final CoreSettingsManager MANAGER = new CoreSettingsManager(Settings.class);
 
     @Rule(desc = "Enables /tick command to control game speed", category = COMMANDS)
     public static boolean commandTick = true;
@@ -107,8 +107,4 @@ public class Settings {
 
     @Rule(desc = "Optimizes spawning", category = {OPTIMIZATIONS, EXPERIMENTAL})
     public static boolean optimizedSpawning = false;
-
-    static {
-        MANAGER.parse();
-    }
 }

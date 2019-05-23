@@ -1,6 +1,5 @@
 package quickcarpet.commands;
 
-import com.google.common.collect.ImmutableList;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
@@ -11,22 +10,27 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
 import quickcarpet.Build;
+import quickcarpet.QuickCarpet;
+import quickcarpet.module.QuickCarpetModule;
 import quickcarpet.settings.ParsedRule;
 import quickcarpet.settings.RuleCategory;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.Messenger;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 public class CarpetCommand {
-    private static ImmutableList<String> RULE_CATEGORIES = Arrays.stream(RuleCategory.values())
-            .map(c -> c.lowerCase)
-            .collect(ImmutableList.toImmutableList());
+    private static final Set<String> RULE_CATEGORIES = new LinkedHashSet<>();
+
+    static {
+        for (RuleCategory c : RuleCategory.values()) RULE_CATEGORIES.add(c.lowerCase);
+        for (QuickCarpetModule m : QuickCarpet.getInstance().modules) {
+            if (Settings.MANAGER.getModuleSettings(m) != null) RULE_CATEGORIES.add(m.getId());
+        }
+    }
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher)
     {
@@ -184,14 +188,27 @@ public class CarpetCommand {
     private static int listAllSettings(ServerCommandSource source) {
         listSettings(source, "Current " + Build.NAME + " Settings", Settings.MANAGER.getNonDefault());
 
+        Messenger.m(source, "w ");
         Messenger.m(source, "e " + Build.NAME + " version: " + Build.VERSION);
+        Messenger.m(source, "w ");
+        Collection<QuickCarpetModule> modules = QuickCarpet.getInstance().modules;
+        if (!modules.isEmpty()) {
+            Messenger.m(source, "wb Modules:");
+            for (QuickCarpetModule m : modules) {
+                Messenger.m(source, "c [" + m.getId() + "] ",
+                        "^g list module settings",
+                        "!/carpet list " + m.getId(),
+                        "w " + m.getName() + " " + m.getVersion());
+            }
+        }
+        Messenger.m(source, "w ");
         try {
             PlayerEntity player = source.getPlayer();
             List<String> categories = new ArrayList<>();
-            categories.add("w Browse Categories:\n");
+            categories.add("wb Browse Categories:\n");
             for (String name : RULE_CATEGORIES) {
                 categories.add("c [" + name + "]");
-                categories.add("^g list all " + name + " nsettings");
+                categories.add("^g list all " + name + " settings");
                 categories.add("!/carpet list " + name);
                 categories.add("w  ");
             }

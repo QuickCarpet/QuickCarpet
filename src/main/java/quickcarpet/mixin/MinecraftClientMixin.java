@@ -13,6 +13,6 @@ public abstract class MinecraftClientMixin
     @Inject(method = "init", at = @At(value = "RETURN"))
     private void onInit(CallbackInfo ci)
     {
-        QuickCarpet.onGameStarted();
+        QuickCarpet.getInstance().onGameStarted();
     }
 }

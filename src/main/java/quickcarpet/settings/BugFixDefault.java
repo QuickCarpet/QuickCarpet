@@ -7,6 +7,6 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@interface BugFixDefault {
+public @interface BugFixDefault {
     String value() default "true";
 }

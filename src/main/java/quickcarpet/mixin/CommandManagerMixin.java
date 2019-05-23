@@ -21,6 +21,6 @@ public abstract class CommandManagerMixin
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void onRegister(boolean boolean_1, CallbackInfo ci) {
-        QuickCarpet.registerCarpetCommands(this.dispatcher);
+        QuickCarpet.getInstance().registerCarpetCommands(this.dispatcher);
     }
 }

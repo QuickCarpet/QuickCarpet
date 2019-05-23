@@ -7,6 +7,6 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@interface SurvivalDefault {
+public @interface SurvivalDefault {
     String value() default "true";
 }
