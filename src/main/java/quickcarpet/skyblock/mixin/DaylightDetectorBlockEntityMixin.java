@@ -9,8 +9,8 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Tickable;
 import org.spongepowered.asm.mixin.Mixin;
+import quickcarpet.skyblock.IDaylightDetectorBlockEntity;
 import quickcarpet.skyblock.SkyBlockSettings;
-import quickcarpet.utils.IDaylightDetectorBlockEntity;
 
 @Mixin(DaylightDetectorBlockEntity.class)
 public abstract class DaylightDetectorBlockEntityMixin extends BlockEntity implements Tickable, IDaylightDetectorBlockEntity

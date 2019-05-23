@@ -26,8 +26,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+import quickcarpet.skyblock.IDaylightDetectorBlockEntity;
 import quickcarpet.skyblock.SkyBlockSettings;
-import quickcarpet.utils.IDaylightDetectorBlockEntity;
 
 import static net.minecraft.block.DaylightDetectorBlock.POWER;
 import static net.minecraft.block.DaylightDetectorBlock.updateState;

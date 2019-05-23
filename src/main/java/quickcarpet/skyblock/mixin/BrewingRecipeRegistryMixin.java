@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import quickcarpet.skyblock.SkyBlockSettings;
 
-import static quickcarpet.utils.CarpetRegistry.*;
+import static quickcarpet.skyblock.SkyBlockRegistry.*;
 
 @Mixin(BrewingRecipeRegistry.class)
 public abstract class BrewingRecipeRegistryMixin

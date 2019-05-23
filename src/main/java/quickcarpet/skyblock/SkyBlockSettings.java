@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import quickcarpet.settings.ChangeListener;
 import quickcarpet.settings.ParsedRule;
 import quickcarpet.settings.Rule;
-import quickcarpet.utils.Trades;
 
 import static quickcarpet.settings.RuleCategory.EXPERIMENTAL;
 import static quickcarpet.settings.RuleCategory.FEATURE;

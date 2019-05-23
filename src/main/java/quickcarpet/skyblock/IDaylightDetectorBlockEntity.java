@@ -1,4 +1,4 @@
-package quickcarpet.utils;
+package quickcarpet.skyblock;
 
 
 public interface IDaylightDetectorBlockEntity
