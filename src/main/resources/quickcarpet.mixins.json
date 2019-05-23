@@ -34,18 +34,7 @@
     "ThreadedAnvilChunkStorageMixin",
     "TntEntityMixin",
     "WorldChunkMixin",
-    "WorldMixin",
-    "skyblock.BrewingRecipeRegistryAccessor",
-    "skyblock.BrewingRecipeRegistryMixin",
-    "skyblock.DaylightDetectorBlockEntityMixin",
-    "skyblock.DaylightDetectorBlockMixin",
-    "skyblock.LevelGeneratorTypeMixin",
-    "skyblock.OverworldDimensionMixin",
-    "skyblock.PotionsMixin",
-    "skyblock.ProtoChunkAccessor",
-    "skyblock.StructurePieceAccessor",
-    "skyblock.TheEndDimensionMixin",
-    "skyblock.TheNetherDimensionMixin"
+    "WorldMixin"
   ],
   "client": [
     "BlockEntityRenderDispatcherMixin",

@@ -1,4 +1,4 @@
-package quickcarpet.mixin.skyblock;
+package quickcarpet.skyblock.mixin;
 
 import net.minecraft.recipe.BrewingRecipeRegistry;
 import org.spongepowered.asm.mixin.Mixin;

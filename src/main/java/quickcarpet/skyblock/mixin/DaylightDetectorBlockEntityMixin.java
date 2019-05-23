@@ -1,4 +1,4 @@
-package quickcarpet.mixin.skyblock;
+package quickcarpet.skyblock.mixin;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
@@ -9,7 +9,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Tickable;
 import org.spongepowered.asm.mixin.Mixin;
-import quickcarpet.settings.Settings;
+import quickcarpet.skyblock.SkyBlockSettings;
 import quickcarpet.utils.IDaylightDetectorBlockEntity;
 
 @Mixin(DaylightDetectorBlockEntity.class)
@@ -37,7 +37,7 @@ public abstract class DaylightDetectorBlockEntityMixin extends BlockEntity imple
     {
         super.fromTag(compoundTag_1);
         
-        if (Settings.blockLightDetector && compoundTag_1.containsKey("blockLightMode", 3))
+        if (SkyBlockSettings.blockLightDetector && compoundTag_1.containsKey("blockLightMode", 3))
         {
             this.detectsBlockLight = compoundTag_1.getInt("blockLightMode") > 0;
         }
@@ -46,7 +46,7 @@ public abstract class DaylightDetectorBlockEntityMixin extends BlockEntity imple
     public CompoundTag toTag(CompoundTag compoundTag_1)
     {
         compoundTag_1 = super.toTag(compoundTag_1);
-        if (Settings.blockLightDetector)
+        if (SkyBlockSettings.blockLightDetector)
         {
             compoundTag_1.putInt("blockLightMode", this.detectsBlockLight ? 1 : 0);
         }

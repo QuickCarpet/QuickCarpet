@@ -1,4 +1,4 @@
-package quickcarpet.mixin.skyblock;
+package quickcarpet.skyblock.mixin;
 
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import quickcarpet.settings.Settings;
+import quickcarpet.skyblock.SkyBlockSettings;
 
 import static quickcarpet.utils.CarpetRegistry.*;
 
@@ -29,7 +29,7 @@ public abstract class BrewingRecipeRegistryMixin
     @Inject(method = "registerDefaults", at = @At(value = "TAIL"))
     private static void onRegisterDefaults(CallbackInfo ci)
     {
-        if (Settings.betterPotions)
+        if (SkyBlockSettings.betterPotions)
         {
             registerPotionRecipe(Potions.LONG_NIGHT_VISION, Items.REDSTONE_BLOCK, SUPER_LONG_NIGHT_VISION);
             registerPotionRecipe(Potions.LONG_INVISIBILITY, Items.REDSTONE_BLOCK, SUPER_LONG_INVISIBILITY);

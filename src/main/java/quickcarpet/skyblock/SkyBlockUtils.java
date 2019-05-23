@@ -1,4 +1,4 @@
-package quickcarpet.helper;
+package quickcarpet.skyblock;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -31,15 +31,15 @@ import net.minecraft.world.chunk.WorldChunk;
 import net.minecraft.world.dimension.TheEndDimension;
 import net.minecraft.world.gen.chunk.*;
 import net.minecraft.world.level.LevelGeneratorType;
-import quickcarpet.mixin.skyblock.ProtoChunkAccessor;
-import quickcarpet.mixin.skyblock.StructurePieceAccessor;
+import quickcarpet.skyblock.mixin.ProtoChunkAccessor;
+import quickcarpet.skyblock.mixin.StructurePieceAccessor;
 
 import java.util.EnumSet;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
-public class SkyBlock {
+public class SkyBlockUtils {
     public static LevelGeneratorType LEVEL_GENERATOR_TYPE;
 
     public static ChunkGenerator<? extends ChunkGeneratorConfig> createOverworldChunkGenerator(World world) {

@@ -1,4 +1,4 @@
-package quickcarpet.mixin.skyblock;
+package quickcarpet.skyblock.mixin;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.BlockWithEntity;
@@ -26,6 +26,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+import quickcarpet.skyblock.SkyBlockSettings;
 import quickcarpet.utils.IDaylightDetectorBlockEntity;
 
 import static net.minecraft.block.DaylightDetectorBlock.POWER;
@@ -55,7 +56,7 @@ public abstract class DaylightDetectorBlockMixin extends BlockWithEntity
     @Inject(method = "updateState", at = @At("HEAD"), cancellable = true)
     private static void myUpdateState(BlockState blockState_1, World world_1, BlockPos blockPos_1, CallbackInfo ci)
     {
-        if (!quickcarpet.settings.Settings.blockLightDetector)
+        if (!SkyBlockSettings.blockLightDetector)
             return;
         
         DaylightDetectorBlockEntity myBlockEntity = null;
@@ -108,7 +109,7 @@ public abstract class DaylightDetectorBlockMixin extends BlockWithEntity
     @Inject(method = "activate", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/DaylightDetectorBlock;updateState(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;)V"), locals = LocalCapture.CAPTURE_FAILHARD)
     public void activate0(BlockState blockState_1, World world_1, BlockPos blockPos_1, PlayerEntity playerEntity_1, Hand arg4, BlockHitResult arg5, CallbackInfoReturnable<Boolean> cir, BlockState blockState_2)
     {
-        if (quickcarpet.settings.Settings.blockLightDetector)
+        if (SkyBlockSettings.blockLightDetector)
         {
             ItemStack itemStack_1 = playerEntity_1.getStackInHand(arg4);
             if (!itemStack_1.isEmpty())
@@ -126,7 +127,7 @@ public abstract class DaylightDetectorBlockMixin extends BlockWithEntity
                 }
             }
         }
-        if (blockState_1 != blockState_2 || !quickcarpet.settings.Settings.blockLightDetector)
+        if (blockState_1 != blockState_2 || !SkyBlockSettings.blockLightDetector)
             world_1.setBlockState(blockPos_1, blockState_2, 4);
         updateState(blockState_2, world_1, blockPos_1);
     }

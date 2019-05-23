@@ -17,11 +17,13 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "quickcarpet.QuickCarpet"
+      "quickcarpet.QuickCarpet",
+      "quickcarpet.skyblock.SkyBlockModule"
     ]
   },
   "mixins": [
-    "quickcarpet.mixins.json"
+    "quickcarpet.mixins.json",
+    "skyblock.mixins.json"
   ],
   "requires": {
     "fabricloader": ">=0.4.0"
