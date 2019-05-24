@@ -8,6 +8,7 @@ import quickcarpet.module.QuickCarpetModule;
 import javax.annotation.Nullable;
 import java.io.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class CoreSettingsManager extends SettingsManager {
     private Map<QuickCarpetModule, ModuleSettingsManager> moduleSettings = new HashMap<>();
@@ -112,5 +113,26 @@ public class CoreSettingsManager extends SettingsManager {
             e.printStackTrace();
         }
         resendCommandTree();
+    }
+
+    public void dump(OutputStream out) {
+        PrintStream ps = new PrintStream(out);
+        ps.println("# " + Build.NAME + " Rules");
+        for (Map.Entry<String, ParsedRule<?>> e : new TreeMap<>(rules).entrySet()) {
+            ParsedRule<?> rule = e.getValue();
+            ps.println("## " + rule.name);
+            ps.println(rule.description + "\n");
+            for (String extra : rule.extraInfo) {
+                ps.println(extra + "  ");
+            }
+            ps.println("Type: `" + rule.type.getSimpleName() + "`  ");
+            ps.println("Default: `" + rule.defaultAsString + "`  ");
+            ps.println("Options: " + rule.options.stream().map(s -> "`" + s + "`").collect(Collectors.joining(", ")) + "  ");
+            String categories = rule.categories.stream().map(c -> c.lowerCase).collect(Collectors.joining(", "));
+            if (!categories.isEmpty()) ps.println("Categories: " + categories + "  ");
+            Class<?> validator = rule.validator.getClass();
+            if (validator != Validator.AlwaysTrue.class) ps.println("Validator: `" + validator.getName() + "`");
+            ps.println();
+        }
     }
 }

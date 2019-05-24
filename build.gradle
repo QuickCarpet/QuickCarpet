@@ -112,6 +112,20 @@ jar {
 	from "LICENSE"
 }
 
+task dumpRules(type: JavaExec, dependsOn: jar) {
+    workingDir = "run"
+	classpath = files(jar.archivePath)
+	classpath += sourceSets.main.runtimeClasspath
+	main = "quickcarpet.settings.Settings"
+	doLast {
+		copy {
+			from "run/rules.md"
+			into "."
+		}
+	}
+}
+build.dependsOn dumpRules
+
 // configure the maven publication
 publishing {
 	publications {

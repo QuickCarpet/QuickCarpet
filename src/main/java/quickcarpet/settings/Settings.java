@@ -1,5 +1,10 @@
 package quickcarpet.settings;
 
+import net.minecraft.Bootstrap;
+
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+
 import static quickcarpet.settings.RuleCategory.*;
 
 public class Settings {
@@ -107,4 +112,10 @@ public class Settings {
 
     @Rule(desc = "Optimizes spawning", category = {OPTIMIZATIONS, EXPERIMENTAL})
     public static boolean optimizedSpawning = false;
+
+    public static void main(String[] args) throws FileNotFoundException {
+        Bootstrap.initialize();
+        MANAGER.parse();
+        MANAGER.dump(new FileOutputStream(args.length > 0 ? args[0] : "rules.md"));
+    }
 }
