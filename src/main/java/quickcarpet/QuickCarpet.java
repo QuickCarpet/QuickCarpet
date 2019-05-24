@@ -24,7 +24,7 @@ import java.util.TreeSet;
 
 public final class QuickCarpet implements ModInitializer, ModuleHost {
     private static final Logger LOG = LogManager.getLogger();
-    private static QuickCarpet instance;
+    private static QuickCarpet instance = new QuickCarpet();
 
     public static final PubSubManager PUBSUB = new PubSubManager();
     public static MinecraftServer minecraft_server;
@@ -34,7 +34,6 @@ public final class QuickCarpet implements ModInitializer, ModuleHost {
     private final PubSubMessenger pubSubMessenger = new PubSubMessenger(PUBSUB);
 
     public QuickCarpet() {
-        instance = this;
     }
 
     public static QuickCarpet getInstance() {
