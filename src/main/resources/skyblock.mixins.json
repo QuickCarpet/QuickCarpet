@@ -20,5 +20,5 @@
   "injectors": {
     "defaultRequire": 1
   },
-  "refmap": "skyblock-refmap.json"
+  "refmap": "quickcarpet-refmap.json"
 }
