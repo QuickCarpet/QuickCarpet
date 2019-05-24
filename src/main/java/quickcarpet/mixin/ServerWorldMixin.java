@@ -47,7 +47,7 @@ public abstract class ServerWorldMixin extends World {
 
     @Inject(method = "tickChunk", at = @At("HEAD"))
     private void startTickChunk(WorldChunk worldChunk_1, int int_1, CallbackInfo ci) {
-        CarpetProfiler.startSection(this, CarpetProfiler.SectionType.BLOCKS);
+        CarpetProfiler.startSection(this, CarpetProfiler.SectionType.RANDOM_TICKS);
     }
 
     @Inject(method = "tickChunk", at = @At("TAIL"))
@@ -87,7 +87,7 @@ public abstract class ServerWorldMixin extends World {
     )
     private void endRaidStartBlockEvents(BooleanSupplier booleanSupplier_1, CallbackInfo ci) {
         CarpetProfiler.endSection(this);
-        CarpetProfiler.startSection(this, CarpetProfiler.SectionType.BLOCKS);
+        CarpetProfiler.startSection(this, CarpetProfiler.SectionType.BLOCK_EVENTS);
     }
 
     @Inject(

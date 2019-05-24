@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat
+
 plugins {
 	id 'fabric-loom' version '0.2.2-SNAPSHOT'
 	id 'maven-publish'
@@ -26,6 +28,53 @@ dependencies {
 	// javax.annotation.Nullable/Nonnull
 	compileOnly "com.google.code.findbugs:jsr305:3.0.1"
 }
+
+def gitCommit() {
+	def commit = ""
+	def proc = "git rev-parse HEAD".execute()
+	proc.in.eachLine { line -> commit = line }
+	proc.err.eachLine { line -> println line }
+	proc.waitFor()
+	commit
+}
+
+def gitBranch() {
+	def branch = ""
+	def proc = "git rev-parse --abbrev-ref HEAD".execute()
+	proc.in.eachLine { line -> branch = line }
+	proc.err.eachLine { line -> println line }
+	proc.waitFor()
+	branch
+}
+
+def gitStatus() {
+	def exitCode = "git diff --exit-code".execute().waitFor() // not added
+	if (exitCode == 0) {
+		exitCode = "git diff --cached --exit-code".execute().waitFor() // not committed
+	}
+	exitCode == 0
+}
+
+task generateJava(type: Copy) {
+	def df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+	df.setTimeZone(TimeZone.getTimeZone("UTC"))
+	def templateContext = [
+			version: project.version,
+			timestamp: df.format(new Date()),
+			branch: gitBranch(),
+			commit: gitCommit(),
+			working_dir_clean: gitStatus(),
+			minecraft_version: project.minecraft_version,
+			yarn_mappings: project.yarn_mappings
+	]
+	inputs.properties templateContext // for gradle up-to-date check
+	from 'src/template/java'
+	into "$buildDir/generated/java"
+	expand templateContext
+}
+
+sourceSets.main.java.srcDir "$buildDir/generated/java"
+compileJava.dependsOn generateJava
 
 processResources {
 	// this will ensure that this task is re-run when there's a change
