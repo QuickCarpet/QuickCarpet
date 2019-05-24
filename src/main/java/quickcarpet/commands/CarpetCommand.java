@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.chat.Component;
@@ -189,7 +190,14 @@ public class CarpetCommand {
         listSettings(source, "Current " + Build.NAME + " Settings", Settings.MANAGER.getNonDefault());
 
         Messenger.m(source, "w ");
-        Messenger.m(source, "e " + Build.NAME + " version: " + Build.VERSION);
+        String version = Build.VERSION;
+        if (version.contains("dev") || FabricLoader.getInstance().isDevelopmentEnvironment()) {
+            version += " " + Build.BRANCH + "-" + Build.COMMIT.substring(0, 7) + " (" + Build.BUILD_TIMESTAMP + ")";
+        }
+        Messenger.m(source, "e " + Build.NAME + " version: " + version);
+        if (!Build.WORKING_DIR_CLEAN) {
+            Messenger.m(source, "r Uncommitted files present");
+        }
         Messenger.m(source, "w ");
         Collection<QuickCarpetModule> modules = QuickCarpet.getInstance().modules;
         if (!modules.isEmpty()) {
