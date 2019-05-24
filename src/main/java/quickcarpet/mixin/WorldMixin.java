@@ -13,7 +13,6 @@ import net.minecraft.util.profiler.Profiler;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkManager;
-import net.minecraft.world.chunk.EmptyChunk;
 import net.minecraft.world.chunk.WorldChunk;
 import net.minecraft.world.level.LevelGeneratorType;
 import net.minecraft.world.level.LevelProperties;
@@ -124,9 +123,6 @@ public abstract class WorldMixin implements IWorld, SpawnEntityCache {
      */
     public boolean setBlockStateWithBlockEntity(BlockPos blockPos_1, BlockState blockState_1, BlockEntity newBlockEntity, int int_1)
     {
-        if ((Object) this instanceof EmptyChunk)
-            return false;
-        
         if (World.isHeightInvalid(blockPos_1))
         {
             return false;
@@ -141,7 +137,7 @@ public abstract class WorldMixin implements IWorld, SpawnEntityCache {
             Block block_1 = blockState_1.getBlock();
             
             BlockState blockState_2;
-            if (newBlockEntity != null && block_1 instanceof BlockEntityProvider)
+            if (newBlockEntity != null && block_1 instanceof BlockEntityProvider && !worldChunk_1.isEmpty())
                 blockState_2 = ((IWorldChunk) worldChunk_1).setBlockStateWithBlockEntity(blockPos_1, blockState_1, newBlockEntity, (int_1 & 64) != 0);
             else
                 blockState_2 = worldChunk_1.setBlockState(blockPos_1, blockState_1, (int_1 & 64) != 0);
