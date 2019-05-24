@@ -47,7 +47,11 @@ def gitBranch() {
 }
 
 def gitStatus() {
-	"git diff --exit-code > /dev/null".execute().waitFor() == 0
+	def exitCode = "git diff --exit-code".execute().waitFor() // not added
+	if (exitCode == 0) {
+		exitCode = "git diff --cached --exit-code".execute().waitFor() // not committed
+	}
+	exitCode == 0
 }
 
 task generateJava(type: Copy) {
