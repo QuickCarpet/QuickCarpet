@@ -32,16 +32,20 @@ public final class QuickCarpet implements ModInitializer, ModuleHost {
     public PluginChannelManager pluginChannels;
     public final Set<QuickCarpetModule> modules = new TreeSet<>();
     private final PubSubMessenger pubSubMessenger = new PubSubMessenger(PUBSUB);
+    private CommandDispatcher<ServerCommandSource> dispatcher;
 
+    // Fabric on dedicated server will call getInstance at return of DedicatedServer::<init>(...)
+    // new CommandManager(...) is before that so QuickCarpet is created from that
+    // Client will call getInstance at head of MinecraftClient::init()
     public QuickCarpet() {
+        instance = this;
     }
 
     public static QuickCarpet getInstance() {
         return instance;
     }
 
-    public void init(MinecraftServer server)
-    {
+    public void init(MinecraftServer server) {
         minecraft_server = server;
         pluginChannels = new PluginChannelManager(server);
         pluginChannels.register(pubSubMessenger);
@@ -53,6 +57,7 @@ public final class QuickCarpet implements ModInitializer, ModuleHost {
         Settings.MANAGER.init(server);
         TickSpeed.resetLoadAvg = true;
         for (QuickCarpetModule m : modules) m.onServerLoaded(server);
+        registerCarpetCommands();
     }
 
     public void tick(MinecraftServer server) {
@@ -72,7 +77,7 @@ public final class QuickCarpet implements ModInitializer, ModuleHost {
         }
     }
 
-    public void registerCarpetCommands(CommandDispatcher<ServerCommandSource> dispatcher) {
+    public void registerCarpetCommands() {
         CarpetCommand.register(dispatcher);
         TickCommand.register(dispatcher);
         CarpetFillCommand.register(dispatcher);
@@ -85,6 +90,10 @@ public final class QuickCarpet implements ModInitializer, ModuleHost {
         PingCommand.register(dispatcher);
         CameraModeCommand.register(dispatcher);
         for (QuickCarpetModule m : modules) m.registerCommands(dispatcher);
+    }
+
+    public void setCommandDispatcher(CommandDispatcher<ServerCommandSource> dispatcher) {
+        this.dispatcher = dispatcher;
     }
 
     @Override
