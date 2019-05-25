@@ -16,6 +16,7 @@
     "HopperBlockEntityMixin",
     "InfestedBlockMixin",
     "ItemEntityMixin",
+    "LivingEntityMixin",
     "MinecraftDedicatedServerMixin",
     "MinecraftServerMixin",
     "PistonBlockEntityMixin",

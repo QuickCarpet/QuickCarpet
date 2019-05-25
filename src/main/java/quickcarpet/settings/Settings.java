@@ -113,6 +113,9 @@ public class Settings {
     @Rule(desc = "Optimizes spawning", category = {OPTIMIZATIONS, EXPERIMENTAL})
     public static boolean optimizedSpawning = false;
 
+    @Rule(desc = "If a mob dies on sand by by fire the sand will convert into soul sand", category = {FEATURE, EXPERIMENTAL})
+    public static boolean mobInFireConvertsSandToSoulsand = false;
+
     public static void main(String[] args) throws FileNotFoundException {
         Bootstrap.initialize();
         MANAGER.parse();
