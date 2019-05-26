@@ -115,6 +115,9 @@ public class Settings {
 
     @Rule(desc = "If a living entity dies on sand with fire on top the sand will convert into soul sand", category = {FEATURE, EXPERIMENTAL})
     public static boolean mobInFireConvertsSandToSoulsand = false;
+    
+    @Rule(desc = "Cobblestone crushed by falling anvils makes sand", category = {FEATURE, EXPERIMENTAL})
+    public static boolean renewableSand = false;
 
     public static void main(String[] args) throws FileNotFoundException {
         Bootstrap.initialize();

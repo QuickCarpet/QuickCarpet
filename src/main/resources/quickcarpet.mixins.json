@@ -35,7 +35,8 @@
     "ThreadedAnvilChunkStorageMixin",
     "TntEntityMixin",
     "WorldChunkMixin",
-    "WorldMixin"
+    "WorldMixin",
+    "MixinFallingBlockEntity"
   ],
   "client": [
     "BlockEntityRenderDispatcherMixin",
