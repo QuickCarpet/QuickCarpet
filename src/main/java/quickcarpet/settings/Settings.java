@@ -118,6 +118,9 @@ public class Settings {
     
     @Rule(desc = "Cobblestone crushed by falling anvils makes sand", category = {FEATURE, EXPERIMENTAL})
     public static boolean renewableSand = false;
+    
+    @Rule(desc = "Dispensers can place most blocks", category = {EXPERIMENTAL, FEATURE})
+    public static boolean dispensersPlaceBlocks = false;
 
     public static void main(String[] args) throws FileNotFoundException {
         Bootstrap.initialize();
