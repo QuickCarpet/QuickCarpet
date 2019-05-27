@@ -2,11 +2,15 @@ package quickcarpet.feature;
 
 import net.minecraft.block.*;
 import net.minecraft.block.dispenser.ItemDispenserBehavior;
+import net.minecraft.block.enums.BlockHalf;
+import net.minecraft.block.enums.SlabType;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.state.property.Properties;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.math.BlockPointer;
 import net.minecraft.util.math.BlockPos;
@@ -33,20 +37,37 @@ public class PlaceBlockDispenserBehavior  extends ItemDispenserBehavior {
         BlockState state = block.getDefaultState();
         Collection<Property<?>> properties = state.getProperties();
 
-        if (properties.contains(FacingBlock.FACING)) {
-            state = state.with(FacingBlock.FACING, facing);
-        } else if (properties.contains(HorizontalFacingBlock.FACING) && axis != Direction.Axis.Y) {
-            state = state.with(HorizontalFacingBlock.FACING, facing);
-        } else if (properties.contains(PillarBlock.AXIS)) {
-            state = state.with(PillarBlock.AXIS, axis);
-        }
-
         if (block instanceof StairsBlock) {
-            state = state.with(FacingBlock.FACING, facing.getOpposite());
+            facing = facing.getOpposite();
         }
 
-        if (world.isAir(pos) && state.canPlaceAt(world, pos)) {
+        if (properties.contains(Properties.FACING)) {
+            state = state.with(Properties.FACING, facing);
+        } else if (properties.contains(Properties.FACING_HORIZONTAL) && axis != Direction.Axis.Y) {
+            state = state.with(Properties.FACING_HORIZONTAL, facing);
+        } else if (properties.contains(Properties.HOPPER_FACING) && axis != Direction.Axis.Y) {
+            state = state.with(Properties.HOPPER_FACING, facing);
+        } else if (properties.contains(Properties.AXIS_XYZ)) {
+            state = state.with(Properties.AXIS_XYZ, axis);
+        } else if (properties.contains(Properties.AXIS_XZ)  && axis != Direction.Axis.Y) {
+            state = state.with(Properties.AXIS_XZ, axis);
+        }
+
+        if (properties.contains(Properties.BLOCK_HALF)) {
+            state = state.with(Properties.BLOCK_HALF, facing == Direction.UP ? BlockHalf.TOP : BlockHalf.BOTTOM);
+        } else if (properties.contains(Properties.SLAB_TYPE)) {
+            state = state.with(Properties.SLAB_TYPE, facing == Direction.DOWN ? SlabType.TOP : SlabType.BOTTOM);
+        }
+
+        state = Block.getRenderingState(state, world, pos);
+
+        BlockState currentBlockState = world.getBlockState(pos);
+        FluidState currentFluidState = world.getFluidState(pos);
+        if ((world.isAir(pos) || currentBlockState.getMaterial().isReplaceable()) && currentBlockState.getBlock() != block && state.canPlaceAt(world, pos)) {
             world.setBlockState(pos, state);
+            if (currentFluidState.isStill() && block instanceof FluidFillable) {
+                ((FluidFillable) block).tryFillWithFluid(world, pos, state, currentFluidState);
+            }
             BlockSoundGroup soundType = state.getSoundGroup();
             world.playSound(null, pos, soundType.getPlaceSound(), SoundCategory.BLOCKS, (soundType.getVolume() + 1.0F / 2.0F), soundType.getPitch() * 0.8F);
             itemStack.subtractAmount(1);
