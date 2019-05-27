@@ -30,5 +30,6 @@ Multiplayer :
 
 ## Compiling
 - Clone this repo
-- Run `gradlew genSources idea` for Intellij and `gradlew genSources eclipse` for Eclipse
+- Run `gradlew genSources idea` for IntelliJ and `gradlew genSources eclipse` for Eclipse
+- Add `build/generated/java` as a source directory ("Generated Sources Root" in IntelliJ)
 - Run `gradlew build` for creating local jars
