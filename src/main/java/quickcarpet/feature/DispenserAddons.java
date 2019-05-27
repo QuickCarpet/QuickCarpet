@@ -6,9 +6,11 @@ import net.minecraft.block.dispenser.ItemDispenserBehavior;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.state.property.Property;
+import net.minecraft.util.BlockRotation;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPointer;
 import net.minecraft.util.math.BlockPos;
@@ -88,7 +90,9 @@ public class DispenserAddons
             BlockPos pos = blockPointer.getBlockPos().offset(facing);
             World world = blockPointer.getWorld();
             
-            if (world.isAir(pos) && blockPointer.getBlockState().canPlaceAt(world, pos))
+            if (world.isAir(pos) || world.getBlockState(pos).getBlock() == Blocks.WATER ||
+                        world.getBlockState(pos).getBlock() == Blocks.LAVA && 
+                                blockPointer.getBlockState().canPlaceAt(world, pos))
             {
                 BlockState state = block.getDefaultState();
                 Collection<Property<?>> properties = state.getProperties();
@@ -102,11 +106,6 @@ public class DispenserAddons
                 
                 if (block instanceof StairsBlock)
                     state = state.with(FacingBlock.FACING, facing.getOpposite());
-                
-                /*
-                if (block instanceof LogBlock)
-                    state = state.with(LogBlock.AXIS, LogBlock.AXIS.getValue(axis.getName()).orElse());
-                */
                 
                 world.setBlockState(pos, state);
                 BlockSoundGroup soundType = state.getSoundGroup();
