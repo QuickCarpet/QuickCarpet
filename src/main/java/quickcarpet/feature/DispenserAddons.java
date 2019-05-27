@@ -3,6 +3,7 @@ package quickcarpet.feature;
 import net.minecraft.block.*;
 import net.minecraft.block.dispenser.DispenserBehavior;
 import net.minecraft.block.dispenser.ItemDispenserBehavior;
+import net.minecraft.block.enums.SlabType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -91,7 +92,7 @@ public class DispenserAddons
             World world = blockPointer.getWorld();
             
             if (world.isAir(pos) || world.getBlockState(pos).getBlock() == Blocks.WATER ||
-                        world.getBlockState(pos).getBlock() == Blocks.LAVA && 
+                        world.getBlockState(pos).getBlock() == Blocks.LAVA &&
                                 blockPointer.getBlockState().canPlaceAt(world, pos))
             {
                 BlockState state = block.getDefaultState();
@@ -106,6 +107,9 @@ public class DispenserAddons
                 
                 if (block instanceof StairsBlock)
                     state = state.with(FacingBlock.FACING, facing.getOpposite());
+                
+                if (block instanceof SlabBlock && facing == Direction.DOWN)
+                    state = state.with(SlabBlock.TYPE, SlabType.TOP);
                 
                 world.setBlockState(pos, state);
                 BlockSoundGroup soundType = state.getSoundGroup();
