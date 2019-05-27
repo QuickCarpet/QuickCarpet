@@ -16,9 +16,9 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import quickcarpet.settings.Settings;
 
 @Mixin(FallingBlockEntity.class)
-public abstract class MixinFallingBlockEntity extends Entity
+public abstract class FallingBlockEntityMixin extends Entity
 {
-    public MixinFallingBlockEntity(EntityType<?> entityType_1, World world_1)
+    public FallingBlockEntityMixin(EntityType<?> entityType_1, World world_1)
     {
         super(entityType_1, world_1);
     }

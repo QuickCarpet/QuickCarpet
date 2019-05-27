@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 import java.util.Map;
 
 @Mixin(DispenserBlock.class)
-public interface IMixinDispenserBlock
+public interface IDispenserBlockMixin
 {
     @Accessor("BEHAVIORS")
     static Map<Item, DispenserBehavior> getBehaviour()

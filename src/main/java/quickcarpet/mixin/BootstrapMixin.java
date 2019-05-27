@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import quickcarpet.feature.DispenserAddons;
 
 @Mixin(Bootstrap.class)
-public abstract class MixinBootstrap
+public abstract class BootstrapMixin
 {
     @Inject(method = "initialize", at = @At(value = "INVOKE", shift = At.Shift.AFTER,
             target = "Lnet/minecraft/block/dispenser/DispenserBehavior;registerDefaults()V"))

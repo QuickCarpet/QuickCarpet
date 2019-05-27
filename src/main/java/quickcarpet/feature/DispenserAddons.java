@@ -1,26 +1,22 @@
 package quickcarpet.feature;
 
 import net.minecraft.block.*;
-import net.minecraft.block.dispenser.DispenserBehavior;
 import net.minecraft.block.dispenser.ItemDispenserBehavior;
 import net.minecraft.block.enums.SlabType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.state.property.Property;
-import net.minecraft.util.BlockRotation;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPointer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
-import quickcarpet.mixin.IMixinDispenserBlock;
+import quickcarpet.mixin.IDispenserBlockMixin;
 import quickcarpet.settings.Settings;
-import quickcarpet.utils.SpawnTracker;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -57,7 +53,7 @@ public class DispenserAddons
             if (block == null || item == null || !(item instanceof BlockItem) || blackList.contains(identifier.toString()))
                 continue;
             
-            if (!IMixinDispenserBlock.getBehaviour().containsKey(item))
+            if (!IDispenserBlockMixin.getBehaviour().containsKey(item))
             {
                 DispenserBlock.registerBehavior(item, new BehaviourDispenseBlocks((BlockItem)item, block));
             }

@@ -36,9 +36,9 @@
     "TntEntityMixin",
     "WorldChunkMixin",
     "WorldMixin",
-    "MixinFallingBlockEntity",
-    "IMixinDispenserBlock",
-    "MixinBootstrap"
+    "FallingBlockEntityMixin",
+    "IDispenserBlockMixin",
+    "BootstrapMixin"
   ],
   "client": [
     "BlockEntityRenderDispatcherMixin",
