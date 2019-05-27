@@ -17,19 +17,41 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 import quickcarpet.mixin.IMixinDispenserBlock;
 import quickcarpet.settings.Settings;
+import quickcarpet.utils.SpawnTracker;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 public class DispenserAddons
 {
+    private static String [] blacklist = new String[] {
+            "minecraft:wheat",
+            "minecraft:melon_stem",
+            "minecraft:pumpkin_stem",
+            "minecraft:beetroots",
+            "minecraft:nether_wart",
+            "minecraft:chorus_flower",
+            "minecraft:sweet_berry_bush",
+            "minecraft:oak_sapling",
+            "minecraft:spruce_sapling",
+            "minecraft:birch_sapling",
+            "minecraft:jungle_sapling",
+            "minecraft:acacia_sapling",
+            "minecraft:dark_oak_sapling",
+            "minecraft:brown_mushroom",
+            "minecraft:red_mushroom"
+    };
+    
     public static void registerDefaults()
     {
+        List<String> blackList = Arrays.asList(blacklist);
         for (Identifier identifier : Registry.BLOCK.getIds())
         {
             Block block = Registry.BLOCK.get(identifier);
             Item item = block.asItem();
     
-            if (block == null || item == null || !(item instanceof BlockItem))
+            if (block == null || item == null || !(item instanceof BlockItem) || blackList.contains(identifier.toString()))
                 continue;
             
             if (!IMixinDispenserBlock.getBehaviour().containsKey(item))
