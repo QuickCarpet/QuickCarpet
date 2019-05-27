@@ -39,7 +39,10 @@ public class DispenserAddons
             "minecraft:acacia_sapling",
             "minecraft:dark_oak_sapling",
             "minecraft:brown_mushroom",
-            "minecraft:red_mushroom"
+            "minecraft:red_mushroom",
+            "minecraft:cocoa",
+            "minecraft:carrots",
+            "minecraft:potatoes"
     };
     
     public static void registerDefaults()
