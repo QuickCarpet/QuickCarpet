@@ -13,6 +13,7 @@
     "DispenserBlockMixin",
     "EndCityFeatureMixin",
     "ExplosionMixin",
+    "FallingBlockEntityMixin",
     "FloatingIslandsChunkGeneratorMixin",
     "FloatingIslandsChunkGeneratorMixin",
     "HopperBlockEntityMixin",
@@ -38,8 +39,7 @@
     "ThreadedAnvilChunkStorageMixin",
     "TntEntityMixin",
     "WorldChunkMixin",
-    "WorldMixin",
-    "MixinFallingBlockEntity"
+    "WorldMixin"
   ],
   "client": [
     "BlockEntityRenderDispatcherMixin",
