@@ -1,6 +1,5 @@
 package quickcarpet.mixin;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.dispenser.DispenserBehavior;
@@ -11,6 +10,7 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
+import quickcarpet.feature.PlaceBlockDispenserBehavior;
 import quickcarpet.utils.CarpetRegistry;
 
 import java.util.Map;
@@ -26,9 +26,8 @@ public abstract class DispenserBlockMixin extends BlockWithEntity {
     @Overwrite
     public DispenserBehavior getBehaviorForItem(ItemStack stack) {
         Item item = stack.getItem();
-        if (quickcarpet.settings.Settings.dispensersPlaceBlocks && !BEHAVIORS.containsKey(item) && item instanceof BlockItem) {
-            Block block = ((BlockItem) item).getBlock();
-            if (CarpetRegistry.DISPENSER_PLACEABLE.contains(block)) return CarpetRegistry.PLACE_BLOCK_DISPENSER_BEHAVIOR;
+        if (quickcarpet.settings.Settings.dispensersPlaceBlocks != PlaceBlockDispenserBehavior.Option.FALSE && !BEHAVIORS.containsKey(item) && item instanceof BlockItem) {
+            if (PlaceBlockDispenserBehavior.canPlace(((BlockItem) item).getBlock())) return CarpetRegistry.PLACE_BLOCK_DISPENSER_BEHAVIOR;
         }
         return BEHAVIORS.get(stack.getItem());
     }

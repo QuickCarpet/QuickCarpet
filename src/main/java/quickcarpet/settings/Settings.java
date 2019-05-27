@@ -1,6 +1,7 @@
 package quickcarpet.settings;
 
 import net.minecraft.Bootstrap;
+import quickcarpet.feature.PlaceBlockDispenserBehavior;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -120,7 +121,7 @@ public class Settings {
     public static boolean renewableSand = false;
     
     @Rule(desc = "Dispensers can place most blocks", category = {EXPERIMENTAL, FEATURE})
-    public static boolean dispensersPlaceBlocks = false;
+    public static PlaceBlockDispenserBehavior.Option dispensersPlaceBlocks = PlaceBlockDispenserBehavior.Option.FALSE;
 
     public static void main(String[] args) throws FileNotFoundException {
         Bootstrap.initialize();

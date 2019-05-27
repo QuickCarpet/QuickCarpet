@@ -17,6 +17,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import quickcarpet.settings.Settings;
+import quickcarpet.utils.CarpetRegistry;
 
 import java.util.Collection;
 
@@ -24,7 +25,7 @@ public class PlaceBlockDispenserBehavior  extends ItemDispenserBehavior {
     @Override
     public ItemStack dispenseStack(BlockPointer blockPointer, ItemStack itemStack) {
         Item item = itemStack.getItem();
-        if (!Settings.dispensersPlaceBlocks || !(item instanceof BlockItem)) {
+        if (Settings.dispensersPlaceBlocks == Option.FALSE || !(item instanceof BlockItem)) {
             return super.dispenseStack(blockPointer, itemStack);
         }
         Block block = ((BlockItem) item).getBlock();
@@ -75,5 +76,17 @@ public class PlaceBlockDispenserBehavior  extends ItemDispenserBehavior {
         }
 
         return super.dispenseStack(blockPointer, itemStack);
+    }
+
+    public enum Option {
+        FALSE, WHITELIST, BLACKLIST
+    }
+
+    public static boolean canPlace(Block block) {
+        switch (Settings.dispensersPlaceBlocks) {
+            case WHITELIST: return CarpetRegistry.DISPENSER_BLOCK_WHITELIST.contains(block);
+            case BLACKLIST: return !CarpetRegistry.DISPENSER_BLOCK_BLACKLIST.contains(block);
+        }
+        return false;
     }
 }

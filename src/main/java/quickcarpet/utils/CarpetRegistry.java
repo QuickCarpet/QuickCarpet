@@ -26,7 +26,8 @@ public class CarpetRegistry {
     public static final Tag<Block> FULL_CUBE = new BlockPropertyTag(new Identifier("carpet:full_cube"), (state, world, pos) -> Block.isShapeFullCube(state.getCollisionShape(world, pos)));
     public static final List<Tag<Block>> VIRTUAL_BLOCK_TAGS = ImmutableList.of(SIMPLE_FULL_BLOCK, FULL_CUBE);
 
-    public static final Tag<Block> DISPENSER_PLACEABLE = BlockTagsAccessor.register("carpet:dispenser_placeable");
+    public static final Tag<Block> DISPENSER_BLOCK_WHITELIST = BlockTagsAccessor.register("carpet:dispenser_placeable_whitelist");
+    public static final Tag<Block> DISPENSER_BLOCK_BLACKLIST = BlockTagsAccessor.register("carpet:dispenser_placeable_blacklist");
     public static final DispenserBehavior PLACE_BLOCK_DISPENSER_BEHAVIOR = new PlaceBlockDispenserBehavior();
 
     private static <T extends BlockEntity> BlockEntityType<T> registerBlockEntity(String id, Supplier<T> supplier, Block... blocks) {
