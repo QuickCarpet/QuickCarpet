@@ -3,12 +3,14 @@
   "package": "quickcarpet.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "BlockTagsAccessor",
     "ClientConnectionMixin",
     "CommandManagerMixin",
     "CraftingInventoryAccessor",
     "CraftingTableBlockMixin",
     "CustomPayloadC2SPacketAccessor",
     "DispenserBehaviorFireChargeMixin",
+    "DispenserBlockMixin",
     "EndCityFeatureMixin",
     "ExplosionMixin",
     "FloatingIslandsChunkGeneratorMixin",
@@ -32,13 +34,12 @@
     "SpawnHelperMixin",
     "SpawnRestrictionMixin",
     "StructureMixin",
+    "TagContainerMixin",
     "ThreadedAnvilChunkStorageMixin",
     "TntEntityMixin",
     "WorldChunkMixin",
     "WorldMixin",
-    "MixinFallingBlockEntity",
-    "IMixinDispenserBlock",
-    "MixinBootstrap"
+    "MixinFallingBlockEntity"
   ],
   "client": [
     "BlockEntityRenderDispatcherMixin",
