@@ -123,6 +123,9 @@ public class Settings {
     @Rule(desc = "Dispensers can place most blocks", category = {EXPERIMENTAL, FEATURE})
     public static PlaceBlockDispenserBehavior.Option dispensersPlaceBlocks = PlaceBlockDispenserBehavior.Option.FALSE;
 
+    @Rule(desc = "Piston push limit", category = CREATIVE, options = {"10", "12", "14", "100"}, validator = Validator.NonNegative.class)
+    public static int pushLimit = 12;
+
     public static void main(String[] args) throws FileNotFoundException {
         Bootstrap.initialize();
         MANAGER.parse();

@@ -24,6 +24,7 @@
     "MinecraftServerMixin",
     "PistonBlockEntityMixin",
     "PistonBlockMixin",
+    "PistonHandlerMixin",
     "PlayerEntityMixin",
     "PlayerListHeaderS2CPacketAccessor",
     "PlayerManagerMixin",
