@@ -10,10 +10,9 @@ import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.level.LevelProperties;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import quickcarpet.settings.Settings;
 import quickcarpet.utils.CarpetProfiler;
 
 import java.util.function.BiFunction;
@@ -97,5 +96,10 @@ public abstract class ServerWorldMixin extends World {
     private void endBlockEventsStartEntities(BooleanSupplier booleanSupplier_1, CallbackInfo ci) {
         CarpetProfiler.endSection(this);
         CarpetProfiler.startSection(this, CarpetProfiler.SectionType.ENTITIES);
+    }
+
+    @ModifyConstant(method = "setSpawnPos", constant = @Constant(intValue = 11), require = 2)
+    private int adjustSpawnChunkLevel(int level) {
+        return Settings.spawnChunkLevel;
     }
 }

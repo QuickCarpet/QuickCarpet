@@ -14,13 +14,11 @@ import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.Slice;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import quickcarpet.QuickCarpet;
 import quickcarpet.helper.TickSpeed;
+import quickcarpet.settings.Settings;
 import quickcarpet.utils.CarpetProfiler;
 
 import java.io.File;
@@ -182,5 +180,16 @@ public abstract class MinecraftServerMixin
     )
     private void endNetwork(BooleanSupplier booleanSupplier_1, CallbackInfo ci) {
         CarpetProfiler.endSection(null);
+    }
+
+    @ModifyConstant(method = "prepareStartRegion", constant = @Constant(intValue = 11), require = 1)
+    private int adjustSpawnChunkLevel(int level) {
+        return Settings.spawnChunkLevel;
+    }
+
+    @ModifyConstant(method = "prepareStartRegion", constant = @Constant(intValue = 441), require = 1)
+    private int adjustSpawnChunkCount(int count) {
+        int sideLength = Settings.spawnChunkLevel * 2 - 1;
+        return sideLength * sideLength;
     }
 }

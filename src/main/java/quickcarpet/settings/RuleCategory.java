@@ -6,7 +6,7 @@ public enum RuleCategory implements ChangeListener {
     TNT, FIX, SURVIVAL, CREATIVE, EXPERIMENTAL, OPTIMIZATIONS, FEATURE,
     COMMANDS {
         @Override
-        public void onChange(ParsedRule rule) {
+        public void onChange(ParsedRule rule, Object previous) {
             rule.manager.resendCommandTree();
         }
     };
@@ -17,6 +17,6 @@ public enum RuleCategory implements ChangeListener {
         this.lowerCase = this.name().toLowerCase(Locale.ROOT);
     }
 
-    public void onChange(ParsedRule rule) {
+    public void onChange(ParsedRule rule, Object previous) {
     }
 }

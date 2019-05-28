@@ -1,10 +1,18 @@
 package quickcarpet.settings;
 
 import net.minecraft.Bootstrap;
+import net.minecraft.server.world.ChunkTicketType;
+import net.minecraft.server.world.ServerChunkManager;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Unit;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.world.dimension.DimensionType;
+import quickcarpet.QuickCarpet;
 import quickcarpet.feature.PlaceBlockDispenserBehavior;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.util.Optional;
 
 import static quickcarpet.settings.RuleCategory.*;
 
@@ -133,6 +141,34 @@ public class Settings {
             "Gives pistons the ability to double retract without side effects."
     })
     public static boolean doubleRetraction = false;
+
+    @Rule(desc = "Size of spawn chunks", extra = {
+            "Like render distance (11 -> 23x23 actively loaded).",
+            "Be aware that a border of 11 chunks will stay loaded around that, once those chunks are loaded somehow.",
+            "Higher levels need lots of RAM (up to 7569 chunks loaded with level 32)"
+    }, category = EXPERIMENTAL, onChange = SpawnChunkLevel.class, validator = SpawnChunkLevel.class)
+    public static int spawnChunkLevel = 11;
+
+    public static class SpawnChunkLevel implements ChangeListener<Integer>, Validator<Integer> {
+        @Override
+        public void onChange(ParsedRule<Integer> rule, Integer previous) {
+            int newValue = rule.get();
+            if (newValue == previous) return;
+            ServerWorld overworld = QuickCarpet.minecraft_server.getWorld(DimensionType.OVERWORLD);
+            if (overworld != null) {
+                ChunkPos centerChunk = new ChunkPos(overworld.getSpawnPos());
+                ServerChunkManager chunkManager = (ServerChunkManager) overworld.getChunkManager();
+                chunkManager.removeTicket(ChunkTicketType.START, centerChunk, previous, Unit.INSTANCE);
+                chunkManager.addTicket(ChunkTicketType.START, centerChunk, newValue, Unit.INSTANCE);
+            }
+        }
+
+        @Override
+        public Optional<String> validate(Integer value) {
+            if (value < 1 || value > 32) return Optional.of("Can only be between 1 and 32");
+            return Optional.empty();
+        }
+    }
 
     public static void main(String[] args) throws FileNotFoundException {
         Bootstrap.initialize();

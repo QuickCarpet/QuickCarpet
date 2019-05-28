@@ -111,12 +111,13 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
     }
 
     public void set(T value) {
+        T previousValue = this.get();
         Optional<String> error = this.validator.validate(value);
         if (error.isPresent()) throw new IllegalArgumentException(error.get());
         try {
             this.field.set(null, value);
-            this.onChange.onChange(this);
-            this.categories.forEach(c -> c.onChange(this));
+            this.onChange.onChange(this, previousValue);
+            this.categories.forEach(c -> c.onChange(this, previousValue));
         } catch (IllegalAccessException e) {
             throw new IllegalStateException(e);
         }
