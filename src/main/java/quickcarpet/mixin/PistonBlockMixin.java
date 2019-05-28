@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import quickcarpet.utils.IPistonBlockEntity;
@@ -131,5 +132,14 @@ public class PistonBlockMixin extends FacingBlock
     private BlockEntity returnNull(BlockState blockState_1, Direction direction_1, boolean boolean_1, boolean boolean_2)
     {
         return null;
+    }
+
+    @Inject(method = "tryMove", at = @At(value = "INVOKE",
+            target = "Lnet/minecraft/world/World;addBlockAction(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;II)V",
+            ordinal = 1, shift = At.Shift.BEFORE))
+    private void doubleRetraction(World world, BlockPos pos, BlockState state, CallbackInfo ci) {
+        if (quickcarpet.settings.Settings.doubleRetraction) {
+            world.setBlockState(pos, state.with(PistonBlock.EXTENDED, false), 2);
+        }
     }
 }

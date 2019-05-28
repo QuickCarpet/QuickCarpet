@@ -129,6 +129,11 @@ public class Settings {
     @Rule(desc = "Rail power limit", category = CREATIVE, options = {"9", "15", "30"}, validator = Validator.Positive.class)
     public static int railPowerLimit = 9;
 
+    @Rule(desc = "1.8 double retraction from pistons.", category = EXPERIMENTAL, extra = {
+            "Gives pistons the ability to double retract without side effects."
+    })
+    public static boolean doubleRetraction = false;
+
     public static void main(String[] args) throws FileNotFoundException {
         Bootstrap.initialize();
         MANAGER.parse();
