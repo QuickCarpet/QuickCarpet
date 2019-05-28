@@ -126,6 +126,9 @@ public class Settings {
     @Rule(desc = "Piston push limit", category = CREATIVE, options = {"10", "12", "14", "100"}, validator = Validator.NonNegative.class)
     public static int pushLimit = 12;
 
+    @Rule(desc = "Rail power limit", category = CREATIVE, options = {"9", "15", "30"}, validator = Validator.Positive.class)
+    public static int railPowerLimit = 9;
+
     public static void main(String[] args) throws FileNotFoundException {
         Bootstrap.initialize();
         MANAGER.parse();

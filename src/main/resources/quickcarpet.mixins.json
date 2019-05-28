@@ -28,6 +28,7 @@
     "PlayerEntityMixin",
     "PlayerListHeaderS2CPacketAccessor",
     "PlayerManagerMixin",
+    "PoweredRailBlockMixin",
     "ServerChunkManagerAccessor",
     "ServerChunkManagerMixin",
     "ServerPlayerEntityMixin",
