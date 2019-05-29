@@ -1,6 +1,7 @@
 package quickcarpet.commands;
 
 import com.google.common.collect.Sets;
+import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
@@ -10,6 +11,7 @@ import net.minecraft.command.arguments.RotationArgumentType;
 import net.minecraft.command.arguments.Vec3ArgumentType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.PlayerManager;
 import net.minecraft.server.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -194,10 +196,21 @@ public static void register(CommandDispatcher<ServerCommandSource> dispatcher)
     private static boolean cantSpawn(CommandContext<ServerCommandSource> context)
     {
         String playerName = getString(context,"player");
-        PlayerEntity player = context.getSource().getMinecraftServer().getPlayerManager().getPlayer(playerName);
-        if (player != null)
-        {
-            Messenger.m(context.getSource(), "r Player ", "rb "+playerName, "r is already logged on");
+        MinecraftServer server = context.getSource().getMinecraftServer();
+        PlayerManager manager = server.getPlayerManager();
+        PlayerEntity player = manager.getPlayer(playerName);
+        if (player != null) {
+            Messenger.m(context.getSource(), "r Player ", "rb "+ playerName, "r  is already logged on");
+            return true;
+        }
+        GameProfile profile = server.getUserCache().findByName(playerName);
+        if (manager.getUserBanList().contains(profile)) {
+            Messenger.m(context.getSource(), "r Player ", "rb " + playerName, "r  is banned");
+            return true;
+        }
+        System.out.println(manager.isWhitelistEnabled() + ", " + profile);
+        if (manager.isWhitelistEnabled() && profile != null && manager.isWhitelisted(profile) && !context.getSource().hasPermissionLevel(2)) {
+            Messenger.m(context.getSource(), "r Whitelisted players can only be spawned by operators");
             return true;
         }
         return false;
