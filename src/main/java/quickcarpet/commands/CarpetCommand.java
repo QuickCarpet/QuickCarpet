@@ -61,7 +61,7 @@ public class CarpetCommand {
                 .then(argument("value", rule.getArgumentType())
                     .suggests((c, b) -> CommandSource.suggestMatching(rule.options, b))
                     .requires(s -> !Settings.MANAGER.locked)
-                    .executes(c -> setRule((ServerCommandSource) c.getSource(), rule, c.getArgument("value", rule.type)))
+                    .executes(c -> setRule((ServerCommandSource) c.getSource(), rule, rule.getArgument(c)))
                 )
             );
             removeDefault.then(literal(rule.name)
@@ -69,7 +69,7 @@ public class CarpetCommand {
                     .executes(c -> removeDefault(c.getSource(), rule)));
             setDefault.then(literal(rule.name).then(argument("value", rule.getArgumentType())
                 .suggests((c, b) -> CommandSource.suggestMatching(rule.options, b))
-                .executes(c -> setDefault((ServerCommandSource) c.getSource(), rule, c.getArgument("value", rule.type)))
+                .executes(c -> setDefault((ServerCommandSource) c.getSource(), rule, rule.getArgument(c)))
             ));
         }
         carpet.then(removeDefault);
