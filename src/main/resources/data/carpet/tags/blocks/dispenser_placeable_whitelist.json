@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "#carpet:full_cube",
+    "#minecraft:rails",
+    "#minecraft:slabs",
+    "#minecraft:stairs"
+  ]
+}

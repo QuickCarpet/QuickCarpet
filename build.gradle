@@ -22,8 +22,7 @@ dependencies {
 	modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
-	// Currently only used for resource pack support for the translation of "generator.skyblock"
-	// modCompile "net.fabricmc:fabric:${project.fabric_version}"
+	modCompile "net.fabricmc:fabric:${project.fabric_version}"
 
 	// javax.annotation.Nullable/Nonnull
 	compileOnly "com.google.code.findbugs:jsr305:3.0.1"
@@ -112,6 +111,20 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 jar {
 	from "LICENSE"
 }
+
+task dumpRules(type: JavaExec, dependsOn: jar) {
+    workingDir = "run"
+	classpath = files(jar.archivePath)
+	classpath += sourceSets.main.runtimeClasspath
+	main = "quickcarpet.settings.Settings"
+	doLast {
+		copy {
+			from "run/rules.md"
+			into "."
+		}
+	}
+}
+build.dependsOn dumpRules
 
 // configure the maven publication
 publishing {

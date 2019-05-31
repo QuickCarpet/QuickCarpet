@@ -17,7 +17,7 @@ public class SkyBlockSettings {
 
     private static class WanderingTraderSkyblockTradesChange implements ChangeListener<Boolean> {
         @Override
-        public void onChange(ParsedRule<Boolean> rule) {
+        public void onChange(ParsedRule<Boolean> rule, Boolean previous) {
             if (wanderingTraderSkyblockTrades) {
                 Trades.mergeWanderingTraderOffers(Trades.getSkyblockWanderingTraderOffers());
             } else {

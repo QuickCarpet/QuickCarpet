@@ -5,10 +5,10 @@ import quickcarpet.settings.ChangeListener;
 import quickcarpet.settings.ParsedRule;
 import quickcarpet.skyblock.mixin.BrewingRecipeRegistryAccessor;
 
-public class BetterPotionListener implements ChangeListener
+public class BetterPotionListener implements ChangeListener<Boolean>
 {
     @Override
-    public void onChange(ParsedRule rule)
+    public void onChange(ParsedRule<Boolean> rule, Boolean previous)
     {
         BrewingRecipeRegistryAccessor.getPotionRecipeList().clear();
         BrewingRecipeRegistry.registerDefaults();

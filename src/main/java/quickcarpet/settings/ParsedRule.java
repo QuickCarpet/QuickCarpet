@@ -10,19 +10,21 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import net.minecraft.command.arguments.ArgumentTypes;
+import net.minecraft.command.arguments.serialize.ConstantArgumentSerializer;
 import net.minecraft.server.command.CommandSource;
+import net.minecraft.server.command.ServerCommandSource;
 import quickcarpet.module.QuickCarpetModule;
 import quickcarpet.utils.Reflection;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public final class ParsedRule<T> implements Comparable<ParsedRule> {
+    private final Map<Class<? extends Enum>, ArgumentType> ARGUMENT_TYPES = new HashMap<>();
     public final Rule rule;
     public final Field field;
 
@@ -59,7 +61,7 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
         if (this.type == boolean.class) {
             this.options = ImmutableList.of("true", "false");
         } else if (this.type.isEnum()) {
-            this.options = Arrays.stream(this.type.getEnumConstants()).map(e -> ((Enum) e).name().toLowerCase(Locale.ROOT)).collect(ImmutableList.toImmutableList());
+            this.options = getEnumOptions((Class<? extends Enum>) this.type);
         } else {
             this.options = ImmutableList.copyOf(rule.options());
         }
@@ -69,14 +71,37 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
         if (type == String.class) return (ArgumentType<T>) StringArgumentType.greedyString();
         if (type == boolean.class) return (ArgumentType<T>) BoolArgumentType.bool();
         if (type == int.class) return (ArgumentType<T>) IntegerArgumentType.integer();
-        if (type.isEnum()) return new ArgumentType<T>() {
+        // if (type.isEnum()) return ARGUMENT_TYPES.computeIfAbsent((Class<? extends Enum>) type, ParsedRule::createEnumArgumentType);
+        if (type.isEnum()) return (ArgumentType<T>) StringArgumentType.string();
+        throw new IllegalStateException("Unknown type " + type.getSimpleName());
+    }
+
+    public T getArgument(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        if (type.isEnum()) {
+            String value = StringArgumentType.getString(context, "value");
+            try {
+                return (T) Enum.valueOf((Class) type, value.toUpperCase(Locale.ROOT));
+            } catch (IllegalArgumentException e) {
+                throw CommandSyntaxException.BUILT_IN_EXCEPTIONS.literalIncorrect().create(String.join(", ", options));
+            }
+        }
+        return context.getArgument("value", type);
+    }
+
+    private static ImmutableList<String> getEnumOptions(Class<? extends Enum> type) {
+        return Arrays.stream(type.getEnumConstants()).map(e -> ((Enum) e).name().toLowerCase(Locale.ROOT)).collect(ImmutableList.toImmutableList());
+    }
+
+    private static <T extends Enum> ArgumentType<T> createEnumArgumentType(Class<T> type) {
+        ImmutableList<String> options = getEnumOptions(type);
+        ArgumentType<T> arg = new ArgumentType<T>() {
             @Override
             public T parse(StringReader reader) throws CommandSyntaxException {
                 int start = reader.getCursor();
                 String value = reader.readUnquotedString();
                 String ucValue = value.toUpperCase(Locale.ROOT);
                 try {
-                    return (T) Enum.valueOf((Class<? extends Enum>) type, ucValue);
+                    return (T) Enum.valueOf(type, ucValue);
                 } catch (IllegalArgumentException e) {
                     reader.setCursor(start);
                     throw CommandSyntaxException.BUILT_IN_EXCEPTIONS.literalIncorrect().createWithContext(reader, value);
@@ -88,7 +113,13 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
                 return CommandSource.suggestMatching(options, builder);
             }
         };
-        throw new IllegalStateException("Unknown type " + type.getSimpleName());
+        String name = "carpet:" + type.getName()
+                .replace(type.getPackage().getName() + ".", "")
+                .replaceAll("[A-Z]", "_$0")
+                .replaceAll("\\$", "")
+                .toLowerCase(Locale.ROOT).substring(1);
+        ArgumentTypes.register(name, (Class) arg.getClass(), new ConstantArgumentSerializer<>(() -> arg));
+        return arg;
     }
 
     @Nullable
@@ -111,12 +142,13 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
     }
 
     public void set(T value) {
+        T previousValue = this.get();
         Optional<String> error = this.validator.validate(value);
         if (error.isPresent()) throw new IllegalArgumentException(error.get());
         try {
             this.field.set(null, value);
-            this.onChange.onChange(this);
-            this.categories.forEach(c -> c.onChange(this));
+            this.onChange.onChange(this, previousValue);
+            this.categories.forEach(c -> c.onChange(this, previousValue));
         } catch (IllegalAccessException e) {
             throw new IllegalStateException(e);
         }
