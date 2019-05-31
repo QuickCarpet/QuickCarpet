@@ -82,6 +82,23 @@ Default: `true`
 Options: `true`, `false`  
 Categories: commands  
 
+## dispensersPlaceBlocks
+Dispensers can place most blocks
+
+Type: `Option`  
+Default: `false`  
+Options: `false`, `whitelist`, `blacklist`  
+Categories: experimental, feature  
+
+## doubleRetraction
+1.8 double retraction from pistons.
+
+Gives pistons the ability to double retract without side effects.  
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: experimental  
+
 ## explosionNoBlockDamage
 Explosions won't destroy blocks
 
@@ -128,6 +145,14 @@ Default: `false`
 Options: `true`, `false`  
 Categories: commands  
 
+## mobInFireConvertsSandToSoulsand
+If a living entity dies on sand with fire on top the sand will convert into soul sand
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: feature, experimental  
+
 ## movableBlockEntities
 Pistons can push block entities, like hoppers, chests etc.
 
@@ -153,6 +178,32 @@ Default: `false`
 Options: `true`, `false`  
 Categories: creative  
 
+## pushLimit
+Piston push limit
+
+Type: `int`  
+Default: `12`  
+Options: `10`, `12`, `14`, `100`  
+Categories: creative  
+Validator: `quickcarpet.settings.Validator$NonNegative`
+
+## railPowerLimit
+Rail power limit
+
+Type: `int`  
+Default: `9`  
+Options: `9`, `15`, `30`  
+Categories: creative  
+Validator: `quickcarpet.settings.Validator$Positive`
+
+## renewableSand
+Cobblestone crushed by falling anvils makes sand
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: feature, experimental  
+
 ## shulkerSpawningInEndCities
 Shulkers will respawn in end cities
 
@@ -168,6 +219,18 @@ Type: `boolean`
 Default: `false`  
 Options: `true`, `false`  
 Categories: feature, experimental  
+
+## spawnChunkLevel
+Size of spawn chunks
+
+Like render distance (11 -> 23x23 actively loaded).  
+Be aware that a border of 11 chunks will stay loaded around that, once those chunks are loaded somehow.  
+Higher levels need lots of RAM (up to 7569 chunks loaded with level 32)  
+Type: `int`  
+Default: `11`  
+Options:   
+Categories: experimental  
+Validator: `quickcarpet.settings.Settings$SpawnChunkLevel`
 
 ## stackableShulkerBoxes
 Empty shulker boxes can stack to 64 when dropped on the ground
