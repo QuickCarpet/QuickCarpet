@@ -33,7 +33,6 @@ public abstract class FallingBlockEntityMixin extends Entity
         {
             world.breakBlock(blockPos_2.down(), false);
             world.setBlockState(blockPos_2.down(), Blocks.SAND.getDefaultState(), 3);
-            world.playLevelEvent(2001, blockPos_2.down(), Block.getRawIdFromState(Blocks.SAND.getDefaultState()));
         }
     }
 }
