@@ -6,6 +6,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.FallingBlockEntity;
+import net.minecraft.tag.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -28,7 +29,7 @@ public abstract class FallingBlockEntityMixin extends Entity
             locals = LocalCapture.CAPTURE_FAILHARD)
     private void onTick(CallbackInfo ci, Block block_1, BlockPos blockPos_2, boolean boolean_1, boolean boolean_2, BlockState blockState_1)
     {
-        if (block_1 == Blocks.ANVIL && Settings.renewableSand
+        if (block_1.matches(BlockTags.ANVIL) && Settings.renewableSand
                     && this.world.getBlockState(new BlockPos(this.x, this.y - 0.059999999776482582D, this.z)).getBlock() == Blocks.COBBLESTONE)
         {
             world.breakBlock(blockPos_2.down(), false);
