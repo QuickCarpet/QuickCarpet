@@ -42,7 +42,7 @@ public class PlaceBlockDispenserBehavior  extends ItemDispenserBehavior {
 
         final Direction ffacing = facing;
 
-        if (item.getClass() != BlockItem.class || true) {
+        if (item.getClass() != BlockItem.class) {
             BlockHitResult hitResult = new BlockHitResult(new Vec3d(pos.offset(facing, 2)), facing, pos, false);
             ItemPlacementContext ipc = new ItemPlacementContext(world, null, Hand.MAIN_HAND, itemStack, hitResult) {
                 @Override
@@ -106,8 +106,10 @@ public class PlaceBlockDispenserBehavior  extends ItemDispenserBehavior {
             }
             BlockSoundGroup soundType = state.getSoundGroup();
             world.playSound(null, pos, soundType.getPlaceSound(), SoundCategory.BLOCKS, (soundType.getVolume() + 1.0F / 2.0F), soundType.getPitch() * 0.8F);
-            itemStack.subtractAmount(1);
-            return itemStack;
+            if (!world.isAir(pos)) {
+                itemStack.subtractAmount(1);
+                return itemStack;
+            }
         }
 
         return super.dispenseStack(blockPointer, itemStack);
