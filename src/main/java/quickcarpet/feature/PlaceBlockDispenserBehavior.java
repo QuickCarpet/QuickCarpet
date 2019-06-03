@@ -7,14 +7,19 @@ import net.minecraft.block.enums.SlabType;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.state.property.Properties;
 import net.minecraft.state.property.Property;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.Hand;
+import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPointer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.CarpetRegistry;
@@ -32,10 +37,40 @@ public class PlaceBlockDispenserBehavior  extends ItemDispenserBehavior {
 
         Direction facing = blockPointer.getBlockState().get(DispenserBlock.FACING);
         Direction.Axis axis = facing.getAxis();
-
-        BlockPos pos = blockPointer.getBlockPos().offset(facing);
         World world = blockPointer.getWorld();
+        BlockPos pos = blockPointer.getBlockPos();
+
+        final Direction ffacing = facing;
+
+        if (item.getClass() != BlockItem.class || true) {
+            BlockHitResult hitResult = new BlockHitResult(new Vec3d(pos.offset(facing, 2)), facing, pos, false);
+            ItemPlacementContext ipc = new ItemPlacementContext(world, null, Hand.MAIN_HAND, itemStack, hitResult) {
+                @Override
+                public Direction getPlayerFacing() {
+                    return ffacing;
+                }
+
+                @Override
+                public Direction getPlayerHorizontalFacing() {
+                    return ffacing.getAxis() == Direction.Axis.Y ? Direction.NORTH : ffacing;
+                }
+
+                @Override
+                public Direction[] getPlacementFacings() {
+                    return new Direction[] {getPlayerFacing(), Direction.UP, Direction.DOWN, Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
+                }
+            };
+            if (((BlockItem) item).place(ipc) == ActionResult.SUCCESS) {
+                return itemStack;
+            } else {
+                return super.dispenseStack(blockPointer, itemStack);
+            }
+        }
+
+        pos = pos.offset(facing);
+
         BlockState state = block.getDefaultState();
+        if (state == null) return super.dispenseStack(blockPointer, itemStack);
         Collection<Property<?>> properties = state.getProperties();
 
         if (block instanceof StairsBlock) {
@@ -79,13 +114,14 @@ public class PlaceBlockDispenserBehavior  extends ItemDispenserBehavior {
     }
 
     public enum Option {
-        FALSE, WHITELIST, BLACKLIST
+        FALSE, WHITELIST, BLACKLIST, ALL
     }
 
     public static boolean canPlace(Block block) {
         switch (Settings.dispensersPlaceBlocks) {
             case WHITELIST: return CarpetRegistry.DISPENSER_BLOCK_WHITELIST.contains(block);
             case BLACKLIST: return !CarpetRegistry.DISPENSER_BLOCK_BLACKLIST.contains(block);
+            case ALL: return true;
         }
         return false;
     }
