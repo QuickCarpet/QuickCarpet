@@ -71,7 +71,14 @@ public class PlaceBlockDispenserBehavior  extends ItemDispenserBehavior {
             }
             BlockSoundGroup soundType = state.getSoundGroup();
             world.playSound(null, pos, soundType.getPlaceSound(), SoundCategory.BLOCKS, (soundType.getVolume() + 1.0F / 2.0F), soundType.getPitch() * 0.8F);
-            itemStack.subtractAmount(1);
+            if (!world.isAir(pos))
+            {
+                itemStack.subtractAmount(1);
+            }
+            else
+            {
+                super.dispenseStack(blockPointer, itemStack);
+            }
             return itemStack;
         }
 
