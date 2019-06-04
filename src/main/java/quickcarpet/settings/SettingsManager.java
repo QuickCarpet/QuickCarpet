@@ -65,10 +65,10 @@ public abstract class SettingsManager {
         return getRules().stream().filter(r -> !r.isDefault()).collect(ImmutableList.toImmutableList());
     }
 
-    public void disableAll(RuleCategory category) {
+    public void disableAll(RuleCategory category, boolean sync) {
         for (ParsedRule<?> rule : getRules()) {
             if (rule.type != boolean.class || !rule.categories.contains(category)) continue;
-            ((ParsedRule<Boolean>) rule).set(false);
+            ((ParsedRule<Boolean>) rule).set(false, sync);
         }
     }
 

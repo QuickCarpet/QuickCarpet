@@ -129,7 +129,7 @@ public class CarpetCommand {
 
     private static <T> int setRule(ServerCommandSource source, ParsedRule<T> rule, T newValue) {
         try {
-            rule.set(newValue);
+            rule.set(newValue, true);
             Messenger.m(source, "w "+ rule.toString() + ", ", "c [change permanently?]",
                     "^w Click to keep the settings in carpet.conf to save across restarts",
                     "?/carpet setDefault " + rule.name + " " + rule.getAsString());
@@ -141,7 +141,7 @@ public class CarpetCommand {
 
     private static <T> int setDefault(ServerCommandSource source, ParsedRule<T> rule, T defaultValue) {
         try {
-            rule.set(defaultValue);
+            rule.set(defaultValue, true);
             rule.save();
             Messenger.m(source ,"gi rule " + rule.name + " will now default to "+ defaultValue);
         } catch (IllegalArgumentException e) {
@@ -151,7 +151,7 @@ public class CarpetCommand {
     }
 
     private static int removeDefault(ServerCommandSource source, ParsedRule rule) {
-        rule.resetToDefault();
+        rule.resetToDefault(true);
         rule.save();
         Messenger.m(source ,"gi rule " + rule.name + " defaults to " + rule.getAsString());
         return 1;

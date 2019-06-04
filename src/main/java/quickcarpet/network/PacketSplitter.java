@@ -5,6 +5,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.packet.CustomPayloadS2CPacket;
+import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.listener.PacketListener;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.packet.CustomPayloadC2SPacket;
@@ -60,13 +61,11 @@ public class PacketSplitter {
         return readingSessions.computeIfAbsent(key, ReadingSession::new).receive(messageAccessor.getData(), maxLength);
     }
 
-    @Environment(EnvType.CLIENT)
-    public static PacketByteBuf receive(ClientPlayNetworkHandler networkHandler, CustomPayloadS2CPacket message) {
+    public static PacketByteBuf receive(ClientPlayPacketListener networkHandler, CustomPayloadS2CPacket message) {
         return receive(networkHandler, message, DEFAULT_MAX_RECEIVE_SIZE_S2C);
     }
 
-    @Environment(EnvType.CLIENT)
-    public static PacketByteBuf receive(ClientPlayNetworkHandler networkHandler, CustomPayloadS2CPacket message, int maxLength) {
+    public static PacketByteBuf receive(ClientPlayPacketListener networkHandler, CustomPayloadS2CPacket message, int maxLength) {
         Pair<PacketListener, Identifier> key = Pair.of(networkHandler, message.getChannel());
         return readingSessions.computeIfAbsent(key, ReadingSession::new).receive(message.getData(), maxLength);
     }

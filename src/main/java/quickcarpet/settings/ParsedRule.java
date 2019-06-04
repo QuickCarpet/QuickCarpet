@@ -15,6 +15,7 @@ import net.minecraft.command.arguments.serialize.ConstantArgumentSerializer;
 import net.minecraft.server.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
 import quickcarpet.module.QuickCarpetModule;
+import quickcarpet.network.channels.RulesChannel;
 import quickcarpet.utils.Reflection;
 
 import javax.annotation.Nullable;
@@ -128,20 +129,20 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
         return ((ModuleSettingsManager) manager).module;
     }
 
-    public void set(String value) {
+    public void set(String value, boolean sync) {
         if (type == String.class) {
-            set((T) value);
+            set((T) value, sync);
         } else if (type == boolean.class) {
-            set((T) (Object) Boolean.parseBoolean(value));
+            set((T) (Object) Boolean.parseBoolean(value), sync);
         } else if (type == int.class) {
-            set((T) (Object) Integer.parseInt(value));
+            set((T) (Object) Integer.parseInt(value), sync);
         } else if (type.isEnum()) {
             String ucValue = value.toUpperCase(Locale.ROOT);
-            set((T) (Object) Enum.valueOf((Class<? extends Enum>) type, ucValue));
+            set((T) (Object) Enum.valueOf((Class<? extends Enum>) type, ucValue), sync);
         } else throw new IllegalStateException("Unknown type " + type.getSimpleName());
     }
 
-    public void set(T value) {
+    public void set(T value, boolean sync) {
         T previousValue = this.get();
         Optional<String> error = this.validator.validate(value);
         if (error.isPresent()) throw new IllegalArgumentException(error.get());
@@ -149,6 +150,7 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
             this.field.set(null, value);
             this.onChange.onChange(this, previousValue);
             this.categories.forEach(c -> c.onChange(this, previousValue));
+            if (sync) RulesChannel.instance.sendRuleUpdate(Collections.singleton(this));
         } catch (IllegalAccessException e) {
             throw new IllegalStateException(e);
         }
@@ -176,8 +178,8 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
         return defaultValue.equals(get());
     }
 
-    public void resetToDefault() {
-        set(defaultValue);
+    public void resetToDefault(boolean sync) {
+        set(defaultValue, sync);
     }
 
     public void save() {
@@ -186,7 +188,7 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
     }
 
     void load(String value) {
-        set(value);
+        set(value, false);
         rememberSaved();
     }
 

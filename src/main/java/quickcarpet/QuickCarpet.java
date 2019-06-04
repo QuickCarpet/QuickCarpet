@@ -1,20 +1,26 @@
 package quickcarpet;
 
 import com.mojang.brigadier.CommandDispatcher;
+import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import quickcarpet.client.ClientPluginChannelManager;
+import quickcarpet.client.ClientRulesChannel;
 import quickcarpet.commands.*;
 import quickcarpet.helper.TickSpeed;
 import quickcarpet.logging.LoggerRegistry;
 import quickcarpet.module.ModuleHost;
 import quickcarpet.module.QuickCarpetModule;
 import quickcarpet.network.PluginChannelManager;
+import quickcarpet.network.channels.RulesChannel;
 import quickcarpet.network.channels.StructureChannel;
 import quickcarpet.pubsub.PubSubManager;
 import quickcarpet.pubsub.PubSubMessenger;
+import quickcarpet.settings.ParsedRule;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.CarpetRegistry;
 import quickcarpet.utils.HUDController;
@@ -50,6 +56,7 @@ public final class QuickCarpet implements ModInitializer, ModuleHost {
         pluginChannels = new PluginChannelManager(server);
         pluginChannels.register(pubSubMessenger);
         pluginChannels.register(new StructureChannel());
+        pluginChannels.register(new RulesChannel());
         for (QuickCarpetModule m : modules) m.onServerInit(server);
     }
 
@@ -67,13 +74,23 @@ public final class QuickCarpet implements ModInitializer, ModuleHost {
         for (QuickCarpetModule m : modules) m.tick(server);
     }
     
-    public void onGameStarted() {
+    public void onGameStarted(EnvType env) {
         LoggerRegistry.initLoggers();
         CarpetRegistry.init();
         Settings.MANAGER.parse();
         for (QuickCarpetModule m : modules) {
             m.onGameStarted();
             LOG.info(Build.NAME + " module " + m.getId() + " version " + m.getVersion() + " initialized");
+        }
+        if (env == EnvType.CLIENT) {
+            ClientPluginChannelManager.INSTANCE.register(new ClientRulesChannel());
+        }
+    }
+
+    public void onJoinServer() {
+        if (!MinecraftClient.getInstance().isInSingleplayer()) {
+            for (ParsedRule<?> rule : Settings.MANAGER.getRules()) rule.resetToDefault(false);
+            ClientPluginChannelManager.INSTANCE.sendRegisterPacket(MinecraftClient.getInstance().getNetworkHandler());
         }
     }
 
