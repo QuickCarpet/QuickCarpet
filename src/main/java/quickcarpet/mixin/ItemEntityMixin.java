@@ -43,13 +43,13 @@ public abstract class ItemEntityMixin extends Entity
         }
     }
     
-    @Redirect(method = "method_20397", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getMaxAmount()I"))
+    @Redirect(method = "method_20397", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getMaxCount()I"))
     private int getItemStackMaxAmount(ItemStack stack)
     {
         if (Settings.stackableShulkerBoxes && stack.getItem() instanceof BlockItem && ((BlockItem) stack.getItem()).getBlock() instanceof ShulkerBoxBlock)
             return SHULKERBOX_MAX_STACK_AMOUNT;
         
-        return stack.getMaxAmount();
+        return stack.getMaxCount();
     }
     
     @Inject(method = "tryMerge(Lnet/minecraft/entity/ItemEntity;)V", at = @At("HEAD"), cancellable = true)
@@ -63,17 +63,17 @@ public abstract class ItemEntityMixin extends Entity
         }
         
         ItemStack otherStack = other.getStack();
-        if (selfStack.getItem() == otherStack.getItem() && !InventoryHelper.shulkerBoxHasItems(selfStack) && selfStack.hasTag() == otherStack.hasTag() && selfStack.getAmount() + otherStack.getAmount() <= SHULKERBOX_MAX_STACK_AMOUNT)
+        if (selfStack.getItem() == otherStack.getItem() && !InventoryHelper.shulkerBoxHasItems(selfStack) && selfStack.hasTag() == otherStack.hasTag() && selfStack.getCount() + otherStack.getCount() <= SHULKERBOX_MAX_STACK_AMOUNT)
         {
-            int amount = Math.min(otherStack.getAmount(), SHULKERBOX_MAX_STACK_AMOUNT - selfStack.getAmount());
+            int amount = Math.min(otherStack.getCount(), SHULKERBOX_MAX_STACK_AMOUNT - selfStack.getCount());
             
-            selfStack.addAmount(amount);
+            selfStack.increment(amount);
             self.setStack(selfStack);
             
             this.pickupDelay = Math.max(((ItemEntityMixin) (Object) other).pickupDelay, this.pickupDelay);
             this.age = Math.min(((ItemEntityMixin) (Object) other).age, this.age);
             
-            otherStack.subtractAmount(amount);
+            otherStack.decrement(amount);
             if (otherStack.isEmpty())
             {
                 other.remove();
