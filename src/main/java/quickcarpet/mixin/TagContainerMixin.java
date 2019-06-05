@@ -24,7 +24,9 @@ public abstract class TagContainerMixin<T> {
     private void onReload(Map<Identifier, Tag.Builder<T>> builders, CallbackInfo ci) {
         if (this.entryType.equals("block")) {
             for (Tag<Block> t : CarpetRegistry.VIRTUAL_BLOCK_TAGS) {
-                this.idMap.put(t.getId(), (Tag<T> )t);
+                Tag.Builder<Block> tBuilder = new Tag.Builder<>();
+                tBuilder.add(t.values().toArray(new Block[0]));
+                builders.put(t.getId(), (Tag.Builder<T>) tBuilder);
             }
         }
     }
