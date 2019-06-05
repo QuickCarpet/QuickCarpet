@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.SharedConstants;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.chat.Component;
@@ -195,6 +196,9 @@ public class CarpetCommand {
             version += " " + Build.BRANCH + "-" + Build.COMMIT.substring(0, 7) + " (" + Build.BUILD_TIMESTAMP + ")";
         }
         Messenger.m(source, "e " + Build.NAME + " version: " + version);
+        if (!Build.MINECRAFT_VERSION.equals(SharedConstants.getGameVersion().getId())) {
+            Messenger.m(source, "y Built for " + Build.MINECRAFT_VERSION);
+        }
         if (!Build.WORKING_DIR_CLEAN) {
             Messenger.m(source, "r Uncommitted files present");
         }
