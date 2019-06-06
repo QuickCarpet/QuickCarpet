@@ -95,6 +95,10 @@ public class PlaceBlockDispenserBehavior  extends ItemDispenserBehavior {
             state = state.with(Properties.SLAB_TYPE, facing == Direction.DOWN ? SlabType.TOP : SlabType.BOTTOM);
         }
 
+        if (block instanceof ObserverBlock) {
+            state = state.with(ObserverBlock.POWERED, true);
+        }
+
         state = Block.getRenderingState(state, world, pos);
 
         BlockState currentBlockState = world.getBlockState(pos);
