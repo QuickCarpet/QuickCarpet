@@ -9,11 +9,7 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.Slice;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import quickcarpet.utils.CarpetProfiler;
 import quickcarpet.utils.SpawnTracker;
 
 @Mixin(ServerChunkManager.class)
@@ -46,27 +42,24 @@ public abstract class ServerChunkManagerMixin {
 
     @Shadow @Final private ChunkTicketManager ticketManager;
 
-    @Inject(
+    @Redirect(
         method = "tickChunks",
-        at = @At(value = "CONSTANT", args = "stringValue=spawner")
+        at = @At(value = "INVOKE", target = "Lit/unimi/dsi/fastutil/objects/Object2IntMap;getInt(Ljava/lang/Object;)I"),
+        require = 0
     )
-    private void startSpawning(CallbackInfo ci) {
-        CarpetProfiler.startSection(this.world, CarpetProfiler.SectionType.SPAWNING);
-    }
-
-    @Inject(
-        method = "tickChunks",
-        slice = @Slice(from = @At(value = "CONSTANT", args = "stringValue=spawner")),
-        at = @At(value = "INVOKE", target="Lnet/minecraft/util/profiler/Profiler;pop()V", ordinal = 0)
-    )
-    private void endSpawning(CallbackInfo ci) {
-        CarpetProfiler.endSection(this.world);
+    private int onMobcapCheckTickChunks(Object2IntMap mobcaps, Object key) {
+        return onMobcapCheck(mobcaps, key);
     }
 
     @Redirect(
-        method = "tickChunks",
-        at = @At(value = "INVOKE", target = "Lit/unimi/dsi/fastutil/objects/Object2IntMap;getInt(Ljava/lang/Object;)I")
+        method = "method_20801",
+        at = @At(value = "INVOKE", target = "Lit/unimi/dsi/fastutil/objects/Object2IntMap;getInt(Ljava/lang/Object;)I"),
+        require = 0
     )
+    private int onMobcapCheckLambda(Object2IntMap mobcaps, Object key) {
+        return onMobcapCheck(mobcaps, key);
+    }
+
     private int onMobcapCheck(Object2IntMap mobcaps, Object key) {
         EntityCategory category = (EntityCategory) key;
         int levelCount = this.ticketManager.getLevelCount();
