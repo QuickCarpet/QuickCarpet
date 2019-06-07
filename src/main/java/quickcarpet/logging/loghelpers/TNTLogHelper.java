@@ -1,6 +1,6 @@
 package quickcarpet.logging.loghelpers;
 
-import net.minecraft.network.chat.Component;
+import net.minecraft.text.Text;
 import quickcarpet.logging.LoggerRegistry;
 import quickcarpet.utils.Messenger;
 
@@ -26,11 +26,11 @@ public class TNTLogHelper
             switch (option)
             {
                 case "brief":
-                    return new Component[]{Messenger.c(
+                    return new Text[]{Messenger.c(
                             "l P ",Messenger.dblt("l",primedX,primedY,primedZ,primedAngle),
                             "r  E ",Messenger.dblt("r",x, y, z))};
                 case "full":
-                    return new Component[]{Messenger.c(
+                    return new Text[]{Messenger.c(
                             "l P ",Messenger.dblf("l",primedX,primedY,primedZ,primedAngle),
                             "r  E ",Messenger.dblf("r",x, y, z))};
             }

@@ -1,8 +1,8 @@
 package quickcarpet.logging;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
 import quickcarpet.QuickCarpet;
 
 import java.util.Arrays;
@@ -115,7 +115,7 @@ public class Logger
      * will repeat invocation for players that share the same option
      */
     @FunctionalInterface
-    public interface lMessage { Component[] get(String playerOption, PlayerEntity player);}
+    public interface lMessage { Text[] get(String playerOption, PlayerEntity player);}
     public void logNoCommand(lMessage messagePromise) {log(messagePromise, (Object[])null);}
     public void log(lMessage messagePromise, Object... commandParams)
     {
@@ -124,7 +124,7 @@ public class Logger
             ServerPlayerEntity player = playerFromName(en.getKey());
             if (player != null)
             {
-                Component [] messages = messagePromise.get(en.getValue(),player);
+                Text [] messages = messagePromise.get(en.getValue(),player);
                 if (messages != null)
                     sendPlayerMessage(en.getKey(), player, messages, commandParams);
             }
@@ -136,11 +136,11 @@ public class Logger
      * and served the same way to all other players subscribed to the same option
      */
     @FunctionalInterface
-    public interface lMessageIgnorePlayer { Component [] get(String playerOption);}
+    public interface lMessageIgnorePlayer { Text [] get(String playerOption);}
     public void logNoCommand(lMessageIgnorePlayer messagePromise) {log(messagePromise, (Object[])null);}
     public void log(lMessageIgnorePlayer messagePromise, Object... commandParams)
     {
-        Map<String, Component[]> cannedMessages = new HashMap<>();
+        Map<String, Text[]> cannedMessages = new HashMap<>();
         for (Map.Entry<String,String> en : subscribedOnlinePlayers.entrySet())
         {
             ServerPlayerEntity player = playerFromName(en.getKey());
@@ -151,7 +151,7 @@ public class Logger
                 {
                     cannedMessages.put(option,messagePromise.get(option));
                 }
-                Component [] messages = cannedMessages.get(option);
+                Text [] messages = cannedMessages.get(option);
                 if (messages != null)
                     sendPlayerMessage(en.getKey(), player, messages, commandParams);
             }
@@ -160,10 +160,10 @@ public class Logger
     /**
      * guarantees that message is evaluated once, so independent from the player and chosen option
      */
-    public void logNoCommand(Supplier<Component[]> messagePromise) {log(messagePromise, (Object[])null);}
-    public void log(Supplier<Component[]> messagePromise, Object... commandParams)
+    public void logNoCommand(Supplier<Text[]> messagePromise) {log(messagePromise, (Object[])null);}
+    public void log(Supplier<Text[]> messagePromise, Object... commandParams)
     {
-        Component [] cannedMessages = null;
+        Text [] cannedMessages = null;
         for (Map.Entry<String,String> en : subscribedOnlinePlayers.entrySet())
         {
             ServerPlayerEntity player = playerFromName(en.getKey());
@@ -175,7 +175,7 @@ public class Logger
         }
     }
 
-    public void sendPlayerMessage(String playerName, ServerPlayerEntity player, Component[] messages, Object[] commandParams)
+    public void sendPlayerMessage(String playerName, ServerPlayerEntity player, Text[] messages, Object[] commandParams)
     {
         handlers.getOrDefault(playerName, defaultHandler).handle(player, messages, commandParams);
     }

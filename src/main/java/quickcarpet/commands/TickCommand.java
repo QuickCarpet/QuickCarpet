@@ -4,9 +4,9 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.text.Text;
 import quickcarpet.helper.TickSpeed;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.CarpetProfiler;
@@ -91,7 +91,7 @@ public class TickCommand {
         catch (CommandSyntaxException ignored)
         {
         }
-        Component message = TickSpeed.tickrate_advance(player, advance, tail_command, source);
+        Text message = TickSpeed.tickrate_advance(player, advance, tail_command, source);
         if (message != null)
         {
             source.sendFeedback(message, false);

@@ -7,12 +7,12 @@ import net.minecraft.client.network.packet.EntitySetHeadYawS2CPacket;
 import net.minecraft.client.network.packet.PlayerListS2CPacket;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.network.NetworkSide;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerTask;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.network.ServerPlayerInteractionManager;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.dimension.DimensionType;
 import quickcarpet.utils.IServerPlayerEntity;
@@ -65,7 +65,7 @@ public class ServerPlayerEntityFake extends ServerPlayerEntity
     public static ServerPlayerEntityFake createShadow(MinecraftServer server, ServerPlayerEntity player)
     {
         player.getServer().getPlayerManager().remove(player);
-        player.networkHandler.disconnect(new TranslatableComponent("multiplayer.disconnect.duplicate_login"));
+        player.networkHandler.disconnect(new TranslatableText("multiplayer.disconnect.duplicate_login"));
         ServerWorld worldIn = server.getWorld(player.dimension);
         ServerPlayerInteractionManager interactionManagerIn = new ServerPlayerInteractionManager(worldIn);
         GameProfile gameprofile = player.getGameProfile();
