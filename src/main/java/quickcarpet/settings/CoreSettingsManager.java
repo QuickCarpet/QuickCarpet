@@ -68,7 +68,7 @@ public class CoreSettingsManager extends SettingsManager {
     }
 
     void load() {
-        for (ParsedRule<?> rule : allRules) rule.resetToDefault();
+        for (ParsedRule<?> rule : allRules) rule.resetToDefault(false);
         try (BufferedReader reader = new BufferedReader(new FileReader(getFile()))) {
             for (String line; (line = reader.readLine()) != null;) {
                 line = line.trim();
@@ -76,7 +76,7 @@ public class CoreSettingsManager extends SettingsManager {
                 if (line.equalsIgnoreCase("locked")) {
                     this.locked = true;
                     LOG.info("[CM]: " + Build.NAME + " is locked by the administrator");
-                    disableAll(RuleCategory.COMMANDS);
+                    disableAll(RuleCategory.COMMANDS, false);
                     continue;
                 }
                 String[] kv = line.split("\\s+", 2);

@@ -18,13 +18,15 @@ import java.util.Map;
 public abstract class TagContainerMixin<T> {
     @Shadow @Final private String entryType;
 
-    @Shadow public abstract void add(Tag<T> tag_1);
+    @Shadow private Map<Identifier, Tag<T>> idMap;
 
     @Inject(method = "applyReload", at = @At("HEAD"))
     private void onReload(Map<Identifier, Tag.Builder<T>> builders, CallbackInfo ci) {
         if (this.entryType.equals("block")) {
             for (Tag<Block> t : CarpetRegistry.VIRTUAL_BLOCK_TAGS) {
-                this.add((Tag<T>) t);
+                Tag.Builder<Block> tBuilder = new Tag.Builder<>();
+                tBuilder.add(t.values().toArray(new Block[0]));
+                builders.put(t.getId(), (Tag.Builder<T>) tBuilder);
             }
         }
     }

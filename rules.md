@@ -87,7 +87,7 @@ Dispensers can place most blocks
 
 Type: `Option`  
 Default: `false`  
-Options: `false`, `whitelist`, `blacklist`  
+Options: `false`, `whitelist`, `blacklist`, `all`  
 Categories: experimental, feature  
 
 ## doubleRetraction

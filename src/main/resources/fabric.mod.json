@@ -25,10 +25,7 @@
     "quickcarpet.mixins.json",
     "skyblock.mixins.json"
   ],
-  "requires": {
-    "fabricloader": ">=0.4.0"
-  },
-  "suggests": {
-    "fabric": "*"
+  "depends": {
+    "fabric-resource-loader-v0": "*"
   }
 }

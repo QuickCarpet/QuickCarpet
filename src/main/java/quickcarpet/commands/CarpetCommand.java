@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.SharedConstants;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.chat.Component;
@@ -129,7 +130,7 @@ public class CarpetCommand {
 
     private static <T> int setRule(ServerCommandSource source, ParsedRule<T> rule, T newValue) {
         try {
-            rule.set(newValue);
+            rule.set(newValue, true);
             Messenger.m(source, "w "+ rule.toString() + ", ", "c [change permanently?]",
                     "^w Click to keep the settings in carpet.conf to save across restarts",
                     "?/carpet setDefault " + rule.name + " " + rule.getAsString());
@@ -141,7 +142,7 @@ public class CarpetCommand {
 
     private static <T> int setDefault(ServerCommandSource source, ParsedRule<T> rule, T defaultValue) {
         try {
-            rule.set(defaultValue);
+            rule.set(defaultValue, true);
             rule.save();
             Messenger.m(source ,"gi rule " + rule.name + " will now default to "+ defaultValue);
         } catch (IllegalArgumentException e) {
@@ -151,7 +152,7 @@ public class CarpetCommand {
     }
 
     private static int removeDefault(ServerCommandSource source, ParsedRule rule) {
-        rule.resetToDefault();
+        rule.resetToDefault(true);
         rule.save();
         Messenger.m(source ,"gi rule " + rule.name + " defaults to " + rule.getAsString());
         return 1;
@@ -195,6 +196,9 @@ public class CarpetCommand {
             version += " " + Build.BRANCH + "-" + Build.COMMIT.substring(0, 7) + " (" + Build.BUILD_TIMESTAMP + ")";
         }
         Messenger.m(source, "e " + Build.NAME + " version: " + version);
+        if (!Build.MINECRAFT_VERSION.equals(SharedConstants.getGameVersion().getId())) {
+            Messenger.m(source, "y Built for " + Build.MINECRAFT_VERSION);
+        }
         if (!Build.WORKING_DIR_CLEAN) {
             Messenger.m(source, "r Uncommitted files present");
         }

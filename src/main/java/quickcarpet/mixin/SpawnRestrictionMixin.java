@@ -2,19 +2,19 @@ package quickcarpet.mixin;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnRestriction;
-import net.minecraft.world.Heightmap;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(SpawnRestriction.class)
-public abstract class SpawnRestrictionMixin
-{
-    @Shadow
-    protected static void register(EntityType<?> entityType_1, SpawnRestriction.Location spawnRestriction$Location_1, Heightmap.Type heightmap$Type_1)
-    {
-    }
-    
-    static {
-        register(EntityType.SHULKER, SpawnRestriction.Location.ON_GROUND, Heightmap.Type.MOTION_BLOCKING_NO_LEAVES);
+public abstract class SpawnRestrictionMixin {
+
+    @Inject(method = "getLocation", at = @At("HEAD"), cancellable = true)
+    private static void shulkerOnGround(EntityType<?> type, CallbackInfoReturnable<SpawnRestriction.Location> cir) {
+        if (type == EntityType.SHULKER) {
+            cir.setReturnValue(SpawnRestriction.Location.ON_GROUND);
+            cir.cancel();
+        }
     }
 }

@@ -54,7 +54,7 @@ public class AutoCraftingTableContainer extends CraftingTableContainer {
             if (!this.insertItem(current, 10, 46, true)) {
                 return ItemStack.EMPTY;
             }
-            this.blockEntity.takeInvStack(0, before.getAmount() - current.getAmount());
+            this.blockEntity.takeInvStack(0, before.getCount() - current.getCount());
             return this.blockEntity.getInvStack(0);
         }
         return super.transferSlot(player, slot);

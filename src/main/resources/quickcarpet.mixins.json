@@ -3,6 +3,7 @@
   "package": "quickcarpet.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "BlockPlacementDispenserBehaviorMixin",
     "BlockTagsAccessor",
     "ClientConnectionMixin",
     "CommandManagerMixin",
@@ -45,6 +46,7 @@
   ],
   "client": [
     "BlockEntityRenderDispatcherMixin",
+    "ClientPlayNetworkHandlerMixin",
     "InGameHudMixin",
     "IntegratedServerMixin",
     "MinecraftClientMixin",

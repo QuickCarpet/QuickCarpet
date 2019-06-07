@@ -1,5 +1,6 @@
 package quickcarpet.mixin;
 
+import net.fabricmc.api.EnvType;
 import net.minecraft.client.MinecraftClient;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -13,6 +14,6 @@ public abstract class MinecraftClientMixin
     @Inject(method = "init", at = @At(value = "RETURN"))
     private void onInit(CallbackInfo ci)
     {
-        QuickCarpet.getInstance().onGameStarted();
+        QuickCarpet.getInstance().onGameStarted(EnvType.CLIENT);
     }
 }
