@@ -5,8 +5,7 @@ import quickcarpet.settings.ChangeListener;
 import quickcarpet.settings.ParsedRule;
 import quickcarpet.settings.Rule;
 
-import static quickcarpet.settings.RuleCategory.EXPERIMENTAL;
-import static quickcarpet.settings.RuleCategory.FEATURE;
+import static quickcarpet.settings.RuleCategory.*;
 
 public class SkyBlockSettings {
     @Rule(desc = "Better potions", category = {EXPERIMENTAL, FEATURE}, onChange = BetterPotionListener.class)
@@ -33,4 +32,7 @@ public class SkyBlockSettings {
         }, category = {FEATURE, EXPERIMENTAL}
     )
     public static boolean blockLightDetector = false;
+
+    @Rule(desc = "Fixes exit end portal generating too low", extra = "MC-93185", category = FIX)
+    public static boolean endPortalFix = true;
 }
