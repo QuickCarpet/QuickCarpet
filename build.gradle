@@ -1,7 +1,7 @@
 import java.text.SimpleDateFormat
 
 plugins {
-	id 'fabric-loom' version '0.2.2-SNAPSHOT'
+	id 'fabric-loom' version '0.2.4-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -117,8 +117,8 @@ jar {
 
 task dumpRules(type: JavaExec, dependsOn: jar) {
     workingDir = "run"
-	classpath = files(jar.archivePath)
-	classpath += sourceSets.main.runtimeClasspath
+	classpath = sourceSets.main.runtimeClasspath
+	print(classpath)
 	main = "quickcarpet.settings.Settings"
 	doLast {
 		copy {
