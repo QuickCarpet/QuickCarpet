@@ -1,12 +1,12 @@
 package quickcarpet.helper;
 
-import net.minecraft.ChatFormat;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.MathHelper;
 import quickcarpet.QuickCarpet;
 import quickcarpet.commands.TickCommand;
@@ -62,7 +62,7 @@ public class TickSpeed {
         }
     }
     
-    public static Component tickrate_advance(PlayerEntity player, int advance, String callback, ServerCommandSource source)
+    public static Text tickrate_advance(PlayerEntity player, int advance, String callback, ServerCommandSource source)
     {
         if (0 == advance)
         {
@@ -211,7 +211,7 @@ public class TickSpeed {
     
     public static int send(ServerCommandSource source, String s)
     {
-        source.sendFeedback(new TranslatableComponent("" + s), true);
+        source.sendFeedback(new TranslatableText("" + s), true);
         return 1;
     }
     
@@ -247,7 +247,7 @@ public class TickSpeed {
                 float mspt = msDiff / (float)warpedTicks;
                 int tps = (int) (1000 / mspt);
                 //server.getPlayerManager().sendToAll(new TranslatableComponent(String.format('[' + CYAN + "TPS" + RESET + "] Done in %s%.2f%ss (%s%.2f%smspt)", GREEN, secs, RESET, GREEN, mspt, RESET)));
-                server.getPlayerManager().sendToAll(new TranslatableComponent("... Time warp completed with " + ChatFormat.AQUA + tps + " tps" + ChatFormat.RESET + ", or " + ChatFormat.GREEN + mspt + " mspt"));
+                server.getPlayerManager().sendToAll(new TranslatableText("... Time warp completed with " + Formatting.AQUA + tps + " tps" + Formatting.RESET + ", or " + Formatting.GREEN + mspt + " mspt"));
                 updateTPS();
             }
         }

@@ -6,8 +6,8 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.arguments.BlockPosArgumentType;
 import net.minecraft.command.arguments.DimensionArgumentType;
 import net.minecraft.entity.EntityCategory;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.text.Text;
 import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
@@ -88,7 +88,7 @@ public class SpawnCommand {
     private static int sendMobcaps(ServerCommandSource source, DimensionType dimension) {
         if (dimension == null) dimension = source.getWorld().getDimension().getType();
         Map<EntityCategory, Pair<Integer, Integer>> mobcaps = Mobcaps.getMobcaps(dimension);
-        List<Component> lst = new ArrayList<>();
+        List<Text> lst = new ArrayList<>();
         lst.add(Messenger.s(String.format("Mobcaps for %s:", Registry.DIMENSION.getId(dimension))));
         for (Map.Entry<EntityCategory, Pair<Integer, Integer>> e : mobcaps.entrySet()) {
             EntityCategory category = e.getKey();

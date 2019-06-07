@@ -5,7 +5,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCategory;
 import net.minecraft.entity.EntityType;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BoundingBox;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShapes;
@@ -21,6 +21,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import quickcarpet.settings.Settings;
+import quickcarpet.utils.CarpetProfiler;
 import quickcarpet.utils.SpawnEntityCache;
 import quickcarpet.utils.SpawnTracker;
 
@@ -55,9 +56,9 @@ public class SpawnHelperMixin {
 
     @Redirect(
         method = "spawnEntitiesInChunk",
-        at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;doesNotCollide(Lnet/minecraft/util/math/BoundingBox;)Z")
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;doesNotCollide(Lnet/minecraft/util/math/Box;)Z")
     )
-    private static boolean doesNotCollide(World world, BoundingBox bbox) {
+    private static boolean doesNotCollide(World world, Box bbox) {
         if (!Settings.optimizedSpawning) return world.doesNotCollide(bbox);
         BlockPos.Mutable blockpos = new BlockPos.Mutable();
         int minX = MathHelper.floor(bbox.minX);
@@ -89,5 +90,21 @@ public class SpawnHelperMixin {
         cached = type.create(world);
         ((SpawnEntityCache) world).setCachedEntity(type, cached);
         return cached;
+    }
+
+    @Inject(
+            method = "spawnEntitiesInChunk",
+            at = @At("HEAD")
+    )
+    private static void startSpawning(EntityCategory category, World world, WorldChunk chunk, BlockPos spawnPoint, CallbackInfo ci) {
+        CarpetProfiler.startSection(world, CarpetProfiler.SectionType.SPAWNING);
+    }
+
+    @Inject(
+            method = "spawnEntitiesInChunk",
+            at = @At("RETURN")
+    )
+    private static void endSpawning(EntityCategory category, World world, WorldChunk chunk, BlockPos spawnPoint, CallbackInfo ci) {
+        CarpetProfiler.endSection(world);
     }
 }

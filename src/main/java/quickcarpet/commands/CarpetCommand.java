@@ -8,9 +8,9 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.SharedConstants;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.text.Text;
 import quickcarpet.Build;
 import quickcarpet.QuickCarpet;
 import quickcarpet.module.QuickCarpetModule;
@@ -95,7 +95,7 @@ public class CarpetCommand {
             Messenger.m(player, "g  " + info);
         }
 
-        List<Component> categories = new ArrayList<>();
+        List<Text> categories = new ArrayList<>();
         categories.add(Messenger.c("w Categories: "));
         for (String name : RULE_CATEGORIES) {
             categories.add(Messenger.c("c ["+ name +"]", "^g list all "+ name +" settings","!/carpet list " + name));
@@ -105,7 +105,7 @@ public class CarpetCommand {
         Messenger.m(player, categories.toArray(new Object[0]));
 
         Messenger.m(player, "w Current value: ",String.format("%s %s (%s value)",rule.getBoolValue()?"lb":"nb", rule.getAsString(),rule.isDefault()?"default":"modified"));
-        List<Component> options = new ArrayList<>();
+        List<Text> options = new ArrayList<>();
         options.add(Messenger.c("w Options: ", "y [ "));
         for (String o: rule.options) {
             options.add(makeSetRuleButton(rule, o, false));
@@ -117,7 +117,7 @@ public class CarpetCommand {
         return 1;
     }
 
-    private static Component makeSetRuleButton(ParsedRule<?> rule, String option, boolean brackets) {
+    private static Text makeSetRuleButton(ParsedRule<?> rule, String option, boolean brackets) {
         String color = "";
         if (option.equals(rule.defaultAsString) && !brackets) color += "u";
         color += option.equals(rule.getAsString()) ? "bl" : "y";
@@ -158,7 +158,7 @@ public class CarpetCommand {
         return 1;
     }
 
-    private static Component displayInteractiveSetting(ParsedRule<?> rule) {
+    private static Text displayInteractiveSetting(ParsedRule<?> rule) {
         List<Object> args = new ArrayList<>();
         args.add("w - " + rule.name + " ");
         args.add("!/carpet " + rule.name);

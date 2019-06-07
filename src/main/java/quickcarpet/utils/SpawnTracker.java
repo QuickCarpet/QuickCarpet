@@ -7,7 +7,7 @@ import net.minecraft.entity.EntityCategory;
 import net.minecraft.entity.EntityType;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BoundingBox;
+import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.dimension.DimensionType;
 
@@ -21,7 +21,7 @@ import java.util.stream.Stream;
 public class SpawnTracker {
     private static final Map<ServerPlayerEntity, SpawnTracker> TRACKERS = new WeakHashMap<>();
     private final ServerPlayerEntity source;
-    private final BoundingBox bbox;
+    private final Box bbox;
     private final DimensionType dimension;
     private boolean active;
     private int tickStarted = -1;
@@ -35,7 +35,7 @@ public class SpawnTracker {
     private SpawnTracker(ServerPlayerEntity source, BlockPos min, BlockPos max) {
         this.source = source;
         if (min != null && max != null) {
-            this.bbox = new BoundingBox(min, max).stretch(1, 1, 1);
+            this.bbox = new Box(min, max).stretch(1, 1, 1);
         } else {
             this.bbox = null;
         }
