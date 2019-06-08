@@ -12,12 +12,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import quickcarpet.QuickCarpet;
 
 @Mixin(CommandManager.class)
-public abstract class CommandManagerMixin
-{
+public abstract class CommandManagerMixin {
 
-    @Shadow
-    @Final
-    private CommandDispatcher<ServerCommandSource> dispatcher;
+    @Shadow @Final private CommandDispatcher<ServerCommandSource> dispatcher;
 
     @Inject(method = "<init>", at = @At("RETURN"))
     private void onRegister(boolean boolean_1, CallbackInfo ci) {

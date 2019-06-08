@@ -17,23 +17,19 @@ import java.util.List;
 import java.util.Set;
 
 @Mixin(Explosion.class)
-public abstract class ExplosionMixin
-{
+public abstract class ExplosionMixin {
     @Shadow @Final private List<BlockPos> affectedBlocks;
     
     @Redirect(method = "collectBlocksAndDamageEntities", at = @At(value = "INVOKE",
             target = "Ljava/util/List;addAll(Ljava/util/Collection;)Z"))
-    private boolean cancelAffectedBlocks(List list, Collection<?> c)
-    {
+    private boolean cancelAffectedBlocks(List list, Collection<?> c) {
         return false;
     }
     
     @Inject(method = "collectBlocksAndDamageEntities", at = @At(value = "INVOKE",
             target = "Ljava/util/List;addAll(Ljava/util/Collection;)Z"), locals = LocalCapture.CAPTURE_FAILHARD)
-    private void newAffectedBlocks(CallbackInfo ci, Set<BlockPos> set_1)
-    {
-        if (!Settings.explosionNoBlockDamage)
-        {
+    private void newAffectedBlocks(CallbackInfo ci, Set<BlockPos> set_1) {
+        if (!Settings.explosionNoBlockDamage) {
             this.affectedBlocks.addAll(set_1);
         }
     }

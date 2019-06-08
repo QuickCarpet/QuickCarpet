@@ -7,14 +7,11 @@ import org.spongepowered.asm.mixin.Shadow;
 import quickcarpet.utils.IPlayerListHud;
 
 @Mixin(PlayerListHud.class)
-public abstract class PlayerListHudMixin implements IPlayerListHud
-{
+public abstract class PlayerListHudMixin implements IPlayerListHud {
     @Shadow private Text footer;
-    
     @Shadow private Text header;
-    
-    public boolean hasFooterOrHeader()
-    {
+
+    public boolean hasFooterOrHeader() {
         return footer != null || header != null;
     }
 }

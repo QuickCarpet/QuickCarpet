@@ -25,8 +25,8 @@ public abstract class ServerWorldMixin extends World {
     }
 
     @Redirect(
-        method = "tick",
-        at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerTickScheduler;tick()V", ordinal = 0)
+            method = "tick",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerTickScheduler;tick()V", ordinal = 0)
     )
     private void tickBlocks(ServerTickScheduler blockTickScheduler) {
         CarpetProfiler.startSection(this, CarpetProfiler.SectionType.BLOCKS);
@@ -55,8 +55,8 @@ public abstract class ServerWorldMixin extends World {
     }
 
     @Inject(
-        method = "tick",
-        at = @At(value = "CONSTANT", args = "stringValue=village")
+            method = "tick",
+            at = @At(value = "CONSTANT", args = "stringValue=village")
     )
     private void startVillages(BooleanSupplier booleanSupplier_1, CallbackInfo ci) {
         CarpetProfiler.startSection(this, CarpetProfiler.SectionType.VILLAGES);

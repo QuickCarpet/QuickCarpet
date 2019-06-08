@@ -31,7 +31,7 @@ dependencies {
 	compileOnly "com.google.code.findbugs:jsr305:3.0.1"
 }
 
-def gitCommit() {
+static def gitCommit() {
 	def commit = ""
 	def proc = "git rev-parse HEAD".execute()
 	proc.in.eachLine { line -> commit = line }
@@ -40,7 +40,7 @@ def gitCommit() {
 	commit
 }
 
-def gitBranch() {
+static def gitBranch() {
 	def branch = ""
 	def proc = "git rev-parse --abbrev-ref HEAD".execute()
 	proc.in.eachLine { line -> branch = line }
@@ -49,10 +49,10 @@ def gitBranch() {
 	branch
 }
 
-def gitStatus() {
-	def exitCode = "git diff --exit-code".execute().waitFor() // not added
+static def gitStatus() {
+	def exitCode = "git diff --quiet".execute().waitFor() // not added
 	if (exitCode == 0) {
-		exitCode = "git diff --cached --exit-code".execute().waitFor() // not committed
+		exitCode = "git diff --cached --quiet".execute().waitFor() // not committed
 	}
 	exitCode == 0
 }

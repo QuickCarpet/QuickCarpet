@@ -21,34 +21,32 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static net.minecraft.command.arguments.BlockPosArgumentType.getBlockPos;
+import static net.minecraft.command.arguments.DimensionArgumentType.getDimensionArgument;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
 public class SpawnCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        LiteralArgumentBuilder<ServerCommandSource> builder = literal("spawn").
-                requires((player) -> Settings.commandSpawn).
-                then(literal("mobcaps").
-                    executes(c -> sendMobcaps(c.getSource(), null)).
-                    then(argument("dimension", DimensionArgumentType.create()).
-                        executes(c -> sendMobcaps(c.getSource(), c.getArgument("dimension", DimensionType.class)))
-                    )
-                ).
-                then(literal("tracking").
-                    executes(c -> sendTrackingReport(c.getSource())).
-                    then(literal("start").
-                        executes(c -> startTracking(c.getSource(),null, null)).
-                        then(argument("min", BlockPosArgumentType.create()).
-                        then(argument("max", BlockPosArgumentType.create()).
-                            executes(c -> startTracking(c.getSource(),
-                                BlockPosArgumentType.getBlockPos(c, "min"),
-                                BlockPosArgumentType.getBlockPos(c, "max")
-                            ))))
-                    ).
-                    then(literal("stop").
-                        executes(c -> stopTracking(c.getSource()))
-                    )
-                );
+        LiteralArgumentBuilder<ServerCommandSource> builder = literal("spawn")
+            .requires((player) -> Settings.commandSpawn)
+            .then(literal("mobcaps")
+                .executes(c -> sendMobcaps(c.getSource(), null))
+                .then(argument("dimension", DimensionArgumentType.create())
+                    .executes(c -> sendMobcaps(c.getSource(), getDimensionArgument(c, "dimension")))))
+            .then(literal("tracking")
+                .executes(c -> sendTrackingReport(c.getSource()))
+                .then(literal("start")
+                    .executes(c -> startTracking(c.getSource(),null, null))
+                    .then(argument("min", BlockPosArgumentType.create())
+                    .then(argument("max", BlockPosArgumentType.create())
+                        .executes(c -> startTracking(c.getSource(),
+                            getBlockPos(c, "min"),
+                            getBlockPos(c, "max")
+                        )))))
+                .then(literal("stop")
+                    .executes(c -> stopTracking(c.getSource())))
+            );
         dispatcher.register(builder);
     }
 

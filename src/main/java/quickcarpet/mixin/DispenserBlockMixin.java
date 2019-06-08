@@ -23,6 +23,10 @@ public abstract class DispenserBlockMixin extends BlockWithEntity {
         super(block$Settings_1);
     }
 
+    /**
+     * @author skyrising
+     * @reason Only a single expression, equivalent to a redirect on get()
+     */
     @Overwrite
     public DispenserBehavior getBehaviorForItem(ItemStack stack) {
         Item item = stack.getItem();

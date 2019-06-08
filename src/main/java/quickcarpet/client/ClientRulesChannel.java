@@ -7,6 +7,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
+import quickcarpet.helper.NBTHelper;
 import quickcarpet.network.ClientPluginChannelHandler;
 import quickcarpet.network.PacketSplitter;
 import quickcarpet.network.channels.RulesChannel;
@@ -28,7 +29,7 @@ public class ClientRulesChannel implements ClientPluginChannelHandler {
             if (data == null) return;
             int version = data.getInt("Version");
             if (version == 0 || version > RulesChannel.VERSION) return;
-            ListTag rulesList = data.getList("Rules", 10);
+            ListTag rulesList = data.getList("Rules", NBTHelper.TAG_COMPOUND);
             for (Tag tag : rulesList) {
                 CompoundTag ruleTag = (CompoundTag) tag;
                 String id = ruleTag.getString("Id");

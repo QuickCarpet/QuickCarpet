@@ -34,8 +34,7 @@ public class CarpetCommand {
         }
     }
 
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher)
-    {
+    public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         LiteralArgumentBuilder<ServerCommandSource> carpet = literal("carpet").requires((player) ->
                 player.hasPermissionLevel(2));
 

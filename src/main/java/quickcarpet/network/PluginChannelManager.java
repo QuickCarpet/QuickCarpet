@@ -95,15 +95,17 @@ public class PluginChannelManager {
         }
     }
 
+    // TODO: hook up
     public void onPlayerConnected(ServerPlayerEntity player) {
         sendChannelUpdate(Collections.singleton(player), REGISTER, channelHandlers.keySet());
     }
 
+    // TODO: hook up
     public void onPlayerDisconnected(ServerPlayerEntity player) {
         for (Identifier channel : tracker.getChannels(player)) {
             PluginChannelHandler handler = channelHandlers.get(channel);
             if (handler == null) {
-                LOG.warn("Player was registered to channel '%s' without a handler", channel);
+                LOG.warn("Player was registered to channel {} without a handler", channel);
                 continue;
             }
             handler.unregister(channel, player);

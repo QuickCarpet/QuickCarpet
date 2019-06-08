@@ -13,31 +13,29 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.network.ServerPlayerInteractionManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.dimension.DimensionType;
 import quickcarpet.utils.IServerPlayerEntity;
 import quickcarpet.utils.Messenger;
 
-public class ServerPlayerEntityFake extends ServerPlayerEntity
-{
-    public Runnable fixStartingPosition = () -> {};
-    
-    public static ServerPlayerEntityFake createFake(String username, MinecraftServer server, double d0, double d1, double d2, double yaw, double pitch, DimensionType dimension, GameMode gamemode)
-    {
+public class ServerPlayerEntityFake extends ServerPlayerEntity {
+    private boolean hasStartingPos;
+    private double startingX, startingY, startingZ;
+    private float startingYaw, startingPitch;
+
+    public static ServerPlayerEntityFake createFake(String username, MinecraftServer server, double x, double y, double z, double yaw, double pitch, DimensionType dimension, GameMode gamemode) {
         //prolly half of that crap is not necessary, but it works
         ServerWorld worldIn = server.getWorld(dimension);
         ServerPlayerInteractionManager interactionManagerIn = new ServerPlayerInteractionManager(worldIn);
         GameProfile gameprofile = server.getUserCache().findByName(username);
-        if (gameprofile == null)
-        {
+        if (gameprofile == null) {
             return null;
         }
-        if (gameprofile.getProperties().containsKey("textures"))
-        {
+        if (gameprofile.getProperties().containsKey("textures")) {
             gameprofile = SkullBlockEntity.loadProperties(gameprofile);
         }
-        ServerPlayerEntityFake instance = new ServerPlayerEntityFake(server, worldIn, gameprofile, interactionManagerIn);
-        instance.fixStartingPosition = () -> instance.setPositionAndAngles(d0, d1, d2, (float) yaw, (float) pitch);
+        ServerPlayerEntityFake instance = new ServerPlayerEntityFake(server, worldIn, gameprofile, interactionManagerIn, x, y, z, (float) yaw, (float) pitch);
         server.getPlayerManager().onPlayerConnect(new ClientConnectionFake(NetworkSide.SERVERBOUND), instance);
         if (instance.dimension != dimension) //player was logged in in a different dimension
         {
@@ -48,12 +46,12 @@ public class ServerPlayerEntityFake extends ServerPlayerEntity
             worldIn.spawnEntity(instance);
             instance.setWorld(worldIn);
             server.getPlayerManager().sendWorldInfo(instance, old_world);
-            instance.networkHandler.requestTeleport(d0, d1, d2, (float) yaw, (float) pitch);
+            instance.networkHandler.requestTeleport(x, y, z, (float) yaw, (float) pitch);
             instance.interactionManager.setWorld(worldIn);
         }
         instance.setHealth(20.0F);
         instance.removed = false;
-        instance.networkHandler.requestTeleport(d0, d1, d2, (float) yaw, (float) pitch);
+        instance.networkHandler.requestTeleport(x, y, z, (float) yaw, (float) pitch);
         instance.stepHeight = 0.6F;
         interactionManagerIn.setGameMode(gamemode);
         server.getPlayerManager().sendToDimension(new EntitySetHeadYawS2CPacket(instance, (byte) (instance.headYaw * 256 / 360)), instance.dimension);
@@ -61,9 +59,8 @@ public class ServerPlayerEntityFake extends ServerPlayerEntity
         instance.getServerWorld().method_14178().updateCameraPosition(instance);
         return instance;
     }
-    
-    public static ServerPlayerEntityFake createShadow(MinecraftServer server, ServerPlayerEntity player)
-    {
+
+    public static ServerPlayerEntityFake createShadow(MinecraftServer server, ServerPlayerEntity player) {
         player.getServer().getPlayerManager().remove(player);
         player.networkHandler.disconnect(new TranslatableText("multiplayer.disconnect.duplicate_login"));
         ServerWorld worldIn = server.getWorld(player.dimension);
@@ -71,47 +68,60 @@ public class ServerPlayerEntityFake extends ServerPlayerEntity
         GameProfile gameprofile = player.getGameProfile();
         ServerPlayerEntityFake playerShadow = new ServerPlayerEntityFake(server, worldIn, gameprofile, interactionManagerIn);
         server.getPlayerManager().onPlayerConnect(new ClientConnectionFake(NetworkSide.SERVERBOUND), playerShadow);
-        
+
         playerShadow.setHealth(player.getHealth());
         playerShadow.networkHandler.requestTeleport(player.x, player.y, player.z, player.yaw, player.pitch);
         interactionManagerIn.setGameMode(player.interactionManager.getGameMode());
         ((IServerPlayerEntity) playerShadow).getActionPack().copyFrom(((IServerPlayerEntity) player).getActionPack());
         playerShadow.stepHeight = 0.6F;
-        
+
         server.getPlayerManager().sendToDimension(new EntitySetHeadYawS2CPacket(playerShadow, (byte) (player.headYaw * 256 / 360)), playerShadow.dimension);
         server.getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.ADD_PLAYER, playerShadow));
         player.getServerWorld().method_14178().updateCameraPosition(playerShadow);
         return playerShadow;
     }
-    
-    private ServerPlayerEntityFake(MinecraftServer server, ServerWorld worldIn, GameProfile profile, ServerPlayerInteractionManager interactionManagerIn)
-    {
+
+    private ServerPlayerEntityFake(MinecraftServer server, ServerWorld worldIn, GameProfile profile, ServerPlayerInteractionManager interactionManagerIn) {
         super(server, worldIn, profile, interactionManagerIn);
+        this.hasStartingPos = false;
     }
-    
+
+    private ServerPlayerEntityFake(MinecraftServer server, ServerWorld worldIn, GameProfile profile, ServerPlayerInteractionManager interactionManagerIn, double x, double y, double z, float yaw, float pitch) {
+        super(server, worldIn, profile, interactionManagerIn);
+        this.hasStartingPos = true;
+        this.startingX = x;
+        this.startingY = y;
+        this.startingZ = z;
+        this.startingYaw = yaw;
+        this.startingPitch = pitch;
+    }
+
+    public void applyStartingPosition() {
+        if (hasStartingPos) {
+            this.setPositionAndAngles(startingX, startingY, startingZ, startingYaw, startingPitch);
+            this.setVelocity(Vec3d.ZERO);
+        }
+    }
+
     @Override
-    public void kill()
-    {
+    public void kill() {
         this.server.method_18858(new ServerTask(this.server.getTicks(), () -> {
             this.networkHandler.onDisconnected(Messenger.s("Killed"));
         }));
     }
-    
+
     @Override
-    public void tick()
-    {
-        if (this.getServer().getTicks() % 10 == 0)
-        {
+    public void tick() {
+        if (this.getServer().getTicks() % 10 == 0) {
             this.networkHandler.syncWithPlayerPosition();
             this.getServerWorld().method_14178().updateCameraPosition(this);
         }
         super.tick();
         this.method_14226();
     }
-    
+
     @Override
-    public void onDeath(DamageSource cause)
-    {
+    public void onDeath(DamageSource cause) {
         super.onDeath(cause);
         setHealth(20);
         kill();

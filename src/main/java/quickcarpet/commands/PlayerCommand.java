@@ -32,10 +32,9 @@ import static com.mojang.brigadier.arguments.StringArgumentType.word;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class PlayerCommand
-{
-public static void register(CommandDispatcher<ServerCommandSource> dispatcher)
-    {
+public class PlayerCommand {
+    // TODO: allow any order like execute
+    public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         LiteralArgumentBuilder<ServerCommandSource> literalargumentbuilder = literal("player").
                 requires((player) -> Settings.commandPlayer).
                 then(argument("player", word()).
@@ -136,71 +135,56 @@ public static void register(CommandDispatcher<ServerCommandSource> dispatcher)
 
         dispatcher.register(literalargumentbuilder);
     }
-    
-    private static Collection<String> getPlayers(ServerCommandSource source)
-    {
-        Set<String> players = Sets.newLinkedHashSet( Arrays.asList("Steve","Alex"));
+
+    private static Collection<String> getPlayers(ServerCommandSource source) {
+        Set<String> players = Sets.newLinkedHashSet(Arrays.asList("Steve", "Alex"));
         players.addAll(source.getPlayerNames());
         return players;
     }
-    
-    private static ServerPlayerEntity getPlayer(CommandContext<ServerCommandSource> context)
-    {
-        String playerName = getString(context,"player");
+
+    private static ServerPlayerEntity getPlayer(CommandContext<ServerCommandSource> context) {
+        String playerName = getString(context, "player");
         MinecraftServer server = context.getSource().getMinecraftServer();
-        return (ServerPlayerEntity) server.getPlayerManager().getPlayer(playerName);
+        return server.getPlayerManager().getPlayer(playerName);
     }
-    
-    private static boolean cantManipulate(CommandContext<ServerCommandSource> context)
-    {
+
+    private static boolean cantManipulate(CommandContext<ServerCommandSource> context) {
         PlayerEntity player = getPlayer(context);
-        if (player == null)
-        {
-            Messenger.m(context.getSource(),"r Can only manipulate existing players");
+        if (player == null) {
+            Messenger.m(context.getSource(), "r Can only manipulate existing players");
             return true;
         }
         PlayerEntity sendingPlayer;
-        try
-        {
+        try {
             sendingPlayer = context.getSource().getPlayer();
-        }
-        catch (CommandSyntaxException e)
-        {
+        } catch (CommandSyntaxException e) {
             return false;
         }
-        
-        if (!(context.getSource().getMinecraftServer().getPlayerManager().isOperator(sendingPlayer.getGameProfile())))
-        {
-            if (!(sendingPlayer == player || player instanceof ServerPlayerEntityFake))
-            {
-                Messenger.m(context.getSource(),"r Non OP players can't control other real players");
+
+        if (!context.getSource().getMinecraftServer().getPlayerManager().isOperator(sendingPlayer.getGameProfile())) {
+            if (sendingPlayer != player && !(player instanceof ServerPlayerEntityFake)) {
+                Messenger.m(context.getSource(), "r Non OP players can't control other real players");
                 return true;
             }
         }
         return false;
     }
-    
-    private static boolean cantReMove(CommandContext<ServerCommandSource> context)
-    {
-        if (cantManipulate(context))
-            return true;
+
+    private static boolean cantReMove(CommandContext<ServerCommandSource> context) {
+        if (cantManipulate(context)) return true;
         PlayerEntity player = getPlayer(context);
-        if (!(player instanceof ServerPlayerEntityFake))
-        {
-            Messenger.m(context.getSource(), "r Only fake players can be moved or killed");
-            return true;
-        }
-        return false;
+        if (player instanceof ServerPlayerEntityFake) return false;
+        Messenger.m(context.getSource(), "r Only fake players can be moved or killed");
+        return true;
     }
-    
-    private static boolean cantSpawn(CommandContext<ServerCommandSource> context)
-    {
-        String playerName = getString(context,"player");
+
+    private static boolean cantSpawn(CommandContext<ServerCommandSource> context) {
+        String playerName = getString(context, "player");
         MinecraftServer server = context.getSource().getMinecraftServer();
         PlayerManager manager = server.getPlayerManager();
         PlayerEntity player = manager.getPlayer(playerName);
         if (player != null) {
-            Messenger.m(context.getSource(), "r Player ", "rb "+ playerName, "r  is already logged on");
+            Messenger.m(context.getSource(), "r Player ", "rb " + playerName, "r  is already logged on");
             return true;
         }
         GameProfile profile = server.getUserCache().findByName(playerName);
@@ -208,71 +192,55 @@ public static void register(CommandDispatcher<ServerCommandSource> dispatcher)
             Messenger.m(context.getSource(), "r Player ", "rb " + playerName, "r  is banned");
             return true;
         }
-        System.out.println(manager.isWhitelistEnabled() + ", " + profile);
         if (manager.isWhitelistEnabled() && profile != null && manager.isWhitelisted(profile) && !context.getSource().hasPermissionLevel(2)) {
             Messenger.m(context.getSource(), "r Whitelisted players can only be spawned by operators");
             return true;
         }
         return false;
     }
-    
-    private static int kill(CommandContext<ServerCommandSource> context)
-    {
+
+    private static int kill(CommandContext<ServerCommandSource> context) {
         if (cantReMove(context)) return 0;
         getPlayer(context).kill();
         return 1;
     }
-    
-    private static int spawn(CommandContext<ServerCommandSource> context) throws CommandSyntaxException
-    {
+
+    @FunctionalInterface
+    interface SupplierWithCommandSyntaxException<T> {
+        T get() throws CommandSyntaxException;
+    }
+
+    private static <T> T tryGetArg(SupplierWithCommandSyntaxException<T> a, SupplierWithCommandSyntaxException<T> b) throws CommandSyntaxException {
+        try {
+            return a.get();
+        } catch (IllegalArgumentException e) {
+            return b.get();
+        }
+    }
+
+    private static int spawn(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         if (cantSpawn(context)) return 0;
-        Vec3d pos;
-        Vec2f facing;
-        DimensionType dim;
-        try
-        {
-            pos = Vec3ArgumentType.getVec3(context, "position");
-        }
-        catch (IllegalArgumentException e)
-        {
-            pos = context.getSource().getPosition();
-        }
-        try
-        {
-            facing = RotationArgumentType.getRotation(context, "direction").toAbsoluteRotation(context.getSource());
-        }
-        catch (IllegalArgumentException e)
-        {
-            facing = context.getSource().getRotation();
-        }
-        try
-        {
-            dim = DimensionArgumentType.getDimensionArgument(context, "dimension");
-        }
-        catch (IllegalArgumentException e)
-        {
-            dim = context.getSource().getWorld().dimension.getType();
-        }
+        ServerCommandSource source = context.getSource();
+        Vec3d pos = tryGetArg(
+                () -> Vec3ArgumentType.getVec3(context, "position"),
+                source::getPosition);
+        Vec2f facing = tryGetArg(
+                () -> RotationArgumentType.getRotation(context, "direction").toAbsoluteRotation(context.getSource()),
+                source::getRotation);
+        DimensionType dim = tryGetArg(
+                () -> DimensionArgumentType.getDimensionArgument(context, "dimension"),
+                () -> source.getWorld().dimension.getType());
         GameMode mode = GameMode.CREATIVE;
-        try
-        {
+        try {
             ServerPlayerEntity player = context.getSource().getPlayer();
             mode = player.interactionManager.getGameMode();
-        }
-        catch (CommandSyntaxException ignored)
-        {
-        }
-        PlayerEntity p = ServerPlayerEntityFake.createFake(
-                getString(context,"player"),
-                context.getSource().getMinecraftServer(),
-                pos.x, pos.y, pos.z,
-                facing.y, facing.x,
-                dim,
-                mode);
-        if (p == null)
-        {
-            Messenger.m(context.getSource(), "rb Player "+getString(context,"player")+" doesn't exist " +
-                                                     "and cannot spawn in online mode. Turn the server offline to spawn non-existing players");
+        } catch (CommandSyntaxException ignored) {}
+        String playerName = getString(context, "player");
+        MinecraftServer server = source.getMinecraftServer();
+        PlayerEntity player = ServerPlayerEntityFake.createFake(playerName, server, pos.x, pos.y, pos.z, facing.y, facing.x, dim, mode);
+        if (player == null) {
+            Messenger.m(context.getSource(), "rb Player " + getString(context, "player") + " doesn't exist " +
+                    "and cannot spawn in online mode. Turn the server offline to spawn non-existing players");
         }
         return 1;
     }

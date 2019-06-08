@@ -5,74 +5,70 @@ import net.minecraft.server.network.packet.PlayerActionC2SPacket;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 
-public class EntityPlayerActionPack
-{
+public class EntityPlayerActionPack {
     private ServerPlayerEntity player;
-    
+
     private boolean doesAttack;
     private int attackInterval;
     private int attackCooldown;
-    
+
     private boolean doesUse;
     private int useInterval;
     private int useCooldown;
-    
+
     private boolean doesJump;
     private int jumpInterval;
     private int jumpCooldown;
-    
+
     private BlockPos currentBlock = new BlockPos(-1, -1, -1);
     private int blockHitDelay;
     private boolean isHittingBlock;
     private float curBlockDamageMP;
-    
+
     private boolean sneaking;
     private boolean sprinting;
     private float forward;
     private float strafing;
-    
-    public EntityPlayerActionPack(ServerPlayerEntity playerIn)
-    {
+
+    public EntityPlayerActionPack(ServerPlayerEntity playerIn) {
         player = playerIn;
         stop();
     }
-    
-    public void copyFrom(EntityPlayerActionPack other)
-    {
+
+    public void copyFrom(EntityPlayerActionPack other) {
         doesAttack = other.doesAttack;
         attackInterval = other.attackInterval;
         attackCooldown = other.attackCooldown;
-        
+
         doesUse = other.doesUse;
         useInterval = other.useInterval;
         useCooldown = other.useCooldown;
-        
+
         doesJump = other.doesJump;
         jumpInterval = other.jumpInterval;
         jumpCooldown = other.jumpCooldown;
-        
-        
+
+
         currentBlock = other.currentBlock;
         blockHitDelay = other.blockHitDelay;
         isHittingBlock = other.isHittingBlock;
         curBlockDamageMP = other.curBlockDamageMP;
-        
+
         sneaking = other.sneaking;
         sprinting = other.sprinting;
         forward = other.forward;
         strafing = other.strafing;
     }
-    
-    public EntityPlayerActionPack setSneaking(boolean doSneak)
-    {
+
+    public EntityPlayerActionPack setSneaking(boolean doSneak) {
         sneaking = doSneak;
         player.setSneaking(doSneak);
         if (sprinting && sneaking)
             setSprinting(false);
         return this;
     }
-    public EntityPlayerActionPack setSprinting(boolean doSprint)
-    {
+
+    public EntityPlayerActionPack setSprinting(boolean doSprint) {
         sprinting = doSprint;
         player.setSprinting(doSprint);
         if (sneaking && sprinting)
@@ -80,8 +76,7 @@ public class EntityPlayerActionPack
         return this;
     }
 
-    public EntityPlayerActionPack stop()
-    {
+    public EntityPlayerActionPack stop() {
         this.doesUse = false;
         this.doesAttack = false;
         this.doesJump = false;
@@ -95,23 +90,18 @@ public class EntityPlayerActionPack
 
         return this;
     }
-    
-    public void onUpdate()
-    {
-        if (doesJump)
-        {
-            if (--jumpCooldown==0)
-            {
+
+    public void onUpdate() {
+        if (doesJump) {
+            if (--jumpCooldown == 0) {
                 jumpCooldown = jumpInterval;
                 //jumpOnce();
                 player.setJumping(true);
-            }
-            else
-            {
+            } else {
                 player.setJumping(false);
             }
         }
-        
+
         boolean used = false;
         
         /*
@@ -139,17 +129,15 @@ public class EntityPlayerActionPack
         */
     }
 
-    public void resetBlockRemoving(boolean force)
-    {
-        if (this.isHittingBlock || force)
-        {
+    public void resetBlockRemoving(boolean force) {
+        if (this.isHittingBlock || force) {
             player.networkHandler.onPlayerAction(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.ABORT_DESTROY_BLOCK, this.currentBlock, Direction.DOWN));
             this.isHittingBlock = false;
             this.curBlockDamageMP = 0.0F;
             player.getEntityWorld().setBlockBreakingProgress(player.getEntityId(), this.currentBlock, -1);
             player.resetLastAttackedTicks();
             blockHitDelay = 0;
-            this.currentBlock = new BlockPos(-1,-1,-1);
+            this.currentBlock = new BlockPos(-1, -1, -1);
         }
     }
     

@@ -9,11 +9,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import quickcarpet.QuickCarpet;
 
 @Mixin(MinecraftClient.class)
-public abstract class MinecraftClientMixin
-{
+public abstract class MinecraftClientMixin {
     @Inject(method = "init", at = @At(value = "RETURN"))
-    private void onInit(CallbackInfo ci)
-    {
+    private void onInit(CallbackInfo ci) {
         QuickCarpet.getInstance().onGameStarted(EnvType.CLIENT);
     }
 }

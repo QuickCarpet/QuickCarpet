@@ -12,7 +12,6 @@ import quickcarpet.client.ClientPluginChannelManager;
 import quickcarpet.client.ClientRulesChannel;
 import quickcarpet.commands.*;
 import quickcarpet.helper.TickSpeed;
-import quickcarpet.logging.LoggerRegistry;
 import quickcarpet.module.ModuleHost;
 import quickcarpet.module.QuickCarpetModule;
 import quickcarpet.network.PluginChannelManager;
@@ -69,13 +68,12 @@ public final class QuickCarpet implements ModInitializer, ModuleHost {
 
     public void tick(MinecraftServer server) {
         TickSpeed.tick(server);
-        HUDController.update_hud(server);
+        HUDController.update(server);
         StructureChannel.instance.tick();
         for (QuickCarpetModule m : modules) m.tick(server);
     }
     
     public void onGameStarted(EnvType env) {
-        LoggerRegistry.initLoggers();
         CarpetRegistry.init();
         Settings.MANAGER.parse();
         for (QuickCarpetModule m : modules) {

@@ -24,89 +24,69 @@ import static net.minecraft.server.command.CommandSource.suggestMatching;
 
 public class TickCommand {
 
+    // TODO: freeze & step
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        LiteralArgumentBuilder<ServerCommandSource> literalargumentbuilder = literal("tick").
-                requires((player) -> Settings.commandTick).
-                then(literal("rate").
-                        executes((c) -> queryTps(c.getSource())).
-                        then(argument("rate", floatArg(0.1F, 500.0F)).
-                                suggests( (c, b) -> suggestMatching(new String[]{"20.0"},b)).
-                                executes((c) -> setTps(c.getSource(), getFloat(c, "rate"))))).
-                then(literal("warp").
-                        executes( (c)-> setWarp(c.getSource(), 0, null)).
-                        then(argument("ticks", integer(0,4000000)).
-                                suggests( (c, b) -> suggestMatching(new String[]{"3600","72000"},b)).
-                                executes((c) -> setWarp(c.getSource(), getInteger(c,"ticks"), null)).
-                                then(argument("tail command", greedyString()).
-                                        executes( (c) -> setWarp(
-                                                c.getSource(),
-                                                getInteger(c,"ticks"),
-                                                getString(c, "tail command")))))).
-        /*
-                then(literal("freeze").executes( (c)-> toggleFreeze(c.getSource()))).
-                then(literal("step").
-                        executes((c) -> step(1)).
-                        then(argument("ticks", integer(1,72000)).
-                                suggests( (c, b) -> CommandSource.suggestMatching(new String[]{"20"},b)).
-                                executes((c) -> step(getInteger(c,"ticks"))))).
-                then(literal("superHot").executes( (c)-> toggleSuperHot(c.getSource()))).
-        */
-                then(literal("health").
-                        executes( (c) -> healthReport(c.getSource(), 100)).
-                        then(argument("ticks", integer(20,24000)).
-                                executes( (c) -> healthReport(c.getSource(), getInteger(c, "ticks"))))).
-                then(literal("entities").
-                        executes((c) -> healthEntities(c.getSource(), 100)).
-                        then(argument("ticks", integer(20,24000)).
-                                executes((c) -> healthEntities(c.getSource(), getInteger(c, "ticks"))))).
-                then(literal("measure").
-                        executes(c -> measureCurrent(c.getSource())).
-                        then(argument("ticks", integer(10, 24000)).
-                                executes(c -> measure(c.getSource(), getInteger(c, "ticks")))))
-                ;
+        LiteralArgumentBuilder<ServerCommandSource> tick = literal("tick")
+            .requires((player) -> Settings.commandTick)
+            .then(literal("rate")
+                .executes(c -> sendCurrentTPS(c.getSource()))
+                .then(argument("rate", floatArg(0.1F, 500.0F))
+                    .suggests((c, b) -> suggestMatching(new String[]{"20"},b))
+                    .executes(c -> setTps(c.getSource(), getFloat(c, "rate")))))
+            .then(literal("warp")
+                .executes(c-> setWarp(c.getSource(), 0, null))
+                .then(argument("ticks", integer(0,4000000))
+                    .suggests((c, b) -> suggestMatching(new String[]{"3600","72000"},b))
+                    .executes(c -> setWarp(c.getSource(), getInteger(c,"ticks"), null))
+                    .then(argument("tail command", greedyString())
+                        .executes(c -> setWarp(
+                            c.getSource(),
+                            getInteger(c,"ticks"),
+                            getString(c, "tail command"))))))
+            .then(literal("health")
+                .executes(c -> healthReport(c.getSource(), 100))
+                .then(argument("ticks", integer(20, 24000))
+                    .executes(c -> healthReport(c.getSource(), getInteger(c, "ticks")))))
+            .then(literal("entities")
+                .executes(c -> healthEntities(c.getSource(), 100))
+                .then(argument("ticks", integer(20, 24000))
+                    .executes(c -> healthEntities(c.getSource(), getInteger(c, "ticks")))))
+            .then(literal("measure")
+                .executes(c -> measureCurrent(c.getSource()))
+                .then(argument("ticks", integer(10, 24000))
+                    .executes(c -> measure(c.getSource(), getInteger(c, "ticks")))));
+        dispatcher.register(tick);
+    }
 
-        dispatcher.register(literalargumentbuilder);
-    }
-    
-    private static int setTps(ServerCommandSource source, float tps)
-    {
+    private static int setTps(ServerCommandSource source, float tps) {
         TickSpeed.tickrate(tps);
-        queryTps(source);
-        return (int)tps;
+        sendCurrentTPS(source);
+        return (int) tps;
     }
-    
-    private static int queryTps(ServerCommandSource source)
-    {
-        Messenger.m(source, "w Current tps is: ",String.format("wb %.1f", TickSpeed.tickrate));
-        return (int)TickSpeed.tickrate;
+
+    private static int sendCurrentTPS(ServerCommandSource source) {
+        Messenger.m(source, "w Current tps is: ", String.format("wb %.1f", TickSpeed.tickrate));
+        return (int) TickSpeed.tickrate;
     }
-    
-    private static int setWarp(ServerCommandSource source, int advance, String tail_command)
-    {
+
+    private static int setWarp(ServerCommandSource source, int advance, String tail_command) {
         PlayerEntity player = null;
-        try
-        {
+        try {
             player = source.getPlayer();
-        }
-        catch (CommandSyntaxException ignored)
-        {
-        }
+        } catch (CommandSyntaxException ignored) {}
         Text message = TickSpeed.tickrate_advance(player, advance, tail_command, source);
-        if (message != null)
-        {
+        if (message != null) {
             source.sendFeedback(message, false);
         }
         return 1;
     }
 
-    private static int healthReport(CommandSource source, int ticks)
-    {
+    private static int healthReport(CommandSource source, int ticks) {
         CarpetProfiler.startTickReport(CarpetProfiler.ReportType.HEALTH, ticks);
         return 1;
     }
 
-    private static int healthEntities(CommandSource source, int ticks)
-    {
+    private static int healthEntities(CommandSource source, int ticks) {
         CarpetProfiler.startTickReport(CarpetProfiler.ReportType.ENTITIES, ticks);
         return 1;
     }

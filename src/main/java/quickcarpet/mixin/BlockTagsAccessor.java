@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Mixin(BlockTags.class)
 public interface BlockTagsAccessor {
     @Invoker("register")
+    @SuppressWarnings("PublicStaticMixinMember")
     static Tag<Block> register(String id) {
         throw new AssertionError();
     }

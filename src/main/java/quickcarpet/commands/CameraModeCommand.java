@@ -14,10 +14,8 @@ import quickcarpet.settings.Settings;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
-public class CameraModeCommand
-{
-    public static void register(CommandDispatcher<ServerCommandSource> dispatcher)
-    {
+public class CameraModeCommand {
+    public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         LiteralArgumentBuilder<ServerCommandSource> camera = literal("c").
                 requires((player) -> Settings.commandCameramode).
                 executes((c) -> cameraMode(c.getSource(), c.getSource().getPlayer())).
@@ -35,32 +33,29 @@ public class CameraModeCommand
         dispatcher.register(camera);
         dispatcher.register(survival);
     }
-    private static boolean iCanHasPermissions(ServerCommandSource source, PlayerEntity player)
+
+    private static boolean hasPermission(ServerCommandSource source, PlayerEntity target)
     {
-        try
-        {
-            return source.hasPermissionLevel(2) || source.getPlayer() == player;
-        }
-        catch (CommandSyntaxException e)
-        {
+        try {
+            return source.hasPermissionLevel(2) || source.getPlayer() == target;
+        } catch (CommandSyntaxException e) {
             return true; // shoudn't happen because server has all permissions anyways
         }
     }
-    private static int cameraMode(ServerCommandSource source, PlayerEntity player)
-    {
-        if (!(iCanHasPermissions(source, player))) return 0;
-        player.setGameMode(GameMode.SPECTATOR);
-        player.addPotionEffect(new StatusEffectInstance(StatusEffects.NIGHT_VISION, 999999, 0, false, false));
-        player.addPotionEffect(new StatusEffectInstance(StatusEffects.CONDUIT_POWER, 999999, 0, false, false));
-        return 1;
-    }
-    private static int survivalMode(ServerCommandSource source, PlayerEntity player)
-    {
-        if (!(iCanHasPermissions(source, player))) return 0;
-        player.setGameMode(GameMode.SURVIVAL);
-        player.removeStatusEffect(StatusEffects.NIGHT_VISION);
-        player.removeStatusEffect(StatusEffects.CONDUIT_POWER);
+
+    private static int cameraMode(ServerCommandSource source, PlayerEntity target) {
+        if (!(hasPermission(source, target))) return 0;
+        target.setGameMode(GameMode.SPECTATOR);
+        target.addPotionEffect(new StatusEffectInstance(StatusEffects.NIGHT_VISION, 999999, 0, false, false));
+        target.addPotionEffect(new StatusEffectInstance(StatusEffects.CONDUIT_POWER, 999999, 0, false, false));
         return 1;
     }
 
+    private static int survivalMode(ServerCommandSource source, PlayerEntity target) {
+        if (!(hasPermission(source, target))) return 0;
+        target.setGameMode(GameMode.SURVIVAL);
+        target.removeStatusEffect(StatusEffects.NIGHT_VISION);
+        target.removeStatusEffect(StatusEffects.CONDUIT_POWER);
+        return 1;
+    }
 }

@@ -13,24 +13,20 @@ import quickcarpet.helper.EntityPlayerActionPack;
 import quickcarpet.utils.IServerPlayerEntity;
 
 @Mixin(ServerPlayerEntity.class)
-public abstract class ServerPlayerEntityMixin implements IServerPlayerEntity
-{
+public abstract class ServerPlayerEntityMixin implements IServerPlayerEntity {
     private EntityPlayerActionPack actionPack;
-    
-    public EntityPlayerActionPack getActionPack()
-    {
+
+    public EntityPlayerActionPack getActionPack() {
         return actionPack;
     }
-    
+
     @Inject(method = "<init>", at = @At(value = "RETURN"))
-    private void init(MinecraftServer minecraftServer_1, ServerWorld serverWorld_1, GameProfile gameProfile_1, ServerPlayerInteractionManager serverPlayerInteractionManager_1, CallbackInfo ci)
-    {
-        this.actionPack = new EntityPlayerActionPack((ServerPlayerEntity)(Object)this);
+    private void init(MinecraftServer minecraftServer_1, ServerWorld serverWorld_1, GameProfile gameProfile_1, ServerPlayerInteractionManager serverPlayerInteractionManager_1, CallbackInfo ci) {
+        this.actionPack = new EntityPlayerActionPack((ServerPlayerEntity) (Object) this);
     }
-    
+
     @Inject(method = "tick", at = @At(value = "HEAD"))
-    private void onTick(CallbackInfo ci)
-    {
+    private void onTick(CallbackInfo ci) {
         actionPack.onUpdate();
     }
 }
