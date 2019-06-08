@@ -43,23 +43,10 @@ public abstract class ServerChunkManagerMixin {
     @Shadow @Final private ChunkTicketManager ticketManager;
 
     @Redirect(
-        method = "tickChunks",
+        method = {"tickChunks", "method_20801"},
         at = @At(value = "INVOKE", target = "Lit/unimi/dsi/fastutil/objects/Object2IntMap;getInt(Ljava/lang/Object;)I"),
-        require = 0
+        require = 1, allow = 1
     )
-    private int onMobcapCheckTickChunks(Object2IntMap mobcaps, Object key) {
-        return onMobcapCheck(mobcaps, key);
-    }
-
-    @Redirect(
-        method = "method_20801",
-        at = @At(value = "INVOKE", target = "Lit/unimi/dsi/fastutil/objects/Object2IntMap;getInt(Ljava/lang/Object;)I"),
-        require = 0
-    )
-    private int onMobcapCheckLambda(Object2IntMap mobcaps, Object key) {
-        return onMobcapCheck(mobcaps, key);
-    }
-
     private int onMobcapCheck(Object2IntMap mobcaps, Object key) {
         EntityCategory category = (EntityCategory) key;
         int levelCount = this.ticketManager.getLevelCount();
