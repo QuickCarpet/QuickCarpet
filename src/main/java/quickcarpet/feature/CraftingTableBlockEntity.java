@@ -110,7 +110,7 @@ public class CraftingTableBlockEntity extends LockableContainerBlockEntity imple
         if (slot > 0) return this.inventory.get(slot - 1);
         if (!output.isEmpty()) return output;
         Optional<CraftingRecipe> recipe = getCurrentRecipe();
-        return recipe.map(craftingRecipe -> craftingRecipe.getOutput().copy()).orElse(ItemStack.EMPTY);
+        return recipe.map(craftingRecipe -> craftingRecipe.craft(craftingInventory)).orElse(ItemStack.EMPTY);
     }
 
     @Override
@@ -187,6 +187,7 @@ public class CraftingTableBlockEntity extends LockableContainerBlockEntity imple
         Optional<CraftingRecipe> optionalRecipe = getCurrentRecipe();
         if (!optionalRecipe.isPresent()) return ItemStack.EMPTY;
         CraftingRecipe recipe = optionalRecipe.get();
+        ItemStack result = recipe.craft(craftingInventory);
         DefaultedList<ItemStack> remaining = world.getRecipeManager().getRemainingStacks(RecipeType.CRAFTING, craftingInventory, world);
         for (int i = 0; i < 9; i++) {
             ItemStack current = inventory.get(i);
@@ -205,7 +206,7 @@ public class CraftingTableBlockEntity extends LockableContainerBlockEntity imple
             }
         }
         markDirty();
-        return recipe.getOutput().copy();
+        return result;
     }
 
     public void onContainerClose(AutoCraftingTableContainer container) {
