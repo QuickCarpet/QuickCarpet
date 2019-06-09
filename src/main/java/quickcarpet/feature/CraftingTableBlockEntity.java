@@ -136,7 +136,10 @@ public class CraftingTableBlockEntity extends LockableContainerBlockEntity imple
 
     @Override
     public void setInvStack(int slot, ItemStack stack) {
-        if (slot == 0) return;
+        if (slot == 0) {
+            output = stack;
+            return;
+        }
         inventory.set(slot - 1, stack);
     }
 
