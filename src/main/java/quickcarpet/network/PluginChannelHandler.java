@@ -11,9 +11,7 @@ public interface PluginChannelHandler {
         return true;
     }
 
-    default void unregister(Identifier channel, ServerPlayerEntity player) {
-
-    }
+    default void unregister(Identifier channel, ServerPlayerEntity player) {}
 
     void onCustomPayload(CustomPayloadC2SPacket packet, ServerPlayerEntity player);
 }

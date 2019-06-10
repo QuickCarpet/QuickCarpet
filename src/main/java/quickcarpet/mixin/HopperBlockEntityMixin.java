@@ -23,24 +23,18 @@ public abstract class HopperBlockEntityMixin extends LootableContainerBlockEntit
         super(blockEntityType_1);
     }
 
-    @Shadow
-    public abstract double getHopperX();
+    @Shadow public abstract double getHopperX();
 
-    @Shadow
-    public abstract double getHopperY();
+    @Shadow public abstract double getHopperY();
 
-    @Shadow
-    public abstract double getHopperZ();
+    @Shadow public abstract double getHopperZ();
 
-    @Shadow
-    public abstract void setInvStack(int int_1, ItemStack itemStack_1);
+    @Shadow public abstract void setInvStack(int int_1, ItemStack itemStack_1);
 
-    @Shadow
-    public abstract int getInvSize();
+    @Shadow public abstract int getInvSize();
 
     @Inject(method = "insert", at = @At("HEAD"), cancellable = true)
-    private void onInsert(CallbackInfoReturnable<Boolean> cir)
-    {
+    private void onInsert(CallbackInfoReturnable<Boolean> cir) {
         if (Settings.hopperCounters) {
             DyeColor wool_color = WoolTool.getWoolColorAtPosition(
                     getWorld(),

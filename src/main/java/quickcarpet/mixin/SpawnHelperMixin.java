@@ -29,8 +29,8 @@ import quickcarpet.utils.SpawnTracker;
 public class SpawnHelperMixin {
 
     @Redirect(
-        method = "spawnEntitiesInChunk",
-        at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z")
+            method = "spawnEntitiesInChunk",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z")
     )
     private static boolean onSuccessfulSpawn(World world, Entity entity) {
         if (world.spawnEntity(entity)) {
@@ -44,9 +44,9 @@ public class SpawnHelperMixin {
     }
 
     @Inject(
-        method = "spawnEntitiesInChunk",
-        at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/EntityType;getCategory()Lnet/minecraft/entity/EntityCategory;"),
-        locals = LocalCapture.CAPTURE_FAILHARD
+            method = "spawnEntitiesInChunk",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/EntityType;getCategory()Lnet/minecraft/entity/EntityCategory;"),
+            locals = LocalCapture.CAPTURE_FAILHARD
     )
     private static void onAttempt(EntityCategory category, World world, WorldChunk chunk, BlockPos spawnPoint, CallbackInfo ci, ChunkGenerator chunkGenerator_1, int mobsSpawned, BlockPos startPos, int x, int y, int z, BlockState state, BlockPos.Mutable blockPos, int pack, int packX, int packZ, int int_8, Biome.SpawnEntry spawnEntry) {
         if (spawnEntry == null) return; // no type selected yet
@@ -55,8 +55,8 @@ public class SpawnHelperMixin {
     }
 
     @Redirect(
-        method = "spawnEntitiesInChunk",
-        at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;doesNotCollide(Lnet/minecraft/util/math/Box;)Z")
+            method = "spawnEntitiesInChunk",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;doesNotCollide(Lnet/minecraft/util/math/Box;)Z")
     )
     private static boolean doesNotCollide(World world, Box bbox) {
         if (!Settings.optimizedSpawning) return world.doesNotCollide(bbox);

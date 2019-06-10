@@ -13,18 +13,15 @@ import java.util.List;
 import java.util.function.Function;
 
 @Mixin(EndCityFeature.class)
-public abstract class EndCityFeatureMixin extends StructureFeature<DefaultFeatureConfig>
-{
+public abstract class EndCityFeatureMixin extends StructureFeature<DefaultFeatureConfig> {
     private static final List<Biome.SpawnEntry> spawnList = Lists.newArrayList(new Biome.SpawnEntry(EntityType.SHULKER, 10, 4, 4));
     
-    public EndCityFeatureMixin(Function<Dynamic<?>, ? extends DefaultFeatureConfig> function_1)
-    {
+    public EndCityFeatureMixin(Function<Dynamic<?>, ? extends DefaultFeatureConfig> function_1) {
         super(function_1);
     }
     
     @Override
-    public List<Biome.SpawnEntry> getMonsterSpawns()
-    {
+    public List<Biome.SpawnEntry> getMonsterSpawns() {
         return spawnList;
     }
 }

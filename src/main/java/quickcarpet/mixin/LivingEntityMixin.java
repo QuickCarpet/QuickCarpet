@@ -22,9 +22,8 @@ public abstract class LivingEntityMixin extends Entity {
         super(entityType_1, world_1);
     }
 
-    @Inject(method="onDeath", at=@At(value="INVOKE", target="Lnet/minecraft/entity/damage/DamageSource;getAttacker()Lnet/minecraft/entity/Entity;", shift = At.Shift.BEFORE))
-    private void convertSandToSoulsand(DamageSource source, CallbackInfo ci)
-    {
+    @Inject(method = "onDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/damage/DamageSource;getAttacker()Lnet/minecraft/entity/Entity;", shift = At.Shift.BEFORE))
+    private void convertSandToSoulsand(DamageSource source, CallbackInfo ci) {
         if (!Settings.mobInFireConvertsSandToSoulsand) return;
 
         BlockPos pos = new BlockPos(this.x, this.y, this.z);
@@ -33,8 +32,7 @@ public abstract class LivingEntityMixin extends Entity {
         BlockPos below = pos.down();
         BlockState stateBelow = this.world.getBlockState(below);
 
-        if (statePos.getBlock() == Blocks.FIRE && stateBelow.getBlock().matches(BlockTags.SAND))
-        {
+        if (statePos.getBlock() == Blocks.FIRE && stateBelow.getBlock().matches(BlockTags.SAND)) {
             this.world.setBlockState(below, Blocks.SOUL_SAND.getDefaultState());
         }
     }

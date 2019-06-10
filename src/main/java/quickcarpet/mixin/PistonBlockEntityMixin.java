@@ -22,19 +22,15 @@ import quickcarpet.utils.IPistonBlockEntity;
 import quickcarpet.utils.IWorld;
 
 @Mixin(PistonBlockEntity.class)
-public abstract class PistonBlockEntityMixin extends BlockEntity implements IPistonBlockEntity
-{
-    @Shadow
-    private boolean source;
-    @Shadow
-    private BlockState pushedBlock;
-    
+public abstract class PistonBlockEntityMixin extends BlockEntity implements IPistonBlockEntity {
+    @Shadow private boolean source;
+    @Shadow private BlockState pushedBlock;
+
     private BlockEntity carriedBlockEntity;
     private boolean renderCarriedBlockEntity = false;
     private boolean renderSet = false;
-    
-    public PistonBlockEntityMixin(BlockEntityType<?> blockEntityType_1)
-    {
+
+    public PistonBlockEntityMixin(BlockEntityType<?> blockEntityType_1) {
         super(blockEntityType_1);
     }
 
@@ -42,69 +38,59 @@ public abstract class PistonBlockEntityMixin extends BlockEntity implements IPis
     /**
      * @author 2No2Name
      */
-    public BlockEntity getCarriedBlockEntity()
-    {
+    public BlockEntity getCarriedBlockEntity() {
         return carriedBlockEntity;
     }
-    
-    public void setCarriedBlockEntity(BlockEntity blockEntity)
-    {
+
+    public void setCarriedBlockEntity(BlockEntity blockEntity) {
         this.carriedBlockEntity = blockEntity;
         if (this.carriedBlockEntity != null)
             this.carriedBlockEntity.setPos(this.pos);
     }
-    
-    public boolean isRenderModeSet()
-    {
+
+    public boolean isRenderModeSet() {
         return renderSet;
     }
-    
-    public boolean getRenderCarriedBlockEntity()
-    {
+
+    public boolean getRenderCarriedBlockEntity() {
         return renderCarriedBlockEntity;
     }
-    
-    public void setRenderCarriedBlockEntity(boolean b)
-    {
+
+    public void setRenderCarriedBlockEntity(boolean b) {
         renderCarriedBlockEntity = b;
         renderSet = true;
     }
-    
+
     /**
      * @author 2No2Name
      */
     @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
-    private boolean movableTEsetBlockState0(World world, BlockPos blockPos_1, BlockState blockAState_2, int int_1)
-    {
+    private boolean movableTEsetBlockState0(World world, BlockPos blockPos_1, BlockState blockAState_2, int int_1) {
         if (!Settings.movableBlockEntities)
             return world.setBlockState(blockPos_1, blockAState_2, int_1);
         else
             return ((IWorld) (world)).setBlockStateWithBlockEntity(blockPos_1, blockAState_2, this.carriedBlockEntity, int_1);
     }
-    
+
     @Redirect(method = "finish", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
-    private boolean movableTEsetBlockState1(World world, BlockPos blockPos_1, BlockState blockState_2, int int_1)
-    {
+    private boolean movableTEsetBlockState1(World world, BlockPos blockPos_1, BlockState blockState_2, int int_1) {
         if (!Settings.movableBlockEntities)
             return world.setBlockState(blockPos_1, blockState_2, int_1);
-        else
-        {
+        else {
             boolean ret = ((IWorld) (world)).setBlockStateWithBlockEntity(blockPos_1, blockState_2,
                     this.carriedBlockEntity, int_1);
             this.carriedBlockEntity = null; //this will cancel the finishHandleBroken
             return ret;
         }
     }
-    
+
     @Inject(method = "finish", at = @At(value = "RETURN"))
-    private void finishHandleBroken(CallbackInfo cir)
-    {
+    private void finishHandleBroken(CallbackInfo cir) {
         //Handle TNT Explosions or other ways the moving Block is broken
         //Also /setblock will cause this to be called, and drop e.g. a moving chest's contents.
         // This is MC-40380 (BlockEntities that aren't Inventories drop stuff when setblock is called )
         if (Settings.movableBlockEntities && this.carriedBlockEntity != null && !this.world.isClient &&
-                    this.world.getBlockState(this.pos).getBlock() == Blocks.AIR)
-        {
+                this.world.getBlockState(this.pos).getBlock() == Blocks.AIR) {
             BlockState blockState_2;
             if (this.source)
                 blockState_2 = Blocks.AIR.getDefaultState();
@@ -114,28 +100,24 @@ public abstract class PistonBlockEntityMixin extends BlockEntity implements IPis
             this.world.breakBlock(this.pos, true);
         }
     }
-    
+
     @Inject(method = "fromTag", at = @At(value = "TAIL"))
-    private void onFromTag(CompoundTag compoundTag_1, CallbackInfo ci)
-    {
-        if (Settings.movableBlockEntities && compoundTag_1.containsKey("carriedTileEntity", 10))
-        {
+    private void onFromTag(CompoundTag compoundTag_1, CallbackInfo ci) {
+        if (Settings.movableBlockEntities && compoundTag_1.containsKey("carriedTileEntity", 10)) {
             if (this.pushedBlock.getBlock() instanceof BlockEntityProvider)
                 this.carriedBlockEntity = ((BlockEntityProvider) (this.pushedBlock.getBlock())).createBlockEntity(this.world);
             if (carriedBlockEntity != null) //Can actually be null, as BlockPistonMoving.createNewTileEntity(...) returns null
                 this.carriedBlockEntity.fromTag(compoundTag_1.getCompound("carriedTileEntity"));
         }
     }
-    
+
     @Inject(method = "toTag", at = @At(value = "RETURN", shift = At.Shift.BEFORE))
-    private void onToTag(CompoundTag compoundTag_1, CallbackInfoReturnable<CompoundTag> cir)
-    {
-        if (Settings.movableBlockEntities && this.carriedBlockEntity != null)
-        {
+    private void onToTag(CompoundTag compoundTag_1, CallbackInfoReturnable<CompoundTag> cir) {
+        if (Settings.movableBlockEntities && this.carriedBlockEntity != null) {
             //Leave name "carriedTileEntity" instead of "carriedBlockEntity" for upgrade compatibility with 1.12 movable TE
             compoundTag_1.put("carriedTileEntity", this.carriedBlockEntity.toTag(new CompoundTag()));
         }
     }
-    
-    
+
+
 }

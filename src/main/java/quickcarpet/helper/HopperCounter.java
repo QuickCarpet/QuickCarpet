@@ -9,6 +9,9 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.DyeColor;
+import quickcarpet.QuickCarpet;
+import quickcarpet.logging.Logger;
+import quickcarpet.pubsub.PubSubInfoProvider;
 import quickcarpet.utils.Messenger;
 
 import javax.annotation.Nullable;
@@ -31,11 +34,11 @@ public class HopperCounter
     private final Object2LongMap<Item> counter = new Object2LongLinkedOpenHashMap<>();
     private long startTick;
     private long startMillis;
-    // private PubSubInfoProvider<Long> pubSubProvider;
+    private PubSubInfoProvider<Long> pubSubProvider;
 
     private HopperCounter(DyeColor color) {
         this.color = color;
-        // pubSubProvider = new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "carpet.counter." + color.getName(), 0, this::getTotalItems);
+        pubSubProvider = new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "carpet.counter." + color.getName(), 0, this::getTotalItems);
     }
 
     public void add(MinecraftServer server, ItemStack stack) {
@@ -45,14 +48,14 @@ public class HopperCounter
         }
         Item item = stack.getItem();
         counter.put(item, counter.getLong(item) + stack.getCount());
-        // pubSubProvider.publish();
+        pubSubProvider.publish();
     }
 
     public void reset(MinecraftServer server) {
         counter.clear();
         startTick = server.getTicks();
         startMillis = System.currentTimeMillis();
-        // pubSubProvider.publish();
+        pubSubProvider.publish();
     }
 
     public static void resetAll(MinecraftServer server) {
@@ -121,5 +124,18 @@ public class HopperCounter
 
     public long getTotalItems() {
         return counter.values().stream().mapToLong(Long::longValue).sum();
+    }
+
+    public static class LogCommandParameters extends AbstractMap<String, Object> implements Logger.CommandParameters {
+        public static final LogCommandParameters INSTANCE = new LogCommandParameters();
+        private LogCommandParameters() {}
+        @Override
+        public Set<Entry<String, Object>> entrySet() {
+            Map<String, Object> counts = new LinkedHashMap<>();
+            for (Entry<DyeColor, HopperCounter> counterEntry : COUNTERS.entrySet()) {
+                counts.put(counterEntry.getKey().name(), counterEntry.getValue().getTotalItems());
+            }
+            return counts.entrySet();
+        }
     }
 }

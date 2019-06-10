@@ -14,27 +14,22 @@ import quickcarpet.utils.IBlockEntityRenderDispatcher;
 import quickcarpet.utils.IPistonBlockEntity;
 
 @Mixin(PistonBlockEntityRenderer.class)
-public abstract class PistonBlockEntityRendererMixin extends BlockEntityRenderer<PistonBlockEntity>
-{
+public abstract class PistonBlockEntityRendererMixin extends BlockEntityRenderer<PistonBlockEntity> {
     @Inject(method = "method_3576", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/client/render/block/entity/PistonBlockEntityRenderer;method_3575(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/client/render/BufferBuilder;Lnet/minecraft/world/World;Z)Z",
             ordinal = 3))
     private void updateRenderBool(PistonBlockEntity pistonBlockEntity_1, double double_1, double double_2, double double_3,
-            float float_1, int int_1, CallbackInfo ci)
-    {
+                                  float float_1, int int_1, CallbackInfo ci) {
         if (!((IPistonBlockEntity) pistonBlockEntity_1).isRenderModeSet())
             ((IPistonBlockEntity) pistonBlockEntity_1).setRenderCarriedBlockEntity(Settings.movableBlockEntities && ((IPistonBlockEntity) pistonBlockEntity_1).getCarriedBlockEntity() != null);
     }
-    
+
     @Inject(method = "method_3576", at = @At("RETURN"))
     private void endMethod3576(PistonBlockEntity pistonBlockEntity_1, double double_1, double double_2, double double_3,
-            float float_1, int int_1, CallbackInfo ci)
-    {
-        if (((IPistonBlockEntity) pistonBlockEntity_1).getRenderCarriedBlockEntity())
-        {
+                               float float_1, int int_1, CallbackInfo ci) {
+        if (((IPistonBlockEntity) pistonBlockEntity_1).getRenderCarriedBlockEntity()) {
             BlockEntity carriedBlockEntity = ((IPistonBlockEntity) pistonBlockEntity_1).getCarriedBlockEntity();
-            if (carriedBlockEntity != null)
-            {
+            if (carriedBlockEntity != null) {
                 carriedBlockEntity.setPos(pistonBlockEntity_1.getPos());
                 ((IBlockEntityRenderDispatcher) BlockEntityRenderDispatcher.INSTANCE).renderBlockEntityOffset(carriedBlockEntity, float_1, int_1, pistonBlockEntity_1.getRenderOffsetX(float_1), pistonBlockEntity_1.getRenderOffsetY(float_1), pistonBlockEntity_1.getRenderOffsetZ(float_1));
             }

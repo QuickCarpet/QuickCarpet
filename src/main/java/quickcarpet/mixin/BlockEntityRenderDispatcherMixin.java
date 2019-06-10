@@ -13,8 +13,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import quickcarpet.utils.IBlockEntityRenderDispatcher;
 
 @Mixin(BlockEntityRenderDispatcher.class)
-public abstract class BlockEntityRenderDispatcherMixin implements IBlockEntityRenderDispatcher
-{
+public abstract class BlockEntityRenderDispatcherMixin implements IBlockEntityRenderDispatcher {
     @Shadow
     public static double renderOffsetX;
     @Shadow
@@ -35,11 +34,9 @@ public abstract class BlockEntityRenderDispatcherMixin implements IBlockEntityRe
      */
     //Renders the BlockEntity offset by the amount specified in the arguments xOffset yOffset zOffset (the moving block moved in the animation by this)
     public void renderBlockEntityOffset(BlockEntity blockEntity_1, float partialTicks, int destroyStage, double xOffset,
-            double yOffset, double zOffset)
-    {
+            double yOffset, double zOffset) {
         if (blockEntity_1.getSquaredDistance(this.cameraEntity.getPos().x - xOffset, this.cameraEntity.getPos().y - yOffset,
-                this.cameraEntity.getPos().z - zOffset) < blockEntity_1.getSquaredRenderDistance())
-        {
+                this.cameraEntity.getPos().z - zOffset) < blockEntity_1.getSquaredRenderDistance()) {
             GuiLighting.enable();
             int i = this.world.getLightmapIndex(blockEntity_1.getPos(), 0);
             int j = i % 65536;

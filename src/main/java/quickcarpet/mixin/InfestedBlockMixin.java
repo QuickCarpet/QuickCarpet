@@ -15,20 +15,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import static quickcarpet.settings.Settings.silverFishDropGravel;
 
 @Mixin(InfestedBlock.class)
-public abstract class InfestedBlockMixin extends Block
-{
-    public InfestedBlockMixin(Settings block$Settings_1)
-    {
+public abstract class InfestedBlockMixin extends Block {
+    public InfestedBlockMixin(Settings block$Settings_1) {
         super(block$Settings_1);
     }
-    
+
     @Inject(method = "onStacksDropped", at = @At(value = "INVOKE", shift = At.Shift.AFTER,
             target = "Lnet/minecraft/entity/mob/SilverfishEntity;playSpawnEffects()V"))
     private void onOnStacksDropped(BlockState blockState_1, World world_1, BlockPos blockPos_1,
-            ItemStack itemStack_1, CallbackInfo ci)
-    {
-        if (silverFishDropGravel)
-        {
+                                   ItemStack itemStack_1, CallbackInfo ci) {
+        if (silverFishDropGravel) {
             dropStack(world_1, blockPos_1, new ItemStack(Blocks.GRAVEL));
         }
     }

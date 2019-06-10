@@ -13,32 +13,27 @@ import quickcarpet.logging.LoggerRegistry;
 import quickcarpet.logging.loghelpers.TNTLogHelper;
 
 @Mixin(TntEntity.class)
-public abstract class TntEntityMixin extends Entity
-{
+public abstract class TntEntityMixin extends Entity {
     private TNTLogHelper logHelper = null;
-    
-    public TntEntityMixin(EntityType<?> entityType_1, World world_1)
-    {
+
+    public TntEntityMixin(EntityType<?> entityType_1, World world_1) {
         super(entityType_1, world_1);
     }
-    
+
     @Inject(method = "<init>(Lnet/minecraft/world/World;DDDLnet/minecraft/entity/LivingEntity;)V",
             at = @At(value = "RETURN"))
     private void initTNTLogger(World world_1, double double_1, double double_2, double double_3,
-            LivingEntity livingEntity_1, CallbackInfo ci)
-    {
+                               LivingEntity livingEntity_1, CallbackInfo ci) {
         double double_4 = world_1.random.nextDouble() * 6.2831854820251465D;
-        if (LoggerRegistry.__tnt)
-        {
+        if (LoggerRegistry.TNT.isActive()) {
             logHelper = new TNTLogHelper();
             logHelper.onPrimed(double_1, double_2, double_3, double_4);
         }
     }
-    
+
     @Inject(method = "explode", at = @At(value = "HEAD"))
-    private void onExplode(CallbackInfo ci)
-    {
-        if (LoggerRegistry.__tnt && logHelper != null)
+    private void onExplode(CallbackInfo ci) {
+        if (LoggerRegistry.TNT.isActive() && logHelper != null)
             logHelper.onExploded(x, y, z);
     }
 }

@@ -7,74 +7,37 @@ import quickcarpet.QuickCarpet;
 import quickcarpet.utils.HUDController;
 
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.function.Supplier;
 
-public abstract class LogHandler
+public interface LogHandler
 {
 
-    public static final LogHandler CHAT = new LogHandler()
-    {
+    LogHandler CHAT = (player, message, commandParams) -> Arrays.stream(message).forEach(m -> player.sendChatMessage(m, MessageType.CHAT));
+    LogHandler HUD = new LogHandler() {
         @Override
-        public void handle(ServerPlayerEntity player, Text[] message, Object[] commandParams)
-        {
-            Arrays.stream(message).forEach(m -> player.sendChatMessage(m, MessageType.CHAT));
-        }
-    };
-    public static final LogHandler HUD = new LogHandler()
-    {
-        @Override
-        public void handle(ServerPlayerEntity player, Text[] message, Object[] commandParams)
-        {
+        public void handle(ServerPlayerEntity player, Text[] message, Supplier<Logger.CommandParameters> commandParams) {
             for (Text m : message)
                 HUDController.addMessage(player, m);
         }
 
         @Override
-        public void onRemovePlayer(String playerName)
-        {
+        public void onRemovePlayer(String playerName) {
             ServerPlayerEntity player = QuickCarpet.minecraft_server.getPlayerManager().getPlayer(playerName);
             if (player != null)
-                HUDController.clear_player(player);
+                HUDController.clearPlayerHUD(player);
         }
     };
 
-    private static final Map<String, LogHandlerCreator> CREATORS = new HashMap<>();
-
-    static
-    {
-        registerCreator("chat", extraArgs -> CHAT);
-        registerCreator("hud", extraArgs -> HUD);
-        // registerCreator("command", CommandLogHandler::new);
-    }
-
     @FunctionalInterface
-    private static interface LogHandlerCreator
+    interface LogHandlerCreator
     {
         LogHandler create(String... extraArgs);
     }
 
-    private static void registerCreator(String name, LogHandlerCreator creator)
-    {
-        CREATORS.put(name, creator);
-    }
+    void handle(ServerPlayerEntity player, Text[] message, Supplier<Logger.CommandParameters> commandParams);
 
-    public static LogHandler createHandler(String name, String... extraArgs)
-    {
-        return CREATORS.get(name).create(extraArgs);
-    }
+    default void onAddPlayer(String playerName) {}
 
-    public static List<String> getHandlerNames()
-    {
-        return CREATORS.keySet().stream().sorted().collect(Collectors.toList());
-    }
-
-    public abstract void handle(ServerPlayerEntity player, Text[] message, Object[] commandParams);
-
-    public void onAddPlayer(String playerName) {}
-
-    public void onRemovePlayer(String playerName) {}
+    default void onRemovePlayer(String playerName) {}
 
 }

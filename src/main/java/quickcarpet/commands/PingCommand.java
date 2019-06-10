@@ -11,14 +11,14 @@ import static net.minecraft.server.command.CommandManager.literal;
 
 public class PingCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        LiteralArgumentBuilder<ServerCommandSource> builder = literal("ping").
-            requires((player) -> Settings.commandPing).
-            executes(c -> {
+        LiteralArgumentBuilder<ServerCommandSource> ping = literal("ping")
+            .requires((player) -> Settings.commandPing)
+            .executes(c -> {
                 ServerPlayerEntity player = c.getSource().getPlayer();
-                int ping = player.field_13967;
-                player.sendMessage(Messenger.c("w Your ping is ", Messenger.heatmap_color(ping, 250) + " " + ping, "w  ms"));
+                int pingMs = player.field_13967;
+                player.sendMessage(Messenger.c("w Your ping is ", Messenger.heatmap_color(pingMs, 250) + " " + pingMs, "w  ms"));
                 return 1;
             });
-        dispatcher.register(builder);
+        dispatcher.register(ping);
     }
 }
