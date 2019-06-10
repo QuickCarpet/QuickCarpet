@@ -1,6 +1,5 @@
 package quickcarpet.helper;
 
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -15,7 +14,7 @@ import quickcarpet.utils.Messenger;
 import java.util.*;
 
 public class TickSpeed {
-    public static float tickRateGoal = 20.0f;
+    public static float tickRateGoal = 20;
     public static long msptGoal = 50;
     private static long timeBias = 0;
     public static long tickWarpStartTime = 0;
@@ -25,9 +24,24 @@ public class TickSpeed {
     private static String tickWarpCallback = null;
     private static ServerCommandSource tickWarpSender = null;
 
+    private static PubSubInfoProvider<Float> TICK_RATE_GOAL_PUBSUB_PROVIDER = new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "carpet.tick-rate.tps-goal", 0, () -> tickRateGoal);
+
     static {
         new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "minecraft.performance.mspt", 20, TickSpeed::getCurrentMSPT);
         new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "minecraft.performance.tps", 20, TickSpeed::getTPS);
+    }
+
+    public static void reset() {
+        tickRateGoal = 20;
+        msptGoal = 50;
+        timeBias = 0;
+        tickWarpStartTime = 0;
+        tickWarpScheduledTicks = 0;
+        stepAmount = 0;
+        paused = false;
+        tickWarpCallback = null;
+        tickWarpSender = null;
+        resetLoadAvg = true;
     }
 
     public static void setTickRateGoal(float rate) {
@@ -37,6 +51,7 @@ public class TickSpeed {
             msptGoal = 1;
             tickRateGoal = 1000.0f;
         }
+        TICK_RATE_GOAL_PUBSUB_PROVIDER.publish();
     }
 
     public static void setStep(int ticks) {
@@ -45,7 +60,7 @@ public class TickSpeed {
         stepAmount = ticks + 1;
     }
 
-    public static Text setTickWarp(PlayerEntity player, int warpAmount, String callback, ServerCommandSource source) {
+    public static Text setTickWarp(ServerCommandSource source, int warpAmount, String callback) {
         if (0 == warpAmount) {
             tickWarpCallback = null;
             tickWarpSender = null;

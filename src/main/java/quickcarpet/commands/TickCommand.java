@@ -2,8 +2,6 @@ package quickcarpet.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
@@ -72,12 +70,8 @@ public class TickCommand {
         return (int) TickSpeed.tickRateGoal;
     }
 
-    private static int setWarp(ServerCommandSource source, int advance, String tail_command) {
-        PlayerEntity player = null;
-        try {
-            player = source.getPlayer();
-        } catch (CommandSyntaxException ignored) {}
-        Text message = TickSpeed.setTickWarp(player, advance, tail_command, source);
+    private static int setWarp(ServerCommandSource source, int advance, String tailCommand) {
+        Text message = TickSpeed.setTickWarp(source, advance, tailCommand);
         if (message != null) {
             source.sendFeedback(message, false);
         }
