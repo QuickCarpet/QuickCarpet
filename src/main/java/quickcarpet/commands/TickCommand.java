@@ -39,10 +39,13 @@ public class TickCommand {
                     .suggests((c, b) -> suggestMatching(new String[]{"3600","72000"},b))
                     .executes(c -> setWarp(c.getSource(), getInteger(c,"ticks"), null))
                     .then(argument("tail command", greedyString())
-                        .executes(c -> setWarp(
-                            c.getSource(),
-                            getInteger(c,"ticks"),
-                            getString(c, "tail command"))))))
+                        .executes(c -> setWarp(c.getSource(), getInteger(c,"ticks"), getString(c, "tail command"))))))
+            .then(literal("freeze").executes( (c)-> toggleFreeze(c.getSource())))
+                .then(literal("step")
+                    .executes((c) -> step(1))
+                    .then(argument("ticks", integer(1,72000))
+                        .suggests((c, b) -> suggestMatching(new String[]{"20"},b))
+                        .executes(c -> step(getInteger(c, "ticks")))))
             .then(literal("health")
                 .executes(c -> healthReport(c.getSource(), 100))
                 .then(argument("ticks", integer(20, 24000))
@@ -59,14 +62,14 @@ public class TickCommand {
     }
 
     private static int setTps(ServerCommandSource source, float tps) {
-        TickSpeed.tickrate(tps);
+        TickSpeed.setTickRateGoal(tps);
         sendCurrentTPS(source);
         return (int) tps;
     }
 
     private static int sendCurrentTPS(ServerCommandSource source) {
-        Messenger.m(source, "w Current tps is: ", String.format("wb %.1f", TickSpeed.tickrate));
-        return (int) TickSpeed.tickrate;
+        Messenger.m(source, "w Current tps is: ", String.format("wb %.1f", TickSpeed.tickRateGoal));
+        return (int) TickSpeed.tickRateGoal;
     }
 
     private static int setWarp(ServerCommandSource source, int advance, String tail_command) {
@@ -74,9 +77,24 @@ public class TickCommand {
         try {
             player = source.getPlayer();
         } catch (CommandSyntaxException ignored) {}
-        Text message = TickSpeed.tickrate_advance(player, advance, tail_command, source);
+        Text message = TickSpeed.setTickWarp(player, advance, tail_command, source);
         if (message != null) {
             source.sendFeedback(message, false);
+        }
+        return 1;
+    }
+
+    private static int step(int ticks) {
+        TickSpeed.setStep(ticks);
+        return 1;
+    }
+
+    private static int toggleFreeze(ServerCommandSource source) {
+        TickSpeed.paused = !TickSpeed.paused;
+        if (TickSpeed.paused) {
+            Messenger.m(source, "gi Game is paused");
+        } else {
+            Messenger.m(source, "gi Game runs normally");
         }
         return 1;
     }

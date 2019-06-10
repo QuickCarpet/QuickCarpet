@@ -12,6 +12,7 @@ import net.minecraft.world.level.LevelProperties;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import quickcarpet.helper.TickSpeed;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.CarpetProfiler;
 
@@ -101,5 +102,10 @@ public abstract class ServerWorldMixin extends World {
     @ModifyConstant(method = "setSpawnPos", constant = @Constant(intValue = 11), require = 2)
     private int adjustSpawnChunkLevel(int level) {
         return Settings.spawnChunkLevel;
+    }
+
+    @Inject(method = "tick", at = @At("HEAD"), cancellable = true)
+    private void tickFreeze(BooleanSupplier shouldContinueTicking, CallbackInfo ci) {
+        if (TickSpeed.paused) ci.cancel();
     }
 }
