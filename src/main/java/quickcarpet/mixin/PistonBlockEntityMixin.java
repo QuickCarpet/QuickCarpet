@@ -25,15 +25,17 @@ import quickcarpet.utils.IWorld;
 public abstract class PistonBlockEntityMixin extends BlockEntity implements IPistonBlockEntity {
     @Shadow private boolean source;
     @Shadow private BlockState pushedBlock;
+    @Shadow private float nextProgress;
 
+    @Shadow private float progress;
     private BlockEntity carriedBlockEntity;
     private boolean renderCarriedBlockEntity = false;
     private boolean renderSet = false;
+    private float actualProgress;
 
     public PistonBlockEntityMixin(BlockEntityType<?> blockEntityType_1) {
         super(blockEntityType_1);
     }
-
 
     /**
      * @author 2No2Name
@@ -109,6 +111,7 @@ public abstract class PistonBlockEntityMixin extends BlockEntity implements IPis
             if (carriedBlockEntity != null) //Can actually be null, as BlockPistonMoving.createNewTileEntity(...) returns null
                 this.carriedBlockEntity.fromTag(compoundTag_1.getCompound("carriedTileEntity"));
         }
+        this.actualProgress = Math.max(0f, progress - 0.5f);
     }
 
     @Inject(method = "toTag", at = @At(value = "RETURN", shift = At.Shift.BEFORE))
@@ -119,5 +122,20 @@ public abstract class PistonBlockEntityMixin extends BlockEntity implements IPis
         }
     }
 
+    @Inject(method = "getProgress", at = @At(value = "HEAD"), cancellable = true)
+    private void smoothPistons(float partialTicks, CallbackInfoReturnable<Float> cir) {
+        float val;
+        if (this.world != null && this.world.isClient) {
+            val = (this.nextProgress * 2.0F + partialTicks) * 0.33333334F;
+        } else {
+            val = this.actualProgress + (this.nextProgress - this.actualProgress) * partialTicks;
+        }
+        cir.setReturnValue(val);
+        cir.cancel();
+    }
 
+    @Inject(method = "tick", at = @At(value = "FIELD", target = "Lnet/minecraft/block/entity/PistonBlockEntity;progress:F", ordinal = 0))
+    private void setActualProgress(CallbackInfo ci) {
+        this.actualProgress = this.progress;
+    }
 }

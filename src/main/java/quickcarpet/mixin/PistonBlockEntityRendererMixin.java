@@ -7,7 +7,9 @@ import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.PistonBlockEntityRenderer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.IBlockEntityRenderDispatcher;
@@ -34,5 +36,17 @@ public abstract class PistonBlockEntityRendererMixin extends BlockEntityRenderer
                 ((IBlockEntityRenderDispatcher) BlockEntityRenderDispatcher.INSTANCE).renderBlockEntityOffset(carriedBlockEntity, float_1, int_1, pistonBlockEntity_1.getRenderOffsetX(float_1), pistonBlockEntity_1.getRenderOffsetY(float_1), pistonBlockEntity_1.getRenderOffsetZ(float_1));
             }
         }
+    }
+
+    /*
+    @Redirect(method = "method_3576", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/GlStateManager;disableCull()V"))
+    private void fixCulling() {
+
+    }
+     */
+
+    @ModifyConstant(method = "method_3576", constant = @Constant(floatValue = 4f))
+    private float fixShort(float shortCutoff) {
+        return 0.5f;
     }
 }
