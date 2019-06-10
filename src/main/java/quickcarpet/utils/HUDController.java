@@ -116,7 +116,7 @@ public class HUDController {
     public static void sendHUD(PlayerEntity player, Text header, Text footer) {
         PlayerListHeaderS2CPacket packet = new PlayerListHeaderS2CPacket();
         ((PlayerListHeaderS2CPacketAccessor) packet).setHeader(header);
-        ((PlayerListHeaderS2CPacketAccessor) packet).setFooter(header);
+        ((PlayerListHeaderS2CPacketAccessor) packet).setFooter(footer);
         ((ServerPlayerEntity) player).networkHandler.sendPacket(packet);
     }
 
