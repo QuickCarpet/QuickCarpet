@@ -119,11 +119,7 @@ public class PistonBlockMixin extends FacingBlock {
             ordinal = 1, shift = At.Shift.BEFORE))
     private void doubleRetraction(World world, BlockPos pos, BlockState state, CallbackInfo ci) {
         if (quickcarpet.settings.Settings.doubleRetraction) {
-            BlockPos headPos = pos.offset(state.get(PistonBlock.FACING));
             world.setBlockState(pos, state.with(PistonBlock.EXTENDED, false), 2);
-            if (world.getBlockState(headPos).getBlock() == Blocks.PISTON_HEAD) {
-                world.setBlockState(headPos, Blocks.AIR.getDefaultState(), 2);
-            }
         }
     }
 }
