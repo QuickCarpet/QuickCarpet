@@ -8,6 +8,13 @@ plugins {
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
+def buildDate = new Date()
+if (project.mod_version.endsWith('-dev')) {
+	def df = new SimpleDateFormat(".yyyyMMdd.hhmmss")
+	df.setTimeZone(TimeZone.getTimeZone("UTC"))
+	project.mod_version += df.format(buildDate)
+}
+
 archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
@@ -62,7 +69,7 @@ task generateJava(type: Copy) {
 	df.setTimeZone(TimeZone.getTimeZone("UTC"))
 	def templateContext = [
 			version: project.version,
-			timestamp: df.format(new Date()),
+			timestamp: df.format(buildDate),
 			branch: gitBranch(),
 			commit: gitCommit(),
 			working_dir_clean: gitStatus(),
