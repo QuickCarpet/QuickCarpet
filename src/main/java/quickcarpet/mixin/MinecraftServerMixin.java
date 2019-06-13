@@ -71,15 +71,15 @@ public abstract class MinecraftServerMixin {
             //CM deciding on tick speed
             long mspt = 0L;
             long long_1 = 0L;
-            if (TickSpeed.time_warp_start_time != 0 && TickSpeed.continueWarp()) {
+            if (TickSpeed.tickWarpStartTime != 0 && TickSpeed.continueWarp()) {
                 //making sure server won't flop after the warp or if the warp is interrupted
                 this.timeReference = this.field_4557 = SystemUtil.getMeasuringTimeMs();
             } else {
-                mspt = TickSpeed.mspt; // regular tick
+                mspt = TickSpeed.msptGoal; // regular tick
                 long_1 = SystemUtil.getMeasuringTimeMs() - this.timeReference;
             }
             //end tick deciding
-            //smoothed out delay to include mcpt component. With 50L gives defaults.
+            //smoothed out delay to include mspt component. With 50L gives defaults.
             if (long_1 > /*2000L*/1000L + 20 * mspt && this.timeReference - this.field_4557 >= /*15000L*/10000L + 100 * mspt) {
                 long long_2 = long_1 / mspt;//50L;
                 LOGGER.warn("Can't keep up! Is the server overloaded? Running {}ms or {} ticks behind", long_1, long_2);

@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "BlockPlacementDispenserBehaviorMixin",
+    "BlocksMixin",
     "BlockTagsAccessor",
     "ClientConnectionMixin",
     "CommandManagerMixin",
@@ -51,7 +52,8 @@
     "IntegratedServerMixin",
     "MinecraftClientMixin",
     "PistonBlockEntityRendererMixin",
-    "PlayerListHudMixin"
+    "PlayerListHudMixin",
+    "RenderTickCounterMixin"
   ],
   "injectors": {
     "defaultRequire": 1

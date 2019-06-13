@@ -170,6 +170,9 @@ public class Settings {
         }
     }
 
+    @Rule(desc = "Obsidian surrounded by 6 lava sources has a chance of converting to lava", category = {EXPERIMENTAL, FEATURE})
+    public static boolean renewableLava = false;
+
     public static void main(String[] args) throws FileNotFoundException {
         Bootstrap.initialize();
         MANAGER.parse();

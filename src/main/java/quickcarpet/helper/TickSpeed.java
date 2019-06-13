@@ -1,12 +1,9 @@
 package quickcarpet.helper;
 
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
-import net.minecraft.util.Formatting;
 import net.minecraft.util.math.MathHelper;
 import quickcarpet.QuickCarpet;
 import quickcarpet.commands.TickCommand;
@@ -17,248 +14,132 @@ import quickcarpet.utils.Messenger;
 import java.util.*;
 
 public class TickSpeed {
-    
-    public static final int PLAYER_GRACE = 2;
-    public static float tickrate = 20.0f;
-    public static long mspt = 50l;
-    public static long time_bias = 0;
-    public static long time_warp_start_time = 0;
-    public static long time_warp_scheduled_ticks = 0;
-    public static PlayerEntity time_advancerer = null;
-    public static String tick_warp_callback = null;
-    public static ServerCommandSource tick_warp_sender = null;
-    public static int player_active_timeout = 0;
-    public static boolean process_entities = true;
-    public static boolean is_paused = false;
-    public static boolean is_superHot = false;
-    
+    public static float tickRateGoal = 20;
+    public static long msptGoal = 50;
+    private static long timeBias = 0;
+    public static long tickWarpStartTime = 0;
+    private static long tickWarpScheduledTicks = 0;
+    private static int stepAmount = 0;
+    public static boolean paused = false;
+    private static String tickWarpCallback = null;
+    private static ServerCommandSource tickWarpSender = null;
+
+    private static PubSubInfoProvider<Float> TICK_RATE_GOAL_PUBSUB_PROVIDER = new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "carpet.tick-rate.tps-goal", 0, () -> tickRateGoal);
+
     static {
         new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "minecraft.performance.mspt", 20, TickSpeed::getCurrentMSPT);
         new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "minecraft.performance.tps", 20, TickSpeed::getTPS);
     }
-    
-    public static void reset_player_active_timeout()
-    {
-        if (player_active_timeout < PLAYER_GRACE)
-        {
-            player_active_timeout = PLAYER_GRACE;
+
+    public static void reset() {
+        tickRateGoal = 20;
+        msptGoal = 50;
+        timeBias = 0;
+        tickWarpStartTime = 0;
+        tickWarpScheduledTicks = 0;
+        stepAmount = 0;
+        paused = false;
+        tickWarpCallback = null;
+        tickWarpSender = null;
+        resetLoadAvg = true;
+    }
+
+    public static void setTickRateGoal(float rate) {
+        tickRateGoal = rate;
+        msptGoal = (long) (1000.0 / tickRateGoal);
+        if (msptGoal <= 0) {
+            msptGoal = 1;
+            tickRateGoal = 1000.0f;
         }
+        TICK_RATE_GOAL_PUBSUB_PROVIDER.publish();
     }
-    
-    public static void add_ticks_to_run_in_pause(int ticks)
-    {
-        player_active_timeout = PLAYER_GRACE+ticks;
+
+    public static void setStep(int ticks) {
+        if (ticks <= 0) throw new IllegalArgumentException("Step amount must be positive");
+        paused = false;
+        stepAmount = ticks + 1;
     }
-    
-    public static void tickrate(float rate)
-    {
-        tickrate = rate;
-        mspt = (long)(1000.0/tickrate);
-        if (mspt <=0)
-        {
-            mspt = 1l;
-            tickrate = 1000.0f;
-        }
-    }
-    
-    public static Text tickrate_advance(PlayerEntity player, int advance, String callback, ServerCommandSource source)
-    {
-        if (0 == advance)
-        {
-            tick_warp_callback = null;
-            tick_warp_sender = null;
-            finish_time_warp();
+
+    public static Text setTickWarp(ServerCommandSource source, int warpAmount, String callback) {
+        if (0 == warpAmount) {
+            tickWarpCallback = null;
+            tickWarpSender = null;
+            finishTickWarp();
             return Messenger.c("gi Warp interrupted");
         }
-        if (time_bias > 0)
-        {
+        if (timeBias > 0) {
             return Messenger.c("l Another player is already advancing time at the moment. Try later or talk to them");
         }
-        time_advancerer = player;
-        time_warp_start_time = System.nanoTime();
-        time_warp_scheduled_ticks = advance;
-        time_bias = advance;
-        tick_warp_callback = callback;
-        tick_warp_sender = source;
+        tickWarpStartTime = System.nanoTime();
+        tickWarpScheduledTicks = warpAmount;
+        timeBias = warpAmount;
+        tickWarpCallback = callback;
+        tickWarpSender = source;
         return Messenger.c("gi Warp speed ....");
     }
-    
-    public static void finish_time_warp()
-    {
-        
-        long completed_ticks = time_warp_scheduled_ticks - time_bias;
-        double milis_to_complete = System.nanoTime()-time_warp_start_time;
-        if (milis_to_complete == 0.0)
-        {
+
+    private static void finishTickWarp() {
+        long completed_ticks = tickWarpScheduledTicks - timeBias;
+        double milis_to_complete = System.nanoTime() - tickWarpStartTime;
+        if (milis_to_complete == 0.0) {
             milis_to_complete = 1.0;
         }
         milis_to_complete /= 1000000.0;
-        int tps = (int) (1000.0D*completed_ticks/milis_to_complete);
-        double mspt = (1.0*milis_to_complete)/completed_ticks;
-        time_warp_scheduled_ticks = 0;
-        time_warp_start_time = 0;
-        if (tick_warp_callback != null)
-        {
-            CommandManager icommandmanager = tick_warp_sender.getMinecraftServer().getCommandManager();
-            try
-            {
-                int j = icommandmanager.execute(tick_warp_sender, tick_warp_callback);
-                
-                if (j < 1)
-                {
-                    if (time_advancerer != null)
-                    {
-                        Messenger.m(time_advancerer, "r Command Callback failed: ", "rb /"+tick_warp_callback,"/"+tick_warp_callback);
+        int tps = (int) (1000.0D * completed_ticks / milis_to_complete);
+        double mspt = (1.0 * milis_to_complete) / completed_ticks;
+        tickWarpScheduledTicks = 0;
+        tickWarpStartTime = 0;
+        if (tickWarpCallback != null) {
+            CommandManager icommandmanager = tickWarpSender.getMinecraftServer().getCommandManager();
+            try {
+                int j = icommandmanager.execute(tickWarpSender, tickWarpCallback);
+
+                if (j < 1) {
+                    if (tickWarpSender != null) {
+                        Messenger.m(tickWarpSender, "r Command Callback failed: ", "rb /" + tickWarpCallback, "/" + tickWarpCallback);
                     }
                 }
-            }
-            catch (Throwable var23)
-            {
-                if (time_advancerer != null)
-                {
-                    Messenger.m(time_advancerer, "r Command Callback failed - unknown error: ", "rb /"+tick_warp_callback,"/"+tick_warp_callback);
+            } catch (Throwable var23) {
+                if (tickWarpSender != null) {
+                    Messenger.m(tickWarpSender, "r Command Callback failed - unknown error: ", "rb /" + tickWarpCallback, "/" + tickWarpCallback);
                 }
             }
-            tick_warp_callback = null;
-            tick_warp_sender = null;
+            tickWarpCallback = null;
         }
-        if (time_advancerer != null)
-        {
-            Messenger.m(time_advancerer, String.format("gi ... Time warp completed with %d tps, or %.2f mspt",tps, mspt ));
-            time_advancerer = null;
+        if (tickWarpSender != null) {
+            Messenger.m(tickWarpSender, String.format("gi ... Time warp completed with %d tps, or %.2f mspt", tps, mspt));
+            tickWarpSender = null;
+        } else {
+            Messenger.print_server_message(QuickCarpet.minecraft_server, String.format("... Time warp completed with %d tps, or %.2f mspt", tps, mspt));
         }
-        else
-        {
-            Messenger.print_server_message(QuickCarpet.minecraft_server, String.format("... Time warp completed with %d tps, or %.2f mspt",tps, mspt ));
-        }
-        time_bias = 0;
-        
+        timeBias = 0;
+
     }
-    
-    public static boolean continueWarp()
-    {
-        if (time_bias > 0)
-        {
-            if (time_bias == time_warp_scheduled_ticks) //first call after previous tick, adjust start time
-            {
-                time_warp_start_time = System.nanoTime();
+
+    public static boolean continueWarp() {
+        if (timeBias > 0) {
+            if (timeBias == tickWarpScheduledTicks) { //first call after previous tick, adjust start time
+                tickWarpStartTime = System.nanoTime();
             }
-            time_bias -= 1;
+            timeBias -= 1;
             return true;
-        }
-        else
-        {
-            finish_time_warp();
+        } else {
+            finishTickWarp();
             return false;
         }
     }
-    
-    public static void tick(MinecraftServer server)
-    {
-        process_entities = true;
-        if (player_active_timeout > 0)
-        {
-            player_active_timeout--;
-        }
-        if (is_paused)
-        {
-            if (player_active_timeout < PLAYER_GRACE)
-            {
-                process_entities = false;
-            }
-        }
-        else if (is_superHot)
-        {
-            if (player_active_timeout <= 0)
-            {
-                process_entities = false;
-                
-            }
-        }
+
+    public static void tick(MinecraftServer server) {
         int ticks = server.getTicks();
         if (ticks > 100 && ticks % 100 == 0) { // ignore spike at server start
             updateLoadAvg();
         }
         Measurement.tickAll();
-    }
-    
-    
-    // EDD's Tick warping stuff
-    private static final String SS = "\u00A7", RED = SS + 'c', GREEN = SS + 'a', RESET = SS + 'r', CYAN =  SS + 'b';
-    
-    public static boolean isWarping;
-    public static float serverTPS = 20.0F;
-    
-    public static long ms_per_tick = (long)(1000 / serverTPS),
-            warn_time = (long)(serverTPS * 200),
-            last_sleep = 0,
-            elapsed_ticks = 0,
-            ticksToWarp = 0,
-            warpedTicks = 0,
-            warpStartMs = 0;
-    
-    public static int sendUsage(ServerCommandSource source)
-    {
-        return send(source, "Server TPS = " + GREEN + serverTPS);
-    }
-    
-    public static void updateTPS()
-    {
-        ms_per_tick = (long)(1000 / serverTPS);
-        warn_time = (long)(serverTPS * 200);
-    }
-    
-    public static int send(ServerCommandSource source, String s)
-    {
-        source.sendFeedback(new TranslatableText("" + s), true);
-        return 1;
-    }
-    
-    public static int setWarp(ServerCommandSource source, int ticks)
-    {
-        if (ticks <= 0)
-        {
-            ticksToWarp = 0;
-            return 1;
-        }
-        
-        warpStartMs = System.currentTimeMillis();
-        warpedTicks = 0;
-        ticksToWarp = ticks;
-        ms_per_tick = 1;
-        isWarping = true;
-        return send(source, "Warping " + GREEN + ticks + RESET + " ticks...");
-    }
-    
-    public static void processWarp(MinecraftServer server)
-    {
-        if (isWarping)
-        {
-            --ticksToWarp;
-            ++warpedTicks;
-            
-            if (ticksToWarp <= 0)
-            {
-                ticksToWarp = 0;
-                isWarping = false;
-                long msDiff = System.currentTimeMillis() - warpStartMs;
-                float secs = msDiff / 1000F;
-                float mspt = msDiff / (float)warpedTicks;
-                int tps = (int) (1000 / mspt);
-                //server.getPlayerManager().sendToAll(new TranslatableComponent(String.format('[' + CYAN + "TPS" + RESET + "] Done in %s%.2f%ss (%s%.2f%smspt)", GREEN, secs, RESET, GREEN, mspt, RESET)));
-                server.getPlayerManager().sendToAll(new TranslatableText("... Time warp completed with " + Formatting.AQUA + tps + " tps" + Formatting.RESET + ", or " + Formatting.GREEN + mspt + " mspt"));
-                updateTPS();
-            }
+        if (stepAmount > 0) {
+            stepAmount--;
+            if (stepAmount == 0) paused = true;
         }
     }
-    
-    public static int setRate(ServerCommandSource source, float tps)
-    {
-        serverTPS = tps <= 0 ? 0.1F : tps;
-        updateTPS();
-        return send(source, "Server TPS = " + GREEN + serverTPS);
-    }
-
 
     public static double getCurrentMSPT() {
         return MathHelper.average(QuickCarpet.minecraft_server.lastTickLengths) * 1.0E-6D;
@@ -388,7 +269,7 @@ public class TickSpeed {
     }
 
     public static double calculateTPS(double mspt) {
-        return 1000.0D / Math.max((TickSpeed.time_warp_start_time != 0)?0.0:TickSpeed.mspt, mspt);
+        return 1000.0D / Math.max((TickSpeed.tickWarpStartTime != 0) ? 0.0 : TickSpeed.msptGoal, mspt);
     }
 
     public static double getTPS() {

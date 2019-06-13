@@ -34,7 +34,7 @@ public class HUDController {
         registerLogger(LoggerRegistry.TPS, logger -> {
             double MSPT = TickSpeed.getCurrentMSPT();
             double TPS = TickSpeed.calculateTPS(MSPT);
-            String color = Messenger.heatmap_color(MSPT, TickSpeed.mspt);
+            String color = Messenger.heatmap_color(MSPT, TickSpeed.msptGoal);
             Text[] message = new Text[]{Messenger.c(
                     "g TPS: ", String.format(Locale.US, "%s %.1f", color, TPS),
                     "g  MSPT: ", String.format(Locale.US, "%s %.1f", color, MSPT))};
