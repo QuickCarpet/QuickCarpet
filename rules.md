@@ -196,6 +196,14 @@ Options: `9`, `15`, `30`
 Categories: creative  
 Validator: `quickcarpet.settings.Validator$Positive`
 
+## renewableLava
+Obsidian surrounded by 6 lava sources has a chance of converting to lava
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: experimental, feature  
+
 ## renewableSand
 Cobblestone crushed by falling anvils makes sand
 

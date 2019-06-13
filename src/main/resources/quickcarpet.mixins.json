@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "BlockPlacementDispenserBehaviorMixin",
+    "BlocksMixin",
     "BlockTagsAccessor",
     "ClientConnectionMixin",
     "CommandManagerMixin",
