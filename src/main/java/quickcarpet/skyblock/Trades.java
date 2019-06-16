@@ -38,7 +38,11 @@ public class Trades {
             sell(Items.HEART_OF_THE_SEA, 64, 6),
             sell(Items.NETHER_WART, 1, 12),
             sell(Items.COCOA_BEANS, 1, 14),
-            sell(Items.SWEET_BERRIES, 1, 16)
+            sell(Items.SWEET_BERRIES, 1, 16),
+            sell(Items.SUNFLOWER, 5, 10),
+            sell(Items.LILAC, 5, 10),
+            sell(Items.ROSE_BUSH, 5, 10),
+            sell(Items.PEONY, 5, 10)
         }));
     }
 }
