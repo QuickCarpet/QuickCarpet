@@ -5,7 +5,6 @@ Built on top of the Fabric modding framework.
 Meant to be used as a standalone mod! Compatibility with other mods is not tested.
 
 ## Requirements
-- Fabric API (Only for skyblock version) : https://minecraft.curseforge.com/projects/fabric
 - Fabric Installer : https://fabricmc.net/use/
 
 ## How to install?
@@ -13,8 +12,8 @@ Singleplayer :
 - Download fabric installer for client for appropriate version.
 - Open the installer and make sure you are in the client tab.
 - Fill all options and hit install.
-- Download the mod jar and Fabric API (if required).
-- Place both the jars in your mods folder. (Make sure u put the mods directly inside `mods/` and not in
+- Download the mod jar.
+- Place the jar file in your mods folder. (Make sure u put the mods directly inside `mods/` and not in
   something like mods/1.14)
 - Open the minecraft launcher and run the game with fabric profile.
 
@@ -25,7 +24,7 @@ Multiplayer :
 - You should now have a `fabric-server-launch.jar`. Place it in the folder will all the mod files.
 - Run the `fabric-server-launch.jar` once, it should create a `fabric-server-launch.properties` file.
   Specify the name of the 1.14 server jar in this file.
-- Create a folder `mods` in the same directory and place the mod and API(if required).
+- Create a folder `mods` in the same directory and place the mod jar.
 - Run the `fabric-server-launch.jar` to launch the server.
 
 ## Compiling
