@@ -9,7 +9,7 @@ import quickcarpet.settings.Settings;
 
 @Mixin(BlockPlacementDispenserBehavior.class)
 public class BlockPlacementDispenserBehaviorMixin {
-    @Redirect(method = "dispenseSilently", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;decrement(I)V"))
+    @Redirect(method = "dispenseSilently", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;decrement(I)V"), require = 0)
     private void fixDoubleDecrement(ItemStack stack, int amount) {
         if (!Settings.stackableShulkerBoxes) stack.decrement(amount);
     }
