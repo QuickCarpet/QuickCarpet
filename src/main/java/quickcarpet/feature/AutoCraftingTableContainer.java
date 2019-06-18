@@ -78,5 +78,10 @@ public class AutoCraftingTableContainer extends CraftingTableContainer {
         public boolean canInsert(ItemStack itemStack_1) {
             return false;
         }
+
+        @Override
+        protected void onTake(int amount) {
+            AutoCraftingTableContainer.this.blockEntity.takeInvStack(0, amount);
+        }
     }
 }
