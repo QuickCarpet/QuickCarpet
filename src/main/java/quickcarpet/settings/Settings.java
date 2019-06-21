@@ -181,6 +181,9 @@ public class Settings {
     @SurvivalDefault
     public static boolean flippinCactus = false;
 
+    @Rule(desc = "Phantoms don't ignore the mobcap.", category = {SURVIVAL, FIX, EXPERIMENTAL})
+    public static boolean phantomsRespectMobcap = false;
+
     public static void main(String[] args) throws FileNotFoundException {
         Bootstrap.initialize();
         MANAGER.parse();

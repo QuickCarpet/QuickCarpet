@@ -179,6 +179,14 @@ Default: `false`
 Options: `true`, `false`  
 Categories: optimizations, experimental  
 
+## phantomsRespectMobcap
+Phantoms don't ignore the mobcap.
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: survival, fix, experimental  
+
 ## portalCreativeDelay
 Portals won't let a creative player go through instantly
 

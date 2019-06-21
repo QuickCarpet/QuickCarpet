@@ -24,6 +24,7 @@
     "LivingEntityMixin",
     "MinecraftDedicatedServerMixin",
     "MinecraftServerMixin",
+    "PhantomSpawnerMixin",
     "PistonBlockEntityMixin",
     "PistonBlockMixin",
     "PistonHandlerMixin",
