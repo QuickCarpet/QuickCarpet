@@ -10,6 +10,9 @@ import static quickcarpet.settings.RuleCategory.*;
 public class SkyBlockSettings {
     @Rule(desc = "Better potions", category = {EXPERIMENTAL, FEATURE}, onChange = BetterPotionListener.class)
     public static boolean betterPotions = false;
+    
+    @Rule(desc = "Flower pot chunk loading", category = {EXPERIMENTAL, FEATURE}, onChange = FlowerPotChunkLoadingListener.class)
+    public static boolean flowerPotChunkLoading = false;
 
     @Rule(desc = "Add trades to the wandering trader for Skyblock", category = {EXPERIMENTAL, FEATURE}, onChange = WanderingTraderSkyblockTradesChange.class)
     public static boolean wanderingTraderSkyblockTrades = false;
