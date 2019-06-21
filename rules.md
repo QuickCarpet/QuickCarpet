@@ -132,6 +132,16 @@ Default: `false`
 Options: `true`, `false`  
 Categories: feature, experimental  
 
+## flippinCactus
+Players can flip and rotate blocks when holding cactus
+
+Doesn't cause block updates when rotated/flipped  
+Applies to pistons, observers, droppers, repeaters, stairs, glazed terracotta etc...  
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: creative, survival  
+
 ## hopperCounters
 Hoppers pointing to wool will count items passing through them
 
