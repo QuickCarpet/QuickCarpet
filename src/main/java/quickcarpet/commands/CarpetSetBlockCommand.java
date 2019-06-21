@@ -22,6 +22,8 @@ import static net.minecraft.command.arguments.BlockPosArgumentType.getLoadedBloc
 import static net.minecraft.command.arguments.BlockStateArgumentType.getBlockState;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
+import static quickcarpet.utils.Constants.SetBlockState.NO_FILL_UPDATE;
+import static quickcarpet.utils.Constants.SetBlockState.SEND_TO_CLIENT;
 
 public class CarpetSetBlockCommand {
     private static final SimpleCommandExceptionType FAILED_EXCEPTION = new SimpleCommandExceptionType(new TranslatableText("commands.setblock.failed"));
@@ -54,7 +56,7 @@ public class CarpetSetBlockCommand {
             shouldSetBlock = true;
         }
 
-        if (shouldSetBlock && !state.setBlockState(world, pos, 2 | (Settings.fillUpdates ? 0 : 128))) throw FAILED_EXCEPTION.create();
+        if (shouldSetBlock && !state.setBlockState(world, pos, SEND_TO_CLIENT | (Settings.fillUpdates ? 0 : NO_FILL_UPDATE))) throw FAILED_EXCEPTION.create();
         if (Settings.fillUpdates) world.updateNeighbors(pos, state.getBlockState().getBlock());
         source.sendFeedback(new TranslatableText("commands.setblock.success", pos.getX(), pos.getY(), pos.getZ()), true);
         return 1;

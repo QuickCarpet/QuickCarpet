@@ -31,6 +31,8 @@ import static net.minecraft.command.arguments.BlockPredicateArgumentType.getBloc
 import static net.minecraft.command.arguments.BlockStateArgumentType.getBlockState;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
+import static quickcarpet.utils.Constants.SetBlockState.NO_FILL_UPDATE;
+import static quickcarpet.utils.Constants.SetBlockState.SEND_TO_CLIENT;
 
 public class CarpetFillCommand {
 
@@ -82,7 +84,7 @@ public class CarpetFillCommand {
                 if (blockArgument_2 != null) {
                     BlockEntity blockEntity_1 = world.getBlockEntity(pos);
                     Clearable.clear(blockEntity_1);
-                    if (blockArgument_2.setBlockState(world, pos, 2 | (Settings.fillUpdates ? 0 : 1024))) {
+                    if (blockArgument_2.setBlockState(world, pos, SEND_TO_CLIENT | (Settings.fillUpdates ? 0 : NO_FILL_UPDATE))) {
                         list_1.add(pos.toImmutable());
                         ++filled;
                     }

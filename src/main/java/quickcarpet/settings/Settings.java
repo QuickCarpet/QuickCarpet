@@ -173,6 +173,14 @@ public class Settings {
     @Rule(desc = "Obsidian surrounded by 6 lava sources has a chance of converting to lava", category = {EXPERIMENTAL, FEATURE})
     public static boolean renewableLava = false;
 
+    @Rule(desc = "Players can flip and rotate blocks when holding cactus", category = {CREATIVE, SURVIVAL}, extra = {
+            "Doesn't cause block updates when rotated/flipped",
+            "Applies to pistons, observers, droppers, repeaters, stairs, glazed terracotta etc..."
+    })
+    @CreativeDefault
+    @SurvivalDefault
+    public static boolean flippinCactus = false;
+
     public static void main(String[] args) throws FileNotFoundException {
         Bootstrap.initialize();
         MANAGER.parse();

@@ -30,6 +30,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import static quickcarpet.utils.Constants.SetBlockState.*;
+
 @Mixin(World.class)
 public abstract class WorldMixin implements IWorld, SpawnEntityCache {
     @Shadow @Final protected LevelProperties properties;
@@ -53,9 +55,9 @@ public abstract class WorldMixin implements IWorld, SpawnEntityCache {
     @Shadow public abstract BlockState getBlockState(BlockPos blockPos_1);
 
     @ModifyConstant(method = "setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z",
-            constant = @Constant(intValue = 16))
+            constant = @Constant(intValue = NO_OBSERVER_UPDATE))
     private int addFillUpdatesInt(int original) {
-        return 16 | 1024;
+        return NO_OBSERVER_UPDATE | NO_FILL_UPDATE;
     }
 
     @Inject(method = "tickBlockEntities", at = @At("HEAD"))
@@ -128,9 +130,9 @@ public abstract class WorldMixin implements IWorld, SpawnEntityCache {
 
             BlockState blockState_2;
             if (newBlockEntity != null && block_1 instanceof BlockEntityProvider && !worldChunk_1.isEmpty())
-                blockState_2 = ((IWorldChunk) worldChunk_1).setBlockStateWithBlockEntity(blockPos_1, blockState_1, newBlockEntity, (int_1 & 64) != 0);
+                blockState_2 = ((IWorldChunk) worldChunk_1).setBlockStateWithBlockEntity(blockPos_1, blockState_1, newBlockEntity, (int_1 & CALL_ON_ADDED_ON_REMOVED) != 0);
             else
-                blockState_2 = worldChunk_1.setBlockState(blockPos_1, blockState_1, (int_1 & 64) != 0);
+                blockState_2 = worldChunk_1.setBlockState(blockPos_1, blockState_1, (int_1 & CALL_ON_ADDED_ON_REMOVED) != 0);
 
             if (blockState_2 == null) {
                 return false;
@@ -148,7 +150,7 @@ public abstract class WorldMixin implements IWorld, SpawnEntityCache {
                         this.scheduleBlockRender(blockPos_1);
                     }
 
-                    if ((int_1 & 2) != 0 && (!this.isClient || (int_1 & 4) == 0) && (this.isClient || worldChunk_1.getLevelType() != null && worldChunk_1.getLevelType().isAfter(ChunkHolder.LevelType.TICKING))) {
+                    if ((int_1 & SEND_TO_CLIENT) != 0 && (!this.isClient || (int_1 & NO_RERENDER) == 0) && (this.isClient || worldChunk_1.getLevelType() != null && worldChunk_1.getLevelType().isAfter(ChunkHolder.LevelType.TICKING))) {
                         this.updateListeners(blockPos_1, blockState_2, blockState_1, int_1);
                     }
 
@@ -159,7 +161,7 @@ public abstract class WorldMixin implements IWorld, SpawnEntityCache {
                         }
                     }
 
-                    if ((int_1 & 16) == 0) {
+                    if ((int_1 & (NO_OBSERVER_UPDATE | NO_FILL_UPDATE)) == 0) {
                         int int_2 = int_1 & -2;
                         blockState_2.method_11637((net.minecraft.world.IWorld) this, blockPos_1, int_2);
                         blockState_1.updateNeighborStates((net.minecraft.world.IWorld) this, blockPos_1, int_2);

@@ -29,6 +29,7 @@ import java.util.function.Predicate;
 import static net.minecraft.command.arguments.BlockPosArgumentType.getLoadedBlockPos;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
+import static quickcarpet.utils.Constants.SetBlockState.*;
 
 public class CarpetCloneCommand {
     
@@ -120,11 +121,11 @@ public class CarpetCloneCommand {
                     if (mode == Mode.MOVE) {
                         for (BlockPos blockPos : updateOrder) {
                             Clearable.clear(world.getBlockEntity(blockPos));
-                            world.setBlockState(blockPos, Blocks.BARRIER.getDefaultState(), 2 | (Settings.fillUpdates ? 0 : 1024));
+                            world.setBlockState(blockPos, Blocks.BARRIER.getDefaultState(), SEND_TO_CLIENT | (Settings.fillUpdates ? 0 : NO_FILL_UPDATE));
                         }
 
                         for (BlockPos blockPos : updateOrder) {
-                            world.setBlockState(blockPos, Blocks.AIR.getDefaultState(), 3 | (Settings.fillUpdates ? 0 : 1024));
+                            world.setBlockState(blockPos, Blocks.AIR.getDefaultState(), SEND_TO_CLIENT | (Settings.fillUpdates ? UPDATE_NEIGHBORS : NO_FILL_UPDATE));
                         }
                     }
 
@@ -136,13 +137,13 @@ public class CarpetCloneCommand {
 
                     for (BlockInfo blockInfo_1 : reversedChanges) {
                         Clearable.clear(world.getBlockEntity(blockInfo_1.pos));
-                        world.setBlockState(blockInfo_1.pos, Blocks.BARRIER.getDefaultState(), 2 | (Settings.fillUpdates ? 0 : 1024));
+                        world.setBlockState(blockInfo_1.pos, Blocks.BARRIER.getDefaultState(), SEND_TO_CLIENT | (Settings.fillUpdates ? 0 : NO_FILL_UPDATE));
                     }
 
                     int numBlocks = 0;
 
                     for (BlockInfo blockInfo : changes) {
-                        if (world.setBlockState(blockInfo.pos, blockInfo.state, 2 | (Settings.fillUpdates ? 0 : 1024))) {
+                        if (world.setBlockState(blockInfo.pos, blockInfo.state, SEND_TO_CLIENT | (Settings.fillUpdates ? 0 : NO_FILL_UPDATE))) {
                             ++numBlocks;
                         }
                     }
@@ -156,7 +157,7 @@ public class CarpetCloneCommand {
                             blockEntity.fromTag(info.blockEntityTag);
                             blockEntity.markDirty();
                         }
-                        world.setBlockState(info.pos, info.state, 2 | (Settings.fillUpdates ? 0 : 1024));
+                        world.setBlockState(info.pos, info.state, SEND_TO_CLIENT | (Settings.fillUpdates ? 0 : NO_FILL_UPDATE));
                     }
 
                     if (Settings.fillUpdates) {
