@@ -12,7 +12,8 @@ public class SkyBlockSettings {
     public static boolean betterPotions = false;
     
     @Rule(desc = "Flower pot chunk loading", category = {EXPERIMENTAL, FEATURE}, extra = {"Place a plant in a flowerpot to load the chunk!"})
-          public static boolean flowerPotChunkLoading = false;
+    public static boolean flowerPotChunkLoading = false;
+    public static boolean flowerPotChunkLoadingPowered = false; //false = manual chunk loading, true = redstone chunk loading
 
     @Rule(desc = "Add trades to the wandering trader for Skyblock", category = {EXPERIMENTAL, FEATURE}, onChange = WanderingTraderSkyblockTradesChange.class)
     public static boolean wanderingTraderSkyblockTrades = false;
