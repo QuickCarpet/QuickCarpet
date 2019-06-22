@@ -58,14 +58,14 @@ public abstract class FlowerPotBlockMixin extends Block {
             }
         }
     }
-    @Inject(method = "onBreak", at = @At(target = "Lnet/minecraft/block/FlowerPotBlock;onBreak(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/player/PlayerEntity;)V"))
+    @Inject(method = "onBreak", at = @At(value = "INVOKE",target = "Lnet/minecraft/block/FlowerPotBlock;onBreak(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/player/PlayerEntity;)V"))
     public void onOnBreak(World world_1, BlockPos blockPos_1, BlockState blockState_1, PlayerEntity playerEntity_1) {
         if (flowerPotChunkLoading && !flowerPotChunkLoadingPowered) {
             world_1.setChunkForced(blockPos_1.getX(), blockPos_1.getZ(), false);
         }
     }
     
-    @Inject(method = "neighborUpdate", at = @At(target = "Lnet/minecraft/block/FlowerPotBlock;neighborUpdate(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/Block;Lnet/minecraft/util/math/BlockPos;)V"))
+    @Inject(method = "neighborUpdate", at = @At(value = "INVOKE",target = "Lnet/minecraft/block/FlowerPotBlock;neighborUpdate(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/Block;Lnet/minecraft/util/math/BlockPos;)V"))
     public void onNeighborUpdate(BlockState blockState_1, World world_1, BlockPos blockPos_1, Block block_1, BlockPos blockPos_2, boolean boolean_1) {
         if (flowerPotChunkLoading && flowerPotChunkLoadingPowered) {
             boolean boolean_1 = world_1.isReceivingRedstonePower(blockPos_1);
