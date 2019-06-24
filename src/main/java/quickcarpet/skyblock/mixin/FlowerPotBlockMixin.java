@@ -65,7 +65,7 @@ public abstract class FlowerPotBlockMixin extends Block {
     }
     @Inject(method = "onBreak", at = @At(value = "INVOKE",target = "Lnet/minecraft/block/FlowerPotBlock;onBreak(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/player/PlayerEntity;)V"))
     public void onOnBreak(World world_1, BlockPos blockPos_1, BlockState blockState_1, PlayerEntity playerEntity_1) {
-        if (flowerPotChunkLoading && !flowerPotChunkLoadingPowered) {
+        if (flowerPotChunkLoading) {
             world_1.setChunkForced(blockPos_1.getX(), blockPos_1.getZ(), false);
             //This works, but will checking if its another chunk be faster?
             world_1.setChunkForced(blockPos_1.getX()-1, blockPos_1.getZ(), boolean_2);
