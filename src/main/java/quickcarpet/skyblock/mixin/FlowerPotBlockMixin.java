@@ -55,6 +55,11 @@ public abstract class FlowerPotBlockMixin extends Block {
             boolean boolean_2 = this.content == Blocks.AIR;
             if (boolean_1 != boolean_2) {
                 world_1.setChunkForced(blockPos_1.getX(), blockPos_1.getZ(), boolean_2);
+                //This works, but will checking if its another chunk be faster?
+                world_1.setChunkForced(blockPos_1.getX()-1, blockPos_1.getZ(), boolean_2);
+                world_1.setChunkForced(blockPos_1.getX()+1, blockPos_1.getZ(), boolean_2);
+                world_1.setChunkForced(blockPos_1.getX(), blockPos_1.getZ()+1, boolean_2);
+                world_1.setChunkForced(blockPos_1.getX(), blockPos_1.getZ()-1, boolean_2);
             }
         }
     }
@@ -62,6 +67,11 @@ public abstract class FlowerPotBlockMixin extends Block {
     public void onOnBreak(World world_1, BlockPos blockPos_1, BlockState blockState_1, PlayerEntity playerEntity_1) {
         if (flowerPotChunkLoading && !flowerPotChunkLoadingPowered) {
             world_1.setChunkForced(blockPos_1.getX(), blockPos_1.getZ(), false);
+            //This works, but will checking if its another chunk be faster?
+            world_1.setChunkForced(blockPos_1.getX()-1, blockPos_1.getZ(), boolean_2);
+            world_1.setChunkForced(blockPos_1.getX()+1, blockPos_1.getZ(), boolean_2);
+            world_1.setChunkForced(blockPos_1.getX(), blockPos_1.getZ()+1, boolean_2);
+            world_1.setChunkForced(blockPos_1.getX(), blockPos_1.getZ()-1, boolean_2);
         }
     }
     
@@ -72,7 +82,13 @@ public abstract class FlowerPotBlockMixin extends Block {
             boolean boolean_2 = this.content == Blocks.AIR; //must have flower in pot (you decide if you want this)
             if (boolean_1 != (Boolean)blockState_1.get(POWERED) && !boolean_2) {
                 world_1.setChunkForced(blockPos_1.getX(), blockPos_1.getZ(), boolean_1);
+                //This works, but will checking if its another chunk be faster?
+                world_1.setChunkForced(blockPos_1.getX()-1, blockPos_1.getZ(), boolean_2);
+                world_1.setChunkForced(blockPos_1.getX()+1, blockPos_1.getZ(), boolean_2);
+                world_1.setChunkForced(blockPos_1.getX(), blockPos_1.getZ()+1, boolean_2);
+                world_1.setChunkForced(blockPos_1.getX(), blockPos_1.getZ()-1, boolean_2);
             }
+            //If flowerpot should be powered
             world_1.setBlockState(blockPos_1, (BlockState)blockState_1.with(POWERED, boolean_1), 3);
         }
     }
