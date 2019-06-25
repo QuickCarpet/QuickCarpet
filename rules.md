@@ -179,6 +179,16 @@ Default: `false`
 Options: `true`, `false`  
 Categories: feature, experimental  
 
+## optimizedFluidTicks
+Optimizes random ticks for fluids
+
+Testing showed around 2-3mspt improvement in regular worlds  
+Needs reloading of chunks to be effective  
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: optimizations, experimental  
+
 ## optimizedSpawning
 Optimizes spawning
 

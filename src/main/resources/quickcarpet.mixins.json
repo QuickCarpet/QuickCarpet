@@ -6,6 +6,7 @@
     "BlockPlacementDispenserBehaviorMixin",
     "BlocksMixin",
     "BlockTagsAccessor",
+    "ChunkSectionMixin",
     "ClientConnectionMixin",
     "CommandManagerMixin",
     "CraftingInventoryAccessor",

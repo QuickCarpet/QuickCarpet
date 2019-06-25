@@ -188,6 +188,12 @@ public class Settings {
     @BugFixDefault
     public static boolean conversionDupingFix = false;
 
+    @Rule(desc = "Optimizes random ticks for fluids", extra = {
+            "Testing showed around 2-3mspt improvement in regular worlds",
+            "Needs reloading of chunks to be effective"
+    }, category = {OPTIMIZATIONS, EXPERIMENTAL})
+    public static boolean optimizedFluidTicks = false;
+
     public static void main(String[] args) throws FileNotFoundException {
         Bootstrap.initialize();
         MANAGER.parse();
