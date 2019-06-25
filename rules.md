@@ -82,6 +82,14 @@ Default: `true`
 Options: `true`, `false`  
 Categories: commands  
 
+## conversionDupingFix
+Fixes duping via zombie conversion
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: fix, experimental  
+
 ## dispensersPlaceBlocks
 Dispensers can place most blocks
 

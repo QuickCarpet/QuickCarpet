@@ -184,6 +184,10 @@ public class Settings {
     @Rule(desc = "Phantoms don't ignore the mobcap.", category = {SURVIVAL, FIX, EXPERIMENTAL})
     public static boolean phantomsRespectMobcap = false;
 
+    @Rule(desc = "Fixes duping via zombie conversion", category = {FIX, EXPERIMENTAL})
+    @BugFixDefault
+    public static boolean conversionDupingFix = false;
+
     public static void main(String[] args) throws FileNotFoundException {
         Bootstrap.initialize();
         MANAGER.parse();
