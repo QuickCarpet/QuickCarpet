@@ -187,6 +187,9 @@ public class Settings {
     @Rule(desc = "Fixes duping via zombie conversion", category = {FIX, EXPERIMENTAL})
     @BugFixDefault
     public static boolean conversionDupingFix = false;
+    
+    @Rule(desc = "Coral structures will grow with bonemeal from coral plants", category = FEATURE)
+    public static boolean renewableCoral = false;
 
     public static void main(String[] args) throws FileNotFoundException {
         Bootstrap.initialize();

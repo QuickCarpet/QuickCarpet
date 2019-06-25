@@ -46,7 +46,9 @@
     "TntEntityMixin",
     "WorldChunkMixin",
     "WorldMixin",
-    "ZombieEntityMixin"
+    "ZombieEntityMixin",
+    "CoralBlockMixin",
+    "CoralFeatureMixin"
   ],
   "client": [
     "BlockEntityRenderDispatcherMixin",
