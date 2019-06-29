@@ -13,11 +13,11 @@ public class SkyBlockSettings {
     
     enum flowerPotOptions
     { 
-        manual,powered,off; 
+        MANUAL,POWERED,OFF; 
     } 
     
     @Rule(desc = "Flower pot chunk loading", category = {EXPERIMENTAL, FEATURE}, extra = {"Place a plant in a flowerpot to load the chunk!"})
-    public static flowerPotOptions flowerPotChunkLoading = off;
+    public static flowerPotOptions flowerPotChunkLoading = flowerPotOptions.OFF;
 
     @Rule(desc = "Add trades to the wandering trader for Skyblock", category = {EXPERIMENTAL, FEATURE}, onChange = WanderingTraderSkyblockTradesChange.class)
     public static boolean wanderingTraderSkyblockTrades = false;
