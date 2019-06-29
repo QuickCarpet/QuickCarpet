@@ -29,6 +29,11 @@ import quickcarpet.skyblock.SkyBlockSettings;
 @Mixin(FlowerPotBlock.class)
 public abstract class FlowerPotBlockMixin extends Block {
     
+    enum flowerPotOptions
+    { 
+        MANUAL,POWERED,OFF; 
+    } 
+    
     @Shadow
     @Final
     private static Map<Block, Block> CONTENT_TO_POTTED = Maps.newHashMap();
@@ -47,7 +52,7 @@ public abstract class FlowerPotBlockMixin extends Block {
    
     @Inject(method = "activate", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/FlowerPotBlock;activate(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;Lnet/minecraft/util/hit/BlockHitResult;)V"))
     private void doActivate(BlockState blockState_1, World world_1, BlockPos blockPos_1, PlayerEntity playerEntity_1, Hand hand_1, BlockHitResult blockHitResult_1) {
-        if (flowerPotChunkLoading && !flowerPotChunkLoadingPowered) {
+        if (flowerPotChunkLoading == flowerPotOptions.MANUAL) {
             ItemStack itemStack_1 = playerEntity_1.getStackInHand(hand_1);
             Item item_1 = itemStack_1.getItem();
             Block block_1 = item_1 instanceof BlockItem ? (Block)CONTENT_TO_POTTED.getOrDefault(((BlockItem)item_1).getBlock(), Blocks.AIR) : Blocks.AIR;
@@ -64,20 +69,20 @@ public abstract class FlowerPotBlockMixin extends Block {
         }
     }
     @Inject(method = "onBreak", at = @At(value = "INVOKE",target = "Lnet/minecraft/block/FlowerPotBlock;onBreak(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/player/PlayerEntity;)V"))
-    public void onOnBreak(World world_1, BlockPos blockPos_1, BlockState blockState_1, PlayerEntity playerEntity_1) {
-        if (flowerPotChunkLoading) {
+    private void onOnBreak(World world_1, BlockPos blockPos_1, BlockState blockState_1, PlayerEntity playerEntity_1) {
+        if (flowerPotChunkLoading != flowerPotOptions.OFF) {
             world_1.setChunkForced(blockPos_1.getX(), blockPos_1.getZ(), false);
             //This works, but will checking if its another chunk be faster?
-            world_1.setChunkForced(blockPos_1.getX()-1, blockPos_1.getZ(), boolean_2);
-            world_1.setChunkForced(blockPos_1.getX()+1, blockPos_1.getZ(), boolean_2);
-            world_1.setChunkForced(blockPos_1.getX(), blockPos_1.getZ()+1, boolean_2);
-            world_1.setChunkForced(blockPos_1.getX(), blockPos_1.getZ()-1, boolean_2);
+            world_1.setChunkForced(blockPos_1.getX()-1, blockPos_1.getZ(), false);
+            world_1.setChunkForced(blockPos_1.getX()+1, blockPos_1.getZ(), false);
+            world_1.setChunkForced(blockPos_1.getX(), blockPos_1.getZ()+1, false);
+            world_1.setChunkForced(blockPos_1.getX(), blockPos_1.getZ()-1, false);
         }
     }
     
     @Inject(method = "neighborUpdate", at = @At(value = "INVOKE",target = "Lnet/minecraft/block/FlowerPotBlock;neighborUpdate(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/Block;Lnet/minecraft/util/math/BlockPos;)V"))
     public void onNeighborUpdate(BlockState blockState_1, World world_1, BlockPos blockPos_1, Block block_1, BlockPos blockPos_2, boolean boolean_1) {
-        if (flowerPotChunkLoading && flowerPotChunkLoadingPowered) {
+        if (flowerPotChunkLoading == flowerPotOptions.POWERED) {
             boolean boolean_1 = world_1.isReceivingRedstonePower(blockPos_1);
             boolean boolean_2 = this.content == Blocks.AIR; //must have flower in pot (you decide if you want this)
             if (boolean_1 != (Boolean)blockState_1.get(POWERED) && !boolean_2) {
@@ -88,8 +93,6 @@ public abstract class FlowerPotBlockMixin extends Block {
                 world_1.setChunkForced(blockPos_1.getX(), blockPos_1.getZ()+1, boolean_2);
                 world_1.setChunkForced(blockPos_1.getX(), blockPos_1.getZ()-1, boolean_2);
             }
-            //If flowerpot should be powered
-            world_1.setBlockState(blockPos_1, (BlockState)blockState_1.with(POWERED, boolean_1), 3);
         }
     }
 }
