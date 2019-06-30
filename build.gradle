@@ -10,7 +10,7 @@ targetCompatibility = JavaVersion.VERSION_1_8
 
 def buildDate = new Date()
 if (project.mod_version.endsWith('-dev')) {
-	def df = new SimpleDateFormat(".yyyyMMdd.hhmmss")
+	def df = new SimpleDateFormat(".yyyyMMdd.HHmmss")
 	df.setTimeZone(TimeZone.getTimeZone("UTC"))
 	project.mod_version += df.format(buildDate)
 }
@@ -141,7 +141,7 @@ publishing {
 	publications {
 		mavenJava(MavenPublication) {
 			// add all the jars that should be included when publishing to maven
-			artifact(jar) {
+			artifact(jar.archivePath) {
 				builtBy remapJar
 			}
 			artifact(sourcesJar) {
@@ -153,6 +153,6 @@ publishing {
 	// select the repositories you want to publish to
 	repositories {
 		// uncomment to publish to the local maven
-		// mavenLocal()
+		mavenLocal()
 	}
 }
