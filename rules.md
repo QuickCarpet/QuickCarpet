@@ -232,6 +232,14 @@ Options: `9`, `15`, `30`
 Categories: creative  
 Validator: `quickcarpet.settings.Validator$Positive`
 
+## renewableCoral
+Coral structures will grow with bonemeal from coral plants
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: feature  
+
 ## renewableLava
 Obsidian surrounded by 6 lava sources has a chance of converting to lava
 
