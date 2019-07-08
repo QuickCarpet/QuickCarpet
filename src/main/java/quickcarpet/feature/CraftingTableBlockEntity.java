@@ -39,7 +39,7 @@ public class CraftingTableBlockEntity extends LockableContainerBlockEntity imple
 
     private CraftingTableBlockEntity(BlockEntityType<?> type) {
         super(type);
-        this.inventory = DefaultedList.create(9, ItemStack.EMPTY);
+        this.inventory = DefaultedList.ofSize(9, ItemStack.EMPTY);
         ((CraftingInventoryAccessor) craftingInventory).setInventory(this.inventory);
     }
 

@@ -29,6 +29,9 @@ import java.util.Set;
 
 import static com.mojang.brigadier.arguments.StringArgumentType.getString;
 import static com.mojang.brigadier.arguments.StringArgumentType.word;
+import static net.minecraft.command.arguments.DimensionArgumentType.dimension;
+import static net.minecraft.command.arguments.RotationArgumentType.rotation;
+import static net.minecraft.command.arguments.Vec3ArgumentType.vec3;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
@@ -124,13 +127,13 @@ public class PlayerCommand {
                         then(literal("spawn").
                                 executes(PlayerCommand::spawn).
                                 then(literal("at").
-                                        then(argument("position", Vec3ArgumentType.create()).
+                                        then(argument("position", vec3()).
                                                 executes(PlayerCommand::spawn).
                                                 then(literal("facing").
-                                                        then(argument("direction", RotationArgumentType.create()).
+                                                        then(argument("direction", rotation()).
                                                                 executes(PlayerCommand::spawn).
                                                                 then(literal("in").
-                                                                        then(argument("dimension", DimensionArgumentType.create()).
+                                                                        then(argument("dimension", dimension()).
                                                                                 executes(PlayerCommand::spawn)))))))));
 
         dispatcher.register(literalargumentbuilder);

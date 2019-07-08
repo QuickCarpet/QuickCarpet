@@ -40,8 +40,6 @@ public abstract class WorldMixin implements IWorld, SpawnEntityCache {
 
     @Shadow public abstract ChunkManager getChunkManager();
 
-    @Shadow public abstract void scheduleBlockRender(BlockPos blockPos_1);
-
     @Shadow public abstract void updateListeners(BlockPos var1, BlockState var2, BlockState var3, int var4);
 
     @Shadow public abstract void updateNeighbors(BlockPos blockPos_1, Block block_1);
@@ -53,6 +51,8 @@ public abstract class WorldMixin implements IWorld, SpawnEntityCache {
     @Shadow public abstract WorldChunk getWorldChunk(BlockPos blockPos_1);
 
     @Shadow public abstract BlockState getBlockState(BlockPos blockPos_1);
+
+    @Shadow public abstract void scheduleBlockRender(BlockPos blockPos_1, BlockState blockState_1, BlockState blockState_2);
 
     @ModifyConstant(method = "setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z",
             constant = @Constant(intValue = NO_OBSERVER_UPDATE))
@@ -147,7 +147,7 @@ public abstract class WorldMixin implements IWorld, SpawnEntityCache {
 
                 if (blockState_3 == blockState_1) {
                     if (blockState_2 != blockState_3) {
-                        this.scheduleBlockRender(blockPos_1);
+                        this.scheduleBlockRender(blockPos_1, blockState_2, blockState_3);
                     }
 
                     if ((int_1 & SEND_TO_CLIENT) != 0 && (!this.isClient || (int_1 & NO_RERENDER) == 0) && (this.isClient || worldChunk_1.getLevelType() != null && worldChunk_1.getLevelType().isAfter(ChunkHolder.LevelType.TICKING))) {

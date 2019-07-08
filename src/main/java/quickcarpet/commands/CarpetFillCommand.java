@@ -9,10 +9,7 @@ import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.pattern.CachedBlockPosition;
-import net.minecraft.command.arguments.BlockPosArgumentType;
-import net.minecraft.command.arguments.BlockPredicateArgumentType;
 import net.minecraft.command.arguments.BlockStateArgument;
-import net.minecraft.command.arguments.BlockStateArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.command.SetBlockCommand;
 import net.minecraft.server.world.ServerWorld;
@@ -26,8 +23,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
 
+import static net.minecraft.command.arguments.BlockPosArgumentType.blockPos;
 import static net.minecraft.command.arguments.BlockPosArgumentType.getLoadedBlockPos;
+import static net.minecraft.command.arguments.BlockPredicateArgumentType.blockPredicate;
 import static net.minecraft.command.arguments.BlockPredicateArgumentType.getBlockPredicate;
+import static net.minecraft.command.arguments.BlockStateArgumentType.blockState;
 import static net.minecraft.command.arguments.BlockStateArgumentType.getBlockState;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
@@ -48,13 +48,13 @@ public class CarpetFillCommand {
     public static void register(CommandDispatcher<ServerCommandSource> commandDispatcher_1) {
         LiteralArgumentBuilder<ServerCommandSource> carpetfill = literal("carpetfill")
             .requires((player) -> Settings.commandCarpetFill)
-            .then(argument("from", BlockPosArgumentType.create())
-            .then(argument("to", BlockPosArgumentType.create())
-            .then(argument("block", BlockStateArgumentType.create())
+            .then(argument("from", blockPos())
+            .then(argument("to", blockPos())
+            .then(argument("block", blockState())
                 .executes(c -> execute(c.getSource(), new MutableIntBoundingBox(getLoadedBlockPos(c, "from"), getLoadedBlockPos(c, "to")), getBlockState(c, "block"), Mode.REPLACE, null))
                     .then(literal("replace")
                         .executes(c -> execute(c.getSource(), new MutableIntBoundingBox(getLoadedBlockPos(c, "from"), getLoadedBlockPos(c, "to")), getBlockState(c, "block"), Mode.REPLACE, null))
-                        .then(argument("filter", BlockPredicateArgumentType.create())
+                        .then(argument("filter", blockPredicate())
                             .executes(c -> execute(c.getSource(), new MutableIntBoundingBox(getLoadedBlockPos(c, "from"), getLoadedBlockPos(c, "to")), getBlockState(c, "block"), Mode.REPLACE, getBlockPredicate(c, "filter"))))
                     ).then(literal("keep")
                         .executes(c -> execute(c.getSource(), new MutableIntBoundingBox(getLoadedBlockPos(c, "from"), getLoadedBlockPos(c, "to")), getBlockState(c, "block"), Mode.REPLACE, cachedBlockPosition -> cachedBlockPosition.getWorld().isAir(cachedBlockPosition.getBlockPos()))))

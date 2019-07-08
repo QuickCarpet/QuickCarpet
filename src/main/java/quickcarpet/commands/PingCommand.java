@@ -15,7 +15,7 @@ public class PingCommand {
             .requires((player) -> Settings.commandPing)
             .executes(c -> {
                 ServerPlayerEntity player = c.getSource().getPlayer();
-                int pingMs = player.field_13967;
+                int pingMs = player.pingMilliseconds;
                 player.sendMessage(Messenger.c("w Your ping is ", Messenger.heatmap_color(pingMs, 250) + " " + pingMs, "w  ms"));
                 return 1;
             });

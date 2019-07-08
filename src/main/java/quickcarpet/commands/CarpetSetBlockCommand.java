@@ -6,9 +6,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.pattern.CachedBlockPosition;
-import net.minecraft.command.arguments.BlockPosArgumentType;
 import net.minecraft.command.arguments.BlockStateArgument;
-import net.minecraft.command.arguments.BlockStateArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
@@ -18,7 +16,9 @@ import quickcarpet.settings.Settings;
 
 import java.util.function.Predicate;
 
+import static net.minecraft.command.arguments.BlockPosArgumentType.blockPos;
 import static net.minecraft.command.arguments.BlockPosArgumentType.getLoadedBlockPos;
+import static net.minecraft.command.arguments.BlockStateArgumentType.blockState;
 import static net.minecraft.command.arguments.BlockStateArgumentType.getBlockState;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
@@ -30,8 +30,8 @@ public class CarpetSetBlockCommand {
 
     public static void register(CommandDispatcher<ServerCommandSource> commandDispatcher_1) {
         LiteralArgumentBuilder<ServerCommandSource> carpetsetblock = literal("carpetsetblock").requires(player -> Settings.commandCarpetSetBlock)
-            .then(argument("pos", BlockPosArgumentType.create())
-            .then((argument("block", BlockStateArgumentType.create())
+            .then(argument("pos", blockPos())
+            .then((argument("block", blockState())
                 .executes((commandContext_1) -> execute(commandContext_1.getSource(), getLoadedBlockPos(commandContext_1, "pos"), getBlockState(commandContext_1, "block"), Mode.REPLACE, null)))
                     .then(literal("destroy")
                         .executes(c -> execute(c.getSource(), getLoadedBlockPos(c, "pos"), getBlockState(c, "block"), Mode.DESTROY, null)))

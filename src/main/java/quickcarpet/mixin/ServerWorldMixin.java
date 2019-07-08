@@ -60,18 +60,9 @@ public abstract class ServerWorldMixin extends World {
 
     @Inject(
             method = "tick",
-            at = @At(value = "CONSTANT", args = "stringValue=village")
-    )
-    private void startVillages(BooleanSupplier booleanSupplier_1, CallbackInfo ci) {
-        CarpetProfiler.startSection(this, CarpetProfiler.SectionType.VILLAGES);
-    }
-
-    @Inject(
-            method = "tick",
             at = @At(value = "CONSTANT", args = "stringValue=portalForcer")
     )
-    private void endVillagesStartPortals(BooleanSupplier booleanSupplier_1, CallbackInfo ci) {
-        CarpetProfiler.endSection(this);
+    private void startPortals(BooleanSupplier booleanSupplier_1, CallbackInfo ci) {
         CarpetProfiler.startSection(this, CarpetProfiler.SectionType.PORTALS);
     }
 

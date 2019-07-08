@@ -26,7 +26,9 @@ import java.util.Deque;
 import java.util.List;
 import java.util.function.Predicate;
 
+import static net.minecraft.command.arguments.BlockPosArgumentType.blockPos;
 import static net.minecraft.command.arguments.BlockPosArgumentType.getLoadedBlockPos;
+import static net.minecraft.command.arguments.BlockPredicateArgumentType.blockPredicate;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 import static quickcarpet.utils.Constants.SetBlockState.*;
@@ -41,9 +43,9 @@ public class CarpetCloneCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         LiteralArgumentBuilder<ServerCommandSource> carpetclone = literal("carpetclone")
             .requires((player) -> Settings.commandCarpetClone)
-            .then(argument("begin", BlockPosArgumentType.create())
-            .then(argument("end", BlockPosArgumentType.create())
-            .then((argument("destination", BlockPosArgumentType.create())
+            .then(argument("begin", blockPos())
+            .then(argument("end", blockPos())
+            .then((argument("destination", blockPos())
                 .executes(ctx -> execute(ctx.getSource(), getLoadedBlockPos(ctx, "begin"), getLoadedBlockPos(ctx, "end"), getLoadedBlockPos(ctx, "destination"), cachedBlockPosition -> true, Mode.NORMAL)))
                 .then((((literal("replace")
                     .executes(ctx -> execute(ctx.getSource(), getLoadedBlockPos(ctx, "begin"), getLoadedBlockPos(ctx, "end"), getLoadedBlockPos(ctx, "destination"), cachedBlockPosition -> true, Mode.NORMAL)))
@@ -62,7 +64,7 @@ public class CarpetCloneCommand {
                     .then(literal("normal")
                         .executes(ctx -> execute(ctx.getSource(), getLoadedBlockPos(ctx, "begin"), getLoadedBlockPos(ctx, "end"), getLoadedBlockPos(ctx, "destination"), NOT_AIR_PREDICATE, Mode.NORMAL))))
                     .then(literal("filtered")
-                        .then((((argument("filter", BlockPredicateArgumentType.create())
+                        .then((((argument("filter", blockPredicate())
                             .executes((ctx) -> execute(ctx.getSource(), getLoadedBlockPos(ctx, "begin"), getLoadedBlockPos(ctx, "end"), getLoadedBlockPos(ctx, "destination"), BlockPredicateArgumentType.getBlockPredicate(ctx, "filter"), Mode.NORMAL)))
                             .then(literal("force")
                                     .executes(ctx -> execute(ctx.getSource(), getLoadedBlockPos(ctx, "begin"), getLoadedBlockPos(ctx, "end"), getLoadedBlockPos(ctx, "destination"), BlockPredicateArgumentType.getBlockPredicate(ctx, "filter"), Mode.FORCE))))

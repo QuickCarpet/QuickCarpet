@@ -3,8 +3,6 @@ package quickcarpet.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.command.arguments.BlockPosArgumentType;
-import net.minecraft.command.arguments.DimensionArgumentType;
 import net.minecraft.entity.EntityCategory;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
@@ -21,7 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static net.minecraft.command.arguments.BlockPosArgumentType.blockPos;
 import static net.minecraft.command.arguments.BlockPosArgumentType.getBlockPos;
+import static net.minecraft.command.arguments.DimensionArgumentType.dimension;
 import static net.minecraft.command.arguments.DimensionArgumentType.getDimensionArgument;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
@@ -32,14 +32,14 @@ public class SpawnCommand {
             .requires((player) -> Settings.commandSpawn)
             .then(literal("mobcaps")
                 .executes(c -> sendMobcaps(c.getSource(), null))
-                .then(argument("dimension", DimensionArgumentType.create())
+                .then(argument("dimension", dimension())
                     .executes(c -> sendMobcaps(c.getSource(), getDimensionArgument(c, "dimension")))))
             .then(literal("tracking")
                 .executes(c -> sendTrackingReport(c.getSource()))
                 .then(literal("start")
                     .executes(c -> startTracking(c.getSource(),null, null))
-                    .then(argument("min", BlockPosArgumentType.create())
-                    .then(argument("max", BlockPosArgumentType.create())
+                    .then(argument("min", blockPos())
+                    .then(argument("max", blockPos())
                         .executes(c -> startTracking(c.getSource(),
                             getBlockPos(c, "min"),
                             getBlockPos(c, "max")
