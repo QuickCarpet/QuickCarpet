@@ -5,6 +5,7 @@ import net.minecraft.util.DyeColor;
 import quickcarpet.helper.HopperCounter;
 import quickcarpet.helper.TickSpeed;
 import quickcarpet.logging.loghelpers.PacketCounter;
+import quickcarpet.utils.CarpetProfiler;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -22,6 +23,7 @@ public class LoggerRegistry {
     public static final Logger<PacketCounter.LogCommandParameters> PACKETS = registerLogger("packets", null, null, LogHandler.HUD, PacketCounter.LogCommandParameters.class);
     public static final Logger<HopperCounter.LogCommandParameters> COUNTER = registerLogger("counter", "white", Arrays.stream(DyeColor.values()).map(Object::toString).toArray(String[]::new), LogHandler.HUD, HopperCounter.LogCommandParameters.class);
     public static final Logger<Logger.EmptyCommandParameters> MOBCAPS = registerLogger("mobcaps", "dynamic", new String[]{"dynamic", "overworld", "nether", "end"}, LogHandler.HUD);
+    public static final Logger<CarpetProfiler.GCCommandParameters> GC = registerLogger("gc", null, null, LogHandler.CHAT, CarpetProfiler.GCCommandParameters.class);
 
 //    public static final Logger PROJECTILES<Logger.EmptyCommandParameters> = registerLogger("projectiles", "full",  new String[]{"brief", "full"}, LogHandler.CHAT);
 //    public static final Logger FAILLING_BLOCKS<Logger.EmptyCommandParameters> = registerLogger("fallingBlocks", "brief", new String[]{"brief", "full"}, LogHandler.CHAT);

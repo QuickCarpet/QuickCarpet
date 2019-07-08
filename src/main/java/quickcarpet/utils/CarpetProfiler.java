@@ -1,5 +1,7 @@
 package quickcarpet.utils;
 
+import com.sun.management.GarbageCollectionNotificationInfo;
+import com.sun.management.GcInfo;
 import it.unimi.dsi.fastutil.objects.Object2LongArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
@@ -8,12 +10,20 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
+import quickcarpet.logging.Logger;
+import quickcarpet.logging.LoggerRegistry;
 
 import javax.annotation.Nullable;
+import javax.management.Notification;
+import javax.management.NotificationEmitter;
+import javax.management.openmbean.CompositeData;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryUsage;
 import java.util.*;
 
 public class CarpetProfiler
@@ -24,6 +34,7 @@ public class CarpetProfiler
     private static ReportType reportType = null;
     private static long currentTickStart = 0;
     private static long totalTickTime;
+    private static boolean inTick;
 
     public enum ReportType {
         HEALTH, ENTITIES
@@ -32,6 +43,7 @@ public class CarpetProfiler
     public enum SectionType {
         NETWORK("Network", true),
         AUTOSAVE("Autosave", true),
+        GC("GC", true),
         SPAWNING("Spawning", false),
         BLOCKS("Blocks", false),
         FLUIDS("Fluids", false),
@@ -116,6 +128,16 @@ public class CarpetProfiler
             blockEntityTimes.put(currentBlockEntity, previousTime + System.nanoTime() - currentBlockEntityStart);
             blockEntityCount.put(currentBlockEntity, blockEntityCount.getOrDefault(currentBlockEntity, 0) + 1);
         }
+
+        void gc(long ms) {
+            long ns = ms * 1_000_000;
+            if (dimensionType == null) {
+                sections.put(SectionType.GC, sections.getLong(SectionType.GC) + ns);
+            }
+            currentSectionStart += ns;
+            currentBlockEntityStart += ns;
+            currentEntityStart += ns;
+        }
     }
 
     public static void startTickReport(ReportType type, int ticks) {
@@ -170,9 +192,11 @@ public class CarpetProfiler
 
     public static void startTick() {
         currentTickStart = System.nanoTime();
+        inTick = true;
     }
 
     public static void endTick(MinecraftServer server) {
+        inTick = false;
         if (currentTickStart == 0L || reportType == null) return;
         totalTickTime += System.nanoTime() - currentTickStart;
         if (--ticksRemaining <= 0) {
@@ -263,5 +287,69 @@ public class CarpetProfiler
             .sorted((a, b) -> Long.compare(b.getLongValue(), a.getLongValue()))
             .limit(10)
             .forEachOrdered(e -> Messenger.print_server_message(server, format(e, e.getLongValue() * divider) + "ms"));
+    }
+
+    public static void init() {
+        ManagementFactory.getGarbageCollectorMXBeans().forEach(gc -> {
+            ((NotificationEmitter) gc).addNotificationListener(CarpetProfiler::handleGCNotification, null, null);
+        });
+    }
+
+    public static class GCCommandParameters extends LinkedHashMap<String, Object> implements Logger.CommandParameters {
+        public final GarbageCollectionNotificationInfo info;
+
+        private GCCommandParameters(GarbageCollectionNotificationInfo info) {
+            this.info = info;
+            this.put("action", info.getGcAction());
+            this.put("cause", info.getGcCause());
+            this.put("name", info.getGcName());
+            GcInfo gcInfo = info.getGcInfo();
+            this.put("start_time", gcInfo.getStartTime());
+            this.put("end_time", gcInfo.getEndTime());
+            this.put("duration", gcInfo.getDuration());
+            for (Map.Entry<String, MemoryUsage> e : gcInfo.getMemoryUsageBeforeGc().entrySet()) {
+                MemoryUsage m = e.getValue();
+                this.put("before." + e.getKey() + ".used", m.getUsed());
+                this.put("before." + e.getKey() + ".committed", m.getCommitted());
+                this.put("before." + e.getKey() + ".init", m.getInit());
+                this.put("before." + e.getKey() + ".max", m.getMax());
+            }
+            for (Map.Entry<String, MemoryUsage> e : gcInfo.getMemoryUsageAfterGc().entrySet()) {
+                MemoryUsage m = e.getValue();
+                this.put("after." + e.getKey() + ".used", m.getUsed());
+                this.put("after." + e.getKey() + ".committed", m.getCommitted());
+                this.put("after." + e.getKey() + ".init", m.getInit());
+                this.put("after." + e.getKey() + ".max", m.getMax());
+            }
+        }
+    }
+
+    private static void handleGCNotification(Notification notification, Object handback) {
+        if (!notification.getType().equals(GarbageCollectionNotificationInfo.GARBAGE_COLLECTION_NOTIFICATION)) return;
+        GarbageCollectionNotificationInfo info = GarbageCollectionNotificationInfo.from((CompositeData) notification.getUserData());
+        GcInfo gcInfo = info.getGcInfo();
+        LoggerRegistry.GC.log(() -> {
+            long usedBefore = gcInfo.getMemoryUsageBeforeGc().values().stream().mapToLong(MemoryUsage::getUsed).sum();
+            long usedAfter = gcInfo.getMemoryUsageAfterGc().values().stream().mapToLong(MemoryUsage::getUsed).sum();
+            return new Text[]{Messenger.c(
+                    "l " + info.getGcName(),
+                    "y  " + info.getGcAction(),
+                    "w  caused by ", "c " + info.getGcCause(),
+                    "w : ", "c " + info.getGcInfo().getDuration() + "ms",
+                    "w , ", "c " + usedBefore / (1024 * 1024) + "MB",
+                    "w  -> ", "c " + usedAfter / (1024 * 1024) + "MB")
+            };
+        }, () -> new GCCommandParameters(info));
+        // System.out.println(new GCCommandParameters(info));
+        if (!inTick) {
+            System.out.println(gcInfo.getDuration() + "ms " + info.getGcAction() + " between ticks");
+        } else {
+            System.out.println(gcInfo.getDuration() + "ms " + info.getGcAction() + " during tick");
+            if (!isActive(ReportType.HEALTH)) return;
+            for (Measurement m : MEASUREMENTS.values()) {
+                if (m == null) continue;
+                m.gc(gcInfo.getDuration());
+            }
+        }
     }
 }

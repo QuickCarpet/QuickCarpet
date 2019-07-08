@@ -17,6 +17,7 @@ import quickcarpet.network.channels.StructureChannel;
 import quickcarpet.pubsub.PubSubManager;
 import quickcarpet.pubsub.PubSubMessenger;
 import quickcarpet.settings.Settings;
+import quickcarpet.utils.CarpetProfiler;
 import quickcarpet.utils.CarpetRegistry;
 import quickcarpet.utils.HUDController;
 
@@ -76,6 +77,7 @@ public final class QuickCarpet implements ModInitializer, ModuleHost {
     
     public void onGameStarted(EnvType env) {
         CarpetRegistry.init();
+        CarpetProfiler.init();
         Settings.MANAGER.parse();
         for (QuickCarpetModule m : modules) {
             m.onGameStarted();
