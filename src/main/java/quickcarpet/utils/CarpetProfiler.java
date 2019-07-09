@@ -340,11 +340,7 @@ public class CarpetProfiler
                     "w  -> ", "c " + usedAfter / (1024 * 1024) + "MB")
             };
         }, () -> new GCCommandParameters(info));
-        // System.out.println(new GCCommandParameters(info));
-        if (!inTick) {
-            System.out.println(gcInfo.getDuration() + "ms " + info.getGcAction() + " between ticks");
-        } else {
-            System.out.println(gcInfo.getDuration() + "ms " + info.getGcAction() + " during tick");
+        if (inTick) {
             if (!isActive(ReportType.HEALTH)) return;
             for (Measurement m : MEASUREMENTS.values()) {
                 if (m == null) continue;
