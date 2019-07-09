@@ -47,7 +47,7 @@ public class StructureChannel implements PluginChannelHandler {
     }
 
     @Override
-    public boolean register(Identifier channel, ServerPlayerEntity player) {
+    public synchronized boolean register(Identifier channel, ServerPlayerEntity player) {
         sendData(player, metadata);
         playerMap.put(player, new Object2IntOpenHashMap<>());
         int viewDistance = player.getServer().getPlayerManager().getViewDistance();
@@ -63,11 +63,11 @@ public class StructureChannel implements PluginChannelHandler {
     }
 
     @Override
-    public void unregister(Identifier channel, ServerPlayerEntity player) {
+    public synchronized void unregister(Identifier channel, ServerPlayerEntity player) {
         playerMap.remove(player);
     }
 
-    public void tick() {
+    public synchronized void tick() {
         for (Map.Entry<ServerPlayerEntity, Object2IntMap<ChunkPos>> playerEntry : playerMap.entrySet()) {
             List<ChunkPos> updated = new ArrayList<>();
             List<ChunkPos> removed = new ArrayList<>();
