@@ -93,45 +93,47 @@ public class Reflection {
         }
     }
 
-    private static final String INT_WORLD = "net.minecraft.class_1937";
-    private static final String INT_SCHEDULE_BLOCK_RENDER = "method_16109";
-    private static final String INT_SBR_DESC_14_3 = "(Lnet/minecraft/class_2338;)V";
-    private static final String INT_SBR_DESC_14_4 = "(Lnet/minecraft/class_2338;Lnet/minecraft/class_2680;Lnet/minecraft/class_2680;)V";
+    private static class ScheduleBlockRenderHandler {
+        private static final String INT_WORLD = "net.minecraft.class_1937";
+        private static final String INT_SCHEDULE_BLOCK_RENDER = "method_16109";
+        private static final String INT_SBR_DESC_14_3 = "(Lnet/minecraft/class_2338;)V";
+        private static final String INT_SBR_DESC_14_4 = "(Lnet/minecraft/class_2338;Lnet/minecraft/class_2680;Lnet/minecraft/class_2680;)V";
 
-    private static final MethodHandle scheduleBlockRender;
-    private static final boolean newScheduleBlockRender;
+        private static final MethodHandle scheduleBlockRender;
+        private static final boolean newScheduleBlockRender;
 
-    static {
-        Method scheduleBlockRenderMethod = getScheduleBlockRender();
-        try {
-            scheduleBlockRender = LOOKUP.unreflect(scheduleBlockRenderMethod);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-        newScheduleBlockRender = scheduleBlockRenderMethod.getParameterTypes().length == 3;
-    }
-
-    private static Method getScheduleBlockRender() {
-        MappingResolver mappings = FabricLoader.getInstance().getMappingResolver();
-        try {
-            String oldName = mappings.mapMethodName("intermediary", INT_WORLD, INT_SCHEDULE_BLOCK_RENDER, INT_SBR_DESC_14_3);
-            return World.class.getMethod(oldName, BlockPos.class);
-        } catch (ReflectiveOperationException e) {
+        static {
+            Method scheduleBlockRenderMethod = getScheduleBlockRender();
             try {
-                String newName = mappings.mapMethodName("intermediary", INT_WORLD, INT_SCHEDULE_BLOCK_RENDER, INT_SBR_DESC_14_4);
-                return World.class.getMethod(newName, BlockPos.class, BlockState.class, BlockState.class);
-            } catch (NoSuchMethodException ex) {
-                throw new IllegalStateException(ex);
+                scheduleBlockRender = LOOKUP.unreflect(scheduleBlockRenderMethod);
+            } catch (IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+            newScheduleBlockRender = scheduleBlockRenderMethod.getParameterTypes().length == 3;
+        }
+
+        private static Method getScheduleBlockRender() {
+            MappingResolver mappings = FabricLoader.getInstance().getMappingResolver();
+            try {
+                String oldName = mappings.mapMethodName("intermediary", INT_WORLD, INT_SCHEDULE_BLOCK_RENDER, INT_SBR_DESC_14_3);
+                return World.class.getMethod(oldName, BlockPos.class);
+            } catch (ReflectiveOperationException e) {
+                try {
+                    String newName = mappings.mapMethodName("intermediary", INT_WORLD, INT_SCHEDULE_BLOCK_RENDER, INT_SBR_DESC_14_4);
+                    return World.class.getMethod(newName, BlockPos.class, BlockState.class, BlockState.class);
+                } catch (NoSuchMethodException ex) {
+                    throw new IllegalStateException(ex);
+                }
             }
         }
     }
 
     public static void scheduleBlockRender(World world, BlockPos pos, BlockState stateFrom, BlockState stateTo) {
         try {
-            if (newScheduleBlockRender) {
-                scheduleBlockRender.invokeExact(world, pos, stateFrom, stateTo);
+            if (ScheduleBlockRenderHandler.newScheduleBlockRender) {
+                ScheduleBlockRenderHandler.scheduleBlockRender.invokeExact(world, pos, stateFrom, stateTo);
             } else {
-                scheduleBlockRender.invokeExact(world, pos);
+                ScheduleBlockRenderHandler.scheduleBlockRender.invokeExact(world, pos);
             }
         } catch (Throwable t) {
             throw new RuntimeException(t);
