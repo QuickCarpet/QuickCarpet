@@ -3,6 +3,7 @@ package quickcarpet;
 import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import org.apache.logging.log4j.LogManager;
@@ -116,5 +117,9 @@ public final class QuickCarpet implements ModInitializer, ModuleHost {
     @Override
     public void onInitialize() {
 
+    }
+
+    public static boolean isDevelopment() {
+        return Build.VERSION.contains("dev") || FabricLoader.getInstance().isDevelopmentEnvironment();
     }
 }

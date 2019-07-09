@@ -4,7 +4,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.SharedConstants;
 import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.PlayerEntity;
@@ -191,7 +190,7 @@ public class CarpetCommand {
 
         Messenger.m(source, "w ");
         String version = Build.VERSION;
-        if (version.contains("dev") || FabricLoader.getInstance().isDevelopmentEnvironment()) {
+        if (QuickCarpet.isDevelopment()) {
             version += " " + Build.BRANCH + "-" + Build.COMMIT.substring(0, 7) + " (" + Build.BUILD_TIMESTAMP + ")";
         }
         Messenger.m(source, "e " + Build.NAME + " version: " + version);
