@@ -1,10 +1,15 @@
 package quickcarpet.utils;
 
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.MappingResolver;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.village.TradeOffers;
+import net.minecraft.world.World;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -85,6 +90,51 @@ public class Reflection {
             return constr.newInstance();
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private static final String INT_WORLD = "net.minecraft.class_1937";
+    private static final String INT_SCHEDULE_BLOCK_RENDER = "method_16109";
+    private static final String INT_SBR_DESC_14_3 = "(Lnet/minecraft/class_2338;)V";
+    private static final String INT_SBR_DESC_14_4 = "(Lnet/minecraft/class_2338;Lnet/minecraft/class_2680;Lnet/minecraft/class_2680;)V";
+
+    private static final MethodHandle scheduleBlockRender;
+    private static final boolean newScheduleBlockRender;
+
+    static {
+        Method scheduleBlockRenderMethod = getScheduleBlockRender();
+        try {
+            scheduleBlockRender = LOOKUP.unreflect(scheduleBlockRenderMethod);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
+        newScheduleBlockRender = scheduleBlockRenderMethod.getParameterTypes().length == 3;
+    }
+
+    private static Method getScheduleBlockRender() {
+        MappingResolver mappings = FabricLoader.getInstance().getMappingResolver();
+        try {
+            String oldName = mappings.mapMethodName("intermediary", INT_WORLD, INT_SCHEDULE_BLOCK_RENDER, INT_SBR_DESC_14_3);
+            return World.class.getMethod(oldName, BlockPos.class);
+        } catch (ReflectiveOperationException e) {
+            try {
+                String newName = mappings.mapMethodName("intermediary", INT_WORLD, INT_SCHEDULE_BLOCK_RENDER, INT_SBR_DESC_14_4);
+                return World.class.getMethod(newName, BlockPos.class, BlockState.class, BlockState.class);
+            } catch (NoSuchMethodException ex) {
+                throw new IllegalStateException(ex);
+            }
+        }
+    }
+
+    public static void scheduleBlockRender(World world, BlockPos pos, BlockState stateFrom, BlockState stateTo) {
+        try {
+            if (newScheduleBlockRender) {
+                scheduleBlockRender.invokeExact(world, pos, stateFrom, stateTo);
+            } else {
+                scheduleBlockRender.invokeExact(world, pos);
+            }
+        } catch (Throwable t) {
+            throw new RuntimeException(t);
         }
     }
 }
