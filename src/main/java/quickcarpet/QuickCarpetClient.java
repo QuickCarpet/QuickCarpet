@@ -39,6 +39,10 @@ public class QuickCarpetClient {
         }
     }
 
+    public void onLeaveServer() {
+        tickSpeed = new TickSpeed(true);
+    }
+
     public void tick() {
         tickSpeed.tick(MinecraftClient.getInstance());
     }

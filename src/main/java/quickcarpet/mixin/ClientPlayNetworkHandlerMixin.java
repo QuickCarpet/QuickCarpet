@@ -15,9 +15,14 @@ import quickcarpet.client.ClientPluginChannelManager;
 
 @Mixin(ClientPlayNetworkHandler.class)
 public abstract class ClientPlayNetworkHandlerMixin implements ClientPlayPacketListener {
-    @Inject(method = "onGameJoin", at = @At("TAIL"))
+    @Inject(method = "onGameJoin", at = @At("RETURN"))
     private void onJoinServer(CallbackInfo ci) {
         QuickCarpet.getInstance().client.onJoinServer();
+    }
+
+    @Inject(method = "clearWorld", at = @At("HEAD"))
+    private void onLeaveServer(CallbackInfo ci) {
+        QuickCarpet.getInstance().client.onLeaveServer();
     }
 
     @Inject(method = "onCustomPayload", at = @At(value = "CONSTANT", args = "stringValue=Unknown custom packed identifier: {}"), cancellable = true, locals = LocalCapture.CAPTURE_FAILSOFT, require = 0)
