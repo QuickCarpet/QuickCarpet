@@ -23,6 +23,7 @@ public class ClientRulesChannel implements ClientPluginChannelHandler {
     @Override
     public void onCustomPayload(CustomPayloadS2CPacket packet, ClientPlayPacketListener netHandler) {
         PacketByteBuf buf = PacketSplitter.receive(netHandler, packet);
+        if (buf == null) return;
         int packetId = buf.readVarInt();
         if (packetId == RulesChannel.PACKET_S2C_DATA) {
             CompoundTag data = buf.readCompoundTag();
