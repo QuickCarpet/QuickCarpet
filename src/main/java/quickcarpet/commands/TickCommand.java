@@ -5,6 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.server.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
+import quickcarpet.QuickCarpet;
 import quickcarpet.helper.TickSpeed;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.CarpetProfiler;
@@ -22,13 +23,12 @@ import static net.minecraft.server.command.CommandSource.suggestMatching;
 
 public class TickCommand {
 
-    // TODO: freeze & step
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         LiteralArgumentBuilder<ServerCommandSource> tick = literal("tick")
             .requires((player) -> Settings.commandTick)
             .then(literal("rate")
                 .executes(c -> sendCurrentTPS(c.getSource()))
-                .then(argument("rate", floatArg(0.1F, 500.0F))
+                .then(argument("rate", floatArg(0.1F))
                     .suggests((c, b) -> suggestMatching(new String[]{"20"},b))
                     .executes(c -> setTps(c.getSource(), getFloat(c, "rate")))))
             .then(literal("warp")
@@ -60,18 +60,19 @@ public class TickCommand {
     }
 
     private static int setTps(ServerCommandSource source, float tps) {
-        TickSpeed.setTickRateGoal(tps);
+        QuickCarpet.getInstance().tickSpeed.setTickRateGoal(tps);
         sendCurrentTPS(source);
         return (int) tps;
     }
 
     private static int sendCurrentTPS(ServerCommandSource source) {
-        Messenger.m(source, "w Current tps is: ", String.format("wb %.1f", TickSpeed.tickRateGoal));
-        return (int) TickSpeed.tickRateGoal;
+        float tickRateGoal = QuickCarpet.getInstance().tickSpeed.tickRateGoal;
+        Messenger.m(source, "w Current tps is: ", String.format("wb %.1f", tickRateGoal));
+        return (int) tickRateGoal;
     }
 
     private static int setWarp(ServerCommandSource source, int advance, String tailCommand) {
-        Text message = TickSpeed.setTickWarp(source, advance, tailCommand);
+        Text message = QuickCarpet.getInstance().tickSpeed.setTickWarp(source, advance, tailCommand);
         if (message != null) {
             source.sendFeedback(message, false);
         }
@@ -79,13 +80,14 @@ public class TickCommand {
     }
 
     private static int step(int ticks) {
-        TickSpeed.setStep(ticks);
+        QuickCarpet.getInstance().tickSpeed.setStep(ticks);
         return 1;
     }
 
     private static int toggleFreeze(ServerCommandSource source) {
-        TickSpeed.paused = !TickSpeed.paused;
-        if (TickSpeed.paused) {
+        TickSpeed tickSpeed = QuickCarpet.getInstance().tickSpeed;
+        tickSpeed.setPaused(!tickSpeed.isPaused());
+        if (tickSpeed.isPaused()) {
             Messenger.m(source, "gi Game is paused");
         } else {
             Messenger.m(source, "gi Game runs normally");

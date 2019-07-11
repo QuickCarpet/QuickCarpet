@@ -2,6 +2,7 @@ package quickcarpet;
 
 import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.MinecraftServer;
@@ -22,7 +23,6 @@ import quickcarpet.utils.CarpetProfiler;
 import quickcarpet.utils.CarpetRegistry;
 import quickcarpet.utils.HUDController;
 
-import javax.annotation.Nullable;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -33,8 +33,9 @@ public final class QuickCarpet implements ModInitializer, ModuleHost {
     private static QuickCarpet instance = new QuickCarpet();
 
     public static MinecraftServer minecraft_server;
+    public TickSpeed tickSpeed;
 
-    @Nullable
+    @Environment(EnvType.CLIENT)
     public QuickCarpetClient client;
     public PluginChannelManager pluginChannels;
     public final Set<QuickCarpetModule> modules = new TreeSet<>();
@@ -54,6 +55,7 @@ public final class QuickCarpet implements ModInitializer, ModuleHost {
 
     public void init(MinecraftServer server) {
         minecraft_server = server;
+        tickSpeed = new TickSpeed(false);
         pluginChannels = new PluginChannelManager(server);
         pluginChannels.register(pubSubMessenger);
         pluginChannels.register(new StructureChannel());
@@ -63,13 +65,12 @@ public final class QuickCarpet implements ModInitializer, ModuleHost {
 
     public void onServerLoaded(MinecraftServer server) {
         Settings.MANAGER.init(server);
-        TickSpeed.reset();
         for (QuickCarpetModule m : modules) m.onServerLoaded(server);
         registerCarpetCommands();
     }
 
     public void tick(MinecraftServer server) {
-        TickSpeed.tick(server);
+        tickSpeed.tick(server);
         HUDController.update(server);
         PUBSUB.update(server.getTicks());
         StructureChannel.instance.tick();

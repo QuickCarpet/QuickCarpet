@@ -1,5 +1,8 @@
 package quickcarpet.helper;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -14,53 +17,56 @@ import quickcarpet.utils.Messenger;
 import java.util.*;
 
 public class TickSpeed {
-    public static float tickRateGoal = 20;
-    public static long msptGoal = 50;
-    private static long timeBias = 0;
-    public static long tickWarpStartTime = 0;
-    private static long tickWarpScheduledTicks = 0;
-    private static int stepAmount = 0;
-    public static boolean paused = false;
-    private static String tickWarpCallback = null;
-    private static ServerCommandSource tickWarpSender = null;
+    public final boolean isClient;
+    public float tickRateGoal = 20;
+    public float msptGoal = 50;
+    private long timeBias = 0;
+    public long tickWarpStartTime = 0;
+    private long tickWarpScheduledTicks = 0;
+    private int stepAmount = 0;
+    private boolean paused = false;
+    private String tickWarpCallback = null;
+    private ServerCommandSource tickWarpSender = null;
 
-    private static PubSubInfoProvider<Float> TICK_RATE_GOAL_PUBSUB_PROVIDER = new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "carpet.tick-rate.tps-goal", 0, () -> tickRateGoal);
+    public final LogCommandParameters LOG_COMMAND_PARAMETERS = new LogCommandParameters();
+
+    private static PubSubInfoProvider<Float> TICK_RATE_GOAL_PUBSUB_PROVIDER = new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "carpet.tick-rate.tps-goal", 0, () -> QuickCarpet.getInstance().tickSpeed.tickRateGoal);
+    private static PubSubInfoProvider<Integer> TICK_STEP_PUBSUB_PROVIDER = new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "carpet.tick-rate.step", 0, () -> QuickCarpet.getInstance().tickSpeed.stepAmount);
+    private static PubSubInfoProvider<Boolean> PAUSED_PUBSUB_PROVIDER = new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "carpet.tick-rate.paused", 0, () -> QuickCarpet.getInstance().tickSpeed.paused);
 
     static {
-        new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "minecraft.performance.mspt", 20, TickSpeed::getCurrentMSPT);
-        new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "minecraft.performance.tps", 20, TickSpeed::getTPS);
+        new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "minecraft.performance.mspt", 20, () -> QuickCarpet.getInstance().tickSpeed.getCurrentMSPT());
+        new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "minecraft.performance.tps", 20, () -> QuickCarpet.getInstance().tickSpeed.getTPS());
     }
 
-    public static void reset() {
-        tickRateGoal = 20;
-        msptGoal = 50;
-        timeBias = 0;
-        tickWarpStartTime = 0;
-        tickWarpScheduledTicks = 0;
-        stepAmount = 0;
-        paused = false;
-        tickWarpCallback = null;
-        tickWarpSender = null;
-        resetLoadAvg = true;
+    public TickSpeed(boolean isClient) {
+        this.isClient = isClient;
     }
 
-    public static void setTickRateGoal(float rate) {
+    public void setTickRateGoal(float rate) {
         tickRateGoal = rate;
-        msptGoal = (long) (1000.0 / tickRateGoal);
+        msptGoal = 1000f / rate;
         if (msptGoal <= 0) {
             msptGoal = 1;
             tickRateGoal = 1000.0f;
         }
-        TICK_RATE_GOAL_PUBSUB_PROVIDER.publish();
+        if (!isClient) TICK_RATE_GOAL_PUBSUB_PROVIDER.publish();
     }
 
-    public static void setStep(int ticks) {
+    public void setStep(int ticks) {
         if (ticks <= 0) throw new IllegalArgumentException("Step amount must be positive");
         paused = false;
         stepAmount = ticks + 1;
+        if (!isClient) TICK_STEP_PUBSUB_PROVIDER.publish();
     }
 
-    public static Text setTickWarp(ServerCommandSource source, int warpAmount, String callback) {
+    public void setStepAmount(int amount) {
+        if (amount <= 0) return;
+        paused = false;
+        stepAmount = amount;
+    }
+
+    public Text setTickWarp(ServerCommandSource source, int warpAmount, String callback) {
         if (0 == warpAmount) {
             tickWarpCallback = null;
             tickWarpSender = null;
@@ -78,7 +84,7 @@ public class TickSpeed {
         return Messenger.c("gi Warp speed ....");
     }
 
-    private static void finishTickWarp() {
+    private void finishTickWarp() {
         long completed_ticks = tickWarpScheduledTicks - timeBias;
         double milis_to_complete = System.nanoTime() - tickWarpStartTime;
         if (milis_to_complete == 0.0) {
@@ -116,7 +122,7 @@ public class TickSpeed {
 
     }
 
-    public static boolean continueWarp() {
+    public boolean continueWarp() {
         if (timeBias > 0) {
             if (timeBias == tickWarpScheduledTicks) { //first call after previous tick, adjust start time
                 tickWarpStartTime = System.nanoTime();
@@ -129,7 +135,16 @@ public class TickSpeed {
         }
     }
 
-    public static void tick(MinecraftServer server) {
+    public void setPaused(boolean paused) {
+        this.paused = paused;
+        if (!isClient) PAUSED_PUBSUB_PROVIDER.publish();
+    }
+
+    public boolean isPaused() {
+        return paused;
+    }
+
+    public void tick(MinecraftServer server) {
         int ticks = server.getTicks();
         if (ticks > 100 && ticks % 100 == 0) { // ignore spike at server start
             updateLoadAvg();
@@ -141,7 +156,15 @@ public class TickSpeed {
         }
     }
 
-    public static double getCurrentMSPT() {
+    @Environment(EnvType.CLIENT)
+    public void tick(MinecraftClient client) {
+        if (stepAmount > 0) {
+            stepAmount--;
+            if (stepAmount == 0) paused = true;
+        }
+    }
+
+    public double getCurrentMSPT() {
         return MathHelper.average(QuickCarpet.minecraft_server.lastTickLengths) * 1.0E-6D;
     }
 
@@ -153,7 +176,7 @@ public class TickSpeed {
     private static double loadAvg15min;
     private static final double exp15min = 1 / Math.exp(5. / (15 * 60.));
 
-    private static void updateLoadAvg() {
+    private void updateLoadAvg() {
         double currentLoad = getCurrentMSPT();
         if (resetLoadAvg) {
             loadAvg1min = currentLoad;
@@ -268,16 +291,15 @@ public class TickSpeed {
         return loadAvg15min;
     }
 
-    public static double calculateTPS(double mspt) {
-        return 1000.0D / Math.max((TickSpeed.tickWarpStartTime != 0) ? 0.0 : TickSpeed.msptGoal, mspt);
+    public double calculateTPS(double mspt) {
+        return 1000.0D / Math.max((tickWarpStartTime != 0) ? 0.0 : msptGoal, mspt);
     }
 
-    public static double getTPS() {
+    public double getTPS() {
         return calculateTPS(getCurrentMSPT());
     }
 
-    public static class LogCommandParameters extends AbstractMap<String, Object> implements Logger.CommandParameters {
-        public static final LogCommandParameters INSTANCE = new LogCommandParameters();
+    public class LogCommandParameters extends AbstractMap<String, Object> implements Logger.CommandParameters {
         private LogCommandParameters() {}
         @Override
         public Set<Entry<String, Object>> entrySet() {

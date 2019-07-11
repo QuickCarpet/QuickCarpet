@@ -2,6 +2,8 @@ package quickcarpet.mixin;
 
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerTickScheduler;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.profiler.Profiler;
@@ -12,18 +14,25 @@ import net.minecraft.world.chunk.WorldChunk;
 import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.level.LevelProperties;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import quickcarpet.helper.TickSpeed;
+import quickcarpet.QuickCarpet;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.CarpetProfiler;
 
+import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 
 @Mixin(ServerWorld.class)
 public abstract class ServerWorldMixin extends World {
+    @Shadow @Final private List<ServerPlayerEntity> players;
+
+    @Shadow public abstract ServerChunkManager method_14178();
+
     protected ServerWorldMixin(LevelProperties levelProperties_1, DimensionType dimensionType_1, BiFunction<World, Dimension, ChunkManager> biFunction_1, Profiler profiler_1, boolean boolean_1) {
         super(levelProperties_1, dimensionType_1, biFunction_1, profiler_1, boolean_1);
     }
@@ -100,7 +109,11 @@ public abstract class ServerWorldMixin extends World {
 
     @Inject(method = "tick", at = @At("HEAD"), cancellable = true)
     private void tickFreeze(BooleanSupplier shouldContinueTicking, CallbackInfo ci) {
-        if (TickSpeed.paused) ci.cancel();
+        if (QuickCarpet.getInstance().tickSpeed.isPaused()) {
+            for (ServerPlayerEntity p : this.players) p.tick();
+            this.method_14178().tick(shouldContinueTicking);
+            ci.cancel();
+        }
     }
 
     @Redirect(method = "tickChunk", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/ChunkSection;getFluidState(III)Lnet/minecraft/fluid/FluidState;"))

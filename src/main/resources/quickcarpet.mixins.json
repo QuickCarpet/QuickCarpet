@@ -54,6 +54,7 @@
   "client": [
     "BlockEntityRenderDispatcherMixin",
     "ClientPlayNetworkHandlerMixin",
+    "ClientWorldMixin",
     "InGameHudMixin",
     "IntegratedServerMixin",
     "MinecraftClientMixin",

@@ -29,6 +29,7 @@ public class PubSubMessenger implements PluginChannelHandler {
     public static final int TYPE_FLOAT = 3;
     public static final int TYPE_LONG = 4;
     public static final int TYPE_DOUBLE = 5;
+    public static final int TYPE_BOOLEAN = 6;
 
     private final PubSubManager pubSub;
     private final Map<ServerPlayerEntity, Map<PubSubNode, PubSubSubscriber>> subscriptions = new WeakHashMap<>();
@@ -123,8 +124,11 @@ public class PubSubMessenger implements PluginChannelHandler {
             } else if (value instanceof Double) {
                 buf.writeVarInt(TYPE_DOUBLE);
                 buf.writeDouble((Double) value);
+            } else if (value instanceof Boolean) {
+                buf.writeVarInt(TYPE_BOOLEAN);
+                buf.writeBoolean((Boolean) value);
             } else {
-                throw new IllegalArgumentException("Can't serialize " + update.getClass().getSimpleName());
+                throw new IllegalArgumentException("Can't serialize " + nodeName + ": " + value.getClass().getSimpleName());
             }
         }
         return buf;

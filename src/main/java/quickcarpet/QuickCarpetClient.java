@@ -12,8 +12,10 @@ public class QuickCarpetClient {
     private final MinecraftClient minecraftClient;
     private final ClientRulesChannel rulesChannel;
     private final ClientPubSubListener pubSubListener;
+    public TickSpeed tickSpeed = new TickSpeed(true);
 
     public QuickCarpetClient() {
+        QuickCarpet.getInstance().client = this;
         minecraftClient = MinecraftClient.getInstance();
         ClientPluginChannelManager.INSTANCE.register(rulesChannel = new ClientRulesChannel());
         ClientPluginChannelManager.INSTANCE.register(pubSubListener = new ClientPubSubListener());
@@ -24,11 +26,20 @@ public class QuickCarpetClient {
     }
 
     public void onJoinServer() {
+        tickSpeed = new TickSpeed(true);
+        ClientPluginChannelManager.INSTANCE.sendRegisterPacket(minecraftClient.getNetworkHandler());
+        pubSubListener.subscribe(
+            "minecraft.performance.tps",
+            "carpet.tick-rate.tps-goal",
+            "carpet.tick-rate.paused",
+            "carpet.tick-rate.step"
+        );
         if (!isSingleplayer()) {
-            TickSpeed.reset();
             for (ParsedRule<?> rule : Settings.MANAGER.getRules()) rule.resetToDefault(false);
-            ClientPluginChannelManager.INSTANCE.sendRegisterPacket(minecraftClient.getNetworkHandler());
-            pubSubListener.subscribe("minecraft.performance.tps", "carpet.tick-rate.tps-goal");
         }
+    }
+
+    public void tick() {
+        tickSpeed.tick(MinecraftClient.getInstance());
     }
 }

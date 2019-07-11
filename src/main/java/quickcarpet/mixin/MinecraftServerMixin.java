@@ -66,28 +66,35 @@ public abstract class MinecraftServerMixin {
     @Inject(method = "run", at = @At(value = "INVOKE", shift = At.Shift.AFTER,
             target = "Lnet/minecraft/server/MinecraftServer;setFavicon(Lnet/minecraft/server/ServerMetadata;)V"))
     private void modifiedRunLoop(CallbackInfo ci) {
+        TickSpeed tickSpeed = QuickCarpet.getInstance().tickSpeed;
+        float partialTimeReference = 0;
         while (this.running) {
             //long long_1 = SystemUtil.getMeasuringTimeMs() - this.timeReference;
             //CM deciding on tick speed
-            long mspt = 0L;
-            long long_1 = 0L;
-            if (TickSpeed.tickWarpStartTime != 0 && TickSpeed.continueWarp()) {
+            float mspt = 0;
+            long behind = 0L;
+            if (tickSpeed.tickWarpStartTime != 0 && tickSpeed.continueWarp()) {
                 //making sure server won't flop after the warp or if the warp is interrupted
                 this.timeReference = this.field_4557 = SystemUtil.getMeasuringTimeMs();
             } else {
-                mspt = TickSpeed.msptGoal; // regular tick
-                long_1 = SystemUtil.getMeasuringTimeMs() - this.timeReference;
+                mspt = tickSpeed.msptGoal; // regular tick
+                behind = SystemUtil.getMeasuringTimeMs() - this.timeReference;
             }
             //end tick deciding
             //smoothed out delay to include mspt component. With 50L gives defaults.
-            if (long_1 > /*2000L*/1000L + 20 * mspt && this.timeReference - this.field_4557 >= /*15000L*/10000L + 100 * mspt) {
-                long long_2 = long_1 / mspt;//50L;
-                LOGGER.warn("Can't keep up! Is the server overloaded? Running {}ms or {} ticks behind", long_1, long_2);
-                this.timeReference += long_2 * mspt;//50L;
+            if (behind > /*2000L*/1000L + 20 * mspt && this.timeReference - this.field_4557 >= /*15000L*/10000L + 100 * mspt) {
+                float ticks = behind / mspt;//50L;
+                LOGGER.warn("Can't keep up! Is the server overloaded? Running {}ms or {} ticks behind", behind, ticks);
+                this.timeReference += ticks * mspt;//50L;
                 this.field_4557 = this.timeReference;
             }
 
+            partialTimeReference += mspt - (long) mspt;
             this.timeReference += mspt;//50L;
+            if (partialTimeReference > 1) {
+                partialTimeReference--;
+                timeReference++;
+            }
             if (this.profilerStartQueued) {
                 this.profilerStartQueued = false;
                 this.profiler.getController().enable();
@@ -98,7 +105,7 @@ public abstract class MinecraftServerMixin {
             this.tick(this::shouldKeepTicking);
             this.profiler.swap("nextTickWait");
             this.field_19249 = true;
-            this.field_19248 = Math.max(SystemUtil.getMeasuringTimeMs() + /*50L*/ mspt, this.timeReference);
+            this.field_19248 = Math.max(SystemUtil.getMeasuringTimeMs() + /*50L*/ (long) mspt, this.timeReference);
             this.method_16208();
             this.profiler.pop();
             this.profiler.endTick();

@@ -32,13 +32,14 @@ public class HUDController {
 
     static {
         registerLogger(LoggerRegistry.TPS, logger -> {
-            double MSPT = TickSpeed.getCurrentMSPT();
-            double TPS = TickSpeed.calculateTPS(MSPT);
-            String color = Messenger.heatmap_color(MSPT, TickSpeed.msptGoal);
+            TickSpeed tickSpeed = QuickCarpet.getInstance().tickSpeed;
+            double MSPT = tickSpeed.getCurrentMSPT();
+            double TPS = tickSpeed.calculateTPS(MSPT);
+            String color = Messenger.heatmap_color(MSPT, tickSpeed.msptGoal);
             Text[] message = new Text[]{Messenger.c(
                     "g TPS: ", String.format(Locale.US, "%s %.1f", color, TPS),
                     "g  MSPT: ", String.format(Locale.US, "%s %.1f", color, MSPT))};
-            logger.log(() -> message, () -> TickSpeed.LogCommandParameters.INSTANCE);
+            logger.log(() -> message, () -> tickSpeed.LOG_COMMAND_PARAMETERS);
         });
 
         registerLogger(LoggerRegistry.MOBCAPS, logger -> {

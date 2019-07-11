@@ -10,17 +10,19 @@ import net.minecraft.util.PacketByteBuf;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import quickcarpet.QuickCarpet;
-import quickcarpet.helper.TickSpeed;
+import quickcarpet.QuickCarpetClient;
 import quickcarpet.network.ClientPluginChannelHandler;
 import quickcarpet.network.PacketSplitter;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import static quickcarpet.pubsub.PubSubMessenger.*;
 
 public class ClientPubSubListener implements ClientPluginChannelHandler {
     private Logger LOG = LogManager.getLogger();
+    private QuickCarpetClient client = QuickCarpet.getInstance().client;
 
     @Override
     public Identifier[] getChannels() {
@@ -32,25 +34,21 @@ public class ClientPubSubListener implements ClientPluginChannelHandler {
         PacketByteBuf buf = PacketSplitter.receive(netHandler, packet);
         if (buf == null) return;
         int type = buf.readVarInt();
-        switch (type) {
-            case PACKET_S2C_UPDATE: {
-                Map<String, Object> updates = parseUpdatePacket(buf);
-                if (!QuickCarpet.getInstance().client.isSingleplayer()) {
-                    if (updates.containsKey("minecraft.performance.tps")) {
-                        Object value = updates.get("minecraft.performance.tps");
-                        if (value instanceof Number) {
-                            TickSpeed.setTickRateGoal(((Number) value).floatValue());
-                        }
-                    } else if (updates.containsKey("carpet.tick-rate.tps-goal")) {
-                        Object value = updates.get("carpet.tick-rate.tps-goal");
-                        if (value instanceof Number) {
-                            TickSpeed.setTickRateGoal(((Number) value).floatValue());
-                        }
-                    }
-                }
-                return;
+        if (type == PACKET_S2C_UPDATE) {
+            Map<String, Object> updates = parseUpdatePacket(buf);
+            if (!onUpdate(updates, "minecraft.performance.tps", Number.class, tps -> client.tickSpeed.setTickRateGoal(tps.floatValue()))) {
+                onUpdate(updates, "carpet.tick-rate.tps-goal", Number.class, goal -> client.tickSpeed.setTickRateGoal(goal.floatValue()));
             }
+            onUpdate(updates, "carpet.tick-rate.paused", Boolean.class, paused -> client.tickSpeed.setPaused(paused));
+            onUpdate(updates, "carpet.tick-rate.step", Number.class, step -> client.tickSpeed.setStepAmount(step.intValue()));
         }
+    }
+
+    private static <T> boolean onUpdate(Map<String, Object> updates, String key, Class<T> type, Consumer<T> action) {
+        Object obj = updates.get(key);
+        if (!type.isInstance(obj)) return false;
+        action.accept((T) obj);
+        return true;
     }
 
     private Map<String, Object> parseUpdatePacket(PacketByteBuf buf) {
@@ -87,6 +85,10 @@ public class ClientPubSubListener implements ClientPluginChannelHandler {
                 }
                 case TYPE_DOUBLE: {
                     values.put(name, buf.readDouble());
+                    break;
+                }
+                case TYPE_BOOLEAN: {
+                    values.put(name, buf.readBoolean());
                     break;
                 }
                 default: {
