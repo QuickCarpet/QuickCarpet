@@ -43,19 +43,6 @@ public class HUDController {
         });
 
         registerLogger(LoggerRegistry.MOBCAPS, logger -> {
-            /*
-            TODO: make this work when CommandLogHandler is implemented
-            List<Object> commandParams = new ArrayList<>();
-            for (int dim = -1; dim <= 1; dim++)
-            {
-                for (EnumCreatureType type : EnumCreatureType.values())
-                {
-                    Tuple<Integer, Integer> counts = SpawnReporter.mobcaps.get(dim).getOrDefault(type, new Tuple<>(0, 0));
-                    int actual = counts.getFirst(), limit = counts.getSecond();
-                    Collections.addAll(commandParams, type.name() + "_ACTUAL_DIM_" + dim, actual, type.name() + "_ACTUAL_LIMIT_" + dim, limit);
-                }
-            }
-            */
             logger.log((option, player) -> {
                 DimensionType dim = player.dimension;
                 switch (option) {
@@ -83,7 +70,7 @@ public class HUDController {
                 }
                 components.remove(components.size() - 1);
                 return new Text[]{Messenger.c(components.toArray(new Object[0]))};
-            });
+            }, () -> Mobcaps.LogCommandParameters.INSTANCE);
         });
 
         registerLogger(LoggerRegistry.COUNTER, logger -> logger.log(color -> {

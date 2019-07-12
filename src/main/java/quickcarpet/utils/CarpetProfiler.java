@@ -295,7 +295,7 @@ public class CarpetProfiler
         });
     }
 
-    public static class GCCommandParameters extends LinkedHashMap<String, Object> implements Logger.CommandParameters {
+    public static class GCCommandParameters extends LinkedHashMap<String, Object> implements Logger.CommandParameters<Object> {
         public final GarbageCollectionNotificationInfo info;
 
         private GCCommandParameters(GarbageCollectionNotificationInfo info) {

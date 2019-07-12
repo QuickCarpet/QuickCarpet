@@ -3,8 +3,10 @@ package quickcarpet.logging;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.DyeColor;
 import quickcarpet.helper.HopperCounter;
+import quickcarpet.helper.Mobcaps;
 import quickcarpet.helper.TickSpeed;
 import quickcarpet.logging.loghelpers.PacketCounter;
+import quickcarpet.logging.loghelpers.TNTLogHelper;
 import quickcarpet.utils.CarpetProfiler;
 
 import java.util.Arrays;
@@ -18,15 +20,15 @@ public class LoggerRegistry {
     // Map from player names to the set of names of the logs that player is subscribed to.
     private static Map<String, Map<String, String>> playerSubscriptions = new HashMap<>();
 
-    public static final Logger<Logger.EmptyCommandParameters> TNT = registerLogger("tnt", "brief", new String[]{"brief", "full"}, LogHandler.CHAT);
+    public static final Logger<TNTLogHelper.LogParameters> TNT = registerLogger("tnt", "brief", new String[]{"brief", "full"}, LogHandler.CHAT, TNTLogHelper.LogParameters.class);
     public static final Logger<TickSpeed.LogCommandParameters> TPS = registerLogger("tps", null, null, LogHandler.HUD, TickSpeed.LogCommandParameters.class);
     public static final Logger<PacketCounter.LogCommandParameters> PACKETS = registerLogger("packets", null, null, LogHandler.HUD, PacketCounter.LogCommandParameters.class);
     public static final Logger<HopperCounter.LogCommandParameters> COUNTER = registerLogger("counter", "white", Arrays.stream(DyeColor.values()).map(Object::toString).toArray(String[]::new), LogHandler.HUD, HopperCounter.LogCommandParameters.class);
-    public static final Logger<Logger.EmptyCommandParameters> MOBCAPS = registerLogger("mobcaps", "dynamic", new String[]{"dynamic", "overworld", "nether", "end"}, LogHandler.HUD);
+    public static final Logger<Mobcaps.LogCommandParameters> MOBCAPS = registerLogger("mobcaps", "dynamic", new String[]{"dynamic", "overworld", "nether", "end"}, LogHandler.HUD, Mobcaps.LogCommandParameters.class);
     public static final Logger<CarpetProfiler.GCCommandParameters> GC = registerLogger("gc", null, null, LogHandler.CHAT, CarpetProfiler.GCCommandParameters.class);
 
 //    public static final Logger PROJECTILES<Logger.EmptyCommandParameters> = registerLogger("projectiles", "full",  new String[]{"brief", "full"}, LogHandler.CHAT);
-//    public static final Logger FAILLING_BLOCKS<Logger.EmptyCommandParameters> = registerLogger("fallingBlocks", "brief", new String[]{"brief", "full"}, LogHandler.CHAT);
+//    public static final Logger FALLING_BLOCKS<Logger.EmptyCommandParameters> = registerLogger("fallingBlocks", "brief", new String[]{"brief", "full"}, LogHandler.CHAT);
 //    public static final Logger KILLS<Logger.EmptyCommandParameters> = registerLogger("kills", null, null, LogHandler.CHAT);
 //    public static final Logger DAMAGE<Logger.EmptyCommandParameters> = registerLogger("damage", "all", new String[]{"all","players","me"}, LogHandler.CHAT);
 //    public static final Logger WEATHER<Logger.EmptyCommandParameters> = registerLogger("weather", null, null, LogHandler.CHAT);

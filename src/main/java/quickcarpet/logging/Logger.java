@@ -36,7 +36,7 @@ public class Logger<T extends Logger.CommandParameters> {
         subscribedOfflinePlayers = new HashMap<>();
         this.logName = logName;
         this.default_option = def;
-        this.options = options;
+        this.options = options == null ? new String[0] : options;
         this.defaultHandler = defaultHandler;
         handlers = new HashMap<>();
     }
@@ -215,9 +215,9 @@ public class Logger<T extends Logger.CommandParameters> {
         return null;
     }
 
-    public interface CommandParameters extends Map<String, Object> {}
+    public interface CommandParameters<T> extends Map<String, T> {}
 
-    public static class EmptyCommandParameters extends Object2ObjectMaps.EmptyMap<String, Object> implements CommandParameters {
+    public static class EmptyCommandParameters extends Object2ObjectMaps.EmptyMap<String, Object> implements CommandParameters<Object> {
         public static final EmptyCommandParameters INSTANCE = new EmptyCommandParameters();
         public static final Supplier<EmptyCommandParameters> SUPPLIER = () -> INSTANCE;
         private EmptyCommandParameters() {}

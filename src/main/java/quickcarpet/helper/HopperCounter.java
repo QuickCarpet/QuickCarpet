@@ -126,12 +126,12 @@ public class HopperCounter
         return counter.values().stream().mapToLong(Long::longValue).sum();
     }
 
-    public static class LogCommandParameters extends AbstractMap<String, Object> implements Logger.CommandParameters {
+    public static class LogCommandParameters extends AbstractMap<String, Long> implements Logger.CommandParameters<Long> {
         public static final LogCommandParameters INSTANCE = new LogCommandParameters();
         private LogCommandParameters() {}
         @Override
-        public Set<Entry<String, Object>> entrySet() {
-            Map<String, Object> counts = new LinkedHashMap<>();
+        public Set<Entry<String, Long>> entrySet() {
+            Map<String, Long> counts = new LinkedHashMap<>();
             for (Entry<DyeColor, HopperCounter> counterEntry : COUNTERS.entrySet()) {
                 counts.put(counterEntry.getKey().name(), counterEntry.getValue().getTotalItems());
             }

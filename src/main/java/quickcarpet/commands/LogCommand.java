@@ -10,6 +10,8 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
+import quickcarpet.logging.LogHandler;
+import quickcarpet.logging.LogHandlers;
 import quickcarpet.logging.Logger;
 import quickcarpet.logging.LoggerRegistry;
 import quickcarpet.settings.Settings;
@@ -19,6 +21,7 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 import static com.mojang.brigadier.arguments.StringArgumentType.getString;
+import static com.mojang.brigadier.arguments.StringArgumentType.greedyString;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 
@@ -33,6 +36,24 @@ public class LogCommand {
                     .suggests((c, b)-> CommandSource.suggestMatching(c.getSource().getPlayerNames(), b))
                     .executes(c -> unsubFromAll(c.getSource(), getString(c, "player")))));
 
+        LiteralArgumentBuilder<ServerCommandSource> handlerArg = literal("handler");
+        for (Map.Entry<String, LogHandler.LogHandlerCreator> c : LogHandlers.CREATORS.entrySet()) {
+            LiteralArgumentBuilder<ServerCommandSource> handler = literal(c.getKey());
+            if (c.getValue().usesExtraArgs()) {
+                handlerArg.then(handler
+                        .executes(ctx -> subscribe(ctx, c.getKey()))
+                        .then(argument("extra", greedyString()).executes(ctx -> subscribe(ctx, c.getKey()))));
+            } else {
+                handlerArg.then(handler.executes(ctx -> subscribe(ctx, c.getKey())));
+            }
+        }
+
+        LiteralArgumentBuilder<ServerCommandSource> playerArg = literal("player")
+                .then(argument("player", StringArgumentType.word())
+                .suggests( (c, b) -> CommandSource.suggestMatching(c.getSource().getPlayerNames(),b))
+                .executes(LogCommand::subscribe)
+                    .then(handlerArg));
+
         log.then(argument("log name", StringArgumentType.word())
             .suggests((c, b)-> CommandSource.suggestMatching(LoggerRegistry.getLoggerNames(),b))
             .executes(c -> toggleSubscription(c.getSource(), c.getSource().getName(), getString(c, "log name")))
@@ -41,22 +62,45 @@ public class LogCommand {
                     c.getSource(),
                     c.getSource().getName(),
                     getString(c, "log name"))))
+            .then(playerArg)
+            .then(handlerArg)
             .then(argument("option", StringArgumentType.word())
                 .suggests(LogCommand::suggestLoggerOptions)
-                .executes(c -> subscribePlayer(
-                        c.getSource(),
-                        c.getSource().getName(),
-                        getString(c, "log name"),
-                        getString(c, "option")))
-                .then(argument("player", StringArgumentType.word())
-                        .suggests( (c, b) -> CommandSource.suggestMatching(c.getSource().getPlayerNames(),b))
-                        .executes( (c) -> subscribePlayer(
-                                c.getSource(),
-                                getString(c, "player"),
-                                getString(c, "log name"),
-                                getString(c, "option"))))));
+                .executes(LogCommand::subscribe)
+                .then(playerArg)));
 
         dispatcher.register(log);
+    }
+
+    private static <T> T getOrNull(CommandContext<ServerCommandSource> context, String argument, Class<T> type) {
+        try {
+            return context.getArgument(argument, type);
+        } catch (IllegalArgumentException e) {
+            if (e.getMessage().startsWith("No such argument")) return null;
+            throw e;
+        }
+    }
+
+    private static <T> T getOrDefault(CommandContext<ServerCommandSource> context, String argument, T defaultValue) {
+        T value = getOrNull(context, argument, (Class<T>) defaultValue.getClass());
+        return value == null ? defaultValue : value;
+    }
+
+    private static int subscribe(CommandContext<ServerCommandSource> context, String handlerName) {
+        String player = getOrDefault(context, "player", context.getSource().getName());
+        String logger = getString(context, "log name");
+        String option = getOrNull(context, "option", String.class);
+        LogHandler handler = null;
+        if (handlerName != null) {
+            String extra = getOrNull(context, "extra", String.class);
+            String[] extraArgs = extra == null ? new String[0] : extra.split(" ");
+            handler = LogHandlers.createHandler(handlerName, extraArgs);
+        }
+        return subscribePlayer(context.getSource(), player, logger, option, handler);
+    }
+
+    private static int subscribe(CommandContext<ServerCommandSource> context) {
+        return subscribe(context, null);
     }
 
     private static CompletableFuture<Suggestions> suggestLoggerOptions(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) {
@@ -158,9 +202,9 @@ public class LogCommand {
         return 1;
     }
 
-    private static int subscribePlayer(ServerCommandSource source, String playerName, String loggerName, String option) {
+    private static int subscribePlayer(ServerCommandSource source, String playerName, String loggerName, String option, LogHandler handler) {
         if (areArgumentsInvalid(source, playerName, loggerName)) return 0;
-        LoggerRegistry.subscribePlayer(playerName, loggerName, option, null);
+        LoggerRegistry.subscribePlayer(playerName, loggerName, option, handler);
         if (option != null) {
             Messenger.m(source, "gi Subscribed to " + loggerName + "(" + option + ")");
         } else {

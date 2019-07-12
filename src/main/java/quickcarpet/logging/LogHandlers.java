@@ -6,23 +6,33 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class LogHandlers {
-    private static final Map<String, LogHandler.LogHandlerCreator> CREATORS = new HashMap<>();
+    public static final Map<String, LogHandler.LogHandlerCreator> CREATORS = new HashMap<>();
 
     static {
         registerCreator("chat", extraArgs -> LogHandler.CHAT);
         registerCreator("hud", extraArgs -> LogHandler.HUD);
-        // registerCreator("command", CommandLogHandler::new);
+        registerCreator("command", new LogHandler.LogHandlerCreator() {
+            @Override
+            public LogHandler create(String... extraArgs) {
+                return new CommandLogHandler(extraArgs);
+            }
+
+            @Override
+            public boolean usesExtraArgs() {
+                return true;
+            }
+        });
     }
 
     private static void registerCreator(String name, LogHandler.LogHandlerCreator creator) {
         CREATORS.put(name, creator);
     }
 
-    static LogHandler createHandler(String name, String... extraArgs) {
+    public static LogHandler createHandler(String name, String... extraArgs) {
         return CREATORS.get(name).create(extraArgs);
     }
 
-    static List<String> getHandlerNames() {
+    public static List<String> getHandlerNames() {
         return CREATORS.keySet().stream().sorted().collect(Collectors.toList());
     }
 }

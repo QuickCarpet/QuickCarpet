@@ -1,8 +1,11 @@
 package quickcarpet.logging.loghelpers;
 
 import net.minecraft.text.Text;
+import quickcarpet.logging.Logger;
 import quickcarpet.logging.LoggerRegistry;
 import quickcarpet.utils.Messenger;
+
+import java.util.LinkedHashMap;
 
 public class TNTLogHelper {
     private double primedX, primedY, primedZ, primedAngle;
@@ -34,5 +37,17 @@ public class TNTLogHelper {
             }
             return null;
         });
+    }
+
+    public class LogParameters extends LinkedHashMap<String, Double> implements Logger.CommandParameters<Double> {
+        public LogParameters(double x, double y, double z) {
+            put("primed.x", primedX);
+            put("primed.y", primedY);
+            put("primed.z", primedZ);
+            put("primed.angle", primedAngle);
+            put("exploded.x", x);
+            put("exploded.y", y);
+            put("exploded.z", z);
+        }
     }
 }

@@ -11,6 +11,7 @@ import net.minecraft.util.math.MathHelper;
 import quickcarpet.QuickCarpet;
 import quickcarpet.commands.TickCommand;
 import quickcarpet.logging.Logger;
+import quickcarpet.logging.loghelpers.LogParameter;
 import quickcarpet.pubsub.PubSubInfoProvider;
 import quickcarpet.utils.Messenger;
 
@@ -299,15 +300,13 @@ public class TickSpeed {
         return calculateTPS(getCurrentMSPT());
     }
 
-    public class LogCommandParameters extends AbstractMap<String, Object> implements Logger.CommandParameters {
+    public class LogCommandParameters extends AbstractMap<String, Double> implements Logger.CommandParameters<Double> {
         private LogCommandParameters() {}
         @Override
-        public Set<Entry<String, Object>> entrySet() {
-            Map<String, Object> counts = new LinkedHashMap<>();
-            double mspt = getCurrentMSPT();
-            counts.put("MSPT", mspt);
-            counts.put("TPS", calculateTPS(mspt));
-            return counts.entrySet();
+        public Set<Entry<String, Double>> entrySet() {
+            return LogParameter.parameters(
+                    new LogParameter<>("MSPT", TickSpeed.this::getCurrentMSPT),
+                    new LogParameter<>("TPS", TickSpeed.this::getTPS));
         }
     }
 }

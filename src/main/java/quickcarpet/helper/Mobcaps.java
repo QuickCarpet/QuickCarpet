@@ -6,10 +6,11 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Pair;
 import net.minecraft.world.dimension.DimensionType;
 import quickcarpet.QuickCarpet;
+import quickcarpet.logging.Logger;
+import quickcarpet.logging.loghelpers.LogParameter;
 import quickcarpet.mixin.ServerChunkManagerAccessor;
 
-import java.util.EnumMap;
-import java.util.Map;
+import java.util.*;
 
 public class Mobcaps {
     public static Map<EntityCategory, Pair<Integer, Integer>> getMobcaps(DimensionType dimensionType) {
@@ -26,5 +27,26 @@ public class Mobcaps {
             mobcaps.put(category, new Pair<>(cur, max));
         }
         return mobcaps;
+    }
+
+    public static class LogCommandParameters extends AbstractMap<String, Integer> implements Logger.CommandParameters<Integer> {
+        public static final LogCommandParameters INSTANCE = new LogCommandParameters();
+        private LogCommandParameters() {}
+
+        @Override
+        public Set<Entry<String, Integer>> entrySet() {
+            LinkedHashSet<Entry<String, Integer>> entries = new LinkedHashSet<>();
+            for (DimensionType dim : DimensionType.getAll()) {
+                for (EntityCategory category : EntityCategory.values()) {
+                    entries.add(new LogParameter<>(
+                            dim.toString() + "." + category.getName() + ".present",
+                            () -> getMobcaps(dim).get(category).getLeft()));
+                    entries.add(new LogParameter<>(
+                            dim.toString() + "." + category.getName() + ".limit",
+                            () -> getMobcaps(dim).get(category).getRight()));
+                }
+            }
+            return entries;
+        }
     }
 }

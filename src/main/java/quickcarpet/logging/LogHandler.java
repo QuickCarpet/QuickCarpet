@@ -32,6 +32,10 @@ public interface LogHandler
     interface LogHandlerCreator
     {
         LogHandler create(String... extraArgs);
+
+        default boolean usesExtraArgs() {
+            return false;
+        }
     }
 
     void handle(ServerPlayerEntity player, Text[] message, Supplier<Logger.CommandParameters> commandParams);
