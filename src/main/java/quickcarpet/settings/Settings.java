@@ -89,6 +89,21 @@ public class Settings {
     @Rule(desc = "Explosions won't destroy blocks", category = TNT)
     public static boolean explosionNoBlockDamage = false;
 
+    @Rule(desc = "Removes random TNT momentum when primed and set to false", category = TNT)
+    public static boolean tntPrimeMomentum = true;
+
+    @Rule(desc = "Sets the horizontal random angle on TNT for debugging of TNT contraptions", category = TNT, options = "-1", validator = TNTAngle.class)
+    public static double tntHardcodeAngle = -1;
+
+    public static class TNTAngle implements Validator<Double> {
+        @Override
+        public Optional<String> validate(Double value) {
+            if (value == -1) return Optional.empty();
+            if (value >= 0 && value < 360) return Optional.empty();
+            return Optional.of("Must be in the range [0,360) or -1 for default");
+        }
+    }
+
     @Rule(desc = "Silverfish drop a gravel item when breaking out of a block", category = {FEATURE, EXPERIMENTAL})
     public static boolean silverFishDropGravel = false;
 

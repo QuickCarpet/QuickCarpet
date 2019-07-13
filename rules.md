@@ -293,3 +293,20 @@ Default: `false`
 Options: `true`, `false`  
 Categories: survival  
 
+## tntHardcodeAngle
+Sets the horizontal random angle on TNT for debugging of TNT contraptions
+
+Type: `double`  
+Default: `-1.0`  
+Options: `-1`  
+Categories: tnt  
+Validator: `quickcarpet.settings.Settings$TNTAngle`
+
+## tntPrimeMomentum
+Removes random TNT momentum when primed and set to false
+
+Type: `boolean`  
+Default: `true`  
+Options: `true`, `false`  
+Categories: tnt  
+

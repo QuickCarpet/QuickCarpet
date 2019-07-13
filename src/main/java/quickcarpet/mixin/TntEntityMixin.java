@@ -12,8 +12,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import quickcarpet.annotation.Feature;
 import quickcarpet.logging.LoggerRegistry;
 import quickcarpet.logging.loghelpers.TNTLogHelper;
+import quickcarpet.settings.Settings;
 
 @Feature("logger.tnt")
+@Feature("tntHardcodeAngle")
+@Feature("tntPrimeMomentum")
 @Mixin(TntEntity.class)
 public abstract class TntEntityMixin extends Entity {
     private TNTLogHelper logHelper = null;
@@ -22,23 +25,14 @@ public abstract class TntEntityMixin extends Entity {
         super(entityType_1, world_1);
     }
 
-    /* // Mixin bug https://github.com/FabricMC/Mixin/issues/23
-    @Redirect(
-            method = "<init>(Lnet/minecraft/world/World;DDDLnet/minecraft/entity/LivingEntity;)V",
-            at = @At(value = "INVOKE", target = "Ljava/util/Random;nextDouble()D")
-    )
-    private double initTNTLogger(Random random, World world, double x, double y, double z) {
-        double nextDouble = random.nextDouble();
-        if (LoggerRegistry.TNT.isActive()) {
-            logHelper = new TNTLogHelper();
-            logHelper.onPrimed(x, y, z, nextDouble * 2 * Math.PI);
-        }
-        return nextDouble;
-    }
-    */
-
     @Inject(method = "<init>(Lnet/minecraft/world/World;DDDLnet/minecraft/entity/LivingEntity;)V", at = @At("RETURN"))
-    private void initTNTLogger(World world, double x, double y, double z, LivingEntity activator, CallbackInfo ci) {
+    private void onInit(World world, double x, double y, double z, LivingEntity activator, CallbackInfo ci) {
+        if (!Settings.tntPrimeMomentum) {
+            setVelocity(0, 0.2, 0);
+        } else if (Settings.tntHardcodeAngle >= 0) {
+            double rad = -Math.toRadians(Settings.tntHardcodeAngle);
+            setVelocity(Math.sin(rad) * 0.02, 0.2, Math.cos(rad) * 0.02);
+        }
         if (LoggerRegistry.TNT.isActive()) logHelper = new TNTLogHelper((TntEntity) (Object) this);
     }
 

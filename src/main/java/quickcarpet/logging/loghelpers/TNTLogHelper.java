@@ -22,7 +22,13 @@ public class TNTLogHelper {
         primedY = tnt.y;
         primedZ = tnt.z;
         Vec3d v = tnt.getVelocity();
-        primedAngle = -Math.toDegrees(Math.atan2(v.x, v.z));
+        if (v.x == 0 && v.z == 0) {
+            primedAngle = Double.NaN;
+        } else {
+            double angle = -Math.toDegrees(Math.atan2(v.x, v.z));
+            if (angle < 0) angle += 360;
+            primedAngle = angle == -0 ? 0 : angle;
+        }
     }
 
     /**
