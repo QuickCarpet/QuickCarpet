@@ -1,15 +1,9 @@
 package quickcarpet.settings;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.*;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.suggestion.Suggestions;
-import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import net.minecraft.command.arguments.ArgumentTypes;
-import net.minecraft.command.arguments.serialize.ConstantArgumentSerializer;
-import net.minecraft.server.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
 import quickcarpet.module.QuickCarpetModule;
 import quickcarpet.network.channels.RulesChannel;
@@ -17,12 +11,16 @@ import quickcarpet.utils.Reflection;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.*;
-import java.util.concurrent.CompletableFuture;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Locale;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+import static java.lang.reflect.Modifier.*;
 
 public final class ParsedRule<T> implements Comparable<ParsedRule> {
-    private final Map<Class<? extends Enum>, ArgumentType> ARGUMENT_TYPES = new HashMap<>();
     public final Rule rule;
     public final Field field;
 
@@ -33,6 +31,7 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
     public final ImmutableList<RuleCategory> categories;
     public final ImmutableList<String> options;
     public final Class<T> type;
+    private final TypeAdapter<T> typeAdapter;
     public final Validator<T> validator;
     public final ChangeListener<T> onChange;
     public final T defaultValue;
@@ -42,7 +41,9 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
     private String savedAsString;
 
     ParsedRule(SettingsManager manager, Field field, Rule rule) {
-        if ((field.getModifiers() & Modifier.STATIC) == 0) throw new IllegalArgumentException(field + " is not static");
+        if (((field.getModifiers() & (PUBLIC | STATIC | FINAL)) != (PUBLIC | STATIC))) {
+            throw new IllegalArgumentException(field + " is not public static");
+        }
         this.manager = manager;
         this.rule = rule;
         this.field = field;
@@ -54,71 +55,30 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
         this.categories = ImmutableList.copyOf(rule.category());
         this.validator = Reflection.callPrivateConstructor(rule.validator());
         this.onChange = Reflection.callPrivateConstructor(rule.onChange());
+        this.typeAdapter = getTypeAdapter(this.type);
         this.defaultValue = get();
-        this.defaultAsString = convertToString(this.defaultValue);
-        if (this.type == boolean.class) {
-            this.options = ImmutableList.of("true", "false");
-        } else if (this.type.isEnum()) {
-            this.options = getEnumOptions((Class<? extends Enum>) this.type);
-        } else {
-            this.options = ImmutableList.copyOf(rule.options());
-        }
+        this.defaultAsString = typeAdapter.toString(this.defaultValue);
+        ImmutableList<String> options = typeAdapter.getOptions();
+        if (options == null) options = ImmutableList.copyOf(rule.options());
+        this.options = options;
     }
 
-    public ArgumentType<T> getArgumentType() {
-        if (type == String.class) return (ArgumentType<T>) StringArgumentType.greedyString();
-        if (type == boolean.class) return (ArgumentType<T>) BoolArgumentType.bool();
-        if (type == int.class) return (ArgumentType<T>) IntegerArgumentType.integer();
-        if (type == double.class) return (ArgumentType<T>) DoubleArgumentType.doubleArg();
-        // if (type.isEnum()) return ARGUMENT_TYPES.computeIfAbsent((Class<? extends Enum>) type, ParsedRule::createEnumArgumentType);
-        if (type.isEnum()) return (ArgumentType<T>) StringArgumentType.string();
+    @SuppressWarnings("unchecked")
+    private static <T> TypeAdapter<T> getTypeAdapter(Class<T> type) {
+        if (type == String.class) return (TypeAdapter<T>) TypeAdapter.STRING;
+        if (type == boolean.class) return (TypeAdapter<T>) TypeAdapter.BOOLEAN;
+        if (type == int.class) return (TypeAdapter<T>) TypeAdapter.INTEGER;
+        if (type == double.class) return (TypeAdapter<T>) TypeAdapter.DOUBLE;
+        if (type.isEnum()) return new TypeAdapter.EnumTypeAdapter(type);
         throw new IllegalStateException("Unknown type " + type.getSimpleName());
     }
 
+    public ArgumentType<T> getArgumentType() {
+        return typeAdapter.getArgumentType();
+    }
+
     public T getArgument(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        if (type.isEnum()) {
-            String value = StringArgumentType.getString(context, "value");
-            try {
-                return (T) Enum.valueOf((Class) type, value.toUpperCase(Locale.ROOT));
-            } catch (IllegalArgumentException e) {
-                throw CommandSyntaxException.BUILT_IN_EXCEPTIONS.literalIncorrect().create(String.join(", ", options));
-            }
-        }
-        return context.getArgument("value", type);
-    }
-
-    private static ImmutableList<String> getEnumOptions(Class<? extends Enum> type) {
-        return Arrays.stream(type.getEnumConstants()).map(e -> ((Enum) e).name().toLowerCase(Locale.ROOT)).collect(ImmutableList.toImmutableList());
-    }
-
-    private static <T extends Enum> ArgumentType<T> createEnumArgumentType(Class<T> type) {
-        ImmutableList<String> options = getEnumOptions(type);
-        ArgumentType<T> arg = new ArgumentType<T>() {
-            @Override
-            public T parse(StringReader reader) throws CommandSyntaxException {
-                int start = reader.getCursor();
-                String value = reader.readUnquotedString();
-                String ucValue = value.toUpperCase(Locale.ROOT);
-                try {
-                    return (T) Enum.valueOf(type, ucValue);
-                } catch (IllegalArgumentException e) {
-                    reader.setCursor(start);
-                    throw CommandSyntaxException.BUILT_IN_EXCEPTIONS.literalIncorrect().createWithContext(reader, value);
-                }
-            }
-
-            @Override
-            public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-                return CommandSource.suggestMatching(options, builder);
-            }
-        };
-        String name = "carpet:" + type.getName()
-                .replace(type.getPackage().getName() + ".", "")
-                .replaceAll("[A-Z]", "_$0")
-                .replaceAll("\\$", "")
-                .toLowerCase(Locale.ROOT).substring(1);
-        ArgumentTypes.register(name, (Class) arg.getClass(), new ConstantArgumentSerializer<>(() -> arg));
-        return arg;
+        return typeAdapter.getArgument(context, "value", type);
     }
 
     @Nullable
@@ -128,18 +88,7 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
     }
 
     public void set(String value, boolean sync) {
-        if (type == String.class) {
-            set((T) value, sync);
-        } else if (type == boolean.class) {
-            set((T) (Object) Boolean.parseBoolean(value), sync);
-        } else if (type == int.class) {
-            set((T) (Object) Integer.parseInt(value), sync);
-        } else if (type == double.class) {
-            set((T) (Object) Double.parseDouble(value), sync);
-        } else if (type.isEnum()) {
-            String ucValue = value.toUpperCase(Locale.ROOT);
-            set((T) (Object) Enum.valueOf((Class<? extends Enum>) type, ucValue), sync);
-        } else throw new IllegalStateException("Unknown type " + type.getSimpleName());
+        set(typeAdapter.parse(value), sync);
     }
 
     public void set(T value, boolean sync) {
@@ -165,7 +114,7 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
     }
 
     public String getAsString() {
-        return convertToString(get());
+        return typeAdapter.toString(get());
     }
 
     public boolean getBoolValue() {
@@ -194,7 +143,7 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
 
     private void rememberSaved() {
         this.saved = get();
-        this.savedAsString = convertToString(this.saved);
+        this.savedAsString = typeAdapter.toString(this.saved);
     }
 
     T getSaved() {
@@ -208,11 +157,6 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
     public boolean hasSavedValue() {
         if (saved == null) return false;
         return !defaultValue.equals(saved);
-    }
-
-    private static String convertToString(Object value) {
-        if (value instanceof Enum) return ((Enum) value).name().toLowerCase(Locale.ROOT);
-        return value.toString();
     }
 
     @Override
@@ -233,5 +177,90 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
     @Override
     public String toString() {
         return this.name + ": " + getAsString();
+    }
+
+    public interface TypeAdapter<T> {
+        T parse(String s);
+        ArgumentType<T> getArgumentType();
+
+        default T getArgument(CommandContext<ServerCommandSource> context, String argument, Class<T> type) throws CommandSyntaxException {
+            return context.getArgument(argument, type);
+        }
+
+        default ImmutableList<String> getOptions() {
+            return null;
+        }
+
+        default String toString(T value) {
+            return String.valueOf(value);
+        }
+
+        class Simple<T> implements TypeAdapter<T> {
+            private final Function<String, T> parser;
+            private final Supplier<ArgumentType<T>> argumentType;
+
+            public Simple(Function<String, T> parser, Supplier<ArgumentType<T>> argumentType) {
+                this.parser = parser;
+                this.argumentType = argumentType;
+            }
+
+            @Override
+            public T parse(String s) {
+                return parser.apply(s);
+            }
+
+            @Override
+            public ArgumentType<T> getArgumentType() {
+                return argumentType.get();
+            }
+        }
+
+        class EnumTypeAdapter<T extends Enum<T>> implements TypeAdapter<Enum<T>> {
+            public final Class<T> enumClass;
+
+            public EnumTypeAdapter(Class<T> enumClass) {
+                this.enumClass = enumClass;
+            }
+
+            @Override
+            public Enum<T> parse(String s) {
+                return Enum.valueOf(enumClass, s.toUpperCase(Locale.ROOT));
+            }
+
+            @Override
+            public String toString(Enum<T> value) {
+                return value.name().toLowerCase(Locale.ROOT);
+            }
+
+            @Override
+            @SuppressWarnings("unchecked")
+            public ArgumentType<Enum<T>> getArgumentType() {
+                return (ArgumentType) StringArgumentType.string();
+            }
+
+            @Override
+            public Enum<T> getArgument(CommandContext<ServerCommandSource> context, String argument, Class<Enum<T>> type) throws CommandSyntaxException {
+                try {
+                    return parse(StringArgumentType.getString(context, "value"));
+                } catch (IllegalArgumentException e) {
+                    throw CommandSyntaxException.BUILT_IN_EXCEPTIONS.literalIncorrect().create(String.join(", ", getOptions()));
+                }
+            }
+
+            @Override
+            public ImmutableList<String> getOptions() {
+                return Arrays.stream(enumClass.getEnumConstants()).map(e -> e.name().toLowerCase(Locale.ROOT)).collect(ImmutableList.toImmutableList());
+            }
+        }
+
+        TypeAdapter<String> STRING = new Simple<>(s -> s, StringArgumentType::greedyString);
+        TypeAdapter<Boolean> BOOLEAN = new Simple<Boolean>(Boolean::parseBoolean, BoolArgumentType::bool) {
+            @Override
+            public ImmutableList<String> getOptions() {
+                return ImmutableList.of("true", "false");
+            }
+        };
+        TypeAdapter<Integer> INTEGER = new Simple<>(Integer::parseInt, IntegerArgumentType::integer);
+        TypeAdapter<Double> DOUBLE = new Simple<>(Double::parseDouble, DoubleArgumentType::doubleArg);
     }
 }
