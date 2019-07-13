@@ -1,4 +1,4 @@
-package quickcarpet.mixin;
+package quickcarpet.mixin.client;
 
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.client.network.packet.CustomPayloadS2CPacket;
@@ -11,8 +11,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import quickcarpet.QuickCarpet;
+import quickcarpet.annotation.Feature;
 import quickcarpet.client.ClientPluginChannelManager;
 
+@Feature("core")
 @Mixin(ClientPlayNetworkHandler.class)
 public abstract class ClientPlayNetworkHandlerMixin implements ClientPlayPacketListener {
     @Inject(method = "onGameJoin", at = @At("RETURN"))

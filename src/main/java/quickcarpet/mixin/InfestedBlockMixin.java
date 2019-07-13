@@ -11,9 +11,11 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import quickcarpet.annotation.Feature;
 
 import static quickcarpet.settings.Settings.silverFishDropGravel;
 
+@Feature("silverFishDropGravel")
 @Mixin(InfestedBlock.class)
 public abstract class InfestedBlockMixin extends Block {
     public InfestedBlockMixin(Settings block$Settings_1) {

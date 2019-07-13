@@ -9,11 +9,13 @@ import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.*;
 import org.spongepowered.asm.mixin.Interface;
 import org.spongepowered.asm.mixin.Mixin;
+import quickcarpet.annotation.Feature;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.ICoralFeature;
 
 import java.util.Random;
 
+@Feature("renewableCoral")
 @Mixin(CoralBlock.class)
 @Interface(iface = Fertilizable.class, prefix = "fert$")
 public abstract class CoralBlockMixin implements Fertilizable

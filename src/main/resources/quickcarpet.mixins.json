@@ -52,15 +52,15 @@
     "CoralFeatureMixin"
   ],
   "client": [
-    "BlockEntityRenderDispatcherMixin",
-    "ClientPlayNetworkHandlerMixin",
-    "ClientWorldMixin",
-    "InGameHudMixin",
-    "IntegratedServerMixin",
-    "MinecraftClientMixin",
-    "PistonBlockEntityRendererMixin",
-    "PlayerListHudMixin",
-    "RenderTickCounterMixin"
+    "client.BlockEntityRenderDispatcherMixin",
+    "client.ClientPlayNetworkHandlerMixin",
+    "client.ClientWorldMixin",
+    "client.InGameHudMixin",
+    "client.IntegratedServerMixin",
+    "client.MinecraftClientMixin",
+    "client.PistonBlockEntityRendererMixin",
+    "client.PlayerListHudMixin",
+    "client.RenderTickCounterMixin"
   ],
   "injectors": {
     "defaultRequire": 1

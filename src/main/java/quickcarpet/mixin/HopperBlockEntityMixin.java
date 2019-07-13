@@ -12,10 +12,12 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import quickcarpet.annotation.Feature;
 import quickcarpet.helper.HopperCounter;
 import quickcarpet.helper.WoolTool;
 import quickcarpet.settings.Settings;
 
+@Feature("hopperCounters")
 @Mixin(HopperBlockEntity.class)
 public abstract class HopperBlockEntityMixin extends LootableContainerBlockEntity {
 

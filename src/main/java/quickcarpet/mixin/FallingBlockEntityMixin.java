@@ -14,8 +14,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+import quickcarpet.annotation.Feature;
 import quickcarpet.settings.Settings;
 
+@Feature("renewableSand")
 @Mixin(FallingBlockEntity.class)
 public abstract class FallingBlockEntityMixin extends Entity {
     public FallingBlockEntityMixin(EntityType<?> entityType_1, World world_1) {

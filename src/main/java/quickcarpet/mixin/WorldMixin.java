@@ -21,6 +21,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import quickcarpet.annotation.Feature;
 import quickcarpet.utils.*;
 
 import java.util.HashMap;
@@ -49,12 +50,14 @@ public abstract class WorldMixin implements IWorld, SpawnEntityCache {
 
     @Shadow public abstract BlockState getBlockState(BlockPos blockPos_1);
 
+    @Feature("fillUpdates")
     @ModifyConstant(method = "setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z",
             constant = @Constant(intValue = NO_OBSERVER_UPDATE))
     private int addFillUpdatesInt(int original) {
         return NO_OBSERVER_UPDATE | NO_FILL_UPDATE;
     }
 
+    @Feature("profiler")
     @Inject(method = "tickBlockEntities", at = @At("HEAD"))
     private void startBlockEntities(CallbackInfo ci) {
         if (!this.isClient) {
@@ -63,6 +66,7 @@ public abstract class WorldMixin implements IWorld, SpawnEntityCache {
         }
     }
 
+    @Feature("profiler")
     @Inject(method = "tickBlockEntities", at = @At("TAIL"))
     private void endBlockEntities(CallbackInfo ci) {
         if (!this.isClient) {
@@ -70,6 +74,7 @@ public abstract class WorldMixin implements IWorld, SpawnEntityCache {
         }
     }
 
+    @Feature("profiler")
     @Redirect(
             method = "tickBlockEntities",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Tickable;tick()V")
@@ -84,6 +89,7 @@ public abstract class WorldMixin implements IWorld, SpawnEntityCache {
         }
     }
 
+    @Feature("profiler")
     @Inject(method = "tickEntity", at = @At("HEAD"))
     private void startEntity(Consumer<Entity> tick, Entity e, CallbackInfo ci) {
         if (!this.isClient) {
@@ -91,6 +97,7 @@ public abstract class WorldMixin implements IWorld, SpawnEntityCache {
         }
     }
 
+    @Feature("profiler")
     @Inject(method = "tickEntity", at = @At("TAIL"))
     private void endEntity(Consumer<Entity> tick, Entity e, CallbackInfo ci) {
         if (!this.isClient) {
@@ -100,12 +107,14 @@ public abstract class WorldMixin implements IWorld, SpawnEntityCache {
 
     private final Map<EntityType<?>, Entity> CACHED_ENTITIES = new HashMap<>();
 
+    @Feature("optimizedSpawning")
     @Override
     @SuppressWarnings("unchecked")
     public <T extends Entity> T getCachedEntity(EntityType<T> type) {
         return (T) CACHED_ENTITIES.get(type);
     }
 
+    @Feature("optimizedSpawning")
     @Override
     public <T extends Entity> void setCachedEntity(EntityType<T> type, T entity) {
         CACHED_ENTITIES.put(type, entity);
@@ -114,6 +123,7 @@ public abstract class WorldMixin implements IWorld, SpawnEntityCache {
     /**
      * @author 2No2Name
      */
+    @Feature("movableBlockEntities")
     public boolean setBlockStateWithBlockEntity(BlockPos blockPos_1, BlockState blockState_1, BlockEntity newBlockEntity, int int_1) {
         if (World.isHeightInvalid(blockPos_1)) {
             return false;

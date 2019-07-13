@@ -8,10 +8,12 @@ import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.EndCityFeature;
 import net.minecraft.world.gen.feature.StructureFeature;
 import org.spongepowered.asm.mixin.Mixin;
+import quickcarpet.annotation.Feature;
 
 import java.util.List;
 import java.util.function.Function;
 
+@Feature("shulkerSpawningInEndCities")
 @Mixin(EndCityFeature.class)
 public abstract class EndCityFeatureMixin extends StructureFeature<DefaultFeatureConfig> {
     private static final List<Biome.SpawnEntry> spawnList = Lists.newArrayList(new Biome.SpawnEntry(EntityType.SHULKER, 10, 4, 4));

@@ -20,6 +20,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+import quickcarpet.annotation.Feature;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.CarpetProfiler;
 import quickcarpet.utils.SpawnEntityCache;
@@ -28,6 +29,7 @@ import quickcarpet.utils.SpawnTracker;
 @Mixin(SpawnHelper.class)
 public class SpawnHelperMixin {
 
+    @Feature("spawnTracker")
     @Redirect(
             method = "spawnEntitiesInChunk",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;spawnEntity(Lnet/minecraft/entity/Entity;)Z")
@@ -43,6 +45,7 @@ public class SpawnHelperMixin {
         return false;
     }
 
+    @Feature("spawnTracker")
     @Inject(
             method = "spawnEntitiesInChunk",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/EntityType;getCategory()Lnet/minecraft/entity/EntityCategory;"),
@@ -54,6 +57,7 @@ public class SpawnHelperMixin {
         SpawnTracker.registerAttempt(world.getDimension().getType(), pos, spawnEntry.type);
     }
 
+    @Feature("optimizedSpawning")
     @Redirect(
             method = "spawnEntitiesInChunk",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;doesNotCollide(Lnet/minecraft/util/math/Box;)Z")
@@ -79,6 +83,7 @@ public class SpawnHelperMixin {
         return true;
     }
 
+    @Feature("optimizedSpawning")
     @Redirect(method = "spawnEntitiesInChunk", at = @At(
             value = "INVOKE",
             target = "Lnet/minecraft/entity/EntityType;create(Lnet/minecraft/world/World;)Lnet/minecraft/entity/Entity;"
@@ -92,18 +97,14 @@ public class SpawnHelperMixin {
         return cached;
     }
 
-    @Inject(
-            method = "spawnEntitiesInChunk",
-            at = @At("HEAD")
-    )
+    @Feature("profiler")
+    @Inject(method = "spawnEntitiesInChunk", at = @At("HEAD"))
     private static void startSpawning(EntityCategory category, World world, WorldChunk chunk, BlockPos spawnPoint, CallbackInfo ci) {
         CarpetProfiler.startSection(world, CarpetProfiler.SectionType.SPAWNING);
     }
 
-    @Inject(
-            method = "spawnEntitiesInChunk",
-            at = @At("RETURN")
-    )
+    @Feature("profiler")
+    @Inject(method = "spawnEntitiesInChunk", at = @At("RETURN"))
     private static void endSpawning(EntityCategory category, World world, WorldChunk chunk, BlockPos spawnPoint, CallbackInfo ci) {
         CarpetProfiler.endSection(world);
     }

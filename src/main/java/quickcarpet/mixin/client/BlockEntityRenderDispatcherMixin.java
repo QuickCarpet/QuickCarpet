@@ -1,4 +1,4 @@
-package quickcarpet.mixin;
+package quickcarpet.mixin.client;
 
 import com.mojang.blaze3d.platform.GLX;
 import com.mojang.blaze3d.platform.GlStateManager;
@@ -10,8 +10,10 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import quickcarpet.annotation.Feature;
 import quickcarpet.utils.IBlockEntityRenderDispatcher;
 
+@Feature("movableBlockEntities")
 @Mixin(BlockEntityRenderDispatcher.class)
 public abstract class BlockEntityRenderDispatcherMixin implements IBlockEntityRenderDispatcher {
     @Shadow

@@ -13,12 +13,14 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+import quickcarpet.annotation.Feature;
 import quickcarpet.utils.IPistonBlockEntity;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+@Feature("movableBlockEntities")
 @Mixin(PistonBlock.class)
 public class PistonBlockMixin extends FacingBlock {
 
@@ -28,6 +30,7 @@ public class PistonBlockMixin extends FacingBlock {
 
     private ThreadLocal<List<BlockEntity>> list1_BlockEntities = new ThreadLocal<>(); //Unneccessary ThreadLocal if client and server use different PistonBlock instances
 
+    @Feature("autoCraftingTable")
     @Inject(method = "isMovable", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;hasBlockEntity()Z"),
             cancellable = true)
     private static void craftingTableMoveable(BlockState state, World world, BlockPos pos, Direction pistonDirection,

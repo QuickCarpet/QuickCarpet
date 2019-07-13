@@ -10,12 +10,14 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+import quickcarpet.annotation.Feature;
 import quickcarpet.settings.Settings;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
+@Feature("explosionNoBlockDamage")
 @Mixin(Explosion.class)
 public abstract class ExplosionMixin {
     @Shadow @Final private List<BlockPos> affectedBlocks;

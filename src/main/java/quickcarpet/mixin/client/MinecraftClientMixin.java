@@ -1,4 +1,4 @@
-package quickcarpet.mixin;
+package quickcarpet.mixin.client;
 
 import net.fabricmc.api.EnvType;
 import net.minecraft.client.MinecraftClient;
@@ -7,7 +7,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import quickcarpet.QuickCarpet;
+import quickcarpet.annotation.Feature;
 
+@Feature("core")
 @Mixin(MinecraftClient.class)
 public abstract class MinecraftClientMixin {
     @Inject(method = "init", at = @At("RETURN"))

@@ -1,4 +1,4 @@
-package quickcarpet.mixin;
+package quickcarpet.mixin.client;
 
 import net.minecraft.server.integrated.IntegratedServer;
 import org.spongepowered.asm.mixin.Mixin;
@@ -6,7 +6,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import quickcarpet.QuickCarpet;
+import quickcarpet.annotation.Feature;
 
+@Feature("core")
 @Mixin(IntegratedServer.class)
 public abstract class IntegratedServerMixin {
 

@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import quickcarpet.annotation.Feature;
 import quickcarpet.utils.SpawnTracker;
 
 @Mixin(ServerChunkManager.class)
@@ -19,6 +20,7 @@ public abstract class ServerChunkManagerMixin {
 
     @Shadow @Final private ChunkTicketManager ticketManager;
 
+    @Feature("spawnTracker")
     @Redirect(
         method = {"tickChunks", "method_20801"},
         at = @At(value = "INVOKE", target = "Lit/unimi/dsi/fastutil/objects/Object2IntMap;getInt(Ljava/lang/Object;)I"),

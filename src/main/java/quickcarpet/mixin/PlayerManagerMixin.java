@@ -16,6 +16,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+import quickcarpet.annotation.Feature;
 import quickcarpet.patches.ServerPlayNetworkHandlerFake;
 import quickcarpet.patches.ServerPlayerEntityFake;
 
@@ -23,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
+@Feature("fakePlayer")
 @Mixin(PlayerManager.class)
 public abstract class PlayerManagerMixin {
     @Shadow @Final private MinecraftServer server;

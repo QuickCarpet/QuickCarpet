@@ -9,9 +9,11 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import quickcarpet.annotation.Feature;
 import quickcarpet.helper.EntityPlayerActionPack;
 import quickcarpet.utils.IServerPlayerEntity;
 
+@Feature("actionPack")
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin implements IServerPlayerEntity {
     private EntityPlayerActionPack actionPack;

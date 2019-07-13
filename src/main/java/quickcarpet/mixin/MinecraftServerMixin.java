@@ -17,6 +17,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import quickcarpet.QuickCarpet;
+import quickcarpet.annotation.Feature;
 import quickcarpet.helper.TickSpeed;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.CarpetProfiler;
@@ -45,6 +46,7 @@ public abstract class MinecraftServerMixin {
     @Shadow protected abstract void method_16208();
 
     // Called during game start
+    @Feature("core")
     @Inject(method = "<init>", at = @At(value = "RETURN"))
     private void onMinecraftServerCTOR(File file_1, Proxy proxy_1, DataFixer dataFixer_1,
                                        CommandManager serverCommandManager_1, YggdrasilAuthenticationService yggdrasilAuthenticationService_1,
@@ -55,6 +57,7 @@ public abstract class MinecraftServerMixin {
     }
 
     // Cancel a while statement
+    @Feature("tickSpeed")
     @Redirect(method = "run", at = @At(value = "FIELD", target = "Lnet/minecraft/server/MinecraftServer;running:Z"))
     private boolean cancelRunLoop(MinecraftServer server) {
         return false;
@@ -63,6 +66,7 @@ public abstract class MinecraftServerMixin {
     // Replaced the above cancelled while statement with this one
     // could possibly just inject that mspt selection at the beginning of the loop, but then adding all mspt's to
     // replace 50L will be a hassle
+    @Feature("tickSpeed")
     @Inject(method = "run", at = @At(value = "INVOKE", shift = At.Shift.AFTER,
             target = "Lnet/minecraft/server/MinecraftServer;setFavicon(Lnet/minecraft/server/ServerMetadata;)V"))
     private void modifiedRunLoop(CallbackInfo ci) {
@@ -114,31 +118,27 @@ public abstract class MinecraftServerMixin {
 
     }
 
-    @Inject(
-            method = "tick",
-            at = @At(value = "FIELD", target = "net/minecraft/server/MinecraftServer.ticks:I", shift = At.Shift.AFTER, ordinal = 0)
-    )
+    @Feature("core")
+    @Feature("profiler")
+    @Inject(method = "tick", at = @At(value = "FIELD", target = "net/minecraft/server/MinecraftServer.ticks:I", shift = At.Shift.AFTER, ordinal = 0))
     private void onTick(BooleanSupplier booleanSupplier_1, CallbackInfo ci) {
         QuickCarpet.getInstance().tick((MinecraftServer) (Object) this);
         CarpetProfiler.startTick();
     }
 
-    @Inject(
-            method = "tick",
-            at = @At("TAIL")
-    )
+    @Feature("profiler")
+    @Inject(method = "tick", at = @At("TAIL"))
     private void endTick(BooleanSupplier booleanSupplier_1, CallbackInfo ci) {
         CarpetProfiler.endTick((MinecraftServer) (Object) this);
     }
 
-    @Inject(
-            method = "tick",
-            at = @At(value = "CONSTANT", args = "stringValue=save")
-    )
+    @Feature("profiler")
+    @Inject(method = "tick", at = @At(value = "CONSTANT", args = "stringValue=save"))
     private void startAutosave(BooleanSupplier booleanSupplier_1, CallbackInfo ci) {
         CarpetProfiler.startSection(null, CarpetProfiler.SectionType.AUTOSAVE);
     }
 
+    @Feature("profiler")
     @Inject(
             method = "tick",
             slice = @Slice(from = @At(value = "CONSTANT", args = "stringValue=save")),
@@ -149,27 +149,25 @@ public abstract class MinecraftServerMixin {
         CarpetProfiler.endSection(null);
     }
 
-    @Inject(
-            method = "tickWorlds",
-            at = @At(value = "CONSTANT", args = "stringValue=connection")
-    )
+    @Feature("profiler")
+    @Inject(method = "tickWorlds", at = @At(value = "CONSTANT", args = "stringValue=connection"))
     private void startNetwork(BooleanSupplier booleanSupplier_1, CallbackInfo ci) {
         CarpetProfiler.startSection(null, CarpetProfiler.SectionType.NETWORK);
     }
 
-    @Inject(
-            method = "tickWorlds",
-            at = @At(value = "CONSTANT", args = "stringValue=server gui refresh")
-    )
+    @Feature("profiler")
+    @Inject(method = "tickWorlds", at = @At(value = "CONSTANT", args = "stringValue=server gui refresh"))
     private void endNetwork(BooleanSupplier booleanSupplier_1, CallbackInfo ci) {
         CarpetProfiler.endSection(null);
     }
 
+    @Feature("spawnChunkLevel")
     @ModifyConstant(method = "prepareStartRegion", constant = @Constant(intValue = 11), require = 1)
     private int adjustSpawnChunkLevel(int level) {
         return Settings.spawnChunkLevel;
     }
 
+    @Feature("spawnChunkLevel")
     @ModifyConstant(method = "prepareStartRegion", constant = @Constant(intValue = 441), require = 1)
     private int adjustSpawnChunkCount(int count) {
         int sideLength = Settings.spawnChunkLevel * 2 - 1;

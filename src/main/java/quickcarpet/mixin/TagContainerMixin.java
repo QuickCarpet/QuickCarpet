@@ -10,10 +10,12 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import quickcarpet.annotation.Feature;
 import quickcarpet.utils.CarpetRegistry;
 
 import java.util.Map;
 
+@Feature("core")
 @Mixin(TagContainer.class)
 public abstract class TagContainerMixin<T> {
     @Shadow @Final private String entryType;

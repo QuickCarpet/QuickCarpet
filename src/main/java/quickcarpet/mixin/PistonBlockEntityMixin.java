@@ -17,10 +17,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import quickcarpet.annotation.Feature;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.IPistonBlockEntity;
 import quickcarpet.utils.IWorld;
 
+@Feature("movableBlockEntities")
 @Mixin(PistonBlockEntity.class)
 public abstract class PistonBlockEntityMixin extends BlockEntity implements IPistonBlockEntity {
     @Shadow private boolean source;
@@ -122,6 +124,7 @@ public abstract class PistonBlockEntityMixin extends BlockEntity implements IPis
         }
     }
 
+    @Feature("smoothPistons")
     @Inject(method = "getProgress", at = @At(value = "HEAD"), cancellable = true)
     private void smoothPistons(float partialTicks, CallbackInfoReturnable<Float> cir) {
         float val;
@@ -134,6 +137,7 @@ public abstract class PistonBlockEntityMixin extends BlockEntity implements IPis
         cir.cancel();
     }
 
+    @Feature("smoothPistons")
     @Inject(method = "tick", at = @At(value = "FIELD", target = "Lnet/minecraft/block/entity/PistonBlockEntity;progress:F", ordinal = 0))
     private void setActualProgress(CallbackInfo ci) {
         this.actualProgress = this.progress;

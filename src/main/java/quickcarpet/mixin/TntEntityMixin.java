@@ -9,9 +9,11 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import quickcarpet.annotation.Feature;
 import quickcarpet.logging.LoggerRegistry;
 import quickcarpet.logging.loghelpers.TNTLogHelper;
 
+@Feature("logger.tnt")
 @Mixin(TntEntity.class)
 public abstract class TntEntityMixin extends Entity {
     private TNTLogHelper logHelper = null;
@@ -20,20 +22,31 @@ public abstract class TntEntityMixin extends Entity {
         super(entityType_1, world_1);
     }
 
-    @Inject(method = "<init>(Lnet/minecraft/world/World;DDDLnet/minecraft/entity/LivingEntity;)V",
-            at = @At(value = "RETURN"))
-    private void initTNTLogger(World world_1, double double_1, double double_2, double double_3,
-                               LivingEntity livingEntity_1, CallbackInfo ci) {
-        double double_4 = world_1.random.nextDouble() * 6.2831854820251465D;
+    /* // Mixin bug https://github.com/FabricMC/Mixin/issues/23
+    @Redirect(
+            method = "<init>(Lnet/minecraft/world/World;DDDLnet/minecraft/entity/LivingEntity;)V",
+            at = @At(value = "INVOKE", target = "Ljava/util/Random;nextDouble()D")
+    )
+    private double initTNTLogger(Random random, World world, double x, double y, double z) {
+        double nextDouble = random.nextDouble();
         if (LoggerRegistry.TNT.isActive()) {
             logHelper = new TNTLogHelper();
-            logHelper.onPrimed(double_1, double_2, double_3, double_4);
+            logHelper.onPrimed(x, y, z, nextDouble * 2 * Math.PI);
         }
+        return nextDouble;
+    }
+    */
+
+    @Inject(method = "<init>(Lnet/minecraft/world/World;DDDLnet/minecraft/entity/LivingEntity;)V", at = @At("RETURN"))
+    private void initTNTLogger(World world, double x, double y, double z, LivingEntity activator, CallbackInfo ci) {
+        if (LoggerRegistry.TNT.isActive()) logHelper = new TNTLogHelper((TntEntity) (Object) this);
     }
 
     @Inject(method = "explode", at = @At(value = "HEAD"))
     private void onExplode(CallbackInfo ci) {
-        if (LoggerRegistry.TNT.isActive() && logHelper != null)
-            logHelper.onExploded(x, y, z);
+        if (logHelper != null) {
+            logHelper.onExploded();
+            logHelper = null;
+        }
     }
 }

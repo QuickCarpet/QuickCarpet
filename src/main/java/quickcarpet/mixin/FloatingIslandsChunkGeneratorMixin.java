@@ -14,6 +14,7 @@ import quickcarpet.settings.Settings;
 
 import java.util.List;
 
+@quickcarpet.annotation.Feature("shulkerSpawningInEndCities")
 @Mixin(FloatingIslandsChunkGenerator.class)
 public abstract class FloatingIslandsChunkGeneratorMixin extends SurfaceChunkGenerator<FloatingIslandsChunkGeneratorConfig> {
     public FloatingIslandsChunkGeneratorMixin(IWorld iWorld_1, BiomeSource biomeSource_1, int int_1, int int_2, int int_3, FloatingIslandsChunkGeneratorConfig chunkGeneratorConfig_1, boolean boolean_1) {

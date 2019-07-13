@@ -1,6 +1,8 @@
 package quickcarpet.logging.loghelpers;
 
+import net.minecraft.entity.TntEntity;
 import net.minecraft.text.Text;
+import net.minecraft.util.math.Vec3d;
 import quickcarpet.logging.Logger;
 import quickcarpet.logging.LoggerRegistry;
 import quickcarpet.utils.Messenger;
@@ -8,22 +10,28 @@ import quickcarpet.utils.Messenger;
 import java.util.LinkedHashMap;
 
 public class TNTLogHelper {
-    private double primedX, primedY, primedZ, primedAngle;
+    private final TntEntity tnt;
+    private final double primedX, primedY, primedZ, primedAngle;
 
     /**
      * Runs when the TNT is primed. Expects the position and motion angle of the TNT.
      */
-    public void onPrimed(double x, double y, double z, double angle) {
-        primedX = x;
-        primedY = y;
-        primedZ = z;
-        primedAngle = angle;
+    public TNTLogHelper(TntEntity tnt) {
+        this.tnt = tnt;
+        primedX = tnt.x;
+        primedY = tnt.y;
+        primedZ = tnt.z;
+        Vec3d v = tnt.getVelocity();
+        primedAngle = -Math.toDegrees(Math.atan2(v.x, v.z));
     }
 
     /**
      * Runs when the TNT explodes. Expects the position of the TNT.
      */
-    public void onExploded(double x, double y, double z) {
+    public void onExploded() {
+        double x = tnt.x;
+        double y = tnt.y;
+        double z = tnt.z;
         LoggerRegistry.TNT.log(option -> {
             switch (option) {
                 case "brief":
@@ -36,7 +44,7 @@ public class TNTLogHelper {
                             "r  E ", Messenger.dblf("r", x, y, z))};
             }
             return null;
-        });
+        }, () -> new LogParameters(x, y, z));
     }
 
     public class LogParameters extends LinkedHashMap<String, Double> implements Logger.CommandParameters<Double> {

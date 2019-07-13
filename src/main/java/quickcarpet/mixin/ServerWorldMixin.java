@@ -20,6 +20,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import quickcarpet.QuickCarpet;
+import quickcarpet.annotation.Feature;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.CarpetProfiler;
 
@@ -37,6 +38,7 @@ public abstract class ServerWorldMixin extends World {
         super(levelProperties_1, dimensionType_1, biFunction_1, profiler_1, boolean_1);
     }
 
+    @Feature("profiler")
     @Redirect(
             method = "tick",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerTickScheduler;tick()V", ordinal = 0)
@@ -47,6 +49,7 @@ public abstract class ServerWorldMixin extends World {
         CarpetProfiler.endSection(this);
     }
 
+    @Feature("profiler")
     @Redirect(
             method = "tick",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerTickScheduler;tick()V", ordinal = 1)
@@ -57,56 +60,52 @@ public abstract class ServerWorldMixin extends World {
         CarpetProfiler.endSection(this);
     }
 
+    @Feature("profiler")
     @Inject(method = "tickChunk", at = @At("HEAD"))
     private void startTickChunk(WorldChunk worldChunk_1, int int_1, CallbackInfo ci) {
         CarpetProfiler.startSection(this, CarpetProfiler.SectionType.RANDOM_TICKS);
     }
 
+    @Feature("profiler")
     @Inject(method = "tickChunk", at = @At("TAIL"))
     private void endTickChunk(WorldChunk worldChunk_1, int int_1, CallbackInfo ci) {
         CarpetProfiler.endSection(this);
     }
 
-    @Inject(
-            method = "tick",
-            at = @At(value = "CONSTANT", args = "stringValue=portalForcer")
-    )
+    @Feature("profiler")
+    @Inject(method = "tick", at = @At(value = "CONSTANT", args = "stringValue=portalForcer"))
     private void startPortals(BooleanSupplier booleanSupplier_1, CallbackInfo ci) {
         CarpetProfiler.startSection(this, CarpetProfiler.SectionType.PORTALS);
     }
 
-    @Inject(
-            method = "tick",
-            at = @At(value = "CONSTANT", args = "stringValue=raid")
-    )
+    @Feature("profiler")
+    @Inject(method = "tick", at = @At(value = "CONSTANT", args = "stringValue=raid"))
     private void endPortalsStartRaid(BooleanSupplier booleanSupplier_1, CallbackInfo ci) {
         CarpetProfiler.endSection(this);
         CarpetProfiler.startSection(this, CarpetProfiler.SectionType.VILLAGES);
     }
 
-    @Inject(
-            method = "tick",
-            at = @At(value = "CONSTANT", args = "stringValue=blockEvents")
-    )
+    @Feature("profiler")
+    @Inject(method = "tick", at = @At(value = "CONSTANT", args = "stringValue=blockEvents"))
     private void endRaidStartBlockEvents(BooleanSupplier booleanSupplier_1, CallbackInfo ci) {
         CarpetProfiler.endSection(this);
         CarpetProfiler.startSection(this, CarpetProfiler.SectionType.BLOCK_EVENTS);
     }
 
-    @Inject(
-            method = "tick",
-            at = @At(value = "CONSTANT", args = "stringValue=entities")
-    )
+    @Feature("profiler")
+    @Inject(method = "tick", at = @At(value = "CONSTANT", args = "stringValue=entities"))
     private void endBlockEventsStartEntities(BooleanSupplier booleanSupplier_1, CallbackInfo ci) {
         CarpetProfiler.endSection(this);
         CarpetProfiler.startSection(this, CarpetProfiler.SectionType.ENTITIES);
     }
 
+    @Feature("spawnChunkLevel")
     @ModifyConstant(method = "setSpawnPos", constant = @Constant(intValue = 11), require = 2)
     private int adjustSpawnChunkLevel(int level) {
         return Settings.spawnChunkLevel;
     }
 
+    @Feature("tickSpeed")
     @Inject(method = "tick", at = @At("HEAD"), cancellable = true)
     private void tickFreeze(BooleanSupplier shouldContinueTicking, CallbackInfo ci) {
         if (QuickCarpet.getInstance().tickSpeed.isPaused()) {
@@ -116,6 +115,7 @@ public abstract class ServerWorldMixin extends World {
         }
     }
 
+    @Feature("optimizedFluidTicks")
     @Redirect(method = "tickChunk", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/ChunkSection;getFluidState(III)Lnet/minecraft/fluid/FluidState;"))
     private FluidState optimizedFluidTick(ChunkSection chunkSection, int x, int y, int z) {
         if (Settings.optimizedFluidTicks && !chunkSection.hasRandomFluidTicks()) return Fluids.EMPTY.getDefaultState();

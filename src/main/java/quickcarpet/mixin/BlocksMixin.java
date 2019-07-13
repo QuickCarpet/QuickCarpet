@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.Slice;
+import quickcarpet.annotation.Feature;
 import quickcarpet.feature.ObsidianBlock;
 
 @Mixin(Blocks.class)
@@ -17,6 +18,7 @@ public class BlocksMixin {
         throw new AssertionError();
     }
 
+    @Feature("renewableLava")
     @Redirect(method = "<clinit>",
         slice = @Slice(from = @At(value = "CONSTANT", args = "stringValue=obsidian")),
         at = @At(value = "INVOKE",

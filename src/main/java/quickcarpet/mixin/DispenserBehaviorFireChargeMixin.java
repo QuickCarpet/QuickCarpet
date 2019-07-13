@@ -13,8 +13,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import quickcarpet.annotation.Feature;
 import quickcarpet.settings.Settings;
 
+@Feature("fireChargeConvertsToNetherrack")
 @Mixin(targets = "net/minecraft/block/dispenser/DispenserBehavior$3")
 public class DispenserBehaviorFireChargeMixin extends ItemDispenserBehavior {
     @Inject(method = "dispenseSilently(Lnet/minecraft/util/math/BlockPointer;Lnet/minecraft/item/ItemStack;)Lnet/minecraft/item/ItemStack;", at = @At("HEAD"), cancellable = true)
