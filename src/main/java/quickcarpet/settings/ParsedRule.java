@@ -2,10 +2,7 @@ package quickcarpet.settings;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.brigadier.StringReader;
-import com.mojang.brigadier.arguments.ArgumentType;
-import com.mojang.brigadier.arguments.BoolArgumentType;
-import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.arguments.*;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
@@ -72,6 +69,7 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
         if (type == String.class) return (ArgumentType<T>) StringArgumentType.greedyString();
         if (type == boolean.class) return (ArgumentType<T>) BoolArgumentType.bool();
         if (type == int.class) return (ArgumentType<T>) IntegerArgumentType.integer();
+        if (type == double.class) return (ArgumentType<T>) DoubleArgumentType.doubleArg();
         // if (type.isEnum()) return ARGUMENT_TYPES.computeIfAbsent((Class<? extends Enum>) type, ParsedRule::createEnumArgumentType);
         if (type.isEnum()) return (ArgumentType<T>) StringArgumentType.string();
         throw new IllegalStateException("Unknown type " + type.getSimpleName());
@@ -136,6 +134,8 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
             set((T) (Object) Boolean.parseBoolean(value), sync);
         } else if (type == int.class) {
             set((T) (Object) Integer.parseInt(value), sync);
+        } else if (type == double.class) {
+            set((T) (Object) Double.parseDouble(value), sync);
         } else if (type.isEnum()) {
             String ucValue = value.toUpperCase(Locale.ROOT);
             set((T) (Object) Enum.valueOf((Class<? extends Enum>) type, ucValue), sync);
