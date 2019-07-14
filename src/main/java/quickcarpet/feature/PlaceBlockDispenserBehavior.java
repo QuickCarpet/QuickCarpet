@@ -42,7 +42,7 @@ public class PlaceBlockDispenserBehavior  extends ItemDispenserBehavior {
 
         final Direction ffacing = facing;
 
-        if (item.getClass() != BlockItem.class) {
+        if (item.getClass() != BlockItem.class || block instanceof SeaPickleBlock) {
             BlockHitResult hitResult = new BlockHitResult(new Vec3d(pos.offset(facing, 2)), facing, pos, false);
             ItemPlacementContext ipc = new ItemPlacementContext(world, null, Hand.MAIN_HAND, itemStack, hitResult) {
                 @Override
@@ -93,6 +93,10 @@ public class PlaceBlockDispenserBehavior  extends ItemDispenserBehavior {
             state = state.with(Properties.BLOCK_HALF, facing == Direction.UP ? BlockHalf.TOP : BlockHalf.BOTTOM);
         } else if (properties.contains(Properties.SLAB_TYPE)) {
             state = state.with(Properties.SLAB_TYPE, facing == Direction.DOWN ? SlabType.TOP : SlabType.BOTTOM);
+        }
+
+        if (properties.contains(Properties.WATERLOGGED)) {
+            state = state.with(Properties.WATERLOGGED, false);
         }
 
         if (block instanceof ObserverBlock) {
