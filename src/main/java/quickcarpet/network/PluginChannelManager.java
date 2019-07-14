@@ -95,13 +95,11 @@ public class PluginChannelManager {
         }
     }
 
-    // TODO: hook up
-    public void onPlayerConnected(ServerPlayerEntity player) {
+    public void onPlayerConnect(ServerPlayerEntity player) {
         sendChannelUpdate(Collections.singleton(player), REGISTER, channelHandlers.keySet());
     }
 
-    // TODO: hook up
-    public void onPlayerDisconnected(ServerPlayerEntity player) {
+    public void onPlayerDisconnect(ServerPlayerEntity player) {
         for (Identifier channel : tracker.getChannels(player)) {
             PluginChannelHandler handler = channelHandlers.get(channel);
             if (handler == null) {

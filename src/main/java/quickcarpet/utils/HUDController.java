@@ -14,7 +14,7 @@ import quickcarpet.helper.HopperCounter;
 import quickcarpet.helper.Mobcaps;
 import quickcarpet.helper.TickSpeed;
 import quickcarpet.logging.Logger;
-import quickcarpet.logging.LoggerRegistry;
+import quickcarpet.logging.Loggers;
 import quickcarpet.logging.loghelpers.PacketCounter;
 import quickcarpet.mixin.PlayerListHeaderS2CPacketAccessor;
 
@@ -31,7 +31,7 @@ public class HUDController {
     }
 
     static {
-        registerLogger(LoggerRegistry.TPS, logger -> {
+        registerLogger(Loggers.TPS, logger -> {
             TickSpeed tickSpeed = QuickCarpet.getInstance().tickSpeed;
             double MSPT = tickSpeed.getCurrentMSPT();
             double TPS = tickSpeed.calculateTPS(MSPT);
@@ -42,7 +42,7 @@ public class HUDController {
             logger.log(() -> message, () -> tickSpeed.LOG_COMMAND_PARAMETERS);
         });
 
-        registerLogger(LoggerRegistry.MOBCAPS, logger -> {
+        registerLogger(Loggers.MOBCAPS, logger -> {
             logger.log((option, player) -> {
                 DimensionType dim = player.dimension;
                 switch (option) {
@@ -73,13 +73,13 @@ public class HUDController {
             }, () -> Mobcaps.LogCommandParameters.INSTANCE);
         });
 
-        registerLogger(LoggerRegistry.COUNTER, logger -> logger.log(color -> {
+        registerLogger(Loggers.COUNTER, logger -> logger.log(color -> {
             HopperCounter counter = HopperCounter.getCounter(color);
             List<Text> res = counter == null ? Collections.emptyList() : counter.format(QuickCarpet.minecraft_server, false, true);
             return new Text[]{Messenger.c(res.toArray(new Object[0]))};
         }, () -> HopperCounter.LogCommandParameters.INSTANCE));
 
-        registerLogger(LoggerRegistry.PACKETS, logger -> logger.log(() -> {
+        registerLogger(Loggers.PACKETS, logger -> logger.log(() -> {
             Text[] ret = new Text[]{
                     Messenger.c("w I/" + PacketCounter.totalIn + " O/" + PacketCounter.totalOut),
             };

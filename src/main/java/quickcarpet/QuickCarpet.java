@@ -7,10 +7,12 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import quickcarpet.commands.*;
 import quickcarpet.helper.TickSpeed;
+import quickcarpet.logging.LoggerManager;
 import quickcarpet.module.ModuleHost;
 import quickcarpet.module.QuickCarpetModule;
 import quickcarpet.network.PluginChannelManager;
@@ -41,6 +43,7 @@ public final class QuickCarpet implements ModInitializer, ModuleHost {
     public final Set<QuickCarpetModule> modules = new TreeSet<>();
     private final PubSubMessenger pubSubMessenger = new PubSubMessenger(PUBSUB);
     private CommandDispatcher<ServerCommandSource> dispatcher;
+    public LoggerManager loggers;
 
     // Fabric on dedicated server will call getInstance at return of DedicatedServer::<init>(...)
     // new CommandManager(...) is before that so QuickCarpet is created from that
@@ -56,6 +59,7 @@ public final class QuickCarpet implements ModInitializer, ModuleHost {
     public void init(MinecraftServer server) {
         minecraft_server = server;
         tickSpeed = new TickSpeed(false);
+        loggers = new LoggerManager();
         pluginChannels = new PluginChannelManager(server);
         pluginChannels.register(pubSubMessenger);
         pluginChannels.register(new StructureChannel());
@@ -122,5 +126,17 @@ public final class QuickCarpet implements ModInitializer, ModuleHost {
 
     public static boolean isDevelopment() {
         return Build.VERSION.contains("dev") || FabricLoader.getInstance().isDevelopmentEnvironment();
+    }
+
+    public void onPlayerConnect(ServerPlayerEntity player) {
+        loggers.onPlayerConnect(player);
+        pluginChannels.onPlayerConnect(player);
+        for (QuickCarpetModule m : modules) m.onPlayerConnect(player);
+    }
+
+    public void onPlayerDisconnect(ServerPlayerEntity player) {
+        loggers.onPlayerDisconnect(player);
+        pluginChannels.onPlayerDisconnect(player);
+        for (QuickCarpetModule m : modules) m.onPlayerDisconnect(player);
     }
 }

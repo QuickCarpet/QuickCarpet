@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import quickcarpet.annotation.Feature;
-import quickcarpet.logging.LoggerRegistry;
+import quickcarpet.logging.Loggers;
 import quickcarpet.logging.loghelpers.TNTLogHelper;
 import quickcarpet.settings.Settings;
 
@@ -33,7 +33,7 @@ public abstract class TntEntityMixin extends Entity {
             double rad = -Math.toRadians(Settings.tntHardcodeAngle);
             setVelocity(Math.sin(rad) * 0.02, 0.2, Math.cos(rad) * 0.02);
         }
-        if (LoggerRegistry.TNT.isActive()) logHelper = new TNTLogHelper((TntEntity) (Object) this);
+        if (Loggers.TNT.isActive()) logHelper = new TNTLogHelper((TntEntity) (Object) this);
     }
 
     @Inject(method = "explode", at = @At(value = "HEAD"))

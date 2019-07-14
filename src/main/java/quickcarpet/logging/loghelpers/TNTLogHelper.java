@@ -4,7 +4,7 @@ import net.minecraft.entity.TntEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
 import quickcarpet.logging.Logger;
-import quickcarpet.logging.LoggerRegistry;
+import quickcarpet.logging.Loggers;
 import quickcarpet.utils.Messenger;
 
 import java.util.LinkedHashMap;
@@ -38,7 +38,7 @@ public class TNTLogHelper {
         double x = tnt.x;
         double y = tnt.y;
         double z = tnt.z;
-        LoggerRegistry.TNT.log(option -> {
+        Loggers.TNT.log(option -> {
             switch (option) {
                 case "brief":
                     return new Text[]{Messenger.c(

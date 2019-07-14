@@ -3,106 +3,58 @@ package quickcarpet.logging;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
+import net.minecraft.util.Lazy;
 import quickcarpet.QuickCarpet;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
-public class Logger<T extends Logger.CommandParameters> {
-    private boolean active = false;
-    // The set of subscribed and online players.
-    private Map<String, String> subscribedOnlinePlayers;
+public class Logger<T extends Logger.CommandParameters> implements Comparable<Logger<?>> {
+    boolean active = false;
 
-    // The set of subscribed and offline players.
-    private Map<String, String> subscribedOfflinePlayers;
+    private final String name;
+    private final Text displayName;
+    private final String[] options;
+    private final String defaultOption;
+    final LogHandler defaultHandler;
 
-    // The logName of this log. Gets prepended to logged messages.
-    private String logName;
-
-    private String default_option;
-
-    private String[] options;
-
-    private LogHandler defaultHandler;
-
-    // The map of player names to the log handler used
-    private Map<String, LogHandler> handlers;
-
-    public Logger(String logName, String def, String[] options, LogHandler defaultHandler) {
-        subscribedOnlinePlayers = new HashMap<>();
-        subscribedOfflinePlayers = new HashMap<>();
-        this.logName = logName;
-        this.default_option = def;
+    public Logger(String name, String def, String[] options, LogHandler defaultHandler) {
+        this.name = name;
+        this.displayName = new LiteralText(name);
+        displayName.getStyle().setColor(Formatting.GOLD);
+        this.defaultOption = def;
         this.options = options == null ? new String[0] : options;
         this.defaultHandler = defaultHandler;
-        handlers = new HashMap<>();
     }
 
     public String getDefault() {
-        return default_option;
+        return defaultOption;
     }
 
     public String[] getOptions() {
         return options;
     }
 
-    public String getLogName() {
-        return logName;
+    public String getName() {
+        return name;
     }
 
-    /**
-     * Subscribes the player with the given logName to the logger.
-     */
-    public void addPlayer(String playerName, String option, LogHandler handler) {
-        if (playerFromName(playerName) != null) {
-            subscribedOnlinePlayers.put(playerName, option);
-            active = true;
-        } else {
-            subscribedOfflinePlayers.put(playerName, option);
-        }
-        if (handler == null)
-            handler = defaultHandler;
-        handlers.put(playerName, handler);
-        handler.onAddPlayer(playerName);
-    }
-
-    /**
-     * Unsubscribes the player with the given logName from the logger.
-     */
-    public void removePlayer(String playerName) {
-        handlers.getOrDefault(playerName, defaultHandler).onRemovePlayer(playerName);
-        subscribedOnlinePlayers.remove(playerName);
-        subscribedOfflinePlayers.remove(playerName);
-        handlers.remove(playerName);
-        active = hasOnlineSubscribers();
-    }
-
-    /**
-     * Sets the LogHandler for the given player
-     */
-    public void setHandler(String playerName, LogHandler newHandler) {
-        if (newHandler == null)
-            newHandler = defaultHandler;
-        LogHandler oldHandler = handlers.getOrDefault(playerName, defaultHandler);
-        if (oldHandler != newHandler) {
-            oldHandler.onRemovePlayer(playerName);
-            handlers.put(playerName, newHandler);
-            newHandler.onAddPlayer(playerName);
-        }
-    }
-
-    /**
-     * Returns true if there are any online subscribers for this log.
-     */
-    public boolean hasOnlineSubscribers() {
-        return subscribedOnlinePlayers.size() > 0;
+    @Override
+    public int compareTo(Logger<?> o) {
+        return name.compareTo(o.name);
     }
 
     public boolean isActive() {
         return active;
+    }
+
+    public Text getDisplayName() {
+        return displayName;
     }
 
     /**
@@ -119,14 +71,9 @@ public class Logger<T extends Logger.CommandParameters> {
     }
 
     public void log(MessageSupplier message, Supplier<T> commandParams) {
-        for (Map.Entry<String, String> en : subscribedOnlinePlayers.entrySet()) {
-            ServerPlayerEntity player = playerFromName(en.getKey());
-            if (player != null) {
-                Text[] messages = message.get(en.getValue(), player);
-                if (messages != null)
-                    sendPlayerMessage(en.getKey(), player, messages, commandParams);
-            }
-        }
+        getOnlineSubscribers().forEach(player -> {
+            sendMessage(player, message.get(getOption(player), player), commandParams);
+        });
     }
 
     /**
@@ -146,73 +93,41 @@ public class Logger<T extends Logger.CommandParameters> {
     }
 
     public void log(PlayerIndependentMessageSupplier message, Supplier<T>  commandParams) {
-        Map<String, Text[]> cannedMessages = new HashMap<>();
-        for (Map.Entry<String, String> en : subscribedOnlinePlayers.entrySet()) {
-            ServerPlayerEntity player = playerFromName(en.getKey());
-            if (player != null) {
-                String option = en.getValue();
-                if (!cannedMessages.containsKey(option)) {
-                    cannedMessages.put(option, message.get(option));
-                }
-                Text[] messages = cannedMessages.get(option);
-                if (messages != null)
-                    sendPlayerMessage(en.getKey(), player, messages, commandParams);
-            }
-        }
+        Map<String, Text[]> messages = new HashMap<>();
+        getOnlineSubscribers().forEach(player -> sendMessage(player, messages.computeIfAbsent(getOption(player), message::get), commandParams));
     }
 
     public void log(Supplier<Text[]> message) {
         this.log(message, (Supplier<T>) EmptyCommandParameters.SUPPLIER);
     }
 
-
     public void log(Supplier<Text[]> message, Supplier<T>  commandParams) {
-        Text[] cannedMessages = null;
-        for (Map.Entry<String, String> en : subscribedOnlinePlayers.entrySet()) {
-            ServerPlayerEntity player = playerFromName(en.getKey());
-            if (player != null) {
-                if (cannedMessages == null) cannedMessages = message.get();
-                sendPlayerMessage(en.getKey(), player, cannedMessages, commandParams);
-            }
-        }
+        Lazy<Text[]> messages = new Lazy<>(message);
+        getOnlineSubscribers().forEach(player -> sendMessage(player, messages.get(), commandParams));
     }
 
-    public void sendPlayerMessage(String playerName, ServerPlayerEntity player, Text[] messages, Supplier<T> commandParams) {
-        handlers.getOrDefault(playerName, defaultHandler).handle(player, messages, (Supplier<CommandParameters>) commandParams);
+    private static LoggerManager getManager() {
+        return QuickCarpet.getInstance().loggers;
     }
 
-    /**
-     * Gets the {@code PlayerEntity} instance for a player given their UUID. Returns null if they are offline.
-     */
-    protected ServerPlayerEntity playerFromName(String name) {
-        return QuickCarpet.minecraft_server.getPlayerManager().getPlayer(name);
+    private String getOption(ServerPlayerEntity player) {
+        return getManager().getPlayerSubscriptions(player.getEntityName()).getOption(this);
     }
 
-    // ----- Event Handlers ----- //
-
-    public void onPlayerConnect(PlayerEntity player) {
-        // If the player was subscribed to the log and offline, move them to the set of online subscribers.
-        String playerName = player.getEntityName();
-        if (subscribedOfflinePlayers.containsKey(playerName)) {
-            subscribedOnlinePlayers.put(playerName, subscribedOfflinePlayers.get(playerName));
-            subscribedOfflinePlayers.remove(playerName);
-            active = true;
-        }
+    private LogHandler getHandler(ServerPlayerEntity player) {
+        return getManager().getPlayerSubscriptions(player.getEntityName()).getHandler(this);
     }
 
-    public void onPlayerDisconnect(PlayerEntity player) {
-        // If the player was subscribed to the log, move them to the set of offline subscribers.
-        String playerName = player.getEntityName();
-        if (subscribedOnlinePlayers.containsKey(playerName)) {
-            subscribedOfflinePlayers.put(playerName, subscribedOnlinePlayers.get(playerName));
-            subscribedOnlinePlayers.remove(playerName);
-            active = hasOnlineSubscribers();
-        }
+    private Stream<ServerPlayerEntity> getOnlineSubscribers() {
+        LoggerManager manager = getManager();
+        if (manager == null) return Stream.empty();
+        return manager.getOnlineSubscribers(this);
     }
 
-    public String getAcceptedOption(String arg) {
-        if (options != null && Arrays.asList(options).contains(arg)) return arg;
-        return null;
+    private void sendMessage(ServerPlayerEntity player, Text[] messages, Supplier<T> commandParams) {
+        if (messages == null) return;
+        //noinspection unchecked
+        getHandler(player).handle(this, player, messages, (Supplier) commandParams);
     }
 
     public interface CommandParameters<T> extends Map<String, T> {}

@@ -16,7 +16,7 @@ import net.minecraft.util.Pair;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import quickcarpet.logging.Logger;
-import quickcarpet.logging.LoggerRegistry;
+import quickcarpet.logging.Loggers;
 
 import javax.annotation.Nullable;
 import javax.management.Notification;
@@ -328,7 +328,7 @@ public class CarpetProfiler
         if (!notification.getType().equals(GarbageCollectionNotificationInfo.GARBAGE_COLLECTION_NOTIFICATION)) return;
         GarbageCollectionNotificationInfo info = GarbageCollectionNotificationInfo.from((CompositeData) notification.getUserData());
         GcInfo gcInfo = info.getGcInfo();
-        LoggerRegistry.GC.log(() -> {
+        Loggers.GC.log(() -> {
             long usedBefore = gcInfo.getMemoryUsageBeforeGc().values().stream().mapToLong(MemoryUsage::getUsed).sum();
             long usedAfter = gcInfo.getMemoryUsageAfterGc().values().stream().mapToLong(MemoryUsage::getUsed).sum();
             return new Text[]{Messenger.c(

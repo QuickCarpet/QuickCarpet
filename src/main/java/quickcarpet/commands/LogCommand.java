@@ -10,14 +10,15 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
-import quickcarpet.logging.LogHandler;
-import quickcarpet.logging.LogHandlers;
-import quickcarpet.logging.Logger;
-import quickcarpet.logging.LoggerRegistry;
+import quickcarpet.QuickCarpet;
+import quickcarpet.logging.*;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.Messenger;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 import static com.mojang.brigadier.arguments.StringArgumentType.getString;
@@ -55,7 +56,7 @@ public class LogCommand {
                     .then(handlerArg));
 
         log.then(argument("log name", StringArgumentType.word())
-            .suggests((c, b)-> CommandSource.suggestMatching(LoggerRegistry.getLoggerNames(),b))
+            .suggests((c, b)-> CommandSource.suggestMatching(Loggers.getLoggerNames(),b))
             .executes(c -> toggleSubscription(c.getSource(), c.getSource().getName(), getString(c, "log name")))
             .then(literal("clear")
                 .executes( (c) -> unsubFromLogger(
@@ -105,7 +106,7 @@ public class LogCommand {
 
     private static CompletableFuture<Suggestions> suggestLoggerOptions(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) {
         String loggerName = getString(context, "log name");
-        Logger logger = LoggerRegistry.getLogger(loggerName);
+        Logger logger = Loggers.getLogger(loggerName);
         String[] options = logger == null ? new String[]{} : logger.getOptions();
         return CommandSource.suggestMatching(options, builder);
     }
@@ -118,44 +119,41 @@ public class LogCommand {
             Messenger.m(source, "For players only");
             return 0;
         }
-        Map<String, String> subs = LoggerRegistry.getPlayerSubscriptions(source.getName());
-        if (subs == null) {
-            subs = new HashMap<>();
-        }
-        List<String> all_logs = new ArrayList<>(LoggerRegistry.getLoggerNames());
-        Collections.sort(all_logs);
+        LoggerManager.PlayerSubscriptions subs = QuickCarpet.getInstance().loggers.getPlayerSubscriptions(source.getName());
+        List<Logger> loggers = new ArrayList<>(Loggers.values());
+        Collections.sort(loggers);
         Messenger.m(player, "w _____________________");
         Messenger.m(player, "w Available logging options:");
-        for (String lname : all_logs) {
+        for (Logger logger : loggers) {
+            boolean subbed = subs.isSubscribedTo(logger);
             List<Object> comp = new ArrayList<>();
-            String color = subs.containsKey(lname) ? "w" : "g";
-            comp.add("w  - " + lname + ": ");
-            Logger logger = LoggerRegistry.getLogger(lname);
+            String color = subbed ? "w" : "g";
+            comp.add("w  - " + logger + ": ");
             String[] options = logger.getOptions();
             if (options.length == 0) {
-                if (subs.containsKey(lname)) {
+                if (subbed) {
                     comp.add("l Subscribed ");
                 } else {
                     comp.add(color + " [Subscribe] ");
-                    comp.add("^w subscribe to " + lname);
-                    comp.add("!/log " + lname);
+                    comp.add("^w subscribe to " + logger);
+                    comp.add("!/log " + logger);
                 }
             } else {
                 for (String option : logger.getOptions()) {
-                    if (subs.containsKey(lname) && subs.get(lname).equalsIgnoreCase(option)) {
+                    if (subbed && option.equalsIgnoreCase(subs.getOption(logger))) {
                         comp.add("l [" + option + "] ");
                     } else {
                         comp.add(color + " [" + option + "] ");
-                        comp.add("^w subscribe to " + lname + " " + option);
-                        comp.add("!/log " + lname + " " + option);
+                        comp.add("^w subscribe to " + logger + " " + option);
+                        comp.add("!/log " + logger + " " + option);
                     }
 
                 }
             }
-            if (subs.containsKey(lname)) {
+            if (subbed) {
                 comp.add("nb [X]");
                 comp.add("^w Click to unsubscribe");
-                comp.add("!/log " + lname);
+                comp.add("!/log " + logger);
             }
             Messenger.m(player, comp.toArray(new Object[0]));
         }
@@ -168,7 +166,7 @@ public class LogCommand {
             Messenger.m(source, "r No player specified");
             return true;
         }
-        if (loggerName != null && LoggerRegistry.getLogger(loggerName) == null) {
+        if (loggerName != null && Loggers.getLogger(loggerName) == null) {
             Messenger.m(source, "r Unknown logger: ", "rb " + loggerName);
             return true;
         }
@@ -177,8 +175,8 @@ public class LogCommand {
 
     private static int unsubFromAll(ServerCommandSource source, String playerName) {
         if (areArgumentsInvalid(source, playerName, null)) return 0;
-        for (String logname : LoggerRegistry.getLoggerNames()) {
-            LoggerRegistry.unsubscribePlayer(playerName, logname);
+        for (String logname : Loggers.getLoggerNames()) {
+            QuickCarpet.getInstance().loggers.unsubscribePlayer(playerName, logname);
         }
         Messenger.m(source, "gi Unsubscribed from all logs");
         return 1;
@@ -186,14 +184,14 @@ public class LogCommand {
 
     private static int unsubFromLogger(ServerCommandSource source, String playerName, String loggerName) {
         if (areArgumentsInvalid(source, playerName, loggerName)) return 0;
-        LoggerRegistry.unsubscribePlayer(playerName, loggerName);
+        QuickCarpet.getInstance().loggers.unsubscribePlayer(playerName, loggerName);
         Messenger.m(source, "gi Unsubscribed from " + loggerName);
         return 1;
     }
 
     private static int toggleSubscription(ServerCommandSource source, String player_name, String loggerName) {
         if (areArgumentsInvalid(source, player_name, loggerName)) return 0;
-        boolean subscribed = LoggerRegistry.togglePlayerSubscription(player_name, loggerName, null);
+        boolean subscribed = QuickCarpet.getInstance().loggers.togglePlayerSubscription(player_name, loggerName, null);
         if (subscribed) {
             Messenger.m(source, "gi " + player_name + " subscribed to " + loggerName + ".");
         } else {
@@ -204,7 +202,7 @@ public class LogCommand {
 
     private static int subscribePlayer(ServerCommandSource source, String playerName, String loggerName, String option, LogHandler handler) {
         if (areArgumentsInvalid(source, playerName, loggerName)) return 0;
-        LoggerRegistry.subscribePlayer(playerName, loggerName, option, handler);
+        QuickCarpet.getInstance().loggers.subscribePlayer(playerName, loggerName, option, handler);
         if (option != null) {
             Messenger.m(source, "gi Subscribed to " + loggerName + "(" + option + ")");
         } else {
