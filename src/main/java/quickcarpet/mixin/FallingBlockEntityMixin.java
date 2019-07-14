@@ -1,7 +1,6 @@
 package quickcarpet.mixin;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -27,9 +26,9 @@ public abstract class FallingBlockEntityMixin extends Entity {
     @Inject(method = "tick", at = @At(value = "INVOKE", shift = At.Shift.AFTER, ordinal = 1,
             target = "Lnet/minecraft/entity/FallingBlockEntity;setVelocity(Lnet/minecraft/util/math/Vec3d;)V"),
             locals = LocalCapture.CAPTURE_FAILHARD)
-    private void onTick(CallbackInfo ci, Block block_1, BlockPos blockPos_2, boolean boolean_1, boolean boolean_2, BlockState blockState_1) {
+    private void onTick(CallbackInfo ci, Block block_1, BlockPos blockPos_2) {
         if (block_1.matches(BlockTags.ANVIL) && Settings.renewableSand
-                && this.world.getBlockState(new BlockPos(this.x, this.y - 0.059999999776482582D, this.z)).getBlock() == Blocks.COBBLESTONE) {
+                && this.world.getBlockState(new BlockPos(this.x, this.y - 0.06, this.z)).getBlock() == Blocks.COBBLESTONE) {
             world.breakBlock(blockPos_2.down(), false);
             world.setBlockState(blockPos_2.down(), Blocks.SAND.getDefaultState(), 3);
         }

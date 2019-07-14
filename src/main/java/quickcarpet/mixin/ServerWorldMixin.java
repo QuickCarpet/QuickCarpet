@@ -116,7 +116,7 @@ public abstract class ServerWorldMixin extends World {
     }
 
     @Feature("optimizedFluidTicks")
-    @Redirect(method = "tickChunk", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/ChunkSection;getFluidState(III)Lnet/minecraft/fluid/FluidState;"))
+    @Redirect(method = "tickChunk", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/ChunkSection;getFluidState(III)Lnet/minecraft/fluid/FluidState;"), require = 0)
     private FluidState optimizedFluidTick(ChunkSection chunkSection, int x, int y, int z) {
         if (Settings.optimizedFluidTicks && !chunkSection.hasRandomFluidTicks()) return Fluids.EMPTY.getDefaultState();
         return chunkSection.getFluidState(x, y, z);
