@@ -89,6 +89,7 @@ Type: `boolean`
 Default: `false`  
 Options: `true`, `false`  
 Categories: fix, experimental  
+Fixes: [MC-152636](https://bugs.mojang.com/browse/MC-152636) fixed in 1.14.4-pre1  
 
 ## dispensersPlaceBlocks
 Dispensers can place most blocks
@@ -106,6 +107,7 @@ Type: `boolean`
 Default: `false`  
 Options: `true`, `false`  
 Categories: experimental  
+Fixes: [MC-88959](https://bugs.mojang.com/browse/MC-88959)  
 
 ## explosionNoBlockDamage
 Explosions won't destroy blocks
@@ -122,7 +124,7 @@ Type: `int`
 Default: `32768`  
 Options: `32768`, `250000`, `1000000`  
 Categories: creative  
-Validator: `quickcarpet.settings.Validator$Positive`
+Validator: `quickcarpet.settings.Validator$Positive`  
 
 ## fillUpdates
 fill/clone/setblock and structure blocks cause block updates
@@ -196,6 +198,7 @@ Type: `boolean`
 Default: `false`  
 Options: `true`, `false`  
 Categories: optimizations, experimental  
+Fixes: [MC-151802](https://bugs.mojang.com/browse/MC-151802) fixed in 1.14.3-pre1 (partial)  
 
 ## phantomsRespectMobcap
 Phantoms don't ignore the mobcap.
@@ -221,7 +224,7 @@ Type: `int`
 Default: `12`  
 Options: `10`, `12`, `14`, `100`  
 Categories: creative  
-Validator: `quickcarpet.settings.Validator$NonNegative`
+Validator: `quickcarpet.settings.Validator$NonNegative`  
 
 ## railPowerLimit
 Rail power limit
@@ -230,7 +233,7 @@ Type: `int`
 Default: `9`  
 Options: `9`, `15`, `30`  
 Categories: creative  
-Validator: `quickcarpet.settings.Validator$Positive`
+Validator: `quickcarpet.settings.Validator$Positive`  
 
 ## renewableCoral
 Coral structures will grow with bonemeal from coral plants
@@ -282,7 +285,7 @@ Type: `int`
 Default: `11`  
 Options:   
 Categories: experimental  
-Validator: `quickcarpet.settings.Settings$SpawnChunkLevel`
+Validator: `quickcarpet.settings.Settings$SpawnChunkLevel`  
 
 ## stackableShulkerBoxes
 Empty shulker boxes can stack to 64 when dropped on the ground
@@ -300,7 +303,7 @@ Type: `double`
 Default: `-1.0`  
 Options: `-1`  
 Categories: tnt  
-Validator: `quickcarpet.settings.Settings$TNTAngle`
+Validator: `quickcarpet.settings.Settings$TNTAngle`  
 
 ## tntPrimeMomentum
 Removes random TNT momentum when primed and set to false

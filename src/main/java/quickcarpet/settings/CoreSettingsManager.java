@@ -3,6 +3,7 @@ package quickcarpet.settings;
 import net.minecraft.server.MinecraftServer;
 import quickcarpet.Build;
 import quickcarpet.QuickCarpet;
+import quickcarpet.annotation.BugFix;
 import quickcarpet.module.QuickCarpetModule;
 
 import javax.annotation.Nullable;
@@ -131,7 +132,15 @@ public class CoreSettingsManager extends SettingsManager {
             String categories = rule.categories.stream().map(c -> c.lowerCase).collect(Collectors.joining(", "));
             if (!categories.isEmpty()) ps.println("Categories: " + categories + "  ");
             Class<?> validator = rule.validator.getClass();
-            if (validator != Validator.AlwaysTrue.class) ps.println("Validator: `" + validator.getName() + "`");
+            if (validator != Validator.AlwaysTrue.class) ps.println("Validator: `" + validator.getName() + "`  ");
+            BugFix[] fixes = rule.rule.bug();
+            if (fixes.length > 0) {
+                ps.println("Fixes: " + Arrays.stream(fixes).map(fix -> {
+                    String s = "[" + fix.value() + "](https://bugs.mojang.com/browse/" + fix.value() + ")";
+                    if (!fix.fixVersion().isEmpty()) s += " fixed in " + fix.fixVersion();
+                    return s;
+                }).collect(Collectors.joining(", ", "", "  ")));
+            }
             ps.println();
         }
     }

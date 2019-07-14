@@ -8,6 +8,7 @@ import net.minecraft.util.Unit;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.dimension.DimensionType;
 import quickcarpet.QuickCarpet;
+import quickcarpet.annotation.BugFix;
 import quickcarpet.feature.PlaceBlockDispenserBehavior;
 
 import java.io.FileNotFoundException;
@@ -134,7 +135,7 @@ public class Settings {
     )
     public static boolean stackableShulkerBoxes = false;
 
-    @Rule(desc = "Optimizes spawning", category = {OPTIMIZATIONS, EXPERIMENTAL})
+    @Rule(desc = "Optimizes spawning", category = {OPTIMIZATIONS, EXPERIMENTAL}, bug = @BugFix(value = "MC-151802", fixVersion = "1.14.3-pre1 (partial)"))
     public static boolean optimizedSpawning = false;
 
     @Rule(desc = "If a living entity dies on sand with fire on top the sand will convert into soul sand", category = {FEATURE, EXPERIMENTAL})
@@ -154,7 +155,7 @@ public class Settings {
 
     @Rule(desc = "1.8 double retraction from pistons.", category = EXPERIMENTAL, extra = {
             "Gives pistons the ability to double retract without side effects."
-    })
+    }, bug = @BugFix("MC-88959"))
     public static boolean doubleRetraction = false;
 
     @Rule(desc = "Size of spawn chunks", extra = {
@@ -199,7 +200,7 @@ public class Settings {
     @Rule(desc = "Phantoms don't ignore the mobcap.", category = {SURVIVAL, FIX, EXPERIMENTAL})
     public static boolean phantomsRespectMobcap = false;
 
-    @Rule(desc = "Fixes duping via zombie conversion", category = {FIX, EXPERIMENTAL})
+    @Rule(desc = "Fixes duping via zombie conversion", category = {FIX, EXPERIMENTAL}, bug = @BugFix(value = "MC-152636", fixVersion = "1.14.4-pre1"))
     @BugFixDefault
     public static boolean conversionDupingFix = false;
     

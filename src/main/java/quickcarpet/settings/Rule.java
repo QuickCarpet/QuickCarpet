@@ -1,5 +1,7 @@
 package quickcarpet.settings;
 
+import quickcarpet.annotation.BugFix;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -53,4 +55,9 @@ public @interface Rule {
      * The class of the listener called when the rule is changed.
      */
     Class<? extends ChangeListener> onChange() default ChangeListener.Empty.class;
+
+    /**
+     * List of Minecraft bugs this rule fixes
+     */
+    BugFix[] bug() default {};
 }
