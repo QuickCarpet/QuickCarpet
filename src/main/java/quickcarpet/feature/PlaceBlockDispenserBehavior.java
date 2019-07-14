@@ -2,6 +2,7 @@ package quickcarpet.feature;
 
 import net.minecraft.block.*;
 import net.minecraft.block.dispenser.ItemDispenserBehavior;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.enums.BlockHalf;
 import net.minecraft.block.enums.SlabType;
 import net.minecraft.fluid.FluidState;
@@ -9,6 +10,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.state.property.Properties;
@@ -42,7 +44,7 @@ public class PlaceBlockDispenserBehavior  extends ItemDispenserBehavior {
 
         final Direction ffacing = facing;
 
-        if (item.getClass() != BlockItem.class || block instanceof SeaPickleBlock) {
+        if (usePlacementContext(item, block)) {
             BlockHitResult hitResult = new BlockHitResult(new Vec3d(pos.offset(facing, 2)), facing, pos, false);
             ItemPlacementContext ipc = new ItemPlacementContext(world, null, Hand.MAIN_HAND, itemStack, hitResult) {
                 @Override
@@ -109,6 +111,15 @@ public class PlaceBlockDispenserBehavior  extends ItemDispenserBehavior {
         FluidState currentFluidState = world.getFluidState(pos);
         if ((world.isAir(pos) || currentBlockState.getMaterial().isReplaceable()) && currentBlockState.getBlock() != block && state.canPlaceAt(world, pos)) {
             world.setBlockState(pos, state);
+            CompoundTag blockEntityTag = itemStack.getSubTag("BlockEntityTag");
+            if (blockEntityTag != null && block instanceof BlockEntityProvider) {
+                BlockEntity be = world.getBlockEntity(pos);
+                blockEntityTag = new CompoundTag().copyFrom(blockEntityTag);
+                blockEntityTag.putInt("x", pos.getX());
+                blockEntityTag.putInt("y", pos.getY());
+                blockEntityTag.putInt("z", pos.getZ());
+                be.fromTag(blockEntityTag);
+            }
             if (currentFluidState.isStill() && block instanceof FluidFillable) {
                 ((FluidFillable) block).tryFillWithFluid(world, pos, state, currentFluidState);
             }
@@ -134,5 +145,9 @@ public class PlaceBlockDispenserBehavior  extends ItemDispenserBehavior {
             case ALL: return true;
         }
         return false;
+    }
+
+    private static boolean usePlacementContext(Item item, Block block) {
+        return item.getClass() != BlockItem.class || block instanceof SeaPickleBlock || block instanceof TurtleEggBlock;
     }
 }
