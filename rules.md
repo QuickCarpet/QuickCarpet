@@ -19,7 +19,7 @@ Categories: commands
 ## commandCarpetClone
 Enables /carpetclone command
 
-This is a replica of /clone command for fillUpdates and fillLimits  
+This is a replica of the /clone command for fillUpdates and fillLimits  
 Type: `boolean`  
 Default: `true`  
 Options: `true`, `false`  
@@ -28,7 +28,7 @@ Categories: commands
 ## commandCarpetFill
 Enables /carpetfill command
 
-This is a replica of /fill command for fillUpdates and fillLimits  
+This is a replica of the /fill command for fillUpdates and fillLimits  
 Type: `boolean`  
 Default: `true`  
 Options: `true`, `false`  
@@ -37,6 +37,7 @@ Categories: commands
 ## commandCarpetSetBlock
 Enables /carpetsetblock command
 
+This is a replica of the /setblock command for fillUpdates and fillLimits  
 Type: `boolean`  
 Default: `true`  
 Options: `true`, `false`  
