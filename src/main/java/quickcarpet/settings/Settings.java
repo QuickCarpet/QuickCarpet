@@ -28,19 +28,19 @@ public class Settings {
 
     @Rule(
             desc = "Enables /carpetfill command",
-            extra = "This is an replica of /fill command for fillUpdates and fillLimits",
+            extra = "This is a replica of /fill command for fillUpdates and fillLimits",
             category = COMMANDS
     )
     public static boolean commandCarpetFill = true;
 
     @Rule(
             desc = "Enables /carpetclone command",
-            extra = "This is an replica of /clone command for fillUpdates and fillLimits",
+            extra = "This is a replica of /clone command for fillUpdates and fillLimits",
             category = COMMANDS
     )
     public static boolean commandCarpetClone = true;
 
-    @Rule(desc = "Enables /player command to control/spawn players", category = COMMANDS)
+    @Rule(desc = "Enables /carpetsetblock command", category = COMMANDS)
     public static boolean commandCarpetSetBlock = true;
 
     @Rule(desc = "Enables /player command to control/spawn players", category = COMMANDS)
