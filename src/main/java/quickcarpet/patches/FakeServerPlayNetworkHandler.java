@@ -7,8 +7,8 @@ import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
-public class ServerPlayNetworkHandlerFake extends ServerPlayNetworkHandler {
-    public ServerPlayNetworkHandlerFake(MinecraftServer server, ClientConnection cc, ServerPlayerEntity playerIn) {
+public class FakeServerPlayNetworkHandler extends ServerPlayNetworkHandler {
+    public FakeServerPlayNetworkHandler(MinecraftServer server, ClientConnection cc, ServerPlayerEntity playerIn) {
         super(server, cc, playerIn);
     }
 

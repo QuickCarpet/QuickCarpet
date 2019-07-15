@@ -17,8 +17,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import quickcarpet.annotation.Feature;
-import quickcarpet.patches.ServerPlayNetworkHandlerFake;
-import quickcarpet.patches.ServerPlayerEntityFake;
+import quickcarpet.patches.FakeServerPlayNetworkHandler;
+import quickcarpet.patches.FakeServerPlayerEntity;
 
 import java.util.Iterator;
 import java.util.List;
@@ -31,17 +31,17 @@ public abstract class PlayerManagerMixin {
 
     @Inject(method = "loadPlayerData", at = @At(value = "RETURN", shift = At.Shift.BEFORE))
     private void fixStartingPos(ServerPlayerEntity player, CallbackInfoReturnable<CompoundTag> cir) {
-        if (player instanceof ServerPlayerEntityFake) {
-            ((ServerPlayerEntityFake) player).applyStartingPosition();
+        if (player instanceof FakeServerPlayerEntity) {
+            ((FakeServerPlayerEntity) player).applyStartingPosition();
         }
     }
 
     @Redirect(method = "onPlayerConnect", at = @At(value = "NEW", target = "net/minecraft/server/network/ServerPlayNetworkHandler"))
     private ServerPlayNetworkHandler replaceNew(MinecraftServer server, ClientConnection clientConnection,
                                                 ServerPlayerEntity playerIn) {
-        boolean isServerPlayerEntity = playerIn instanceof ServerPlayerEntityFake;
+        boolean isServerPlayerEntity = playerIn instanceof FakeServerPlayerEntity;
         if (isServerPlayerEntity) {
-            return new ServerPlayNetworkHandlerFake(this.server, clientConnection, playerIn);
+            return new FakeServerPlayNetworkHandler(this.server, clientConnection, playerIn);
         } else {
             return new ServerPlayNetworkHandler(this.server, clientConnection, playerIn);
         }
@@ -58,7 +58,7 @@ public abstract class PlayerManagerMixin {
                               List list_1, Iterator var5) {
         while (var5.hasNext()) {
             ServerPlayerEntity serverPlayerEntity_3 = (ServerPlayerEntity) var5.next();
-            if (serverPlayerEntity_3 instanceof ServerPlayerEntityFake) {
+            if (serverPlayerEntity_3 instanceof FakeServerPlayerEntity) {
                 serverPlayerEntity_3.kill();
                 continue;
             }

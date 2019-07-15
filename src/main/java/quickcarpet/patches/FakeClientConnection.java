@@ -3,9 +3,9 @@ package quickcarpet.patches;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.NetworkSide;
 
-public class ClientConnectionFake extends ClientConnection {
-    public ClientConnectionFake(NetworkSide p) {
-        super(p);
+public class FakeClientConnection extends ClientConnection {
+    public FakeClientConnection(NetworkSide side) {
+        super(side);
     }
 
     @Override

@@ -16,16 +16,15 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.dimension.DimensionType;
-import quickcarpet.utils.IServerPlayerEntity;
+import quickcarpet.utils.ActionPackOwner;
 import quickcarpet.utils.Messenger;
 
-public class ServerPlayerEntityFake extends ServerPlayerEntity {
+public class FakeServerPlayerEntity extends ServerPlayerEntity {
     private boolean hasStartingPos;
     private double startingX, startingY, startingZ;
     private float startingYaw, startingPitch;
 
-    public static ServerPlayerEntityFake createFake(String username, MinecraftServer server, double x, double y, double z, double yaw, double pitch, DimensionType dimension, GameMode gamemode) {
-        //prolly half of that crap is not necessary, but it works
+    public static FakeServerPlayerEntity createFake(String username, MinecraftServer server, double x, double y, double z, double yaw, double pitch, DimensionType dimension, GameMode gamemode) {
         ServerWorld worldIn = server.getWorld(dimension);
         ServerPlayerInteractionManager interactionManagerIn = new ServerPlayerInteractionManager(worldIn);
         GameProfile gameprofile = server.getUserCache().findByName(username);
@@ -35,10 +34,9 @@ public class ServerPlayerEntityFake extends ServerPlayerEntity {
         if (gameprofile.getProperties().containsKey("textures")) {
             gameprofile = SkullBlockEntity.loadProperties(gameprofile);
         }
-        ServerPlayerEntityFake instance = new ServerPlayerEntityFake(server, worldIn, gameprofile, interactionManagerIn, x, y, z, (float) yaw, (float) pitch);
-        server.getPlayerManager().onPlayerConnect(new ClientConnectionFake(NetworkSide.SERVERBOUND), instance);
-        if (instance.dimension != dimension) //player was logged in in a different dimension
-        {
+        FakeServerPlayerEntity instance = new FakeServerPlayerEntity(server, worldIn, gameprofile, interactionManagerIn, x, y, z, (float) yaw, (float) pitch);
+        server.getPlayerManager().onPlayerConnect(new FakeClientConnection(NetworkSide.SERVERBOUND), instance);
+        if (instance.dimension != dimension) {
             ServerWorld old_world = server.getWorld(instance.dimension);
             instance.dimension = dimension;
             old_world.removePlayer(instance);
@@ -61,33 +59,34 @@ public class ServerPlayerEntityFake extends ServerPlayerEntity {
         return instance;
     }
 
-    public static ServerPlayerEntityFake createShadow(MinecraftServer server, ServerPlayerEntity player) {
-        player.getServer().getPlayerManager().remove(player);
-        player.networkHandler.disconnect(new TranslatableText("multiplayer.disconnect.duplicate_login"));
-        ServerWorld worldIn = server.getWorld(player.dimension);
-        ServerPlayerInteractionManager interactionManagerIn = new ServerPlayerInteractionManager(worldIn);
-        GameProfile gameprofile = player.getGameProfile();
-        ServerPlayerEntityFake playerShadow = new ServerPlayerEntityFake(server, worldIn, gameprofile, interactionManagerIn);
-        server.getPlayerManager().onPlayerConnect(new ClientConnectionFake(NetworkSide.SERVERBOUND), playerShadow);
+    public static FakeServerPlayerEntity createShadow(MinecraftServer server, ServerPlayerEntity real) {
+        server.getPlayerManager().remove(real);
+        real.networkHandler.disconnect(new TranslatableText("multiplayer.disconnect.duplicate_login"));
+        ServerWorld world = server.getWorld(real.dimension);
+        ServerPlayerInteractionManager interactionManager = new ServerPlayerInteractionManager(world);
+        GameProfile profile = real.getGameProfile();
+        FakeServerPlayerEntity shadow = new FakeServerPlayerEntity(server, world, profile, interactionManager);
+        server.getPlayerManager().onPlayerConnect(new FakeClientConnection(NetworkSide.SERVERBOUND), shadow);
 
-        playerShadow.setHealth(player.getHealth());
-        playerShadow.networkHandler.requestTeleport(player.x, player.y, player.z, player.yaw, player.pitch);
-        interactionManagerIn.setGameMode(player.interactionManager.getGameMode());
-        ((IServerPlayerEntity) playerShadow).getActionPack().copyFrom(((IServerPlayerEntity) player).getActionPack());
-        playerShadow.stepHeight = 0.6F;
+        shadow.setHealth(real.getHealth());
+        shadow.networkHandler.requestTeleport(real.x, real.y, real.z, real.yaw, real.pitch);
+        interactionManager.setGameMode(real.interactionManager.getGameMode());
+        ((ActionPackOwner) shadow).getActionPack().copyFrom(((ActionPackOwner) real).getActionPack());
+        shadow.stepHeight = 0.6F;
+        shadow.dataTracker.set(PLAYER_MODEL_BIT_MASK, real.getDataTracker().get(PLAYER_MODEL_BIT_MASK));
 
-        server.getPlayerManager().sendToDimension(new EntitySetHeadYawS2CPacket(playerShadow, (byte) (player.headYaw * 256 / 360)), playerShadow.dimension);
-        server.getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.ADD_PLAYER, playerShadow));
-        player.getServerWorld().method_14178().updateCameraPosition(playerShadow);
-        return playerShadow;
+        server.getPlayerManager().sendToDimension(new EntitySetHeadYawS2CPacket(shadow, (byte) (real.headYaw * 256 / 360)), shadow.dimension);
+        server.getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.ADD_PLAYER, shadow));
+        real.getServerWorld().method_14178().updateCameraPosition(shadow);
+        return shadow;
     }
 
-    private ServerPlayerEntityFake(MinecraftServer server, ServerWorld worldIn, GameProfile profile, ServerPlayerInteractionManager interactionManagerIn) {
+    private FakeServerPlayerEntity(MinecraftServer server, ServerWorld worldIn, GameProfile profile, ServerPlayerInteractionManager interactionManagerIn) {
         super(server, worldIn, profile, interactionManagerIn);
         this.hasStartingPos = false;
     }
 
-    private ServerPlayerEntityFake(MinecraftServer server, ServerWorld worldIn, GameProfile profile, ServerPlayerInteractionManager interactionManagerIn, double x, double y, double z, float yaw, float pitch) {
+    private FakeServerPlayerEntity(MinecraftServer server, ServerWorld worldIn, GameProfile profile, ServerPlayerInteractionManager interactionManagerIn, double x, double y, double z, float yaw, float pitch) {
         super(server, worldIn, profile, interactionManagerIn);
         this.hasStartingPos = true;
         this.startingX = x;
