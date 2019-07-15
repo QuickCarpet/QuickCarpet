@@ -19,7 +19,7 @@ Categories: commands
 ## commandCarpetClone
 Enables /carpetclone command
 
-This is an replica of /clone command for fillUpdates and fillLimits  
+This is a replica of /clone command for fillUpdates and fillLimits  
 Type: `boolean`  
 Default: `true`  
 Options: `true`, `false`  
@@ -28,15 +28,16 @@ Categories: commands
 ## commandCarpetFill
 Enables /carpetfill command
 
-This is an replica of /fill command for fillUpdates and fillLimits  
+This is a replica of /fill command for fillUpdates and fillLimits  
 Type: `boolean`  
 Default: `true`  
 Options: `true`, `false`  
 Categories: commands  
 
 ## commandCarpetSetBlock
-Enables /player command to control/spawn players
+Enables /carpetsetblock command
 
+This is a replica of /setblock command for fillUpdates and fillLimits  
 Type: `boolean`  
 Default: `true`  
 Options: `true`, `false`  
