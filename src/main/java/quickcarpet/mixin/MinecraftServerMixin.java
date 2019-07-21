@@ -94,7 +94,7 @@ public abstract class MinecraftServerMixin {
             }
 
             partialTimeReference += mspt - (long) mspt;
-            this.timeReference += mspt;//50L;
+            this.timeReference += (long) mspt;//50L;
             if (partialTimeReference > 1) {
                 partialTimeReference--;
                 timeReference++;
