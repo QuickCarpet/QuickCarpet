@@ -9,6 +9,7 @@ import quickcarpet.logging.loghelpers.TNTLogHelper;
 import quickcarpet.utils.CarpetProfiler;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public final class Loggers {
     // Map from logger names to loggers.
@@ -47,17 +48,26 @@ public final class Loggers {
      * Gets the logger with the given name. Returns null if no such logger exists.
      */
     public static Logger getLogger(String name) {
-        return LOGGERS.get(name);
+        return getLogger(name, false);
+    }
+
+    public static Logger getLogger(String name, boolean includeUnavailable) {
+        Logger logger = LOGGERS.get(name);
+        if (!includeUnavailable && !logger.isAvailable()) return null;
+        return logger;
     }
 
     /**
      * Gets the set of logger names.
      */
     public static Set<String> getLoggerNames() {
-        return LOGGERS.keySet();
+        return LOGGERS.entrySet().stream()
+                .filter(e -> e.getValue().isAvailable())
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toSet());
     }
 
     public static Collection<Logger> values() {
-        return LOGGERS.values();
+        return LOGGERS.values().stream().filter(Logger::isAvailable).collect(Collectors.toSet());
     }
 }

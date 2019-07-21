@@ -9,6 +9,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Lazy;
 import quickcarpet.QuickCarpet;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -16,6 +17,7 @@ import java.util.stream.Stream;
 
 public class Logger<T extends Logger.CommandParameters> implements Comparable<Logger<?>> {
     boolean active = false;
+    private String unavailable;
 
     private final String name;
     private final Text displayName;
@@ -55,6 +57,23 @@ public class Logger<T extends Logger.CommandParameters> implements Comparable<Lo
 
     public Text getDisplayName() {
         return displayName;
+    }
+
+    public void setAvailable() {
+        this.unavailable = null;
+    }
+
+    public void setUnavailable(String reason) {
+        this.unavailable = reason;
+    }
+
+    public boolean isAvailable() {
+        return this.unavailable == null;
+    }
+
+    @Nullable
+    public String getUnavailabilityReason() {
+        return this.unavailable;
     }
 
     /**

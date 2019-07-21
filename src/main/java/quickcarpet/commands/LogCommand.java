@@ -167,7 +167,12 @@ public class LogCommand {
             return true;
         }
         if (loggerName != null && Loggers.getLogger(loggerName) == null) {
-            Messenger.m(source, "r Unknown logger: ", "rb " + loggerName);
+            Logger logger = Loggers.getLogger(loggerName, true);
+            if (logger != null) {
+                Messenger.m(source, "r Logger " + loggerName + " unavailable: ", "db " + logger.getUnavailabilityReason());
+            } else {
+                Messenger.m(source, "r Unknown logger: ", "rb " + loggerName);
+            }
             return true;
         }
         return false;

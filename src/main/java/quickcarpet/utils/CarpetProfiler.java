@@ -290,9 +290,14 @@ public class CarpetProfiler
     }
 
     public static void init() {
-        ManagementFactory.getGarbageCollectorMXBeans().forEach(gc -> {
-            ((NotificationEmitter) gc).addNotificationListener(CarpetProfiler::handleGCNotification, null, null);
-        });
+        try {
+            Class.forName("com.sun.management.GcInfo");
+            ManagementFactory.getGarbageCollectorMXBeans().forEach(gc -> {
+                ((NotificationEmitter) gc).addNotificationListener(CarpetProfiler::handleGCNotification, null, null);
+            });
+        } catch (ClassNotFoundException e) {
+            Loggers.GC.setUnavailable("Requires HotSpot based JVM (You are running " + System.getProperty("java.vm.name") + ")");
+        }
     }
 
     public static class GCCommandParameters extends LinkedHashMap<String, Object> implements Logger.CommandParameters<Object> {
