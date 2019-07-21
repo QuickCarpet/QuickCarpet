@@ -13,10 +13,21 @@ public class FakeServerPlayNetworkHandler extends ServerPlayNetworkHandler {
     }
 
     @Override
+    public void tick() {
+        super.tick();
+    }
+
+    @Override
     public void sendPacket(final Packet<?> packetIn) {}
 
     @Override
     public void disconnect(Text message) {}
+
+    @Override
+    public void onDisconnected(Text text_1) {
+        super.onDisconnected(text_1);
+        ((FakeClientConnection) this.getConnection()).open = false;
+    }
 }
 
 

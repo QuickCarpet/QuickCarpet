@@ -9,6 +9,8 @@
     "ChunkSectionMixin",
     "ClientConnectionMixin",
     "CommandManagerMixin",
+    "CoralBlockMixin",
+    "CoralFeatureMixin",
     "CraftingInventoryAccessor",
     "CraftingTableBlockMixin",
     "CustomPayloadC2SPacketAccessor",
@@ -35,6 +37,7 @@
     "PoweredRailBlockMixin",
     "ServerChunkManagerAccessor",
     "ServerChunkManagerMixin",
+    "ServerNetworkIoAccessor",
     "ServerPlayerEntityMixin",
     "ServerPlayInteractionManagerMixin",
     "ServerPlayNetworkHandlerMixin",
@@ -47,9 +50,7 @@
     "TntEntityMixin",
     "WorldChunkMixin",
     "WorldMixin",
-    "ZombieEntityMixin",
-    "CoralBlockMixin",
-    "CoralFeatureMixin"
+    "ZombieEntityMixin"
   ],
   "client": [
     "client.BlockEntityRenderDispatcherMixin",

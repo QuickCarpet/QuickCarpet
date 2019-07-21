@@ -16,6 +16,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.dimension.DimensionType;
+import quickcarpet.mixin.ServerNetworkIoAccessor;
 import quickcarpet.utils.ActionPackOwner;
 import quickcarpet.utils.Messenger;
 
@@ -35,7 +36,9 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
             gameprofile = SkullBlockEntity.loadProperties(gameprofile);
         }
         FakeServerPlayerEntity instance = new FakeServerPlayerEntity(server, worldIn, gameprofile, interactionManagerIn, x, y, z, (float) yaw, (float) pitch);
-        server.getPlayerManager().onPlayerConnect(new FakeClientConnection(NetworkSide.SERVERBOUND), instance);
+        FakeClientConnection connection = new FakeClientConnection(NetworkSide.SERVERBOUND);
+        ((ServerNetworkIoAccessor) server.getNetworkIo()).getConnections().add(connection);
+        server.getPlayerManager().onPlayerConnect(connection, instance);
         if (instance.dimension != dimension) {
             ServerWorld old_world = server.getWorld(instance.dimension);
             instance.dimension = dimension;
@@ -66,7 +69,9 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
         ServerPlayerInteractionManager interactionManager = new ServerPlayerInteractionManager(world);
         GameProfile profile = real.getGameProfile();
         FakeServerPlayerEntity shadow = new FakeServerPlayerEntity(server, world, profile, interactionManager);
-        server.getPlayerManager().onPlayerConnect(new FakeClientConnection(NetworkSide.SERVERBOUND), shadow);
+        FakeClientConnection connection = new FakeClientConnection(NetworkSide.SERVERBOUND);
+        ((ServerNetworkIoAccessor) server.getNetworkIo()).getConnections().add(connection);
+        server.getPlayerManager().onPlayerConnect(connection, shadow);
 
         shadow.setHealth(real.getHealth());
         shadow.networkHandler.requestTeleport(real.x, real.y, real.z, real.yaw, real.pitch);
@@ -112,12 +117,15 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
 
     @Override
     public void tick() {
+        super.tick();
+        if (this.isInTeleportationState()) {
+            this.onTeleportationDone();
+        }
+        this.tickMovement();
         if (this.getServer().getTicks() % 10 == 0) {
             this.networkHandler.syncWithPlayerPosition();
             this.getServerWorld().method_14178().updateCameraPosition(this);
         }
-        super.tick();
-        this.method_14226();
     }
 
     @Override
