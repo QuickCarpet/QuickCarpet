@@ -237,6 +237,7 @@ public class PlayerCommand {
     }
 
     private static int shadow(CommandContext<ServerCommandSource> context) {
+        if (cantManipulate(context)) return 0;
         ServerPlayerEntity player = getPlayer(context);
         if (player instanceof FakeServerPlayerEntity) {
             Messenger.m(context.getSource(), "r Cannot shadow server-side players");
