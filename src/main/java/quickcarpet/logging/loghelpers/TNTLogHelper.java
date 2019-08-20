@@ -5,9 +5,10 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
 import quickcarpet.logging.Logger;
 import quickcarpet.logging.Loggers;
-import quickcarpet.utils.Messenger;
 
 import java.util.LinkedHashMap;
+
+import static quickcarpet.utils.Messenger.*;
 
 public class TNTLogHelper {
     private final TntEntity tnt;
@@ -41,13 +42,13 @@ public class TNTLogHelper {
         Loggers.TNT.log(option -> {
             switch (option) {
                 case "brief":
-                    return new Text[]{Messenger.c(
-                            "l P ", Messenger.dblt("l", primedX, primedY, primedZ, primedAngle),
-                            "r  E ", Messenger.dblt("r", x, y, z))};
+                    return new Text[]{c(
+                            "l P ", style(dblt(primedX, primedY, primedZ, primedAngle), LIME),
+                            "r  E ", style(dblt(x, y, z), RED))};
                 case "full":
-                    return new Text[]{Messenger.c(
-                            "l P ", Messenger.dblf("l", primedX, primedY, primedZ, primedAngle),
-                            "r  E ", Messenger.dblf("r", x, y, z))};
+                    return new Text[]{c(
+                            "l P ", style(dblf(primedX, primedY, primedZ, primedAngle), LIME),
+                            "r  E ", style(dblf( x, y, z), RED))};
             }
             return null;
         }, () -> new LogParameters(x, y, z));

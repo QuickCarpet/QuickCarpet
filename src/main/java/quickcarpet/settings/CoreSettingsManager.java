@@ -5,6 +5,7 @@ import quickcarpet.Build;
 import quickcarpet.QuickCarpet;
 import quickcarpet.annotation.BugFix;
 import quickcarpet.module.QuickCarpetModule;
+import quickcarpet.utils.Translations;
 
 import javax.annotation.Nullable;
 import java.io.*;
@@ -51,6 +52,7 @@ public class CoreSettingsManager extends SettingsManager {
                 LOG.error("Could not initialize settings for module " + m.getId() + " " + m.getVersion(), e);
             }
         }
+        Collections.sort(allRules);
     }
 
     public void init(MinecraftServer server) {
@@ -122,9 +124,11 @@ public class CoreSettingsManager extends SettingsManager {
         for (Map.Entry<String, ParsedRule<?>> e : new TreeMap<>(rules).entrySet()) {
             ParsedRule<?> rule = e.getValue();
             ps.println("## " + rule.name);
-            ps.println(rule.description + "\n");
-            for (String extra : rule.extraInfo) {
-                ps.println(extra + "  ");
+            ps.println(Translations.translate(rule.description, Translations.DEFAULT_LOCALE).asFormattedString() + "\n");
+            if (rule.extraInfo != null) {
+                for (String extra : Translations.translate(rule.extraInfo, Translations.DEFAULT_LOCALE).asFormattedString().split("\n")) {
+                    ps.println(extra + "  ");
+                }
             }
             ps.println("Type: `" + rule.type.getSimpleName() + "`  ");
             ps.println("Default: `" + rule.defaultAsString + "`  ");

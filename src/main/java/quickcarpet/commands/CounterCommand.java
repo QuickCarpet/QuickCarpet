@@ -8,9 +8,9 @@ import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import quickcarpet.helper.HopperCounter;
 import quickcarpet.settings.Settings;
-import quickcarpet.utils.Messenger;
 
 import static net.minecraft.server.command.CommandManager.literal;
+import static quickcarpet.utils.Messenger.*;
 
 public class CounterCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
@@ -31,7 +31,7 @@ public class CounterCommand {
 
     private static int displayCounter(ServerCommandSource source, String color, boolean realtime) {
         HopperCounter counter = HopperCounter.getCounter(color);
-        if (counter == null) throw new CommandException(Messenger.s("Unknown wool color"));
+        if (counter == null) throw new CommandException(t("command.counter.unknownColor"));
         for (Text message : counter.format(source.getMinecraftServer(), realtime, false)) {
             source.sendFeedback(message, false);
         }
@@ -41,20 +41,18 @@ public class CounterCommand {
     private static int resetCounter(ServerCommandSource source, String color) {
         if (color == null) {
             HopperCounter.resetAll(source.getMinecraftServer());
-            Messenger.m(source, "w Restarted all counters");
+            m(source, t("command.counter.reset.success"));
         } else {
             HopperCounter counter = HopperCounter.getCounter(color);
-            if (counter == null) throw new CommandException(Messenger.s("Unknown wool color"));
+            if (counter == null) throw new CommandException(t("command.counter.unknownColor"));
             counter.reset(source.getMinecraftServer());
-            Messenger.m(source, "w Restarted " + color + " counter");
+            m(source, t("command.counter.reset.one.success", t("color.minecraft." + counter.color.getName())));
         }
         return 1;
     }
 
     private static int listAllCounters(ServerCommandSource source, boolean realtime) {
-        for (Text message : HopperCounter.formatAll(source.getMinecraftServer(), realtime)) {
-            source.sendFeedback(message, false);
-        }
+        send(source, HopperCounter.formatAll(source.getMinecraftServer(), realtime));
         return 1;
     }
 }

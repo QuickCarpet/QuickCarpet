@@ -9,7 +9,6 @@ import quickcarpet.QuickCarpet;
 import quickcarpet.helper.TickSpeed;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.CarpetProfiler;
-import quickcarpet.utils.Messenger;
 
 import static com.mojang.brigadier.arguments.FloatArgumentType.floatArg;
 import static com.mojang.brigadier.arguments.FloatArgumentType.getFloat;
@@ -20,6 +19,7 @@ import static com.mojang.brigadier.arguments.StringArgumentType.greedyString;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 import static net.minecraft.server.command.CommandSource.suggestMatching;
+import static quickcarpet.utils.Messenger.*;
 
 public class TickCommand {
 
@@ -67,15 +67,13 @@ public class TickCommand {
 
     private static int sendCurrentTPS(ServerCommandSource source) {
         float tickRateGoal = QuickCarpet.getInstance().tickSpeed.tickRateGoal;
-        Messenger.m(source, "w Current tps is: ", String.format("wb %.1f", tickRateGoal));
+        m(source, t("command.tick.current", formats("%.1f", BOLD, tickRateGoal)));
         return (int) tickRateGoal;
     }
 
     private static int setWarp(ServerCommandSource source, int advance, String tailCommand) {
         Text message = QuickCarpet.getInstance().tickSpeed.setTickWarp(source, advance, tailCommand);
-        if (message != null) {
-            source.sendFeedback(message, false);
-        }
+        if (message != null) m(source, message);
         return 1;
     }
 
@@ -88,9 +86,9 @@ public class TickCommand {
         TickSpeed tickSpeed = QuickCarpet.getInstance().tickSpeed;
         tickSpeed.setPaused(!tickSpeed.isPaused());
         if (tickSpeed.isPaused()) {
-            Messenger.m(source, "gi Game is paused");
+            m(source, ts("command.tick.freeze", GRAY + "" + ITALIC));
         } else {
-            Messenger.m(source, "gi Game runs normally");
+            m(source, ts("command.tick.unfreeze", GRAY + "" + ITALIC));
         }
         return 1;
     }
@@ -116,22 +114,24 @@ public class TickCommand {
     }
 
     public static void printMSPTStats(ServerCommandSource source, TickSpeed.MSPTStatistics stats) {
-        Messenger.m(source, "e Statistics collected over ", "c " + stats.count + " ", "e ticks", "g :");
-        Messenger.m(source, "w Load average (1m/5m/15m) [mspt]", "g : ",
-            String.format("c %.3f", TickSpeed.getExponential1MinuteMSPT()), "g , ",
-            String.format("c %.3f", TickSpeed.getExponential5MinuteMSPT()), "g , ",
-            String.format("c %.3f", TickSpeed.getExponential15MinuteMSPT())
+        m(source, ts("command.tick.stats", DARK_GREEN, s(Integer.toString(stats.count), CYAN)), s(":", GRAY));
+        m(source, t("command.tick.stats.loadavg"), s(": ", GRAY),
+            formats("%.3f", CYAN, TickSpeed.getExponential1MinuteMSPT()), s(", ", GRAY),
+            formats("%.3f", CYAN, TickSpeed.getExponential5MinuteMSPT()), s(", ", GRAY),
+            formats("%.3f", CYAN, TickSpeed.getExponential15MinuteMSPT())
         );
-        Messenger.m(source, "w min, avg, max [mspt]", "g : ",
-                String.format("c %.3f", stats.min), "g , ",
-                String.format("c %.3f±%.3f", stats.mean, stats.stdDev), "g , ",
-                String.format("c %.3f", stats.max)
+        m(source, t("command.tick.stats.minavgmax"), s(": ", GRAY),
+            formats("%.3f", CYAN, stats.min), s(", ", GRAY),
+            formats("%.3f±%.3f", CYAN, stats.mean, stats.stdDev), s(", ", GRAY),
+            formats("%.3f", CYAN, stats.max)
         );
-        Messenger.m(source, "w Ticks >50ms", "g : ", String.format("c %.1f%%", stats.lagPercentage));
-        Messenger.m(source, "w 90th%, 95th%, 99th% [mspt]", "g : ",
-                String.format("c %.3f", stats.percentile90), "g , ",
-                String.format("c %.3f", stats.percentile95), "g , ",
-                String.format("c %.3f", stats.percentile99)
-                );
+        m(source, t("command.tick.stats.lagticks"), s(": ", GRAY),
+            formats("%.1f%%", CYAN, stats.lagPercentage)
+        );
+        m(source, t("command.tick.stats.percentiles"), s(": ", GRAY),
+            formats("%.3f", CYAN, stats.percentile90), s(", ", GRAY),
+            formats("%.3f", CYAN, stats.percentile95), s(", ", GRAY),
+            formats("%.3f", CYAN, stats.percentile99)
+        );
     }
 }

@@ -18,4 +18,12 @@ public class ModuleSettingsManager extends SettingsManager {
     public String getRuleName(Field field, Rule rule) {
         return this.prefix + super.getRuleName(field, rule);
     }
+
+    public String getDescriptionTranslationKey(Field field, Rule rule) {
+        return module.getId() + ".rule." + getDefaultRuleName(field, rule) + ".description";
+    }
+
+    public String getExtraTranslationKey(Field field, Rule rule) {
+        return module.getId() + ".rule." + getDefaultRuleName(field, rule) + ".extra";
+    }
 }

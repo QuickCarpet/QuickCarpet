@@ -24,7 +24,9 @@ import quickcarpet.settings.Settings;
 import quickcarpet.utils.CarpetProfiler;
 import quickcarpet.utils.CarpetRegistry;
 import quickcarpet.utils.HUDController;
+import quickcarpet.utils.Translations;
 
+import java.io.IOException;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -84,6 +86,11 @@ public final class QuickCarpet implements ModInitializer, ModuleHost {
     public void onGameStarted(EnvType env) {
         CarpetRegistry.init();
         CarpetProfiler.init();
+        try {
+            Translations.init();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Settings.MANAGER.parse();
         for (QuickCarpetModule m : modules) {
             m.onGameStarted();
@@ -117,6 +124,11 @@ public final class QuickCarpet implements ModInitializer, ModuleHost {
     public void registerModule(QuickCarpetModule module) {
         LOG.info(Build.NAME + " module " + module.getId() + " version " + module.getVersion() + " registered");
         modules.add(module);
+        try {
+            Translations.loadModuleTranslations(module);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

@@ -17,7 +17,8 @@ import java.util.stream.Stream;
 
 public class Logger<T extends Logger.CommandParameters> implements Comparable<Logger<?>> {
     boolean active = false;
-    private String unavailable;
+    @Nullable
+    private Text unavailable;
 
     private final String name;
     private final Text displayName;
@@ -63,7 +64,7 @@ public class Logger<T extends Logger.CommandParameters> implements Comparable<Lo
         this.unavailable = null;
     }
 
-    public void setUnavailable(String reason) {
+    public void setUnavailable(Text reason) {
         this.unavailable = reason;
     }
 
@@ -72,8 +73,8 @@ public class Logger<T extends Logger.CommandParameters> implements Comparable<Lo
     }
 
     @Nullable
-    public String getUnavailabilityReason() {
-        return this.unavailable;
+    public Text getUnavailabilityReason() {
+        return isAvailable() ? null : unavailable.copy();
     }
 
     /**

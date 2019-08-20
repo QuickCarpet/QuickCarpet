@@ -5,9 +5,11 @@ import com.mojang.brigadier.arguments.*;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.text.TranslatableText;
 import quickcarpet.module.QuickCarpetModule;
 import quickcarpet.network.channels.RulesChannel;
 import quickcarpet.utils.Reflection;
+import quickcarpet.utils.Translations;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
@@ -26,8 +28,9 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
 
     public final String shortName;
     public final String name;
-    public final String description;
-    public final ImmutableList<String> extraInfo;
+    public final TranslatableText description;
+    @Nullable
+    public final TranslatableText extraInfo;
     public final ImmutableList<RuleCategory> categories;
     public final ImmutableList<String> options;
     public final Class<T> type;
@@ -50,8 +53,9 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
         this.shortName = SettingsManager.getDefaultRuleName(field, rule);
         this.name = manager.getRuleName(field, rule);
         this.type = (Class<T>) field.getType();
-        this.description = rule.desc();
-        this.extraInfo = ImmutableList.copyOf(rule.extra());
+        this.description = new TranslatableText(manager.getDescriptionTranslationKey(field, rule));
+        String extraKey = manager.getExtraTranslationKey(field, rule);
+        this.extraInfo = Translations.hasTranslation(extraKey) ? new TranslatableText(extraKey) : null;
         this.categories = ImmutableList.copyOf(rule.category());
         this.validator = Reflection.callPrivateConstructor(rule.validator());
         this.onChange = Reflection.callPrivateConstructor(rule.onChange());
@@ -93,8 +97,8 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
 
     public void set(T value, boolean sync) {
         T previousValue = this.get();
-        Optional<String> error = this.validator.validate(value);
-        if (error.isPresent()) throw new IllegalArgumentException(error.get());
+        Optional<TranslatableText> error = this.validator.validate(value);
+        if (error.isPresent()) throw new ValueException(error.get());
         try {
             this.field.set(null, value);
             this.onChange.onChange(this, previousValue);
@@ -262,5 +266,18 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
         };
         TypeAdapter<Integer> INTEGER = new Simple<>(Integer::parseInt, IntegerArgumentType::integer);
         TypeAdapter<Double> DOUBLE = new Simple<>(Double::parseDouble, DoubleArgumentType::doubleArg);
+    }
+
+    public static class ValueException extends IllegalArgumentException {
+        public final TranslatableText message;
+
+        ValueException(TranslatableText message) {
+            this.message = message;
+        }
+
+        @Override
+        public String getMessage() {
+            return message.asFormattedString();
+        }
     }
 }
