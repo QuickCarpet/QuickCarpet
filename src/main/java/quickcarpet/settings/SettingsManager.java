@@ -50,6 +50,14 @@ public abstract class SettingsManager {
         return getDefaultRuleName(field, rule);
     }
 
+    public String getDescriptionTranslationKey(Field field, Rule rule) {
+        return "carpet.rule." + getDefaultRuleName(field, rule) + ".description";
+    }
+
+    public String getExtraTranslationKey(Field field, Rule rule) {
+        return "carpet.rule." + getDefaultRuleName(field, rule) + ".extra";
+    }
+
     public ParsedRule getRule(String name) {
         if (!parsed) throw new IllegalStateException("Not initialized");
         if (!rules.containsKey(name)) throw new IllegalArgumentException("Unknown rule '" + name + "'");

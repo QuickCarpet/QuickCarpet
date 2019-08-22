@@ -12,11 +12,8 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.dimension.DimensionType;
 import quickcarpet.helper.Mobcaps;
 import quickcarpet.settings.Settings;
-import quickcarpet.utils.Messenger;
 import quickcarpet.utils.SpawnTracker;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import static net.minecraft.command.arguments.BlockPosArgumentType.blockPos;
@@ -25,6 +22,7 @@ import static net.minecraft.command.arguments.DimensionArgumentType.dimension;
 import static net.minecraft.command.arguments.DimensionArgumentType.getDimensionArgument;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
+import static quickcarpet.utils.Messenger.*;
 
 public class SpawnCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
@@ -53,7 +51,7 @@ public class SpawnCommand {
     private static int sendTrackingReport(ServerCommandSource source) throws CommandSyntaxException {
         SpawnTracker tracker = SpawnTracker.getTracker(source.getPlayer());
         if (tracker == null) {
-            Messenger.m(source, "d No tracker active");
+            m(source, ts("command.spawn.tracking.inactive", GOLD));
             return 1;
         }
         tracker.sendReport();
@@ -63,22 +61,22 @@ public class SpawnCommand {
     private static int startTracking(ServerCommandSource source, BlockPos min, BlockPos max) throws CommandSyntaxException {
         SpawnTracker tracker = SpawnTracker.getOrCreateTracker(source.getPlayer(), min, max);
         if (tracker.isActive()) {
-            Messenger.m(source, "d Tracking already active");
+            m(source, ts("command.spawn.tracking.active", GOLD));
             return 1;
         }
         tracker.start();
-        Messenger.m(source, "e Tracking started");
+        m(source, ts("command.spawn.tracking.started", DARK_GREEN));
         return 1;
     }
 
     private static int stopTracking(ServerCommandSource source) throws CommandSyntaxException {
         SpawnTracker tracker = SpawnTracker.getTracker(source.getPlayer());
         if (tracker == null) {
-            Messenger.m(source, "d No tracker active");
+            m(source, ts("command.spawn.tracking.active", GOLD));
             return 1;
         }
         tracker.stop();
-        Messenger.m(source, "e Tracking stopped");
+        m(source, ts("command.spawn.tracking.stopped", DARK_GREEN));
         tracker.sendReport();
         return 1;
     }
@@ -86,18 +84,16 @@ public class SpawnCommand {
     private static int sendMobcaps(ServerCommandSource source, DimensionType dimension) {
         if (dimension == null) dimension = source.getWorld().getDimension().getType();
         Map<EntityCategory, Pair<Integer, Integer>> mobcaps = Mobcaps.getMobcaps(dimension);
-        List<Text> lst = new ArrayList<>();
-        lst.add(Messenger.s(String.format("Mobcaps for %s:", Registry.DIMENSION.getId(dimension))));
+        m(source, t("command.spawn.mobcaps.title", Registry.DIMENSION.getId(dimension)));
         for (Map.Entry<EntityCategory, Pair<Integer, Integer>> e : mobcaps.entrySet()) {
             EntityCategory category = e.getKey();
             Pair<Integer, Integer> pair = e.getValue();
             int cur = pair.getLeft();
             int max = pair.getRight();
-            lst.add(Messenger.c(String.format("w   %s: ", category),
-                (cur+max==0)?"g -/-":String.format("%s %d/%d", (cur >= max)?"r":((cur >= 8*max/10)?"y":"l") ,cur, max)
-            ));
+            char color = cur >= max ? RED : (cur * 10 >= max * 8 ? YELLOW : LIME);
+            Text capText = cur + max == 0 ? s("-/-", DARK_GREEN) : formats("%d/%d", color, cur, max);
+            m(source, t("command.spawn.mobcaps.line", category, capText));
         }
-        Messenger.send(source, lst);
         return 1;
     }
 }

@@ -17,6 +17,8 @@ import quickcarpet.utils.Messenger;
 
 import java.util.*;
 
+import static quickcarpet.utils.Messenger.*;
+
 public class TickSpeed {
     public final boolean isClient;
     public float tickRateGoal = 20;
@@ -72,17 +74,17 @@ public class TickSpeed {
             tickWarpCallback = null;
             tickWarpSender = null;
             finishTickWarp();
-            return Messenger.c("gi Warp interrupted");
+            return ts("command.tick.warp.interrupted", GRAY + "" + ITALIC);
         }
         if (timeBias > 0) {
-            return Messenger.c("l Another player is already advancing time at the moment. Try later or talk to them");
+            return ts("command.tick.warp.active", LIME);
         }
         tickWarpStartTime = System.nanoTime();
         tickWarpScheduledTicks = warpAmount;
         timeBias = warpAmount;
         tickWarpCallback = callback;
         tickWarpSender = source;
-        return Messenger.c("gi Warp speed ....");
+        return ts("command.tick.warp.start", GRAY + "" + ITALIC);
     }
 
     private void finishTickWarp() {
@@ -97,27 +99,28 @@ public class TickSpeed {
         tickWarpScheduledTicks = 0;
         tickWarpStartTime = 0;
         if (tickWarpCallback != null) {
-            CommandManager icommandmanager = tickWarpSender.getMinecraftServer().getCommandManager();
+            CommandManager cmdManager = tickWarpSender.getMinecraftServer().getCommandManager();
             try {
-                int j = icommandmanager.execute(tickWarpSender, tickWarpCallback);
+                int j = cmdManager.execute(tickWarpSender, tickWarpCallback);
 
                 if (j < 1) {
                     if (tickWarpSender != null) {
-                        Messenger.m(tickWarpSender, "r Command Callback failed: ", "rb /" + tickWarpCallback, "/" + tickWarpCallback);
+                        m(tickWarpSender, ts("command.tick.warp.callback.failed", RED, runCommand(s("/" + tickWarpCallback, UNDERLINE), "/" + tickWarpCallback)));
                     }
                 }
-            } catch (Throwable var23) {
+            } catch (Throwable t) {
                 if (tickWarpSender != null) {
-                    Messenger.m(tickWarpSender, "r Command Callback failed - unknown error: ", "rb /" + tickWarpCallback, "/" + tickWarpCallback);
+                    m(tickWarpSender, ts("command.tick.warp.callback.failed.unknown", RED, runCommand(s("/" + tickWarpCallback, UNDERLINE), "/" + tickWarpCallback)));
                 }
             }
             tickWarpCallback = null;
         }
+        Text message = ts("command.tick.warp.completed", GRAY + "" + ITALIC, tps, String.format("%.2f", mspt));
         if (tickWarpSender != null) {
-            Messenger.m(tickWarpSender, String.format("gi ... Time warp completed with %d tps, or %.2f mspt", tps, mspt));
+            m(tickWarpSender, message);
             tickWarpSender = null;
         } else {
-            Messenger.print_server_message(QuickCarpet.minecraft_server, String.format("... Time warp completed with %d tps, or %.2f mspt", tps, mspt));
+            Messenger.broadcast(QuickCarpet.minecraft_server, message);
         }
         timeBias = 0;
 

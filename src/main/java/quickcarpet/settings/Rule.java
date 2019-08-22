@@ -26,16 +26,6 @@ public @interface Rule {
     String name() default ""; // default same as field name
 
     /**
-     * A description of the rule
-     */
-    String desc();
-
-    /**
-     * Extra information about the rule
-     */
-    String[] extra() default {};
-
-    /**
      * A list of categories the rule is in
      */
     RuleCategory[] category();

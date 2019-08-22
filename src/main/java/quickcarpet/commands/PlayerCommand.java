@@ -27,7 +27,6 @@ import quickcarpet.helper.PlayerActionPack.ActionType;
 import quickcarpet.patches.FakeServerPlayerEntity;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.ActionPackOwner;
-import quickcarpet.utils.Messenger;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -44,6 +43,7 @@ import static net.minecraft.command.arguments.RotationArgumentType.rotation;
 import static net.minecraft.command.arguments.Vec3ArgumentType.vec3;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
+import static quickcarpet.utils.Messenger.*;
 
 public class PlayerCommand {
     // TODO: allow any order like execute
@@ -120,7 +120,7 @@ public class PlayerCommand {
     private static boolean cantManipulate(CommandContext<ServerCommandSource> context) {
         PlayerEntity player = getPlayer(context);
         if (player == null) {
-            Messenger.m(context.getSource(), "r Can only manipulate existing players");
+            m(context.getSource(), ts("command.player.onlyExisting", RED));
             return true;
         }
         PlayerEntity sendingPlayer;
@@ -132,7 +132,7 @@ public class PlayerCommand {
 
         if (!context.getSource().getMinecraftServer().getPlayerManager().isOperator(sendingPlayer.getGameProfile())) {
             if (sendingPlayer != player && !(player instanceof FakeServerPlayerEntity)) {
-                Messenger.m(context.getSource(), "r Non OP players can't control other real players");
+                m(context.getSource(), ts("command.player.notOperator", RED));
                 return true;
             }
         }
@@ -143,7 +143,7 @@ public class PlayerCommand {
         if (cantManipulate(context)) return true;
         PlayerEntity player = getPlayer(context);
         if (player instanceof FakeServerPlayerEntity) return false;
-        Messenger.m(context.getSource(), "r Only fake players can be moved or killed");
+        m(context.getSource(), ts("command.player.notFake", RED));
         return true;
     }
 
@@ -153,16 +153,16 @@ public class PlayerCommand {
         PlayerManager manager = server.getPlayerManager();
         PlayerEntity player = manager.getPlayer(playerName);
         if (player != null) {
-            Messenger.m(context.getSource(), "r Player ", "rb " + playerName, "r  is already logged on");
+            m(context.getSource(), ts("command.player.alreadyOnline", RED, s(playerName, BOLD)));
             return true;
         }
         GameProfile profile = server.getUserCache().findByName(playerName);
         if (manager.getUserBanList().contains(profile)) {
-            Messenger.m(context.getSource(), "r Player ", "rb " + playerName, "r  is banned");
+            m(context.getSource(), ts("command.player.banned", RED, s(playerName, BOLD)));
             return true;
         }
         if (manager.isWhitelistEnabled() && profile != null && manager.isWhitelisted(profile) && !context.getSource().hasPermissionLevel(2)) {
-            Messenger.m(context.getSource(), "r Whitelisted players can only be spawned by operators");
+            m(context.getSource(), "command.player.whitelisted", RED);
             return true;
         }
         return false;
@@ -208,8 +208,7 @@ public class PlayerCommand {
         MinecraftServer server = source.getMinecraftServer();
         PlayerEntity player = FakeServerPlayerEntity.createFake(playerName, server, pos.x, pos.y, pos.z, facing.y, facing.x, dim, mode);
         if (player == null) {
-            Messenger.m(context.getSource(), "rb Player " + getString(context, "player") + " doesn't exist " +
-                    "and cannot spawn in online mode. Turn the server offline to spawn non-existing players");
+            m(context.getSource(), ts("command.player.doesNotExist", RED, s(playerName, BOLD)));
         }
         return 1;
     }
@@ -240,7 +239,7 @@ public class PlayerCommand {
         if (cantManipulate(context)) return 0;
         ServerPlayerEntity player = getPlayer(context);
         if (player instanceof FakeServerPlayerEntity) {
-            Messenger.m(context.getSource(), "r Cannot shadow server-side players");
+            m(context.getSource(), ts("command.player.shadowFake", RED));
             return 0;
         }
         FakeServerPlayerEntity.createShadow(player.server, player);

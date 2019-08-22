@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 public final class Loggers {
     // Map from logger names to loggers.
-    private static Map<String, Logger> LOGGERS = new HashMap<>();
+    private static Map<String, Logger<?>> LOGGERS = new HashMap<>();
 
     public static final Logger<TNTLogHelper.LogParameters> TNT = registerLogger("tnt", "brief", new String[]{"brief", "full"}, LogHandler.CHAT, TNTLogHelper.LogParameters.class);
     public static final Logger<TickSpeed.LogCommandParameters> TPS = registerLogger("tps", null, null, LogHandler.HUD, TickSpeed.LogCommandParameters.class);
@@ -67,7 +67,7 @@ public final class Loggers {
                 .collect(Collectors.toSet());
     }
 
-    public static Collection<Logger> values() {
+    public static Collection<Logger<?>> values() {
         return LOGGERS.values().stream().filter(Logger::isAvailable).collect(Collectors.toSet());
     }
 }
