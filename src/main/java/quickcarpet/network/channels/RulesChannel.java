@@ -12,6 +12,7 @@ import quickcarpet.network.PacketSplitter;
 import quickcarpet.network.PluginChannelHandler;
 import quickcarpet.settings.ParsedRule;
 import quickcarpet.settings.Settings;
+import quickcarpet.utils.Translations;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -54,23 +55,18 @@ public class RulesChannel implements PluginChannelHandler {
     }
 
     public void sendRuleUpdate(Set<ParsedRule<?>> rules) {
-        if (players.isEmpty()) return;
-        CompoundTag data = serializeRuleUpdate(rules);
-        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-        buf.writeVarInt(PACKET_S2C_DATA);
-        buf.writeCompoundTag(data);
-        for (ServerPlayerEntity player : players) PacketSplitter.send(player.networkHandler, CHANNEL, buf);
+        for (ServerPlayerEntity player : players) sendRuleUpdate(player, rules);
     }
 
     public void sendRuleUpdate(ServerPlayerEntity player, Collection<ParsedRule<?>> rules) {
-        CompoundTag data = serializeRuleUpdate(rules);
+        CompoundTag data = serializeRuleUpdate(player, rules);
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeVarInt(PACKET_S2C_DATA);
         buf.writeCompoundTag(data);
         PacketSplitter.send(player.networkHandler, CHANNEL, buf);
     }
 
-    public static CompoundTag serializeRuleUpdate(Collection<ParsedRule<?>> rules) {
+    public static CompoundTag serializeRuleUpdate(ServerPlayerEntity player, Collection<ParsedRule<?>> rules) {
         CompoundTag data = new CompoundTag();
         data.putInt("Version", VERSION);
         ListTag rulesList = new ListTag();
@@ -80,9 +76,12 @@ public class RulesChannel implements PluginChannelHandler {
             ruleTag.putString("Type", rule.type.getName());
             ruleTag.putString("DefaultValue", rule.defaultAsString);
             ruleTag.putString("Value", rule.getAsString());
-            ruleTag.putString("Description", rule.description);
+            ruleTag.putString("Description", Translations.translate(rule.description, player).asFormattedString());
             ListTag extraList = new ListTag();
-            for (String extra : rule.extraInfo) extraList.add(new StringTag(extra));
+            if (rule.extraInfo != null) {
+                String[] extraInfo = Translations.translate(rule.extraInfo, player).asFormattedString().split("\n");
+                for (String extra : extraInfo) extraList.add(new StringTag(extra));
+            }
             ruleTag.put("ExtraInfo", extraList);
             rulesList.add(ruleTag);
         }

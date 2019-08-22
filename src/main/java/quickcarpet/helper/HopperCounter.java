@@ -12,11 +12,12 @@ import net.minecraft.util.DyeColor;
 import quickcarpet.QuickCarpet;
 import quickcarpet.logging.Logger;
 import quickcarpet.pubsub.PubSubInfoProvider;
-import quickcarpet.utils.Messenger;
 
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static quickcarpet.utils.Messenger.*;
 
 public class HopperCounter
 {
@@ -71,44 +72,44 @@ public class HopperCounter
         for (HopperCounter counter : COUNTERS.values()) {
             List<Text> temp = counter.format(server, realtime, false);
             if (temp.size() > 1) {
-                if (!text.isEmpty()) text.add(Messenger.s(""));
+                if (!text.isEmpty()) text.add(s(""));
                 text.addAll(temp);
             }
         }
         if (text.isEmpty()) {
-            text.add(Messenger.s("No items have been counted yet."));
+            text.add(t("counter.none"));
         }
         return text;
+    }
+
+    private TranslatableText getColorText() {
+        return t("color.minecraft." + color.getName());
     }
 
     public List<Text> format(MinecraftServer server, boolean realTime, boolean brief) {
         if (counter.isEmpty()) {
             if (brief) {
-                return Collections.singletonList(Messenger.c("g "+color+": -, -/h, - min "));
+                return Collections.singletonList(ts("counter.format", DARK_GREEN, getColorText(), "-", "-", "-"));
             }
-            return Collections.singletonList(Messenger.s(String.format("No items for %s yet", color.getName())));
+            return Collections.singletonList(ts("counter.none.color", DARK_GREEN, getColorText()));
         }
         long total = getTotalItems();
         long ticks = Math.max(realTime ? (System.currentTimeMillis() - startMillis) / 50 : server.getTicks() - startTick, 1);
         if (total == 0) {
             if (brief) {
-                return Collections.singletonList(Messenger.c(
-                        String.format("c %s: 0, 0/h, %.1f min ", color, ticks / (20.0 * 60.0))));
+                return Collections.singletonList(ts("counter.format", CYAN, getColorText(), 0, 0, String.format("%.1f", ticks / 1200.0)));
             }
-            return Collections.singletonList(Messenger.c(String.format("w No items for %s yet (%.2f min.%s)",
-                            color.getName(), ticks / (20.0 * 60.0), (realTime ? " - real time" : "")),
-                    "nb  [X]", "^g reset", "!/counter " + color.getName() +" reset"));
+            Text line = t("counter.none.color.timed", getColorText(), String.format("%.1f", ticks / 1200.0), realTime ? c(s(" - "), t("counter.realTime")) : s(""));
+            line.append(" ");
+            line.append(runCommand(s("[X]", "nb"), "/counter " + color.getName() + " reset", ts("counter.action.reset", GRAY)));
         }
         if (brief) {
-            return Collections.singletonList(Messenger.c(String.format("c %s: %d, %d/h, %.1f min ",
-                            color.getName(), total, total * (20 * 60 * 60) / ticks, ticks / (20.0 * 60.0))));
+            return Collections.singletonList(ts("counter.format", CYAN, getColorText(), total, total * 72000 / ticks, String.format("%.1f", ticks / 1200.0)));
         }
         return counter.object2LongEntrySet().stream().map(e -> {
-            Text itemName = new TranslatableText(e.getKey().getTranslationKey());
+            Text itemName = t(e.getKey().getTranslationKey());
             long count = e.getLongValue();
-            return Messenger.c("w - ", itemName, String.format("w : %d, %.1f/h",
-                    count,
-                    count * (20.0 * 60.0 * 60.0) / ticks));
+            return t("counter.format.item", itemName, count, String.format("%.1f", count * 72000.0 / ticks));
         }).collect(Collectors.toList());
     }
 

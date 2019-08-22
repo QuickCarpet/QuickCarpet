@@ -35,7 +35,7 @@ public class HUDController {
             TickSpeed tickSpeed = QuickCarpet.getInstance().tickSpeed;
             double MSPT = tickSpeed.getCurrentMSPT();
             double TPS = tickSpeed.calculateTPS(MSPT);
-            String color = Messenger.heatmap_color(MSPT, tickSpeed.msptGoal);
+            char color = Messenger.getHeatmapColor(MSPT, tickSpeed.msptGoal);
             Text[] message = new Text[]{Messenger.c(
                     "g TPS: ", String.format(Locale.US, "%s %.1f", color, TPS),
                     "g  MSPT: ", String.format(Locale.US, "%s %.1f", color, MSPT))};
@@ -63,7 +63,7 @@ public class HUDController {
                     int actual = pair.getLeft();
                     int limit = pair.getRight();
                     components.add(Messenger.c(
-                            (actual + limit == 0) ? "g -" : Messenger.heatmap_color(actual, limit) + " " + actual,
+                            (actual + limit == 0) ? "g -" : Messenger.getHeatmapColor(actual, limit) + " " + actual,
                             Messenger.creatureTypeColor(e.getKey()) + " /" + ((actual + limit == 0) ? "-" : limit)
                     ));
                     components.add(Messenger.c("w  "));

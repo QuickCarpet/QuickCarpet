@@ -38,6 +38,7 @@
     "ServerChunkManagerAccessor",
     "ServerChunkManagerMixin",
     "ServerNetworkIoAccessor",
+    "ServerPlayerEntityAccessor",
     "ServerPlayerEntityMixin",
     "ServerPlayInteractionManagerMixin",
     "ServerPlayNetworkHandlerMixin",

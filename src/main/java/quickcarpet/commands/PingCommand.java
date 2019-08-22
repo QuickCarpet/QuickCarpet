@@ -5,9 +5,9 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import quickcarpet.settings.Settings;
-import quickcarpet.utils.Messenger;
 
 import static net.minecraft.server.command.CommandManager.literal;
+import static quickcarpet.utils.Messenger.*;
 
 public class PingCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
@@ -16,7 +16,7 @@ public class PingCommand {
             .executes(c -> {
                 ServerPlayerEntity player = c.getSource().getPlayer();
                 int pingMs = player.pingMilliseconds;
-                player.sendMessage(Messenger.c("w Your ping is ", Messenger.heatmap_color(pingMs, 250) + " " + pingMs, "w  ms"));
+                m(player, t("command.ping.result", s(Integer.toString(pingMs), getHeatmapColor(pingMs, 250))));
                 return 1;
             });
         dispatcher.register(ping);

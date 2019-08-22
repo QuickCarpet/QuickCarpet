@@ -18,6 +18,8 @@ import java.util.TreeSet;
 import java.util.WeakHashMap;
 import java.util.stream.Stream;
 
+import static quickcarpet.utils.Messenger.*;
+
 public class SpawnTracker {
     private static final Map<ServerPlayerEntity, SpawnTracker> TRACKERS = new WeakHashMap<>();
     private final ServerPlayerEntity source;
@@ -61,7 +63,7 @@ public class SpawnTracker {
             double seconds = ticksActive / 20.;
             int minutes = (int) seconds / 60;
             int hours = minutes / 60;
-            Messenger.m(source, "e Tracking for", String.format("m  %d:%02d:%05.2f", hours, minutes % 60, seconds % 60));
+            m(source, ts("command.spawn.tracking.title", DARK_GREEN, formats("%d:%02d:%05.2f", LIGHT_PURPLE, hours, minutes % 60, seconds % 60)));
             double perHour = 72000. / ticksActive;
             Set<EntityCategory> seenEntityCategories = new TreeSet<>();
             seenEntityCategories.addAll(mobcapFull.keySet());
@@ -71,20 +73,24 @@ public class SpawnTracker {
                 int mobcapNotFullCount = mobcapNotFull.getOrDefault(category, 0);
                 int totalGlobalAttempts = mobcapFullCount + mobcapNotFullCount;
                 double mobcapFullPortion = (double) mobcapFullCount / totalGlobalAttempts;
-                Messenger.m(source, "w > " + category.getName() + ": ",
-                        String.format("%s %.2f", Messenger.heatmap_color(mobcapFullPortion, 1), 100 * mobcapFullPortion), "g %F, ");
-                attempts.keySet().stream().filter(t -> t.getCategory() == category)
-                        .sorted(SpawnTracker::sortEntityType).forEach(type -> {
-                            int successful = successfulSpawns.getOrDefault(type, 0);
-                            int numAttempts = attempts.getOrDefault(type, 0);
-                            double successfulPerHour = successful * perHour;
-                            double successfulPortion = (double) successful / numAttempts;
-                            Messenger.m(source, "w " + EntityType.getId(type), "g : ",
-                                    "e " + successful, "g  spawns, ",
-                                    "e " + (int) successfulPerHour,
-                                    String.format("q %.2f", successfulPerHour % 1).replace("0.", "."),
-                                    "g /h, ",
-                                    String.format("%s %.2f", Messenger.heatmap_color(1 - successfulPortion, 1), 100 * successfulPortion), "g % success");
+                m(source, ts("command.spawn.tracking.category", GRAY,
+                    s(category.getName(), WHITE),
+                    formats("%.2f", getHeatmapColor(mobcapFullPortion, 1), 100 * mobcapFullPortion)
+                ));
+                attempts.keySet().stream().filter(t -> t.getCategory() == category).sorted(SpawnTracker::sortEntityType).forEach(type -> {
+                    int successful = successfulSpawns.getOrDefault(type, 0);
+                    int numAttempts = attempts.getOrDefault(type, 0);
+                    double successfulPerHour = successful * perHour;
+                    double successfulPortion = (double) successful / numAttempts;
+                    m(source, ts("command.spawn.tracking.mob", GRAY,
+                        s(EntityType.getId(type).toString(), WHITE),
+                        s(Integer.toString(successful), DARK_GREEN),
+                        c(
+                            s(Integer.toString((int) successfulPerHour), DARK_GREEN),
+                            s(String.format("%.2f", successfulPerHour % 1).replace("0.", "."), DARK_AQUA)
+                        ),
+                        formats("%.2f", getHeatmapColor(1 - successfulPortion, 1), 100 * successfulPortion)
+                    ));
                 });
             }
         } catch (Exception e) {
