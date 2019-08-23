@@ -46,8 +46,8 @@ public class CameraModeCommand {
     private static int cameraMode(ServerCommandSource source, PlayerEntity target) {
         if (!(hasPermission(source, target))) return 0;
         target.setGameMode(GameMode.SPECTATOR);
-        target.addPotionEffect(new StatusEffectInstance(StatusEffects.NIGHT_VISION, 999999, 0, false, false));
-        target.addPotionEffect(new StatusEffectInstance(StatusEffects.CONDUIT_POWER, 999999, 0, false, false));
+        target.addStatusEffect(new StatusEffectInstance(StatusEffects.NIGHT_VISION, 999999, 0, false, false));
+        target.addStatusEffect(new StatusEffectInstance(StatusEffects.CONDUIT_POWER, 999999, 0, false, false));
         return 1;
     }
 

@@ -134,7 +134,7 @@ task dumpRules(type: JavaExec, dependsOn: jar) {
 		}
 	}
 }
-build.dependsOn dumpRules
+// build.dependsOn dumpRules
 
 // configure the maven publication
 publishing {
