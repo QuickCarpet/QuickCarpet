@@ -88,13 +88,13 @@ public class HUDController {
         }, () -> PacketCounter.LogCommandParameters.INSTANCE));
     }
 
-    public static void addMessage(PlayerEntity player, Text hudMessage) {
+    public static void addMessage(ServerPlayerEntity player, Text hudMessage) {
         if (!PLAYER_HUDS.containsKey(player)) {
             PLAYER_HUDS.put(player, new ArrayList<>());
         } else {
             PLAYER_HUDS.get(player).add(new LiteralText("\n"));
         }
-        PLAYER_HUDS.get(player).add(hudMessage);
+        PLAYER_HUDS.get(player).add(Translations.translate(hudMessage, player));
     }
 
     public static void clearPlayerHUD(PlayerEntity player) {

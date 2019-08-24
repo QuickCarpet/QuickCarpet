@@ -33,7 +33,7 @@ public class CounterCommand {
         HopperCounter counter = HopperCounter.getCounter(color);
         if (counter == null) throw new CommandException(t("command.counter.unknownColor"));
         for (Text message : counter.format(source.getMinecraftServer(), realtime, false)) {
-            source.sendFeedback(message, false);
+            m(source, message);
         }
         return 1;
     }
