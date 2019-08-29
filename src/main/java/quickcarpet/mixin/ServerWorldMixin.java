@@ -16,6 +16,7 @@ import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.level.LevelProperties;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -27,12 +28,16 @@ import quickcarpet.utils.CarpetProfiler;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 @Mixin(ServerWorld.class)
 public abstract class ServerWorldMixin extends World {
     @Shadow @Final private List<ServerPlayerEntity> players;
 
     @Shadow public abstract ServerChunkManager method_14178();
+
+    @Shadow private boolean allPlayersSleeping;
 
     protected ServerWorldMixin(LevelProperties levelProperties_1, DimensionType dimensionType_1, BiFunction<World, Dimension, ChunkManager> biFunction_1, Profiler profiler_1, boolean boolean_1) {
         super(levelProperties_1, dimensionType_1, biFunction_1, profiler_1, boolean_1);
@@ -120,5 +125,32 @@ public abstract class ServerWorldMixin extends World {
     private FluidState optimizedFluidTick(ChunkSection chunkSection, int x, int y, int z) {
         if (Settings.optimizedFluidTicks && !chunkSection.hasRandomFluidTicks()) return Fluids.EMPTY.getDefaultState();
         return chunkSection.getFluidState(x, y, z);
+    }
+
+    @Feature("sleepingThreshold")
+    @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;noneMatch(Ljava/util/function/Predicate;)Z"))
+    private boolean testSleepingLongEnough(Stream<ServerPlayerEntity> stream, Predicate<ServerPlayerEntity> predicate) {
+        return arePlayersSleeping(ServerPlayerEntity::isSleepingLongEnough);
+    }
+
+    /**
+     * @author skyrising
+     */
+    @Overwrite
+    @Feature("sleepingThreshold")
+    public void updatePlayersSleeping() {
+        this.allPlayersSleeping = arePlayersSleeping(ServerPlayerEntity::isSleeping);
+    }
+
+    private boolean arePlayersSleeping(Predicate<ServerPlayerEntity> condition) {
+        int nonSpectators = 0;
+        int sleeping = 0;
+        for (ServerPlayerEntity player : this.players) {
+            if (player.isSpectator()) continue;
+            nonSpectators++;
+            if (condition.test(player)) sleeping++;
+        }
+        if (sleeping == 0) return false;
+        return sleeping * 100 >= nonSpectators * Settings.sleepingThreshold;
     }
 }

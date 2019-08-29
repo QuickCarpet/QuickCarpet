@@ -72,6 +72,7 @@
   "carpet.rule.optimizedFluidTicks.description": "Optimizes random ticks for fluids",
   "carpet.rule.optimizedFluidTicks.extra": "Testing showed around 2-3mspt improvement in regular worlds\nNeeds reloading of chunks to be effective",
   "carpet.rule.dispensersTillSoil.description": "Dispensers with hoes can till soil",
+  "carpet.rule.sleepingThresold": "Percentage of sleeping players required to skip the night",
   "carpet.validator.positive": "Must be positive",
   "carpet.validator.nonNegative": "Must be non-negative",
   "carpet.validator.negative": "Must be negative",

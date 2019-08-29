@@ -283,6 +283,15 @@ Default: `false`
 Options: `true`, `false`  
 Categories: feature, experimental  
 
+## sleepingThreshold
+carpet.rule.sleepingThreshold.description
+
+Type: `double`  
+Default: `100.0`  
+Options: `0`, `50`, `100`  
+Categories: feature, survival  
+Validator: `Range [0.0,100.0]`  
+
 ## spawnChunkLevel
 Size of the spawn chunks
 

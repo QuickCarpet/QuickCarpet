@@ -176,6 +176,15 @@ public class Settings {
     @Rule(category = {OPTIMIZATIONS, EXPERIMENTAL})
     public static boolean optimizedFluidTicks = false;
 
+    @Rule(category = {FEATURE, SURVIVAL}, options = {"0", "50", "100"}, validator = SleepingThreshold.class)
+    public static double sleepingThreshold = 100;
+
+    public static class SleepingThreshold extends Validator.Range<Double> {
+        public SleepingThreshold() {
+            super(0.0, 100.0);
+        }
+    }
+
     public static void main(String[] args) throws IOException {
         Bootstrap.initialize();
         Translations.init();
