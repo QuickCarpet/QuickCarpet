@@ -1,6 +1,8 @@
 package quickcarpet;
 
+import fi.dy.masa.malilib.event.InitializationHandler;
 import net.minecraft.client.MinecraftClient;
+import quickcarpet.client.ClientInit;
 import quickcarpet.client.ClientPluginChannelManager;
 import quickcarpet.client.ClientPubSubListener;
 import quickcarpet.client.ClientRulesChannel;
@@ -19,6 +21,10 @@ public class QuickCarpetClient {
         minecraftClient = MinecraftClient.getInstance();
         ClientPluginChannelManager.INSTANCE.register(rulesChannel = new ClientRulesChannel());
         ClientPluginChannelManager.INSTANCE.register(pubSubListener = new ClientPubSubListener());
+        try {
+            Class.forName(InitializationHandler.class.getName());
+            InitializationHandler.getInstance().registerInitializationHandler(new ClientInit());
+        } catch (ClassNotFoundException ignored) {}
     }
 
     public boolean isSingleplayer() {
