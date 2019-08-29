@@ -40,7 +40,7 @@ public abstract class BlockEntityRenderDispatcherMixin implements IBlockEntityRe
         if (blockEntity_1.getSquaredDistance(this.cameraEntity.getPos().x - xOffset, this.cameraEntity.getPos().y - yOffset,
                 this.cameraEntity.getPos().z - zOffset) < blockEntity_1.getSquaredRenderDistance()) {
             GuiLighting.enable();
-            int i = this.world.getLightmapIndex(blockEntity_1.getPos(), 0);
+            int i = this.world.method_22337(blockEntity_1.getPos());
             int j = i % 65536;
             int k = i / 65536;
             RenderSystem.glMultiTexCoord2f(GL20.GL_TEXTURE1, (float) j, (float) k);

@@ -109,7 +109,7 @@ public class PlaceBlockDispenserBehavior  extends ItemDispenserBehavior {
 
         BlockState currentBlockState = world.getBlockState(pos);
         FluidState currentFluidState = world.getFluidState(pos);
-        if ((world.isAir(pos) || currentBlockState.getMaterial().isReplaceable()) && currentBlockState.getBlock() != block && state.canPlaceAt(world, pos)) {
+        if ((world.method_22347(pos) || currentBlockState.getMaterial().isReplaceable()) && currentBlockState.getBlock() != block && state.canPlaceAt(world, pos)) {
             world.setBlockState(pos, state);
             CompoundTag blockEntityTag = itemStack.getSubTag("BlockEntityTag");
             if (blockEntityTag != null && block instanceof BlockEntityProvider) {
@@ -125,7 +125,7 @@ public class PlaceBlockDispenserBehavior  extends ItemDispenserBehavior {
             }
             BlockSoundGroup soundType = state.getSoundGroup();
             world.playSound(null, pos, soundType.getPlaceSound(), SoundCategory.BLOCKS, (soundType.getVolume() + 1.0F / 2.0F), soundType.getPitch() * 0.8F);
-            if (!world.isAir(pos)) {
+            if (!world.method_22347(pos)) {
                 itemStack.decrement(1);
                 return itemStack;
             }

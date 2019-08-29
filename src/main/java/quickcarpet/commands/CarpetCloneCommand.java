@@ -88,7 +88,7 @@ public class CarpetCloneCommand {
                 throw TOOBIG_EXCEPTION.create(Settings.fillLimit, volume);
             } else {
                 ServerWorld world = source.getWorld();
-                if (world.isAreaLoaded(begin, end) && world.isAreaLoaded(destination, destinationEnd)) {
+                if (world.method_22343(begin, end) && world.method_22343(destination, destinationEnd)) {
                     List<BlockInfo> otherBlocks = Lists.newArrayList();
                     List<BlockInfo> blocksWithEntity = Lists.newArrayList();
                     List<BlockInfo> fullBlocks = Lists.newArrayList();

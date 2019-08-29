@@ -36,7 +36,7 @@ public class CarpetSetBlockCommand {
                     .then(literal("destroy")
                         .executes(c -> execute(c.getSource(), getLoadedBlockPos(c, "pos"), getBlockState(c, "block"), Mode.DESTROY, null)))
                     .then(literal("keep")
-                        .executes(c -> execute(c.getSource(), getLoadedBlockPos(c, "pos"), getBlockState(c, "block"), Mode.REPLACE, (cachedBlockPosition) -> cachedBlockPosition.getWorld().isAir(cachedBlockPosition.getBlockPos()))))
+                        .executes(c -> execute(c.getSource(), getLoadedBlockPos(c, "pos"), getBlockState(c, "block"), Mode.REPLACE, (cachedBlockPosition) -> cachedBlockPosition.getWorld().method_22347(cachedBlockPosition.getBlockPos()))))
                     .then(literal("replace")
                         .executes(c -> execute(c.getSource(), getLoadedBlockPos(c, "pos"), getBlockState(c, "block"), Mode.REPLACE, null)))
         ));
@@ -48,7 +48,7 @@ public class CarpetSetBlockCommand {
         if (filter != null && !filter.test(new CachedBlockPosition(world, pos, true))) throw FAILED_EXCEPTION.create();
         boolean shouldSetBlock;
         if (mode == Mode.DESTROY) {
-            world.breakBlock(pos, true);
+            world.method_22352(pos, true);
             shouldSetBlock = !state.getBlockState().isAir();
         } else {
             BlockEntity blockEntity_1 = world.getBlockEntity(pos);

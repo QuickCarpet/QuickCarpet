@@ -101,7 +101,7 @@ public abstract class PistonBlockEntityMixin extends BlockEntity implements IPis
             else
                 blockState_2 = Block.getRenderingState(this.pushedBlock, this.world, this.pos);
             ((IWorld) (this.world)).setBlockStateWithBlockEntity(this.pos, blockState_2, this.carriedBlockEntity, 3);
-            this.world.breakBlock(this.pos, true);
+            this.world.method_22352(this.pos, true);
         }
     }
 

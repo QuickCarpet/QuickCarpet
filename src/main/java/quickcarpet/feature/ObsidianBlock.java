@@ -5,9 +5,9 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
 
 import java.util.Random;
 
@@ -22,7 +22,7 @@ public class ObsidianBlock extends Block {
     }
 
     @Override
-    public void onScheduledTick(BlockState state, World world, BlockPos pos, Random random) {
+    public void onScheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         for (Direction dir : Direction.values()) {
             FluidState neighbor = world.getFluidState(pos.offset(dir));
             if (neighbor.getFluid() != Fluids.LAVA || !neighbor.isStill()) return;

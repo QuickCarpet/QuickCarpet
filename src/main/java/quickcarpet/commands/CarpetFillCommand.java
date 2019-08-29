@@ -57,7 +57,7 @@ public class CarpetFillCommand {
                         .then(argument("filter", blockPredicate())
                             .executes(c -> execute(c.getSource(), new MutableIntBoundingBox(getLoadedBlockPos(c, "from"), getLoadedBlockPos(c, "to")), getBlockState(c, "block"), Mode.REPLACE, getBlockPredicate(c, "filter"))))
                     ).then(literal("keep")
-                        .executes(c -> execute(c.getSource(), new MutableIntBoundingBox(getLoadedBlockPos(c, "from"), getLoadedBlockPos(c, "to")), getBlockState(c, "block"), Mode.REPLACE, cachedBlockPosition -> cachedBlockPosition.getWorld().isAir(cachedBlockPosition.getBlockPos()))))
+                        .executes(c -> execute(c.getSource(), new MutableIntBoundingBox(getLoadedBlockPos(c, "from"), getLoadedBlockPos(c, "to")), getBlockState(c, "block"), Mode.REPLACE, cachedBlockPosition -> cachedBlockPosition.getWorld().method_22347(cachedBlockPosition.getBlockPos()))))
                     .then(literal("outline")
                         .executes(c -> execute(c.getSource(), new MutableIntBoundingBox(getLoadedBlockPos(c, "from"), getLoadedBlockPos(c, "to")), getBlockState(c, "block"), Mode.OUTLINE, null)))
                     .then(literal("hollow")
@@ -111,7 +111,7 @@ public class CarpetFillCommand {
         OUTLINE((box, pos, state, world) -> pos.getX() != box.minX && pos.getX() != box.maxX && pos.getY() != box.minY && pos.getY() != box.maxY && pos.getZ() != box.minZ && pos.getZ() != box.maxZ ? null : state),
         HOLLOW((box, pos, state, world) -> pos.getX() != box.minX && pos.getX() != box.maxX && pos.getY() != box.minY && pos.getY() != box.maxY && pos.getZ() != box.minZ && pos.getZ() != box.maxZ ? CarpetFillCommand.AIR_BLOCK_ARGUMENT : state),
         DESTROY((box, pos, state, world) -> {
-            world.breakBlock(pos, true);
+            world.method_22352(pos, true);
             return state;
         });
         

@@ -234,7 +234,7 @@ public class PlayerActionPack {
                         BlockPos pos = blockHit.getBlockPos();
                         Direction side = blockHit.getSide();
                         if (player.method_21701(player.world, pos, player.interactionManager.getGameMode())) return;
-                        if (ap.currentBlock != null && player.world.isAir(ap.currentBlock)) {
+                        if (ap.currentBlock != null && player.world.method_22347(ap.currentBlock)) {
                             ap.currentBlock = null;
                             return;
                         }
