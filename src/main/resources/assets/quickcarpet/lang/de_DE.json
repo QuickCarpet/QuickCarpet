@@ -70,6 +70,8 @@
   "carpet.rule.renewableCoral.description": "Korallen Strukturen entstehen beim Anwenden von Knochenmehl auf Korallen",
   "carpet.rule.optimizedFluidTicks.description": "Optimiert zufällige Ticks für Flüssigkeiten",
   "carpet.rule.optimizedFluidTicks.extra": "Tests zeigten eine Verbesserung von ca. 2-3mspt in regulären Welten\nBenötigt ein Neuladen der Chunks",
+  "carpet.rule.dispensersTillSoil.description": "Werfer mit Hacken können Erde pflügen",
+  "carpet.rule.sleepingThresold": "Prozentualer Anteil der Spieler die schlafen müssen um die Nacht zu überspringen",
   "carpet.validator.positive": "Wert muss positiv sein",
   "carpet.validator.nonNegative": "Wert darf nicht negativ sein",
   "carpet.validator.negative": "Wert muss negativ sein",
