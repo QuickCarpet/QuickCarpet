@@ -65,7 +65,7 @@
   "carpet.rule.renewableLava.description": "Obsidian hat die Chance zu Lava zu konvertieren falls alle 6 Seiten mit Lava umgeben sind",
   "carpet.rule.flippinCactus.description": "Spieler können Blöcke mit Kakteen wenden und rotieren",
   "carpet.rule.flippinCactus.extra": "Sendet keine Blockupdates.\nAnwendbar auf Kolben, Beobachter, Spender, Verstärker, Treppen, glasierte Keramik etc.",
-  "carpet.rule.phantomsIgnoreMobcap.description": "Phantome respektieren das Monsterlimit.",
+  "carpet.rule.phantomsRespectMobcap.description": "Phantome respektieren das Monsterlimit.",
   "carpet.rule.conversionDupingFix.description": "Behebt den Duplizierunsbug beim konvertieren von Zombies",
   "carpet.rule.renewableCoral.description": "Korallen Strukturen entstehen beim Anwenden von Knochenmehl auf Korallen",
   "carpet.rule.optimizedFluidTicks.description": "Optimiert zufällige Ticks für Flüssigkeiten",
