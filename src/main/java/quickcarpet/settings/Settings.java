@@ -169,6 +169,9 @@ public class Settings {
     
     @Rule(category = FEATURE)
     public static boolean renewableCoral = false;
+    
+    @Rule(category = FEATURE)
+    public static boolean dispensersTillSoil = false;
 
     @Rule(category = {OPTIMIZATIONS, EXPERIMENTAL})
     public static boolean optimizedFluidTicks = false;
