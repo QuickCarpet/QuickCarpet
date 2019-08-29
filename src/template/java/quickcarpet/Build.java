@@ -1,6 +1,7 @@
 package quickcarpet;
 
 public final class Build {
+    public static final String ID = "quickcarpet";
     public static final String NAME = "Quick Carpet";
     public static final String VERSION = "${version}";
     public static final String COMMIT = "${commit}";

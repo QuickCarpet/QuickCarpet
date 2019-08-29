@@ -1,18 +1,17 @@
 package quickcarpet.mixin.client;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.PistonBlockEntity;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.client.render.block.entity.PistonBlockEntityRenderer;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Constant;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyConstant;
+import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import quickcarpet.annotation.BugFix;
 import quickcarpet.annotation.Feature;
+import quickcarpet.client.ClientSetting;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.IBlockEntityRenderDispatcher;
 import quickcarpet.utils.IPistonBlockEntity;
@@ -40,12 +39,15 @@ public abstract class PistonBlockEntityRendererMixin extends BlockEntityRenderer
         }
     }
 
-    /*
     @Redirect(method = "method_3576", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/platform/GlStateManager;disableCull()V"))
-    private void fixCulling() {
-
+    private void fixCulling1() {
+        if (ClientSetting.MOVING_BLOCK_CULLING.get()) GlStateManager.enableCull();
     }
-     */
+
+    @Inject(method = "method_3576", at = @At("RETURN"))
+    private void fixCulling2(PistonBlockEntity blockEntity, double x, double y, double z, float partialTicks, int int_1, CallbackInfo ci) {
+        GlStateManager.disableCull();
+    }
 
     @Feature(value = "smoothPistons", bug = @BugFix(""))
     @ModifyConstant(method = "method_3576", constant = @Constant(floatValue = 4f))
