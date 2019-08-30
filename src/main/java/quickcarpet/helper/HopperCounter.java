@@ -70,14 +70,14 @@ public class HopperCounter
         List<Text> text = new ArrayList<>();
 
         for (HopperCounter counter : COUNTERS.values()) {
+            if (counter.getTotalItems() == 0) continue;
             List<Text> temp = counter.format(server, realtime, false);
-            if (temp.size() > 1) {
-                if (!text.isEmpty()) text.add(s(""));
-                text.addAll(temp);
-            }
+            if (!text.isEmpty()) text.add(s(""));
+            text.add(c(style(counter.getColorText(), DARK_GREEN), s(":", GRAY)));
+            text.addAll(temp);
         }
         if (text.isEmpty()) {
-            text.add(t("counter.none"));
+            text.add(ts("counter.none", GOLD));
         }
         return text;
     }

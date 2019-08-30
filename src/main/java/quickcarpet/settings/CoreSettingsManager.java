@@ -135,8 +135,7 @@ public class CoreSettingsManager extends SettingsManager {
             ps.println("Options: " + rule.options.stream().map(s -> "`" + s + "`").collect(Collectors.joining(", ")) + "  ");
             String categories = rule.categories.stream().map(c -> c.lowerCase).collect(Collectors.joining(", "));
             if (!categories.isEmpty()) ps.println("Categories: " + categories + "  ");
-            Class<?> validator = rule.validator.getClass();
-            if (validator != Validator.AlwaysTrue.class) ps.println("Validator: `" + validator.getName() + "`  ");
+            if (rule.validator.getClass() != Validator.AlwaysTrue.class) ps.println("Validator: `" + rule.validator.getName() + "`  ");
             BugFix[] fixes = rule.rule.bug();
             if (fixes.length > 0) {
                 ps.println("Fixes: " + Arrays.stream(fixes).map(fix -> {

@@ -142,6 +142,8 @@ public class CarpetCommand {
             hoverText(changePermanently, t("command.carpet.changePermanently.hover"));
             suggestCommand(changePermanently, "/carpet setDefault " + rule.name + " " + rule.getAsString());
             m(source, s(rule.toString() + " "), changePermanently);
+        } catch (ParsedRule.ValueException e) {
+            throw new CommandException(ts("command.carpet.rule.invalidValue", RED, e.message));
         } catch (IllegalArgumentException e) {
             throw new CommandException(ts("command.carpet.rule.invalidValue", RED, e.getMessage()));
         }
@@ -154,7 +156,7 @@ public class CarpetCommand {
             rule.save();
             m(source, ts("command.carpet.setDefault.success", "gi", rule.name, defaultValue));
         } catch (ParsedRule.ValueException e) {
-            throw new CommandException(ts("command.carpet.rule.invalidValue", RED, e.getMessage()));
+            throw new CommandException(ts("command.carpet.rule.invalidValue", RED, e.message));
         }
         return 1;
     }
