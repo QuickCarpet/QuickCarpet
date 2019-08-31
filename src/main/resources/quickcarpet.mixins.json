@@ -53,8 +53,7 @@
     "TntEntityMixin",
     "WorldChunkMixin",
     "WorldMixin",
-    "ZombieEntityMixin",
-    "DispenserBehaviourMixin"
+    "ZombieEntityMixin"
   ],
   "client": [
     "client.BlockEntityRenderDispatcherMixin",
