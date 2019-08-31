@@ -73,6 +73,8 @@
   "carpet.rule.optimizedFluidTicks.extra": "Testing showed around 2-3mspt improvement in regular worlds\nNeeds reloading of chunks to be effective",
   "carpet.rule.dispensersTillSoil.description": "Dispensers with hoes can till soil",
   "carpet.rule.sleepingThresold": "Percentage of sleeping players required to skip the night",
+  "carpet.rule.optimizedInventories": "Optimizes hoppers and droppers interacting with chests (\"Killer Hopper\"s)",
+  "carpet.rule.optimizedInventories.extra": "Tests showed ca. 5-10x performance improvement in worst-case scenarios",
   "carpet.validator.positive": "Must be positive",
   "carpet.validator.nonNegative": "Must be non-negative",
   "carpet.validator.negative": "Must be negative",

@@ -4,9 +4,11 @@ import net.minecraft.block.HopperBlock;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.HopperBlockEntity;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -16,6 +18,10 @@ import quickcarpet.annotation.Feature;
 import quickcarpet.helper.HopperCounter;
 import quickcarpet.helper.WoolTool;
 import quickcarpet.settings.Settings;
+import quickcarpet.utils.InventoryOptimizer;
+import quickcarpet.utils.OptimizedInventory;
+
+import javax.annotation.Nullable;
 
 @Feature("hopperCounters")
 @Mixin(HopperBlockEntity.class)
@@ -35,6 +41,11 @@ public abstract class HopperBlockEntityMixin extends LootableContainerBlockEntit
 
     @Shadow public abstract int getInvSize();
 
+    @Shadow private static ItemStack transfer(@Nullable Inventory from, Inventory to, ItemStack stack, int index, @Nullable Direction direction) {
+        throw new AssertionError();
+    }
+
+    @Feature("hopperCounters")
     @Inject(method = "insert", at = @At("HEAD"), cancellable = true)
     private void onInsert(CallbackInfoReturnable<Boolean> cir) {
         if (Settings.hopperCounters) {
@@ -56,4 +67,21 @@ public abstract class HopperBlockEntityMixin extends LootableContainerBlockEntit
         }
     }
 
+    @Feature("optimizedInventories")
+    @Inject(method = "transfer(Lnet/minecraft/inventory/Inventory;Lnet/minecraft/inventory/Inventory;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/math/Direction;)Lnet/minecraft/item/ItemStack;", at = @At("HEAD"), cancellable = true)
+    private static void optimizedTransfer(Inventory from, Inventory to, ItemStack stack, Direction direction, CallbackInfoReturnable<ItemStack> cir) {
+        if (to instanceof OptimizedInventory) {
+            OptimizedInventory optoTo = (OptimizedInventory) to;
+            InventoryOptimizer optimizer = optoTo.getOptimizer();
+            if (optimizer == null) return;
+            while (!stack.isEmpty()) {
+                int index = optimizer.findInsertSlot(stack);
+                if (index == -1) break;
+                int count = stack.getCount();
+                stack = transfer(from, to, stack, index, direction);
+                if (stack.getCount() == count) break;
+            }
+            cir.setReturnValue(stack);
+        }
+    }
 }
