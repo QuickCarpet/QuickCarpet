@@ -100,6 +100,14 @@ Default: `false`
 Options: `false`, `whitelist`, `blacklist`, `all`  
 Categories: experimental, feature  
 
+## dispensersTillSoil
+Dispensers with hoes can till soil
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: feature  
+
 ## doubleRetraction
 1.8 double retraction from pistons.
 
@@ -125,7 +133,7 @@ Type: `int`
 Default: `32768`  
 Options: `32768`, `250000`, `1000000`  
 Categories: creative  
-Validator: `quickcarpet.settings.Validator$Positive`  
+Validator: `> 0`  
 
 ## fillUpdates
 fill/clone/setblock and structure blocks cause block updates
@@ -232,7 +240,7 @@ Type: `int`
 Default: `12`  
 Options: `10`, `12`, `14`, `100`  
 Categories: creative  
-Validator: `quickcarpet.settings.Validator$NonNegative`  
+Validator: `>= 0`  
 
 ## railPowerLimit
 Rail power limit
@@ -241,7 +249,7 @@ Type: `int`
 Default: `9`  
 Options: `9`, `15`, `30`  
 Categories: creative  
-Validator: `quickcarpet.settings.Validator$Positive`  
+Validator: `> 0`  
 
 ## renewableCoral
 Coral structures will grow with bonemeal from coral plants
@@ -282,6 +290,15 @@ Type: `boolean`
 Default: `false`  
 Options: `true`, `false`  
 Categories: feature, experimental  
+
+## sleepingThreshold
+carpet.rule.sleepingThreshold.description
+
+Type: `double`  
+Default: `100.0`  
+Options: `0`, `50`, `100`  
+Categories: feature, survival  
+Validator: `Range [0.0,100.0]`  
 
 ## spawnChunkLevel
 Size of the spawn chunks
