@@ -41,16 +41,16 @@ public final class BlockRotator {
             return true;
         }
         if (block instanceof StairsBlock) {
-            Direction facing = state.get(StairsBlock.FACING);
-            Vec3d hit = usageContext.getHitPos();
-            if ((facing == Direction.UP && hit.y == 1) || (facing == Direction.DOWN && hit.y == 0)) {
+            Direction side = usageContext.getSide();
+            Vec3d hit = usageContext.getHitPos().subtract(pos.getX(), pos.getY(), pos.getZ());
+            if ((side == Direction.UP && (hit.y == 1 || hit.y == 0.5)) || (side == Direction.DOWN && (hit.y == 0 || hit.y == 0.5))) {
                 world.setBlockState(pos, state.with(StairsBlock.HALF, state.get(StairsBlock.HALF) == BlockHalf.TOP ? BlockHalf.BOTTOM : BlockHalf.TOP ), NO_FILL_UPDATE | SEND_TO_CLIENT);
                 return true;
             }
             boolean ccw;
-            if (facing == Direction.NORTH) ccw = hit.x <= 0.5;
-            else if (facing == Direction.SOUTH) ccw = hit.x > 0.5;
-            else if (facing == Direction.EAST) ccw = hit.z <= 0.5;
+            if (side == Direction.NORTH) ccw = hit.x <= 0.5;
+            else if (side == Direction.SOUTH) ccw = hit.x > 0.5;
+            else if (side == Direction.EAST) ccw = hit.z <= 0.5;
             else ccw = hit.z > 0.5;
 
             world.setBlockState(pos, ((StairsBlock) block).rotate(state, ccw ? BlockRotation.COUNTERCLOCKWISE_90 : BlockRotation.CLOCKWISE_90));

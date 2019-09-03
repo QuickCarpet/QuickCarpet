@@ -4,6 +4,7 @@ import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.dispenser.DispenserBehavior;
 import net.minecraft.item.BlockItem;
+import net.minecraft.item.HoeItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Final;
@@ -34,6 +35,9 @@ public abstract class DispenserBlockMixin extends BlockWithEntity {
         Item item = stack.getItem();
         if (quickcarpet.settings.Settings.dispensersPlaceBlocks != PlaceBlockDispenserBehavior.Option.FALSE && !BEHAVIORS.containsKey(item) && item instanceof BlockItem) {
             if (PlaceBlockDispenserBehavior.canPlace(((BlockItem) item).getBlock())) return CarpetRegistry.PLACE_BLOCK_DISPENSER_BEHAVIOR;
+        }
+        if (quickcarpet.settings.Settings.dispensersTillSoil && stack.getItem() instanceof HoeItem) {
+            return CarpetRegistry.DISPENSERS_TILL_SOIL_BEHAVIOR;
         }
         return BEHAVIORS.get(stack.getItem());
     }
