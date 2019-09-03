@@ -7,6 +7,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.dispenser.DispenserBehavior;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
@@ -29,6 +30,14 @@ public class CarpetRegistry {
     public static final Tag<Block> DISPENSER_BLOCK_WHITELIST = BlockTagsAccessor.register("carpet:dispenser_placeable_whitelist");
     public static final Tag<Block> DISPENSER_BLOCK_BLACKLIST = BlockTagsAccessor.register("carpet:dispenser_placeable_blacklist");
     public static final DispenserBehavior PLACE_BLOCK_DISPENSER_BEHAVIOR = new PlaceBlockDispenserBehavior();
+
+    //Additional Movable Blocks
+    public static final Tag<Block> PISTON_OVERWRITE_MOVABLE = BlockTagsAccessor.register("carpet:piston_movable");
+    public static final Tag<Block> PISTON_OVERWRITE_PUSH_ONLY = BlockTagsAccessor.register("carpet:piston_push_only");
+    public static final Tag<Block> PISTON_OVERWRITE_IMMOVABLE = BlockTagsAccessor.register("carpet:piston_immovable");
+    public static final Tag<Block> PISTON_OVERWRITE_DESTROY = BlockTagsAccessor.register("carpet:piston_destroy");
+    public static final Tag<Block> PISTON_OVERWRITE_WEAK_STICKY = BlockTagsAccessor.register("carpet:piston_weak_sticky");
+
 
     private static <T extends BlockEntity> BlockEntityType<T> registerBlockEntity(String id, Supplier<T> supplier, Block... blocks) {
         return Registry.register(Registry.BLOCK_ENTITY, id, Reflection.newBlockEntityTypeBuilder(supplier, blocks).build(null));

@@ -147,7 +147,7 @@ Categories: feature, experimental
 Players can flip and rotate blocks when holding cactus
 
 Doesn't cause block updates when rotated/flipped  
-Applies to pistons, observers, droppers, repeaters, stairs, glazed terracotta etc...  
+Applies to pistons, observers, droppers, repeaters, stairs, glazed terracotta etc.  
 Type: `boolean`  
 Default: `false`  
 Options: `true`, `false`  
@@ -158,7 +158,6 @@ Hoppers pointing to wool will count items passing through them
 
 Enables /counter command, and actions while placing red and green carpets on wool blocks  
 Use /counter <color?> reset to reset the counter, and /counter <color?> to query  
-In survival, place green carpet on same color wool to query, red to reset the counters  
 Counters are global and shared between players, 16 channels available  
 Items counted are destroyed, count up to one stack per tick per hopper  
 Type: `boolean`  
@@ -176,6 +175,14 @@ Categories: feature, experimental
 
 ## movableBlockEntities
 Pistons can push block entities, like hoppers, chests etc.
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: feature, experimental  
+
+## movableBlockOverwrites
+Overwrite how pistons interact with any block. Adds weak stickyness behavior used by default for redstone components, flowerpots, etc.
 
 Type: `boolean`  
 Default: `false`  
@@ -202,7 +209,7 @@ Categories: optimizations, experimental
 Fixes: [MC-151802](https://bugs.mojang.com/browse/MC-151802) fixed in 1.14.3-pre1 (partial)  
 
 ## phantomsRespectMobcap
-Phantoms don't ignore the mobcap.
+carpet.rule.phantomsRespectMobcap.description
 
 Type: `boolean`  
 Default: `false`  
@@ -277,7 +284,7 @@ Options: `true`, `false`
 Categories: feature, experimental  
 
 ## spawnChunkLevel
-Size of spawn chunks
+Size of the spawn chunks
 
 Like render distance (11 -> 23x23 actively loaded).  
 Be aware that a border of 11 chunks will stay loaded around that, once those chunks are loaded somehow.  

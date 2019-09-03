@@ -2,6 +2,7 @@ package quickcarpet.mixin;
 
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.block.piston.PistonHandler;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -14,7 +15,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import quickcarpet.annotation.Feature;
+import quickcarpet.utils.CarpetRegistry;
+import quickcarpet.utils.IBlockState;
 import quickcarpet.utils.IPistonBlockEntity;
+import quickcarpet.utils.PistonBehaviors;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +45,56 @@ public class PistonBlockMixin extends FacingBlock {
         }
     }
 
+    @Feature("additionalMovableBlocks")
+    @Inject(method = "isMovable", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;hasBlockEntity()Z"),
+            cancellable = true)
+    //Blocks overwritten to be pushable will be pushable without not hasBlockEntity check.
+    private static void additionalBlocksMovable(BlockState state, World world, BlockPos pos, Direction pistonDirection,
+                                                boolean allowDestroy, Direction moveDirection, CallbackInfoReturnable<Boolean> cir) {
+        if (quickcarpet.settings.Settings.movableBlockOverwrites && CarpetRegistry.PISTON_OVERWRITE_MOVABLE.contains(state.getBlock())) {
+            cir.setReturnValue(true);
+        }
+    }
+
+    @Feature("additionalMovableBlocks")
+    @Inject(method = "isMovable", at = @At(value = "RETURN", ordinal = 3, shift = At.Shift.BEFORE))
+    private static void additionalBlocksMovable2(BlockState blockState_1, World world_1, BlockPos blockPos_1, Direction direction_1,
+                                                 boolean allowDestroy, Direction direction_2, CallbackInfoReturnable<Boolean> cir) {
+        if(quickcarpet.settings.Settings.movableBlockOverwrites){
+            PistonBehavior overwrite = IBlockState.getOverwrittenPistonBehavior((IBlockState) blockState_1);
+            if(overwrite != null){
+                boolean ret = (overwrite == PistonBehavior.NORMAL) ||
+                        (overwrite == PistonBehavior.PUSH_ONLY && direction_1 == direction_2) ||
+                        (overwrite == PistonBehavior.DESTROY && allowDestroy) ||
+                        (overwrite == PistonBehaviors.WEAK_STICKY) ||
+                        (overwrite == PistonBehaviors.WEAK_STICKY_BREAKABLE);// && allowDestroy);
+                cir.setReturnValue(ret);
+            }
+        }
+    }
+
+    @Feature("additionalMovableBlocks")
+    @Inject(method = "isMovable", at = @At(value = "RETURN", ordinal = 0, shift = At.Shift.BEFORE))
+    private static void additionalObsidianMovable(BlockState blockState_1, World world_1, BlockPos blockPos_1, Direction direction_1, boolean allowDestroy, Direction direction_2, CallbackInfoReturnable<Boolean> cir) {
+        if(quickcarpet.settings.Settings.movableBlockOverwrites){
+
+            if ((!world_1.getWorldBorder().contains(blockPos_1)) || (blockPos_1.getY() < 0 || direction_1 == Direction.DOWN && blockPos_1.getY() == 0)) {
+                return; //return false
+            }
+
+            PistonBehavior overwrite = IBlockState.getOverwrittenPistonBehavior((IBlockState) blockState_1);
+            if(overwrite != null){
+                boolean ret = (overwrite == PistonBehavior.NORMAL) ||
+                                (overwrite == PistonBehavior.PUSH_ONLY && direction_1 == direction_2) ||
+                                (overwrite == PistonBehavior.DESTROY && allowDestroy) ||
+                                (overwrite == PistonBehaviors.WEAK_STICKY) ||
+                                (overwrite == PistonBehaviors.WEAK_STICKY_BREAKABLE);// && allowDestroy);
+                cir.setReturnValue(ret);
+                cir.cancel();
+            }
+        }
+    }
+
     @Inject(method = "isMovable", at = @At(value = "RETURN", ordinal = 3, shift = At.Shift.BEFORE))
     private static void movableCMD(BlockState blockState_1, World world_1, BlockPos blockPos_1,
                                    Direction direction_1, boolean boolean_1, Direction direction_2, CallbackInfoReturnable<Boolean> cir) {
@@ -62,6 +116,8 @@ public class PistonBlockMixin extends FacingBlock {
     private static boolean ifHasBlockEntity(Block block) {
         return block.hasBlockEntity() && (!quickcarpet.settings.Settings.movableBlockEntities || !isPushableTileEntityBlock(block));
     }
+
+
 
     @Inject(method = "move", at = @At(value = "INVOKE", shift = At.Shift.BEFORE,
             target = "Ljava/util/List;size()I", ordinal = 4), locals = LocalCapture.CAPTURE_FAILHARD)
@@ -124,5 +180,15 @@ public class PistonBlockMixin extends FacingBlock {
         if (quickcarpet.settings.Settings.doubleRetraction) {
             world.setBlockState(pos, state.with(PistonBlock.EXTENDED, false), 2);
         }
+    }
+
+
+    @Feature("additionalMovableBlocks")
+    @Redirect(method = "onBlockAction", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getPistonBehavior()Lnet/minecraft/block/piston/PistonBehavior;"))
+    private PistonBehavior returnNormalWhenMovable(BlockState blockState){
+        PistonBehavior pistonBehavior = blockState.getPistonBehavior();
+        if(pistonBehavior == PistonBehaviors.WEAK_STICKY_BREAKABLE || pistonBehavior == PistonBehaviors.WEAK_STICKY)
+            return PistonBehavior.NORMAL;
+        return pistonBehavior;
     }
 }
