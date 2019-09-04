@@ -197,7 +197,7 @@ public abstract class PistonHandlerMixin {
 
     @Inject(method = "tryMove", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getBlock()Lnet/minecraft/block/Block;", shift = At.Shift.AFTER, ordinal = 0),locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
     private void doOnlyWeakSticking(BlockPos blockPos_1, Direction arg1, CallbackInfoReturnable<Boolean> cir, BlockState blockState_1, World var13, BlockPos var14){
-        if(Settings.movableBlockOverwrites){
+        if(Settings.movableBlockOverrides){
             PistonBehavior pistonBehavior = blockState_1.getPistonBehavior();
             if ((pistonBehavior == PistonBehaviors.WEAK_STICKY || pistonBehavior == PistonBehaviors.WEAK_STICKY_BREAKABLE) && !movedBlocks.contains(blockPos_1)) {
                 //block is being pushed: either move the block or crush it.
@@ -287,7 +287,7 @@ public abstract class PistonHandlerMixin {
     @Inject(method = "calculatePush", at = @At(value = "RETURN", ordinal = 4, shift = At.Shift.BEFORE),locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
     private void decideOnWeaklyStickingBlocks(CallbackInfoReturnable<Boolean> cir){
 
-        if(Settings.movableBlockOverwrites) {
+        if(Settings.movableBlockOverrides) {
             int size = weaklyMovedBlocks.size();
             if(size > 0) {
                 int lastIndex = movedBlocks.size();//Debug

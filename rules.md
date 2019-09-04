@@ -189,8 +189,8 @@ Default: `false`
 Options: `true`, `false`  
 Categories: feature, experimental  
 
-## movableBlockOverwrites
-Overwrite how pistons interact with any block. Adds weak stickyness behavior used by default for redstone components, flowerpots, etc.
+## movableBlockOverrides
+Override how pistons interact with any block. Adds weak stickyness behavior used by default for redstone components, flowerpots, etc.
 
 Type: `boolean`  
 Default: `false`  
@@ -207,6 +207,15 @@ Default: `false`
 Options: `true`, `false`  
 Categories: optimizations, experimental  
 
+## optimizedInventories
+carpet.rule.optimizedInventories.description
+
+Tests showed ca. 5-10x performance improvement in worst-case scenarios  
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: optimizations, experimental  
+
 ## optimizedSpawning
 Optimizes spawning
 
@@ -217,7 +226,7 @@ Categories: optimizations, experimental
 Fixes: [MC-151802](https://bugs.mojang.com/browse/MC-151802) fixed in 1.14.3-pre1 (partial)  
 
 ## phantomsRespectMobcap
-carpet.rule.phantomsRespectMobcap.description
+Phantoms don't ignore the mobcap.
 
 Type: `boolean`  
 Default: `false`  

@@ -35,11 +35,11 @@ public class CarpetRegistry {
     public static final DispenserBehavior DISPENSERS_TILL_SOIL_BEHAVIOR = new TillSoilDispenserBehaviour();
 
     //Additional Movable Blocks
-    public static final Tag<Block> PISTON_OVERWRITE_MOVABLE = BlockTagsAccessor.register("carpet:piston_movable");
-    public static final Tag<Block> PISTON_OVERWRITE_PUSH_ONLY = BlockTagsAccessor.register("carpet:piston_push_only");
-    public static final Tag<Block> PISTON_OVERWRITE_IMMOVABLE = BlockTagsAccessor.register("carpet:piston_immovable");
-    public static final Tag<Block> PISTON_OVERWRITE_DESTROY = BlockTagsAccessor.register("carpet:piston_destroy");
-    public static final Tag<Block> PISTON_OVERWRITE_WEAK_STICKY = BlockTagsAccessor.register("carpet:piston_weak_sticky");
+    public static final Tag<Block> PISTON_OVERRIDE_MOVABLE = BlockTagsAccessor.register("carpet:piston_movable");
+    public static final Tag<Block> PISTON_OVERRIDE_PUSH_ONLY = BlockTagsAccessor.register("carpet:piston_push_only");
+    public static final Tag<Block> PISTON_OVERRIDE_IMMOVABLE = BlockTagsAccessor.register("carpet:piston_immovable");
+    public static final Tag<Block> PISTON_OVERRIDE_DESTROY = BlockTagsAccessor.register("carpet:piston_destroy");
+    public static final Tag<Block> PISTON_OVERRIDE_WEAK_STICKY = BlockTagsAccessor.register("carpet:piston_weak_sticky");
 
 
     private static <T extends BlockEntity> BlockEntityType<T> registerBlockEntity(String id, Supplier<T> supplier, Block... blocks) {

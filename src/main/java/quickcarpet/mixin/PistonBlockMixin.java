@@ -51,7 +51,7 @@ public class PistonBlockMixin extends FacingBlock {
     //Blocks overwritten to be pushable will be pushable without not hasBlockEntity check.
     private static void additionalBlocksMovable(BlockState state, World world, BlockPos pos, Direction pistonDirection,
                                                 boolean allowDestroy, Direction moveDirection, CallbackInfoReturnable<Boolean> cir) {
-        if (quickcarpet.settings.Settings.movableBlockOverwrites && CarpetRegistry.PISTON_OVERWRITE_MOVABLE.contains(state.getBlock())) {
+        if (quickcarpet.settings.Settings.movableBlockOverrides && CarpetRegistry.PISTON_OVERRIDE_MOVABLE.contains(state.getBlock())) {
             cir.setReturnValue(true);
         }
     }
@@ -60,14 +60,14 @@ public class PistonBlockMixin extends FacingBlock {
     @Inject(method = "isMovable", at = @At(value = "RETURN", ordinal = 3, shift = At.Shift.BEFORE))
     private static void additionalBlocksMovable2(BlockState blockState_1, World world_1, BlockPos blockPos_1, Direction direction_1,
                                                  boolean allowDestroy, Direction direction_2, CallbackInfoReturnable<Boolean> cir) {
-        if(quickcarpet.settings.Settings.movableBlockOverwrites){
-            PistonBehavior overwrite = IBlockState.getOverwrittenPistonBehavior((IBlockState) blockState_1);
-            if(overwrite != null){
-                boolean ret = (overwrite == PistonBehavior.NORMAL) ||
-                        (overwrite == PistonBehavior.PUSH_ONLY && direction_1 == direction_2) ||
-                        (overwrite == PistonBehavior.DESTROY && allowDestroy) ||
-                        (overwrite == PistonBehaviors.WEAK_STICKY) ||
-                        (overwrite == PistonBehaviors.WEAK_STICKY_BREAKABLE);// && allowDestroy);
+        if(quickcarpet.settings.Settings.movableBlockOverrides){
+            PistonBehavior override = IBlockState.getOverridePistonBehavior((IBlockState) blockState_1);
+            if(override != null){
+                boolean ret = (override == PistonBehavior.NORMAL) ||
+                        (override == PistonBehavior.PUSH_ONLY && direction_1 == direction_2) ||
+                        (override == PistonBehavior.DESTROY && allowDestroy) ||
+                        (override == PistonBehaviors.WEAK_STICKY) ||
+                        (override == PistonBehaviors.WEAK_STICKY_BREAKABLE);// && allowDestroy);
                 cir.setReturnValue(ret);
             }
         }
@@ -76,19 +76,19 @@ public class PistonBlockMixin extends FacingBlock {
     @Feature("additionalMovableBlocks")
     @Inject(method = "isMovable", at = @At(value = "RETURN", ordinal = 0, shift = At.Shift.BEFORE))
     private static void additionalObsidianMovable(BlockState blockState_1, World world_1, BlockPos blockPos_1, Direction direction_1, boolean allowDestroy, Direction direction_2, CallbackInfoReturnable<Boolean> cir) {
-        if(quickcarpet.settings.Settings.movableBlockOverwrites){
+        if(quickcarpet.settings.Settings.movableBlockOverrides){
 
             if ((!world_1.getWorldBorder().contains(blockPos_1)) || (blockPos_1.getY() < 0 || direction_1 == Direction.DOWN && blockPos_1.getY() == 0)) {
                 return; //return false
             }
 
-            PistonBehavior overwrite = IBlockState.getOverwrittenPistonBehavior((IBlockState) blockState_1);
-            if(overwrite != null){
-                boolean ret = (overwrite == PistonBehavior.NORMAL) ||
-                                (overwrite == PistonBehavior.PUSH_ONLY && direction_1 == direction_2) ||
-                                (overwrite == PistonBehavior.DESTROY && allowDestroy) ||
-                                (overwrite == PistonBehaviors.WEAK_STICKY) ||
-                                (overwrite == PistonBehaviors.WEAK_STICKY_BREAKABLE);// && allowDestroy);
+            PistonBehavior override = IBlockState.getOverridePistonBehavior((IBlockState) blockState_1);
+            if(override != null){
+                boolean ret = (override == PistonBehavior.NORMAL) ||
+                                (override == PistonBehavior.PUSH_ONLY && direction_1 == direction_2) ||
+                                (override == PistonBehavior.DESTROY && allowDestroy) ||
+                                (override == PistonBehaviors.WEAK_STICKY) ||
+                                (override == PistonBehaviors.WEAK_STICKY_BREAKABLE);// && allowDestroy);
                 cir.setReturnValue(ret);
                 cir.cancel();
             }
