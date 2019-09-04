@@ -1,0 +1,69 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:torch",
+    "minecraft:wall_torch",
+    "minecraft:redstone_wire",
+
+    "minecraft:lever",
+    "minecraft:redstone_torch",
+    "minecraft:stone_button",
+
+    "minecraft:tripwire_hook",
+    "minecraft:tripwire",
+    "minecraft:flower_pot",
+    "minecraft:potted_oak_sapling",
+    "minecraft:potted_spruce_sapling",
+    "minecraft:potted_birch_sapling",
+    "minecraft:potted_jungle_sapling",
+    "minecraft:potted_acacia_sapling",
+    "minecraft:potted_dark_oak_sapling",
+    "minecraft:potted_fern",
+    "minecraft:potted_dandelion",
+    "minecraft:potted_poppy",
+    "minecraft:potted_blue_orchid",
+    "minecraft:potted_allium",
+    "minecraft:potted_azure_bluet",
+    "minecraft:potted_red_tulip",
+    "minecraft:potted_orange_tulip",
+    "minecraft:potted_white_tulip",
+    "minecraft:potted_pink_tulip",
+    "minecraft:potted_oxeye_daisy",
+    "minecraft:potted_cornflower",
+    "minecraft:potted_lily_of_the_valley",
+    "minecraft:potted_wither_rose",
+    "minecraft:potted_red_mushroom",
+    "minecraft:potted_brown_mushroom",
+    "minecraft:potted_dead_bush",
+    "minecraft:potted_cactus",
+    "minecraft:oak_button",
+    "minecraft:spruce_button",
+    "minecraft:birch_button",
+    "minecraft:jungle_button",
+    "minecraft:acacia_button",
+    "minecraft:dark_oak_button",
+    "minecraft:skeleton_skull",
+    "minecraft:skeleton_wall_skull",
+    "minecraft:wither_skeleton_skull",
+    "minecraft:wither_skeleton_wall_skull",
+    "minecraft:zombie_head",
+    "minecraft:zombie_wall_head",
+    "minecraft:player_head",
+    "minecraft:player_wall_head",
+    "minecraft:creeper_head",
+    "minecraft:creeper_wall_head",
+    "minecraft:dragon_head",
+    "minecraft:dragon_wall_head",
+
+    "minecraft:potted_bamboo",
+    "minecraft:scaffolding",
+
+
+
+
+
+
+    "minecraft:cake",
+    "minecraft:cobweb"
+  ]
+}

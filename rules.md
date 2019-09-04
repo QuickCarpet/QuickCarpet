@@ -189,11 +189,28 @@ Default: `false`
 Options: `true`, `false`  
 Categories: feature, experimental  
 
+## movableBlockOverrides
+Override how pistons interact with any block. Adds weak stickyness behavior used by default for redstone components, flowerpots, etc.
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: feature, experimental  
+
 ## optimizedFluidTicks
 Optimizes random ticks for fluids
 
 Testing showed around 2-3mspt improvement in regular worlds  
 Needs reloading of chunks to be effective  
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: optimizations, experimental  
+
+## optimizedInventories
+carpet.rule.optimizedInventories.description
+
+Tests showed ca. 5-10x performance improvement in worst-case scenarios  
 Type: `boolean`  
 Default: `false`  
 Options: `true`, `false`  

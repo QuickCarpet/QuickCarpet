@@ -49,7 +49,7 @@ public abstract class PistonBlockEntityMixin extends BlockEntity implements IPis
     public void setCarriedBlockEntity(BlockEntity blockEntity) {
         this.carriedBlockEntity = blockEntity;
         if (this.carriedBlockEntity != null)
-            this.carriedBlockEntity.setPos(this.pos);
+            this.carriedBlockEntity.setPos(this.pos); //actually this.pos is not initialized properly
     }
 
     public boolean isRenderModeSet() {
@@ -93,7 +93,7 @@ public abstract class PistonBlockEntityMixin extends BlockEntity implements IPis
         //Handle TNT Explosions or other ways the moving Block is broken
         //Also /setblock will cause this to be called, and drop e.g. a moving chest's contents.
         // This is MC-40380 (BlockEntities that aren't Inventories drop stuff when setblock is called )
-        if (Settings.movableBlockEntities && this.carriedBlockEntity != null && !this.world.isClient &&
+        if (Settings.movableBlockEntities && this.carriedBlockEntity != null && this.world != null && !this.world.isClient &&
                 this.world.getBlockState(this.pos).getBlock() == Blocks.AIR) {
             BlockState blockState_2;
             if (this.source)
