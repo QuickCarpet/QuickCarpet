@@ -53,7 +53,9 @@
     "TntEntityMixin",
     "WorldChunkMixin",
     "WorldMixin",
-    "ZombieEntityMixin"
+    "ZombieEntityMixin",
+    "BlockStateMixin",
+    "PistonBehaviorMixin"
   ],
   "client": [
     "client.BlockEntityRenderDispatcherMixin",

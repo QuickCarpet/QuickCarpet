@@ -104,6 +104,9 @@ public class Settings {
     @Rule(category = {FEATURE, EXPERIMENTAL})
     public static boolean movableBlockEntities = false;
 
+    @Rule(category = {FEATURE,EXPERIMENTAL})
+    public static boolean movableBlockOverrides = false;
+
     @Rule(category = SURVIVAL)
     public static boolean stackableShulkerBoxes = false;
 
