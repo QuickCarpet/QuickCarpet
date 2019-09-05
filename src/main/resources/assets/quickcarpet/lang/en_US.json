@@ -160,9 +160,5 @@
   "carpet.profiler.title": "Average tick time: %sms",
   "carpet.profiler.top_10_counts": "Top 10 counts:",
   "carpet.profiler.top_10_grossing": "Top 10 grossing:",
-  "carpet.profiler.entity.line": " - %s in %s: %s",
-  "quickcarpet.gui.title.configs": "QuickCarpet Configs",
-  "quickcarpet.gui.button.config_gui.generic": "Generic",
-  "quickcarpet.gui.button.config_gui.rendering": "Rendering",
-  "quickcarpet.gui.button.config_gui.generic_hotkeys": "Generic Hotkeys"
+  "carpet.profiler.entity.line": " - %s in %s: %s"
 }

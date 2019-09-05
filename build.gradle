@@ -5,12 +5,6 @@ plugins {
 	id 'maven-publish'
 }
 
-repositories {
-    maven {
-        url 'https://masa.dy.fi/maven'
-    }
-}
-
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
@@ -47,8 +41,6 @@ dependencies {
 
 	// javax.annotation.Nullable/Nonnull
 	compileOnly "com.google.code.findbugs:jsr305:3.0.1"
-
-	modCompile "fi.dy.masa.malilib:malilib-fabric-${project.minecraft_version}:${project.malilib_version}"
 }
 
 static def gitCommit() {
@@ -99,18 +91,15 @@ sourceSets.main.java.srcDir "$buildDir/generated/java"
 compileJava.dependsOn generateJava
 
 processResources {
-	def properties =[
-		version: project.version,
-		malilib_version: project.malilib_version
-	]
-	inputs.properties properties
+	// this will ensure that this task is re-run when there's a change
+	inputs.property "version", project.version
 
 	// replace stuff in fabric.mod.json, nothing else
 	from(sourceSets.main.resources.srcDirs) {
 		include "fabric.mod.json"
 
 		// add mod metadata
-		expand properties
+		expand "version": project.version
 	}
 
 	// copy everything else, thats not the mcmod.info

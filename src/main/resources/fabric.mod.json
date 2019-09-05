@@ -25,8 +25,5 @@
   ],
   "depends": {
     "fabric-resource-loader-v0": "*"
-  },
-  "recommends": {
-    "malilib": "${malilib_version}"
   }
 }
