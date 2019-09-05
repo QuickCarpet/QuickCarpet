@@ -1,12 +1,8 @@
 package quickcarpet.mixin;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.EnvironmentInterface;
-import net.fabricmc.api.EnvironmentInterfaces;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
-import net.minecraft.client.block.ChestAnimationProgress;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.DefaultedList;
@@ -25,11 +21,7 @@ import javax.annotation.Nullable;
 
 @Feature("optimizedInventories")
 @Mixin(ChestBlockEntity.class)
-@EnvironmentInterfaces({@EnvironmentInterface(
-        value = EnvType.CLIENT,
-        itf = ChestAnimationProgress.class
-)})
-public abstract class ChestBlockEntityMixin extends LootableContainerBlockEntity implements OptimizedInventory, ChestAnimationProgress, Tickable {
+public abstract class ChestBlockEntityMixin extends LootableContainerBlockEntity implements OptimizedInventory, Tickable {
     @Shadow private DefaultedList<ItemStack> inventory;
     private InventoryOptimizer optimizer;
 
