@@ -22,9 +22,16 @@ public class QuickCarpetClient {
         ClientPluginChannelManager.INSTANCE.register(rulesChannel = new ClientRulesChannel());
         ClientPluginChannelManager.INSTANCE.register(pubSubListener = new ClientPubSubListener());
         try {
-            Class.forName(InitializationHandler.class.getName());
+            new MaLiLibInitializer().run();
+        } catch (LinkageError ignored) {}
+    }
+
+    // separate class to avoid loading malilib classes outside the try-catch
+    private static class MaLiLibInitializer implements Runnable {
+        @Override
+        public void run() {
             InitializationHandler.getInstance().registerInitializationHandler(new ClientInit());
-        } catch (ClassNotFoundException ignored) {}
+        }
     }
 
     public boolean isSingleplayer() {

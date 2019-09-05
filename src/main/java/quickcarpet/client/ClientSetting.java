@@ -10,9 +10,9 @@ public class ClientSetting<T> {
     static {
         boolean malilib = false;
         try {
-            Class.forName(IConfigHandler.class.getName());
+            IConfigHandler.class.getName();
             malilib = true;
-        } catch (ClassNotFoundException ignored) {}
+        } catch (LinkageError ignored) {}
         HAS_MALILIB = malilib;
     }
 

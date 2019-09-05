@@ -190,7 +190,7 @@ Options: `true`, `false`
 Categories: feature, experimental  
 
 ## movableBlockOverrides
-Override how pistons interact with any block. Adds weak stickyness behavior used by default for redstone components, flowerpots, etc.
+carpet.rule.movableBlockOverrides.description
 
 Type: `boolean`  
 Default: `false`  
