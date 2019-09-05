@@ -21,6 +21,11 @@ if (project.mod_version.endsWith('-dev')) {
 	project.mod_version += df.format(buildDate)
 }
 
+def branch = gitBranch()
+if (branch != "master") {
+	project.mod_version += "+" + branch;
+}
+
 archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group

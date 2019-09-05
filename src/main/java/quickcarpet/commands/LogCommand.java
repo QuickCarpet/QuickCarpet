@@ -127,14 +127,14 @@ public class LogCommand {
         m(player, t("command.log.availableOptions"));
         for (Logger<?> logger : loggers) {
             boolean subscribed = subs.isSubscribedTo(logger);
-            Text line = s(" - " + logger + ": ");
+            Text line = s(" - " + logger.getName() + ": ");
             String[] options = logger.getOptions();
             if (options.length == 0) {
                 if (subscribed) {
                     line.append(ts("command.log.subscribed", LIME));
                 } else {
                     Text button = style(c(s("["), t("command.log.action.subscribe"), s("]")), GRAY);
-                    runCommand(button, "/log " + logger, t("command.log.action.subscribeTo", logger));
+                    runCommand(button, "/log " + logger.getName(), t("command.log.action.subscribeTo", logger.getName()));
                     line.append(button);
                 }
             } else {
@@ -142,9 +142,9 @@ public class LogCommand {
                     if (subscribed && option.equalsIgnoreCase(subs.getOption(logger))) {
                         line.append(s("[" + option + "]", LIME));
                     } else {
-                        Text button = style(c(s("["), t("command.log.action.subscribe"), s("]")), GRAY);
-                        Text hoverText = t("command.log.action.subscribeTo.option", logger, option);
-                        runCommand(button, "/log " + logger + " " + option, hoverText);
+                        Text button = style(c(s("[" + option + "]")), GRAY);
+                        Text hoverText = t("command.log.action.subscribeTo.option", logger.getName(), option);
+                        runCommand(button, "/log " + logger.getName() + " " + option, hoverText);
                         line.append(button);
                     }
                 }
