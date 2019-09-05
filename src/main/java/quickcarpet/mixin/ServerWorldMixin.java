@@ -78,15 +78,8 @@ public abstract class ServerWorldMixin extends World {
     }
 
     @Feature("profiler")
-    @Inject(method = "tick", at = @At(value = "CONSTANT", args = "stringValue=portalForcer"))
-    private void startPortals(BooleanSupplier booleanSupplier_1, CallbackInfo ci) {
-        CarpetProfiler.startSection(this, CarpetProfiler.SectionType.PORTALS);
-    }
-
-    @Feature("profiler")
     @Inject(method = "tick", at = @At(value = "CONSTANT", args = "stringValue=raid"))
-    private void endPortalsStartRaid(BooleanSupplier booleanSupplier_1, CallbackInfo ci) {
-        CarpetProfiler.endSection(this);
+    private void startRaid(BooleanSupplier booleanSupplier_1, CallbackInfo ci) {
         CarpetProfiler.startSection(this, CarpetProfiler.SectionType.VILLAGES);
     }
 

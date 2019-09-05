@@ -33,6 +33,7 @@
     "PistonBlockEntityMixin",
     "PistonBlockMixin",
     "PistonHandlerMixin",
+    "PortalForcerMixin",
     "PlayerEntityMixin",
     "PlayerListHeaderS2CPacketAccessor",
     "PlayerManagerMixin",
