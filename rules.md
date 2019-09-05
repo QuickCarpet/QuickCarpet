@@ -190,7 +190,7 @@ Options: `true`, `false`
 Categories: feature, experimental  
 
 ## movableBlockOverrides
-carpet.rule.movableBlockOverrides.description
+Override how pistons interact with any block. Adds weak stickyness behavior used by default for redstone components, flowerpots, etc.
 
 Type: `boolean`  
 Default: `false`  
@@ -208,7 +208,7 @@ Options: `true`, `false`
 Categories: optimizations, experimental  
 
 ## optimizedInventories
-carpet.rule.optimizedInventories.description
+Optimizes hoppers and droppers interacting with chests ("Killer Hopper"s)
 
 Tests showed ca. 5-10x performance improvement in worst-case scenarios  
 Type: `boolean`  
