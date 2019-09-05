@@ -63,7 +63,7 @@ public abstract class ChestBlockEntityMixin extends LootableContainerBlockEntity
     @Override
     public void markDirty() {
         super.markDirty();
-        optimizer.recalculate();
+        if (optimizer != null) optimizer.recalculate();
     }
 
     @Nullable
