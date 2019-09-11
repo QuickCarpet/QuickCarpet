@@ -191,6 +191,9 @@ public class Settings {
         }
     }
 
+    @Rule(category = FEATURE)
+    public static boolean accurateBlockPlacement = true;
+
     public static void main(String[] args) throws IOException {
         Bootstrap.initialize();
         Translations.init();

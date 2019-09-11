@@ -1,4 +1,12 @@
 # Quick Carpet Rules
+## accurateBlockPlacement
+Allows client mods to specify the orientation of placed blocks
+
+Type: `boolean`  
+Default: `true`  
+Options: `true`, `false`  
+Categories: feature  
+
 ## autoCraftingTable
 Automatic crafting table
 

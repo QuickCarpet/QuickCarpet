@@ -75,6 +75,7 @@
   "carpet.rule.optimizedInventories.description": "Optimiert die Interaction von Trichtern und Spendern mit Kisten",
   "carpet.rule.optimizedInventories.extra": "Tests zeigten eine ca. 5- bis 10-fache Performance Verbesserung",
   "carpet.rule.movableBlockOverrides.description": "Ermöglicht die Anpassung des Kolbenverhaltens. Führt ein neues 'weak sticky' Verhalten ein, das standardmäßig von Redstone Komponenten, Blumentöpfen, etc. genutzt wird.",
+  "carpet.rule.accurateBlockPlacement.description": "Gibt Mods die Möglichkeit die Rotation von platzierten Blöcken zu kontrollieren",
   "carpet.validator.positive": "Wert muss positiv sein",
   "carpet.validator.nonNegative": "Wert darf nicht negativ sein",
   "carpet.validator.negative": "Wert muss negativ sein",
