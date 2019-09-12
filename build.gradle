@@ -21,6 +21,8 @@ if (project.mod_version.endsWith('-dev')) {
 	project.mod_version += df.format(buildDate)
 }
 
+def malilib_mc_version = project.hasProperty('malilib_mc_version') ? project.malilib_mc_version : project.minecraft_version
+
 def branch = gitBranch()
 if (branch != "master") {
 	project.mod_version += "+" + branch;
@@ -48,7 +50,7 @@ dependencies {
 	// javax.annotation.Nullable/Nonnull
 	compileOnly "com.google.code.findbugs:jsr305:3.0.1"
 
-	modCompile "fi.dy.masa.malilib:malilib-fabric-${project.minecraft_version}:${project.malilib_version}"
+	modCompile "fi.dy.masa.malilib:malilib-fabric-${malilib_mc_version}:${project.malilib_version}"
 }
 
 static def gitCommit() {
