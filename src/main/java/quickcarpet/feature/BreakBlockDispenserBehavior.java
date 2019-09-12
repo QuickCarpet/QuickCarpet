@@ -54,7 +54,7 @@ public class BreakBlockDispenserBehavior extends ItemDispenserBehavior {
         float hardness = state.getHardness(world, target);
         if (state.isAir() || state.getMaterial().isLiquid() || hardness < 0) return false;
         if (!silkTouch) {
-            if (!world.breakBlock(target, true)) return false;
+            if (!world.method_22352(target, true)) return false;
         } else {
             LootContext.Builder builder = new LootContext.Builder(world).setRandom(world.random);
             builder.put(LootContextParameters.POSITION, target);
