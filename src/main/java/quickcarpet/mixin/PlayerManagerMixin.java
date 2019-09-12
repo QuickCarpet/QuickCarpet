@@ -47,13 +47,13 @@ public abstract class PlayerManagerMixin {
         }
     }
 
-    @Redirect(method = "createPlayer", at = @At(value = "INVOKE", target = "Ljava/util/Iterator;hasNext()Z"))
+    @Redirect(method = "createPlayer", at = @At(value = "INVOKE", target = "Ljava/util/Iterator;hasNext()Z", remap = false))
     private boolean cancelWhileLoop(Iterator iterator) {
         return false;
     }
 
     @Inject(method = "createPlayer", at = @At(value = "INVOKE", shift = At.Shift.BEFORE,
-            target = "Ljava/util/Iterator;hasNext()Z"), locals = LocalCapture.CAPTURE_FAILHARD)
+            target = "Ljava/util/Iterator;hasNext()Z", remap = false), locals = LocalCapture.CAPTURE_FAILHARD)
     private void newWhileLoop(GameProfile gameProfile_1, CallbackInfoReturnable<ServerPlayerEntity> cir, UUID uUID_1,
                               List list_1, Iterator var5) {
         while (var5.hasNext()) {

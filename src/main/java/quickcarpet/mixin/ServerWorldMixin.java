@@ -121,13 +121,14 @@ public abstract class ServerWorldMixin extends World {
     }
 
     @Feature("sleepingThreshold")
-    @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;noneMatch(Ljava/util/function/Predicate;)Z"))
+    @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Ljava/util/stream/Stream;noneMatch(Ljava/util/function/Predicate;)Z", remap = false))
     private boolean testSleepingLongEnough(Stream<ServerPlayerEntity> stream, Predicate<ServerPlayerEntity> predicate) {
         return arePlayersSleeping(ServerPlayerEntity::isSleepingLongEnough);
     }
 
     /**
      * @author skyrising
+     * @reason Whole method is changed anyway
      */
     @Overwrite
     @Feature("sleepingThreshold")

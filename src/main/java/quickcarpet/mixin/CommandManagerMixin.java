@@ -34,13 +34,13 @@ public abstract class CommandManagerMixin {
     }
 
     @Feature(value = "core", bug = @BugFix(value = "MC-124493", status = "WAI"))
-    @Redirect(method = "execute", at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;isDebugEnabled()Z"))
+    @Redirect(method = "execute", at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;isDebugEnabled()Z", remap = false))
     private boolean moreStackTraces(Logger logger) {
         return logger.isDebugEnabled() || QuickCarpet.isDevelopment();
     }
 
     @Feature(value = "core", bug = @BugFix(value = "MC-124493", status = "WAI"))
-    @Inject(method = "execute", at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;isDebugEnabled()Z"), locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(method = "execute", at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;isDebugEnabled()Z", remap = false), locals = LocalCapture.CAPTURE_FAILHARD)
     private void printStackTrace(ServerCommandSource source, String command, CallbackInfoReturnable<Integer> cir, Exception e) {
         e.printStackTrace();
     }

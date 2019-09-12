@@ -20,9 +20,10 @@ public abstract class ServerChunkManagerMixin {
 
     @Shadow @Final private ChunkTicketManager ticketManager;
 
+    @SuppressWarnings("UnresolvedMixinReference")
     @Feature("spawnTracker")
     @Redirect(
-        method = {"tickChunks", "method_20801"},
+        method = "method_20801",
         at = @At(value = "INVOKE", target = "Lit/unimi/dsi/fastutil/objects/Object2IntMap;getInt(Ljava/lang/Object;)I"),
         require = 1, allow = 1
     )

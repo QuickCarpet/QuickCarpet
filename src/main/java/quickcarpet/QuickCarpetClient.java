@@ -1,6 +1,8 @@
 package quickcarpet;
 
+import fi.dy.masa.malilib.event.InitializationHandler;
 import net.minecraft.client.MinecraftClient;
+import quickcarpet.client.ClientInit;
 import quickcarpet.client.ClientPluginChannelManager;
 import quickcarpet.client.ClientPubSubListener;
 import quickcarpet.client.ClientRulesChannel;
@@ -19,6 +21,17 @@ public class QuickCarpetClient {
         minecraftClient = MinecraftClient.getInstance();
         ClientPluginChannelManager.INSTANCE.register(rulesChannel = new ClientRulesChannel());
         ClientPluginChannelManager.INSTANCE.register(pubSubListener = new ClientPubSubListener());
+        try {
+            new MaLiLibInitializer().run();
+        } catch (LinkageError ignored) {}
+    }
+
+    // separate class to avoid loading malilib classes outside the try-catch
+    private static class MaLiLibInitializer implements Runnable {
+        @Override
+        public void run() {
+            InitializationHandler.getInstance().registerInitializationHandler(new ClientInit());
+        }
     }
 
     public boolean isSingleplayer() {

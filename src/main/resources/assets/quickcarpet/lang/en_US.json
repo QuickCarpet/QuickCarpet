@@ -76,6 +76,8 @@
   "carpet.rule.optimizedInventories.description": "Optimizes hoppers and droppers interacting with chests (\"Killer Hopper\"s)",
   "carpet.rule.optimizedInventories.extra": "Tests showed ca. 5-10x performance improvement in worst-case scenarios",
   "carpet.rule.movableBlockOverrides.description": "Override how pistons interact with any block. Adds weak stickyness behavior used by default for redstone components, flowerpots, etc.",
+  "carpet.rule.accurateBlockPlacement.description": "Allows client mods to specify the orientation of placed blocks",
+  "carpet.rule.dispensersBreakBlocks.description": "Gives dispensers the ability to break blocks using gunpowder",
   "carpet.validator.positive": "Must be positive",
   "carpet.validator.nonNegative": "Must be non-negative",
   "carpet.validator.negative": "Must be negative",
@@ -160,5 +162,9 @@
   "carpet.profiler.title": "Average tick time: %sms",
   "carpet.profiler.top_10_counts": "Top 10 counts:",
   "carpet.profiler.top_10_grossing": "Top 10 grossing:",
-  "carpet.profiler.entity.line": " - %s in %s: %s"
+  "carpet.profiler.entity.line": " - %s in %s: %s",
+  "quickcarpet.gui.title.configs": "QuickCarpet Configs",
+  "quickcarpet.gui.button.config_gui.generic": "Generic",
+  "quickcarpet.gui.button.config_gui.rendering": "Rendering",
+  "quickcarpet.gui.button.config_gui.generic_hotkeys": "Generic Hotkeys"
 }

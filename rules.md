@@ -1,4 +1,12 @@
 # Quick Carpet Rules
+## accurateBlockPlacement
+Allows client mods to specify the orientation of placed blocks
+
+Type: `boolean`  
+Default: `true`  
+Options: `true`, `false`  
+Categories: feature  
+
 ## autoCraftingTable
 Automatic crafting table
 
@@ -91,6 +99,14 @@ Default: `false`
 Options: `true`, `false`  
 Categories: fix, experimental  
 Fixes: [MC-152636](https://bugs.mojang.com/browse/MC-152636) fixed in 1.14.4-pre1  
+
+## dispensersBreakBlocks
+Gives dispensers the ability to break blocks using gunpowder
+
+Type: `Option`  
+Default: `false`  
+Options: `false`, `normal`, `silk_touch`  
+Categories: feature, experimental  
 
 ## dispensersPlaceBlocks
 Dispensers can place most blocks

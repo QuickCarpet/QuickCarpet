@@ -21,6 +21,7 @@ class PistonBehaviorMixin {
 
     private PistonBehaviorMixin(String name, int ordinal) {}
 
+    @SuppressWarnings("UnresolvedMixinReference")
     @ModifyConstant(method = "<clinit>()V", constant = @Constant(intValue = 5), slice = @Slice(from = @At("HEAD"), to = @At(value = "FIELD", opcode = Opcodes.GETSTATIC)))
     private static int valuesArraySize(int prev) {
         return 7;

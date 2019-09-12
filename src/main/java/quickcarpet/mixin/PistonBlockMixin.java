@@ -120,7 +120,7 @@ public class PistonBlockMixin extends FacingBlock {
 
 
     @Inject(method = "move", at = @At(value = "INVOKE", shift = At.Shift.BEFORE,
-            target = "Ljava/util/List;size()I", ordinal = 4), locals = LocalCapture.CAPTURE_FAILHARD)
+            target = "Ljava/util/List;size()I", remap = false, ordinal = 4), locals = LocalCapture.CAPTURE_FAILHARD)
     private void onMove(World world_1, BlockPos blockPos_1, Direction direction_1, boolean boolean_1,
                         CallbackInfoReturnable<Boolean> cir, BlockPos blockPos_2, PistonHandler pistonHandler_1,
                         List<BlockPos> list_1, List<BlockState> list_2, List list_3, int int_2, BlockState[] blockStates_1,

@@ -3,8 +3,10 @@
   "package": "quickcarpet.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "BlockItemMixin",
     "BlockPlacementDispenserBehaviorMixin",
     "BlocksMixin",
+    "BlockStateMixin",
     "BlockTagsAccessor",
     "ChestBlockEntityMixin",
     "ChunkSectionMixin",
@@ -26,10 +28,12 @@
     "HopperBlockEntityMixin",
     "InfestedBlockMixin",
     "ItemEntityMixin",
+    "ItemUsageContextAccessor",
     "LivingEntityMixin",
     "MinecraftDedicatedServerMixin",
     "MinecraftServerMixin",
     "PhantomSpawnerMixin",
+    "PistonBehaviorMixin",
     "PistonBlockEntityMixin",
     "PistonBlockMixin",
     "PistonHandlerMixin",
@@ -54,9 +58,7 @@
     "TntEntityMixin",
     "WorldChunkMixin",
     "WorldMixin",
-    "ZombieEntityMixin",
-    "BlockStateMixin",
-    "PistonBehaviorMixin"
+    "ZombieEntityMixin"
   ],
   "client": [
     "client.BlockEntityRenderDispatcherMixin",

@@ -10,6 +10,7 @@ import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.dimension.DimensionType;
 import quickcarpet.QuickCarpet;
 import quickcarpet.annotation.BugFix;
+import quickcarpet.feature.BreakBlockDispenserBehavior;
 import quickcarpet.feature.PlaceBlockDispenserBehavior;
 import quickcarpet.utils.Messenger;
 import quickcarpet.utils.Translations;
@@ -190,6 +191,12 @@ public class Settings {
             super(0.0, 100.0);
         }
     }
+
+    @Rule(category = FEATURE)
+    public static boolean accurateBlockPlacement = true;
+
+    @Rule(category = {FEATURE, EXPERIMENTAL})
+    public static BreakBlockDispenserBehavior.Option dispensersBreakBlocks = BreakBlockDispenserBehavior.Option.FALSE;
 
     public static void main(String[] args) throws IOException {
         Bootstrap.initialize();

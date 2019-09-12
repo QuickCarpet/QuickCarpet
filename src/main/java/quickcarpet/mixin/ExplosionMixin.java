@@ -23,13 +23,13 @@ public abstract class ExplosionMixin {
     @Shadow @Final private List<BlockPos> affectedBlocks;
     
     @Redirect(method = "collectBlocksAndDamageEntities", at = @At(value = "INVOKE",
-            target = "Ljava/util/List;addAll(Ljava/util/Collection;)Z"))
+            target = "Ljava/util/List;addAll(Ljava/util/Collection;)Z", remap = false))
     private boolean cancelAffectedBlocks(List list, Collection<?> c) {
         return false;
     }
     
     @Inject(method = "collectBlocksAndDamageEntities", at = @At(value = "INVOKE",
-            target = "Ljava/util/List;addAll(Ljava/util/Collection;)Z"), locals = LocalCapture.CAPTURE_FAILHARD)
+            target = "Ljava/util/List;addAll(Ljava/util/Collection;)Z", remap = false), locals = LocalCapture.CAPTURE_FAILHARD)
     private void newAffectedBlocks(CallbackInfo ci, Set<BlockPos> set_1) {
         if (!Settings.explosionNoBlockDamage) {
             this.affectedBlocks.addAll(set_1);

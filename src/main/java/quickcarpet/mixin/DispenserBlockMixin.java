@@ -3,10 +3,7 @@ package quickcarpet.mixin;
 import net.minecraft.block.BlockWithEntity;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.dispenser.DispenserBehavior;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.HoeItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.*;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -33,6 +30,7 @@ public abstract class DispenserBlockMixin extends BlockWithEntity {
     @Overwrite
     public DispenserBehavior getBehaviorForItem(ItemStack stack) {
         Item item = stack.getItem();
+        if (item == Items.GUNPOWDER) return CarpetRegistry.BREAK_BLOCK_DISPENSER_BEHAVIOR;
         if (quickcarpet.settings.Settings.dispensersPlaceBlocks != PlaceBlockDispenserBehavior.Option.FALSE && !BEHAVIORS.containsKey(item) && item instanceof BlockItem) {
             if (PlaceBlockDispenserBehavior.canPlace(((BlockItem) item).getBlock())) return CarpetRegistry.PLACE_BLOCK_DISPENSER_BEHAVIOR;
         }

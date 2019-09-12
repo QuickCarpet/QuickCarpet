@@ -55,7 +55,7 @@ public abstract class PistonHandlerMixin {
      * @author 2No2Name
      */
     @Feature("movableBlockEntities")
-    @Inject(method = "tryMove", at = @At(value = "INVOKE", target = "Ljava/util/List;get(I)Ljava/lang/Object;", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+    @Inject(method = "tryMove", at = @At(value = "INVOKE", target = "Ljava/util/List;get(I)Ljava/lang/Object;", remap = false, shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
     private void stickToStickySides(BlockPos blockPos_1, Direction direction_1, CallbackInfoReturnable<Boolean> cir, BlockState blockState_1, Block block_1, int int_1, int int_2, int int_4, BlockPos blockPos_3, int int_5, int int_6){
         if(!stickToStickySides(blockPos_3)){
             cir.setReturnValue(false);
@@ -70,7 +70,7 @@ public abstract class PistonHandlerMixin {
      * @author 2No2Name
      */
     @Feature("movableBlockEntities")
-    @Inject(method = "calculatePush", at = @At(value = "INVOKE", target = "Ljava/util/List;get(I)Ljava/lang/Object;", shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
+    @Inject(method = "calculatePush", at = @At(value = "INVOKE", target = "Ljava/util/List;get(I)Ljava/lang/Object;", remap = false, shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
     private void stickToStickySides(CallbackInfoReturnable<Boolean> cir, int int_1){
         if(!stickToStickySides(this.movedBlocks.get(int_1))){
             cir.setReturnValue(false);
