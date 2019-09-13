@@ -113,7 +113,7 @@ public abstract class WorldChunkMixin implements IWorldChunk {
                         newBlockEntity = ((BlockEntityProvider) newBlock).createBlockEntity(this.world);
                     }
                     if (newBlockEntity != oldBlockEntity && newBlockEntity != null) {
-                        newBlockEntity.validate();
+                        newBlockEntity.cancelRemoval();
                         this.world.setBlockEntity(blockPos_1, newBlockEntity);
                         newBlockEntity.resetBlock();
                     }

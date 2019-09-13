@@ -20,8 +20,6 @@ import java.util.Map;
 public abstract class TagContainerMixin<T> {
     @Shadow @Final private String entryType;
 
-    @Shadow private Map<Identifier, Tag<T>> idMap;
-
     @Inject(method = "applyReload", at = @At("HEAD"))
     private void onReload(Map<Identifier, Tag.Builder<T>> builders, CallbackInfo ci) {
         if (this.entryType.equals("block")) {

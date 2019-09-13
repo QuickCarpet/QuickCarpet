@@ -27,9 +27,9 @@ import quickcarpet.utils.IWorld;
 public abstract class PistonBlockEntityMixin extends BlockEntity implements IPistonBlockEntity {
     @Shadow private boolean source;
     @Shadow private BlockState pushedBlock;
-    @Shadow private float nextProgress;
-
     @Shadow private float progress;
+
+    @Shadow private float lastProgress;
     private BlockEntity carriedBlockEntity;
     private boolean renderCarriedBlockEntity = false;
     private boolean renderSet = false;
@@ -101,7 +101,7 @@ public abstract class PistonBlockEntityMixin extends BlockEntity implements IPis
             else
                 blockState_2 = Block.getRenderingState(this.pushedBlock, this.world, this.pos);
             ((IWorld) (this.world)).setBlockStateWithBlockEntity(this.pos, blockState_2, this.carriedBlockEntity, 3);
-            this.world.method_22352(this.pos, true);
+            this.world.breakBlock(this.pos, true);
         }
     }
 
@@ -113,7 +113,7 @@ public abstract class PistonBlockEntityMixin extends BlockEntity implements IPis
             if (carriedBlockEntity != null) //Can actually be null, as BlockPistonMoving.createNewTileEntity(...) returns null
                 this.carriedBlockEntity.fromTag(compoundTag_1.getCompound("carriedTileEntity"));
         }
-        this.actualProgress = Math.max(0f, progress - 0.5f);
+        this.actualProgress = Math.max(0f, lastProgress - 0.5f);
     }
 
     @Inject(method = "toTag", at = @At(value = "RETURN", shift = At.Shift.BEFORE))
@@ -129,9 +129,9 @@ public abstract class PistonBlockEntityMixin extends BlockEntity implements IPis
     private void smoothPistons(float partialTicks, CallbackInfoReturnable<Float> cir) {
         float val;
         if (this.world != null && this.world.isClient) {
-            val = (this.nextProgress * 2.0F + partialTicks) * 0.33333334F;
+            val = (this.progress * 2.0F + partialTicks) * 0.33333334F;
         } else {
-            val = this.actualProgress + (this.nextProgress - this.actualProgress) * partialTicks;
+            val = this.actualProgress + (this.progress - this.actualProgress) * partialTicks;
         }
         cir.setReturnValue(val);
         cir.cancel();
@@ -140,6 +140,6 @@ public abstract class PistonBlockEntityMixin extends BlockEntity implements IPis
     @Feature("smoothPistons")
     @Inject(method = "tick", at = @At(value = "FIELD", target = "Lnet/minecraft/block/entity/PistonBlockEntity;progress:F", ordinal = 0))
     private void setActualProgress(CallbackInfo ci) {
-        this.actualProgress = this.progress;
+        this.actualProgress = this.lastProgress;
     }
 }

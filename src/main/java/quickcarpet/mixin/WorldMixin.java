@@ -144,9 +144,9 @@ public abstract class WorldMixin implements IWorld, SpawnEntityCache {
             } else {
                 BlockState blockState_3 = this.getBlockState(blockPos_1);
 
-                if (blockState_3 != blockState_2 && (blockState_3.getLightSubtracted((BlockView) this, blockPos_1) != blockState_2.getLightSubtracted((BlockView) this, blockPos_1) || blockState_3.getLuminance() != blockState_2.getLuminance() || blockState_3.hasSidedTransparency() || blockState_2.hasSidedTransparency())) {
+                if (blockState_3 != blockState_2 && (blockState_3.getOpacity((BlockView) this, blockPos_1) != blockState_2.getOpacity((BlockView) this, blockPos_1) || blockState_3.getLuminance() != blockState_2.getLuminance() || blockState_3.hasSidedTransparency() || blockState_2.hasSidedTransparency())) {
                     this.profiler.push("queueCheckLight");
-                    this.getChunkManager().getLightingProvider().enqueueLightUpdate(blockPos_1);
+                    this.getChunkManager().getLightingProvider().checkBlock(blockPos_1);
                     this.profiler.pop();
                 }
 

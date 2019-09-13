@@ -15,8 +15,8 @@ import net.minecraft.server.command.SetBlockCommand;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Clearable;
+import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MutableIntBoundingBox;
 import quickcarpet.settings.Settings;
 
 import java.util.Collections;
@@ -51,24 +51,24 @@ public class CarpetFillCommand {
             .then(argument("from", blockPos())
             .then(argument("to", blockPos())
             .then(argument("block", blockState())
-                .executes(c -> execute(c.getSource(), new MutableIntBoundingBox(getLoadedBlockPos(c, "from"), getLoadedBlockPos(c, "to")), getBlockState(c, "block"), Mode.REPLACE, null))
+                .executes(c -> execute(c.getSource(), new BlockBox(getLoadedBlockPos(c, "from"), getLoadedBlockPos(c, "to")), getBlockState(c, "block"), Mode.REPLACE, null))
                     .then(literal("replace")
-                        .executes(c -> execute(c.getSource(), new MutableIntBoundingBox(getLoadedBlockPos(c, "from"), getLoadedBlockPos(c, "to")), getBlockState(c, "block"), Mode.REPLACE, null))
+                        .executes(c -> execute(c.getSource(), new BlockBox(getLoadedBlockPos(c, "from"), getLoadedBlockPos(c, "to")), getBlockState(c, "block"), Mode.REPLACE, null))
                         .then(argument("filter", blockPredicate())
-                            .executes(c -> execute(c.getSource(), new MutableIntBoundingBox(getLoadedBlockPos(c, "from"), getLoadedBlockPos(c, "to")), getBlockState(c, "block"), Mode.REPLACE, getBlockPredicate(c, "filter"))))
+                            .executes(c -> execute(c.getSource(), new BlockBox(getLoadedBlockPos(c, "from"), getLoadedBlockPos(c, "to")), getBlockState(c, "block"), Mode.REPLACE, getBlockPredicate(c, "filter"))))
                     ).then(literal("keep")
-                        .executes(c -> execute(c.getSource(), new MutableIntBoundingBox(getLoadedBlockPos(c, "from"), getLoadedBlockPos(c, "to")), getBlockState(c, "block"), Mode.REPLACE, cachedBlockPosition -> cachedBlockPosition.getWorld().method_22347(cachedBlockPosition.getBlockPos()))))
+                        .executes(c -> execute(c.getSource(), new BlockBox(getLoadedBlockPos(c, "from"), getLoadedBlockPos(c, "to")), getBlockState(c, "block"), Mode.REPLACE, cachedBlockPosition -> cachedBlockPosition.getWorld().isAir(cachedBlockPosition.getBlockPos()))))
                     .then(literal("outline")
-                        .executes(c -> execute(c.getSource(), new MutableIntBoundingBox(getLoadedBlockPos(c, "from"), getLoadedBlockPos(c, "to")), getBlockState(c, "block"), Mode.OUTLINE, null)))
+                        .executes(c -> execute(c.getSource(), new BlockBox(getLoadedBlockPos(c, "from"), getLoadedBlockPos(c, "to")), getBlockState(c, "block"), Mode.OUTLINE, null)))
                     .then(literal("hollow")
-                        .executes(c -> execute(c.getSource(), new MutableIntBoundingBox(getLoadedBlockPos(c, "from"), getLoadedBlockPos(c, "to")), getBlockState(c, "block"), Mode.HOLLOW, null)))
+                        .executes(c -> execute(c.getSource(), new BlockBox(getLoadedBlockPos(c, "from"), getLoadedBlockPos(c, "to")), getBlockState(c, "block"), Mode.HOLLOW, null)))
                     .then(literal("destroy")
-                        .executes(c -> execute(c.getSource(), new MutableIntBoundingBox(getLoadedBlockPos(c, "from"), getLoadedBlockPos(c, "to")), getBlockState(c, "block"), Mode.DESTROY, null)))
+                        .executes(c -> execute(c.getSource(), new BlockBox(getLoadedBlockPos(c, "from"), getLoadedBlockPos(c, "to")), getBlockState(c, "block"), Mode.DESTROY, null)))
         )));
         commandDispatcher_1.register(carpetfill);
     }
 
-    private static int execute(ServerCommandSource source, MutableIntBoundingBox box, BlockStateArgument state, Mode mode, Predicate<CachedBlockPosition> filter) throws CommandSyntaxException {
+    private static int execute(ServerCommandSource source, BlockBox box, BlockStateArgument state, Mode mode, Predicate<CachedBlockPosition> filter) throws CommandSyntaxException {
         int volume = box.getBlockCountX() * box.getBlockCountY() * box.getBlockCountZ();
         if (volume > Settings.fillLimit) { // [CM] replaces 32768
             throw TOOBIG_EXCEPTION.create(Settings.fillLimit, volume);
@@ -111,7 +111,7 @@ public class CarpetFillCommand {
         OUTLINE((box, pos, state, world) -> pos.getX() != box.minX && pos.getX() != box.maxX && pos.getY() != box.minY && pos.getY() != box.maxY && pos.getZ() != box.minZ && pos.getZ() != box.maxZ ? null : state),
         HOLLOW((box, pos, state, world) -> pos.getX() != box.minX && pos.getX() != box.maxX && pos.getY() != box.minY && pos.getY() != box.maxY && pos.getZ() != box.minZ && pos.getZ() != box.maxZ ? CarpetFillCommand.AIR_BLOCK_ARGUMENT : state),
         DESTROY((box, pos, state, world) -> {
-            world.method_22352(pos, true);
+            world.breakBlock(pos, true);
             return state;
         });
         

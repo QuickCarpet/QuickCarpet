@@ -18,8 +18,8 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Clearable;
+import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MutableIntBoundingBox;
 import quickcarpet.settings.Settings;
 
 import java.util.Deque;
@@ -76,9 +76,9 @@ public class CarpetCloneCommand {
     }
 
     private static int execute(ServerCommandSource source, BlockPos begin, BlockPos end, BlockPos destination, Predicate<CachedBlockPosition> filter, Mode mode) throws CommandSyntaxException {
-        MutableIntBoundingBox sourceBox = new MutableIntBoundingBox(begin, end);
-        BlockPos destinationEnd = destination.add(sourceBox.getSize());
-        MutableIntBoundingBox destinationBox = new MutableIntBoundingBox(destination, destinationEnd);
+        BlockBox sourceBox = new BlockBox(begin, end);
+        BlockPos destinationEnd = destination.add(sourceBox.getDimensions());
+        BlockBox destinationBox = new BlockBox(destination, destinationEnd);
         if (!mode.allowsOverlap() && destinationBox.intersects(sourceBox)) {
             throw OVERLAP_EXCEPTION.create();
         } else {
@@ -88,7 +88,7 @@ public class CarpetCloneCommand {
                 throw TOOBIG_EXCEPTION.create(Settings.fillLimit, volume);
             } else {
                 ServerWorld world = source.getWorld();
-                if (world.method_22343(begin, end) && world.method_22343(destination, destinationEnd)) {
+                if (world.isRegionLoaded(begin, end) && world.isRegionLoaded(destination, destinationEnd)) {
                     List<BlockInfo> otherBlocks = Lists.newArrayList();
                     List<BlockInfo> blocksWithEntity = Lists.newArrayList();
                     List<BlockInfo> fullBlocks = Lists.newArrayList();

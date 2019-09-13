@@ -75,7 +75,7 @@ public class AccurateBlockPlacement {
         Vec3d hitPos = hitResult.getPos();
         hitPos = new Vec3d(x, hitPos.y, hitPos.z);
         if (hitResult.getType() == HitResult.Type.MISS) hitResult = BlockHitResult.createMissed(hitPos, hitResult.getSide(), hitResult.getBlockPos());
-        else hitResult = new BlockHitResult(hitPos, hitResult.getSide(), hitResult.getBlockPos(), hitResult.method_17781());
+        else hitResult = new BlockHitResult(hitPos, hitResult.getSide(), hitResult.getBlockPos(), hitResult.isInsideBlock());
         ((ItemUsageContextAccessor) ctx).setHitResult(hitResult);
     }
 }
