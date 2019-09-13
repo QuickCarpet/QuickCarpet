@@ -164,7 +164,17 @@
   "carpet.profiler.top_10_grossing": "Top 10 grossing:",
   "carpet.profiler.entity.line": " - %s in %s: %s",
   "quickcarpet.gui.title.configs": "QuickCarpet Configs",
+  "quickcarpet.hotkeys.category.generic_hotkeys": "Generic Hotkeys",
+  "quickcarpet.hotkeys.category.rendering_hotkeys": "Rendering Hotkeys",
   "quickcarpet.gui.button.config_gui.generic": "Generic",
   "quickcarpet.gui.button.config_gui.rendering": "Rendering",
-  "quickcarpet.gui.button.config_gui.generic_hotkeys": "Generic Hotkeys"
+  "quickcarpet.gui.button.config_gui.generic_hotkeys": "Generic Hotkeys",
+  "quickcarpet.gui.button.config_gui.rendering_hotkeys": "Rendering Hotkeys",
+  "quickcarpet.gui.comment.openConfigGui": "The key to open the in-game config GUI",
+  "quickcarpet.gui.pretty.syncLowTps": "Sync low TPS",
+  "quickcarpet.gui.comment.syncLowTps": "Synchronize client and server tick rate if below 20",
+  "quickcarpet.gui.pretty.syncHighTps": "Sync high TPS",
+  "quickcarpet.gui.comment.syncHighTps": "Synchronize client and server tick rate if above 20",
+  "quickcarpet.gui.pretty.movingBlockCulling": "Moving block culling",
+  "quickcarpet.gui.comment.movingBlockCulling": "Cull the insides of moving transparent blocks"
 }

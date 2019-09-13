@@ -1,5 +1,8 @@
 package quickcarpet.client;
 
+import fi.dy.masa.malilib.config.ConfigType;
+import fi.dy.masa.malilib.config.ConfigUtils;
+import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.gui.GuiConfigsBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import net.minecraft.client.resource.language.I18n;
@@ -44,22 +47,29 @@ public class ConfigsGui extends GuiConfigsBase {
 
     @Override
     public List<ConfigOptionWrapper> getConfigs() {
+        return ConfigOptionWrapper.createFor(getConfigsForTab(selectedTab));
+    }
+
+    @SuppressWarnings("unchecked")
+    private static List<IConfigBase> getConfigsForTab(ConfigGuiTab tab) {
         switch (selectedTab) {
-            case GENERIC: return ConfigOptionWrapper.createFor(Configs.Generic.OPTIONS);
-            case GENERIC_HOTKEYS: return ConfigOptionWrapper.createFor(Configs.Generic.HOTKEYS);
-            case RENDERING: return ConfigOptionWrapper.createFor(Configs.Rendering.OPTIONS);
+            case GENERIC: return (List) ConfigUtils.createConfigWrapperForType(ConfigType.BOOLEAN, Configs.Generic.TOGGLEABLE);
+            case GENERIC_HOTKEYS: return (List) Configs.Generic.getHotkeys();
+            case RENDERING: return (List) ConfigUtils.createConfigWrapperForType(ConfigType.BOOLEAN, Configs.Rendering.OPTIONS);
+            case RENDERING_HOTKEYS: return (List) ConfigUtils.createConfigWrapperForType(ConfigType.HOTKEY, Configs.Rendering.OPTIONS);
         }
         return Collections.emptyList();
     }
 
     public enum ConfigGuiTab {
         GENERIC("quickcarpet.gui.button.config_gui.generic"),
+        GENERIC_HOTKEYS("quickcarpet.gui.button.config_gui.generic_hotkeys"),
         RENDERING("quickcarpet.gui.button.config_gui.rendering"),
-        GENERIC_HOTKEYS("quickcarpet.gui.button.config_gui.generic_hotkeys");
+        RENDERING_HOTKEYS("quickcarpet.gui.button.config_gui.rendering_hotkeys");
 
         private final String translationKey;
 
-        private ConfigGuiTab(String translationKey) {
+        ConfigGuiTab(String translationKey) {
             this.translationKey = translationKey;
         }
 
