@@ -3,41 +3,61 @@ package quickcarpet.client;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import fi.dy.masa.malilib.config.ConfigUtils;
-import fi.dy.masa.malilib.config.IConfigBase;
-import fi.dy.masa.malilib.config.IConfigHandler;
+import fi.dy.masa.malilib.config.*;
 import fi.dy.masa.malilib.config.options.ConfigBooleanHotkeyed;
 import fi.dy.masa.malilib.config.options.ConfigHotkey;
+import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.util.FileUtils;
 import fi.dy.masa.malilib.util.JsonUtils;
 import quickcarpet.Build;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Configs implements IConfigHandler {
     private static final String CONFIG_FILE_NAME = Build.ID + ".json";
     private static final int CONFIG_VERSION = 1;
 
+    private static ConfigHotkey hotkey(String id, String defaultStorageString) {
+        return new ConfigHotkey(id, defaultStorageString, "quickcarpet.gui.comment." + id);
+    }
+
+    private static ConfigBooleanHotkeyed booleanHotkeyed(ClientSetting<Boolean> clientSetting, String defaultHotkey) {
+        return new ConfigBooleanHotkeyed(clientSetting.id, clientSetting.defaultValue, defaultHotkey, "quickcarpet.gui.comment." + clientSetting.id, "quickcarpet.gui.pretty." + clientSetting.id);
+    }
+
     public static class Generic {
-        public static final ConfigHotkey OPEN_CONFIG_GUI = new ConfigHotkey("openConfigGui", "C,Q",  "The key open the in-game config GUI");
-        public static final ConfigBooleanHotkeyed SYNC_LOW_TPS = new ConfigBooleanHotkeyed(ClientSetting.SYNC_LOW_TPS.id, ClientSetting.SYNC_LOW_TPS.defaultValue, "", "Synchronze client and server tickrate if below 20", "Sync low TPS");
-        public static final ConfigBooleanHotkeyed SYNC_HIGH_TPS = new ConfigBooleanHotkeyed(ClientSetting.SYNC_HIGH_TPS.id, ClientSetting.SYNC_HIGH_TPS.defaultValue, "", "Synchronze client and server tickrate if above 20", "Sync high TPS");
+        public static final ConfigHotkey OPEN_CONFIG_GUI = hotkey("openConfigGui", "C,Q");
+        public static final ConfigBooleanHotkeyed SYNC_LOW_TPS = booleanHotkeyed(ClientSetting.SYNC_LOW_TPS, "");
+        public static final ConfigBooleanHotkeyed SYNC_HIGH_TPS = booleanHotkeyed(ClientSetting.SYNC_HIGH_TPS, "");
 
         public static final List<IConfigBase> OPTIONS = ImmutableList.of(
             SYNC_LOW_TPS,
             SYNC_HIGH_TPS
         );
 
-        public static final List<ConfigHotkey> HOTKEYS = ImmutableList.of(
+        public static final List<IHotkey> HOTKEYS = ImmutableList.of(
             OPEN_CONFIG_GUI
         );
+
+        public static final List<IHotkeyTogglable> TOGGLEABLE = ImmutableList.of(
+            SYNC_LOW_TPS,
+            SYNC_HIGH_TPS
+        );
+
+        public static List<IHotkey> getHotkeys() {
+            List<IHotkey> list = new ArrayList<>();
+            list.addAll((List) Configs.Generic.HOTKEYS);
+            list.addAll((List) ConfigUtils.createConfigWrapperForType(ConfigType.HOTKEY, Configs.Generic.TOGGLEABLE));
+            return list;
+        }
     }
 
     public static class Rendering {
-        public static final ConfigBooleanHotkeyed MOVING_BLOCK_CULLING = new ConfigBooleanHotkeyed(ClientSetting.MOVING_BLOCK_CULLING.id, ClientSetting.MOVING_BLOCK_CULLING.defaultValue, "", "Cull the insides of moving transparent blocks", "Moving block culling");
+        public static final ConfigBooleanHotkeyed MOVING_BLOCK_CULLING = booleanHotkeyed(ClientSetting.MOVING_BLOCK_CULLING, "");
 
-        public static final List<IConfigBase> OPTIONS = ImmutableList.of(
+        public static final List<IHotkeyTogglable> OPTIONS = ImmutableList.of(
             MOVING_BLOCK_CULLING
         );
     }
@@ -49,12 +69,11 @@ public class Configs implements IConfigHandler {
         JsonElement data = JsonUtils.parseJsonFile(configFile);
         if (data == null || !data.isJsonObject()) return;
         JsonObject root = data.getAsJsonObject();
-        System.out.println(root);
         int version = JsonUtils.getIntegerOrDefault(root, "version", 0);
         if (version > CONFIG_VERSION) return;
         ConfigUtils.readConfigBase(root, "Generic", Generic.OPTIONS);
-        ConfigUtils.readConfigBase(root, "Rendering", Rendering.OPTIONS);
-        ConfigUtils.readHotkeys(root, "GenericHotkeys", Generic.HOTKEYS);
+        ConfigUtils.readHotkeyToggleOptions(root, "GenericHotkeys", "GenericToggles", Generic.TOGGLEABLE);
+        ConfigUtils.readHotkeyToggleOptions(root, "RenderingHotkeys", "Rendering", Rendering.OPTIONS);
     }
 
     @Override
@@ -64,8 +83,8 @@ public class Configs implements IConfigHandler {
         JsonObject root = new JsonObject();
         root.addProperty("version", CONFIG_VERSION);
         ConfigUtils.writeConfigBase(root, "Generic", Generic.OPTIONS);
-        ConfigUtils.writeConfigBase(root, "Rendering", Rendering.OPTIONS);
-        ConfigUtils.writeHotkeys(root, "GenericHotkeys", Generic.HOTKEYS);
+        ConfigUtils.writeHotkeyToggleOptions(root, "GenericHotkeys", "GenericToggles", Generic.TOGGLEABLE);
+        ConfigUtils.writeHotkeyToggleOptions(root, "RenderingHotkeys", "Rendering", Rendering.OPTIONS);
         JsonUtils.writeJsonToFile(root, new File(configDir, CONFIG_FILE_NAME));
     }
 }

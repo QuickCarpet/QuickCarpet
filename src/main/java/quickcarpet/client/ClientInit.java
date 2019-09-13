@@ -20,7 +20,6 @@ public class ClientInit implements IInitializationHandler {
 
     private static void keybind(ConfigHotkey config, Consumer<KeyAction> callback) {
         config.getKeybind().setCallback((action, key) -> {
-            System.out.println(key);
             callback.accept(action);
             return true;
         });

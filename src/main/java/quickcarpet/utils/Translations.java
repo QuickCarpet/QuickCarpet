@@ -19,7 +19,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 
 public class Translations {
-    public static final String DEFAULT_LOCALE = "en_US";
+    public static final String DEFAULT_LOCALE = "en_us";
     private static final Gson GSON = new Gson();
     private static final Map<String, String> DEFAULT = new HashMap<>();
     private static final Map<String, Map<String, String>> TRANSLATIONS = new HashMap<>();
