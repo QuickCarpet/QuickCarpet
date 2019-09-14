@@ -18,6 +18,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import quickcarpet.annotation.Feature;
+import quickcarpet.client.ClientSetting;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.IPistonBlockEntity;
 import quickcarpet.utils.IWorld;
@@ -128,13 +129,10 @@ public abstract class PistonBlockEntityMixin extends BlockEntity implements IPis
     @Inject(method = "getProgress", at = @At(value = "HEAD"), cancellable = true)
     private void smoothPistons(float partialTicks, CallbackInfoReturnable<Float> cir) {
         float val;
-        if (this.world != null && this.world.isClient) {
+        if (this.world != null && this.world.isClient && ClientSetting.SMOOTH_PISTONS.get()) {
             val = (this.nextProgress * 2.0F + partialTicks) * 0.33333334F;
-        } else {
-            val = this.actualProgress + (this.nextProgress - this.actualProgress) * partialTicks;
+            cir.setReturnValue(val);
         }
-        cir.setReturnValue(val);
-        cir.cancel();
     }
 
     @Feature("smoothPistons")

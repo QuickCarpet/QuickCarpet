@@ -176,5 +176,7 @@
   "quickcarpet.gui.pretty.syncHighTps": "Sync high TPS",
   "quickcarpet.gui.comment.syncHighTps": "Synchronize client and server tick rate if above 20",
   "quickcarpet.gui.pretty.movingBlockCulling": "Moving block culling",
-  "quickcarpet.gui.comment.movingBlockCulling": "Cull the insides of moving transparent blocks"
+  "quickcarpet.gui.comment.movingBlockCulling": "Cull the insides of moving transparent blocks",
+  "quickcarpet.gui.pretty.smoothPistons": "Smooth pistons",
+  "quickcarpet.gui.comment.smoothPistons": "Removes jump in piston animations"
 }
