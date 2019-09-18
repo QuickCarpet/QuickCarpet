@@ -198,6 +198,13 @@ public class Settings {
     @Rule(category = {FEATURE, EXPERIMENTAL})
     public static BreakBlockDispenserBehavior.Option dispensersBreakBlocks = BreakBlockDispenserBehavior.Option.FALSE;
 
+    @Rule(category = {FEATURE, EXPERIMENTAL})
+    public static RenewableBeeHiveBiomes renewableBeeHives = RenewableBeeHiveBiomes.NONE;
+
+    public enum RenewableBeeHiveBiomes {
+        NONE, FLOWER, FLOWER_AND_PLAINS, ALL
+    }
+
     public static void main(String[] args) throws IOException {
         Bootstrap.initialize();
         Translations.init();

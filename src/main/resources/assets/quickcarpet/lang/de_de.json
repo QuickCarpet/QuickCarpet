@@ -77,6 +77,7 @@
   "carpet.rule.movableBlockOverrides.description": "Ermöglicht die Anpassung des Kolbenverhaltens. Führt ein neues 'weak sticky' Verhalten ein, das standardmäßig von Redstone Komponenten, Blumentöpfen, etc. genutzt wird.",
   "carpet.rule.accurateBlockPlacement.description": "Gibt Mods die Möglichkeit die Rotation von platzierten Blöcken zu kontrollieren",
   "carpet.rule.dispensersBreakBlocks.description": "Gibt Werfern die Möglichkeit mit Schwarzpulver Blöcke zu zerstören",
+  "carpet.rule.renewableBeeHives.description": "Bienenstöcke können an gepflanzten Bäumen in diesen Biomen generieren ",
   "carpet.validator.positive": "Wert muss positiv sein",
   "carpet.validator.nonNegative": "Wert darf nicht negativ sein",
   "carpet.validator.negative": "Wert muss negativ sein",

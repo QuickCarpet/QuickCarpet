@@ -3,6 +3,7 @@
   "package": "quickcarpet.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "AbstractTreeFeatureMixin",
     "BlockItemMixin",
     "BlockPlacementDispenserBehaviorMixin",
     "BlocksMixin",

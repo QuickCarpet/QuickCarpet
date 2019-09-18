@@ -78,6 +78,7 @@
   "carpet.rule.movableBlockOverrides.description": "Override how pistons interact with any block. Adds weak stickyness behavior used by default for redstone components, flowerpots, etc.",
   "carpet.rule.accurateBlockPlacement.description": "Allows client mods to specify the orientation of placed blocks",
   "carpet.rule.dispensersBreakBlocks.description": "Gives dispensers the ability to break blocks using gunpowder",
+  "carpet.rule.renewableBeeHives.description": "Bee hives can generate on trees planted in these biomes",
   "carpet.validator.positive": "Must be positive",
   "carpet.validator.nonNegative": "Must be non-negative",
   "carpet.validator.negative": "Must be negative",
