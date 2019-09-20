@@ -23,10 +23,8 @@
   "mixins": [
     "quickcarpet.mixins.json"
   ],
-  "depends": {
-    "fabric-resource-loader-v0": "*"
-  },
   "recommends": {
-    "malilib": "${malilib_version}"
+    "malilib": "${malilib_version}",
+    "fabric-resource-loader-v0": "*"
   }
 }

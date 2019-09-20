@@ -44,13 +44,13 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	// modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	modCompile "net.fabricmc.fabric-api:fabric-resource-loader-v0:${project.fabric_resource_loader_v0_version}"
-	include "net.fabricmc.fabric-api:fabric-resource-loader-v0:${project.fabric_resource_loader_v0_version}"
+	// modCompile "net.fabricmc.fabric-api:fabric-resource-loader-v0:${project.fabric_resource_loader_v0_version}"
+	// include "net.fabricmc.fabric-api:fabric-resource-loader-v0:${project.fabric_resource_loader_v0_version}"
 
 	// javax.annotation.Nullable/Nonnull
 	compileOnly "com.google.code.findbugs:jsr305:3.0.1"
 
-	modCompile "fi.dy.masa.malilib:malilib-fabric-${malilib_mc_version}:${project.malilib_version}"
+	modImplementation "fi.dy.masa.malilib:malilib-fabric-${malilib_mc_version}:${project.malilib_version}"
 }
 
 static def gitCommit() {

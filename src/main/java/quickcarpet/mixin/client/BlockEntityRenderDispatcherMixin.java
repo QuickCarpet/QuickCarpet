@@ -1,17 +1,19 @@
 package quickcarpet.mixin.client;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.block.BlockRenderLayer;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.Camera;
-import net.minecraft.client.render.GuiLighting;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
+import net.minecraft.client.render.block.entity.BlockEntityRenderer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.lwjgl.opengl.GL20;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import quickcarpet.annotation.Feature;
 import quickcarpet.utils.IBlockEntityRenderDispatcher;
+
+import javax.annotation.Nullable;
 
 @Feature("movableBlockEntities")
 @Mixin(BlockEntityRenderDispatcher.class)
@@ -28,25 +30,33 @@ public abstract class BlockEntityRenderDispatcherMixin implements IBlockEntityRe
     public World world;
     
     @Shadow
-    public abstract void renderEntity(BlockEntity blockEntity_1, double double_1, double double_2, double double_3,
-            float float_1, int int_1, boolean boolean_1);
-    
+    private static void renderEntity(BlockEntity blockEntity_1, Runnable runnable) {};
+
+    @Shadow @Nullable public abstract <T extends BlockEntity> BlockEntityRenderer<T> get(@Nullable BlockEntity blockEntity_1);
+
     /**
      * @author 2No2Name
      */
     //Renders the BlockEntity offset by the amount specified in the arguments xOffset yOffset zOffset (the moving block moved in the animation by this)
-    public void renderBlockEntityOffset(BlockEntity blockEntity_1, float partialTicks, int destroyStage, double xOffset,
-            double yOffset, double zOffset) {
-        if (blockEntity_1.getSquaredDistance(this.cameraEntity.getPos().x - xOffset, this.cameraEntity.getPos().y - yOffset,
-                this.cameraEntity.getPos().z - zOffset) < blockEntity_1.getSquaredRenderDistance()) {
-            GuiLighting.enable();
-            int i = this.world.getLightmapIndex(blockEntity_1.getPos());
-            int j = i % 65536;
-            int k = i / 65536;
-            RenderSystem.glMultiTexCoord2f(GL20.GL_TEXTURE1, (float) j, (float) k);
-            RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-            BlockPos blockpos = blockEntity_1.getPos();
-            this.renderEntity(blockEntity_1, (double) blockpos.getX() - renderOffsetX + xOffset, (double) blockpos.getY() - renderOffsetY + yOffset, (double) blockpos.getZ() - renderOffsetZ + zOffset, partialTicks, destroyStage, false);
+    //Code copied and modified from BlockEntityRenderDispatcher::render(BlockEntity blockEntity, float partialTicks, int destroyStage, BlockRenderLayer renderLayer, BufferBuilder bufferBuilder)
+    public void renderBlockEntityOffset(BlockEntity blockEntity, float partialTicks, int destroyStage, BlockRenderLayer renderLayer, BufferBuilder bufferBuilder,
+                                        double xOffset, double yOffset, double zOffset){
+        if (blockEntity.getSquaredDistance(this.cameraEntity.getPos().x - xOffset, this.cameraEntity.getPos().y - yOffset, this.cameraEntity.getPos().z - zOffset) < blockEntity.getSquaredRenderDistance()) {
+            BlockEntityRenderer<BlockEntity> blockEntityRenderer_1 = this.get(blockEntity);
+            if (blockEntityRenderer_1 != null) {
+                if (blockEntity.hasWorld() && blockEntity.getType().supports(blockEntity.getCachedState().getBlock())) {
+                    BlockPos blockPos_1 = blockEntity.getPos();
+                    renderEntity(blockEntity, () ->
+                            {
+                                bufferBuilder.method_22629(); //add layer to stack
+                                bufferBuilder.method_22626(xOffset,yOffset,zOffset); //add offset for the Blockentity
+                                blockEntityRenderer_1.method_22747(blockEntity, (double)blockPos_1.getX() - renderOffsetX, (double)blockPos_1.getY() - renderOffsetY, (double)blockPos_1.getZ() - renderOffsetZ, partialTicks, destroyStage, bufferBuilder, renderLayer, blockPos_1);
+                                //bufferBuilder.method_22626(-xOffset,-yOffset,-zOffset); //remove offset
+                                bufferBuilder.method_22630(); //remove layer from stack
+                            }
+                    );
+                }
+            }
         }
     }
 }
