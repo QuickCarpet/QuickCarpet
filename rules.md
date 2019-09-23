@@ -68,7 +68,7 @@ Options: `true`, `false`
 Categories: commands  
 
 ## commandMeasure
-carpet.rule.commandMeasure.description
+Enables /measure command for measuring distances
 
 Type: `boolean`  
 Default: `true`  

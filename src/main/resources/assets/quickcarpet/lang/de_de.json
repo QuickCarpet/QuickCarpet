@@ -36,7 +36,7 @@
   "carpet.rule.commandSpawn.description": "Aktiviert den /spawn Befehl um Spawns zu verfolgen",
   "carpet.rule.commandCameramode.description": "Aktiviert die /c und /s Befehle zum schnellen wechseln zwischen Kamera- und Überlebensmodus",
   "carpet.rule.commandCameramode.extra": "Die /c und /s Befehle sind für alle Spieler verfügbar",
-  "carpet.rule.commandCenter.description": "Aktiviert den /measure Befehl zum messen von Entfernungen",
+  "carpet.rule.commandMeasure.description": "Aktiviert den /measure Befehl zum messen von Entfernungen",
   "carpet.rule.fillUpdates.description": "carpetfill, -clone, -setblock und Konstruktionsblöcke verursachen Blockupdates",
   "carpet.rule.fillLimit.description": "Anpassbares carpetfill und -clone Limit",
   "carpet.rule.hopperCounters.description": "Trichter die in Wolle zeigen zählen Gegenstände",
