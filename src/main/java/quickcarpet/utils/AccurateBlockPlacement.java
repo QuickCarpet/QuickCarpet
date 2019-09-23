@@ -56,7 +56,7 @@ public class AccurateBlockPlacement {
             return state.with(StairsBlock.FACING, Direction.byId(code & 0xf)).with(StairsBlock.HALF, code > 0xf ? BlockHalf.TOP : BlockHalf.BOTTOM);
         }
         if (block instanceof HorizontalFacingBlock) {
-            return state.with(FacingBlock.FACING, getHorizontalFacing(ctx, code));
+            return state.with(HorizontalFacingBlock.FACING, getHorizontalFacing(ctx, code));
         }
         if (block instanceof FacingBlock) {
             return state.with(FacingBlock.FACING, Direction.byId(code));
