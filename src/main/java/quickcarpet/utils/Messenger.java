@@ -242,7 +242,7 @@ public class Messenger {
 
     private static Text getCoordsTextComponent(String style, float x, float y, float z, boolean isInt) {
         if (isInt) return runCommand(s(String.format("[ %d, %d, %d ]", (int) x, (int) y, (int) z), style), String.format("/tp %d %d %d", (int) x, (int) y, (int) z));
-        return runCommand(s(String.format("[ %.1f, %.1f, %d.1f ]", x, y, z), style), String.format("/tp %.3f %.3f %.3f", x, y, z));
+        return runCommand(s(String.format("[ %.1f, %.1f, %.1f ]", x, y, z), style), String.format("/tp %.3f %.3f %.3f", x, y, z));
     }
 
     public static void m(ServerCommandSource source, Text message) {

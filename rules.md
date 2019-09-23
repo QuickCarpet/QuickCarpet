@@ -59,6 +59,14 @@ Default: `true`
 Options: `true`, `false`  
 Categories: commands  
 
+## commandMeasure
+carpet.rule.commandMeasure.description
+
+Type: `boolean`  
+Default: `true`  
+Options: `true`, `false`  
+Categories: commands  
+
 ## commandPing
 Enables /ping for players to get their ping
 
