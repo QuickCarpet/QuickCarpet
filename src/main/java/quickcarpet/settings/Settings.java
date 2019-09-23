@@ -51,6 +51,9 @@ public class Settings {
     @Rule(category = COMMANDS)
     public static boolean commandCameramode = true;
 
+    @Rule(category = COMMANDS)
+    public static boolean commandMeasure = true;
+
     @CreativeDefault("false")
     @Rule(category = CREATIVE)
     public static boolean fillUpdates = true;

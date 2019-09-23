@@ -113,6 +113,7 @@ public final class QuickCarpet implements ModInitializer, ModuleHost {
         SpawnCommand.register(dispatcher);
         PingCommand.register(dispatcher);
         CameraModeCommand.register(dispatcher);
+        MeasureCommand.register(dispatcher);
         for (QuickCarpetModule m : modules) m.registerCommands(dispatcher);
     }
 
