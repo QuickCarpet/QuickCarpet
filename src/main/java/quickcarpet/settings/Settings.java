@@ -198,6 +198,9 @@ public class Settings {
     @Rule(category = {FEATURE, EXPERIMENTAL})
     public static BreakBlockDispenserBehavior.Option dispensersBreakBlocks = BreakBlockDispenserBehavior.Option.FALSE;
 
+    @Rule(category = FIX)
+    public static boolean blockEntityNullWorldFix = true;
+
     @Rule(category = {FEATURE, EXPERIMENTAL})
     public static RenewableBeeHiveBiomes renewableBeeHives = RenewableBeeHiveBiomes.NONE;
 
