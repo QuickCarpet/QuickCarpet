@@ -201,6 +201,9 @@ public class Settings {
     @Rule(category = {FEATURE, EXPERIMENTAL})
     public static BreakBlockDispenserBehavior.Option dispensersBreakBlocks = BreakBlockDispenserBehavior.Option.FALSE;
 
+    @Rule(category = FIX)
+    public static boolean blockEntityNullWorldFix = true;
+
     public static void main(String[] args) throws IOException {
         Bootstrap.initialize();
         Translations.init();
