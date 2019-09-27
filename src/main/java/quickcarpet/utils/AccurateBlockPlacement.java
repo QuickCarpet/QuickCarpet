@@ -5,6 +5,7 @@ import net.minecraft.block.enums.BlockHalf;
 import net.minecraft.block.enums.ComparatorMode;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemUsageContext;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
@@ -55,11 +56,11 @@ public class AccurateBlockPlacement {
         if (block instanceof StairsBlock) {
             return state.with(StairsBlock.FACING, Direction.byId(code & 0xf)).with(StairsBlock.HALF, code > 0xf ? BlockHalf.TOP : BlockHalf.BOTTOM);
         }
-        if (block instanceof HorizontalFacingBlock) {
-            return state.with(FacingBlock.FACING, getHorizontalFacing(ctx, code));
+        if (state.contains(Properties.HORIZONTAL_FACING)) {
+            return state.with(Properties.HORIZONTAL_FACING, getHorizontalFacing(ctx, code));
         }
-        if (block instanceof FacingBlock) {
-            return state.with(FacingBlock.FACING, Direction.byId(code));
+        if (state.contains(Properties.FACING)) {
+            return state.with(Properties.FACING, Direction.byId(code));
         }
         return state;
     }

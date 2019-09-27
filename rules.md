@@ -15,6 +15,14 @@ Default: `false`
 Options: `true`, `false`  
 Categories: feature, experimental  
 
+## blockEntityNullWorldFix
+Fixes some crashes with block entities
+
+Type: `boolean`  
+Default: `true`  
+Options: `true`, `false`  
+Categories: fix  
+
 ## commandCameramode
 Enables /c and /s commands to quickly switch between camera and survival modes
 
@@ -53,6 +61,14 @@ Categories: commands
 
 ## commandLog
 Enables /log command to monitor events in the game via chat and overlays
+
+Type: `boolean`  
+Default: `true`  
+Options: `true`, `false`  
+Categories: commands  
+
+## commandMeasure
+Enables /measure command for measuring distances
 
 Type: `boolean`  
 Default: `true`  

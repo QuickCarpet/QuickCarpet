@@ -51,6 +51,9 @@ public class Settings {
     @Rule(category = COMMANDS)
     public static boolean commandCameramode = true;
 
+    @Rule(category = COMMANDS)
+    public static boolean commandMeasure = true;
+
     @CreativeDefault("false")
     @Rule(category = CREATIVE)
     public static boolean fillUpdates = true;
@@ -197,6 +200,9 @@ public class Settings {
 
     @Rule(category = {FEATURE, EXPERIMENTAL})
     public static BreakBlockDispenserBehavior.Option dispensersBreakBlocks = BreakBlockDispenserBehavior.Option.FALSE;
+
+    @Rule(category = FIX)
+    public static boolean blockEntityNullWorldFix = true;
 
     @Rule(category = {FEATURE, EXPERIMENTAL})
     public static RenewableBeeHiveBiomes renewableBeeHives = RenewableBeeHiveBiomes.NONE;

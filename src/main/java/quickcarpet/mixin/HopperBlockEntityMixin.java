@@ -1,6 +1,7 @@
 package quickcarpet.mixin;
 
 import net.minecraft.block.HopperBlock;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.HopperBlockEntity;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
@@ -9,11 +10,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import org.apache.logging.log4j.LogManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import quickcarpet.annotation.BugFix;
 import quickcarpet.annotation.Feature;
 import quickcarpet.helper.HopperCounter;
 import quickcarpet.helper.WoolTool;
@@ -64,6 +67,16 @@ public abstract class HopperBlockEntityMixin extends LootableContainerBlockEntit
                 }
                 cir.setReturnValue(true);
             }
+        }
+    }
+
+    @BugFix("blockEntityNullWorldFix")
+    @Inject(method = "transfer(Lnet/minecraft/inventory/Inventory;Lnet/minecraft/inventory/Inventory;Lnet/minecraft/item/ItemStack;ILnet/minecraft/util/math/Direction;)Lnet/minecraft/item/ItemStack;", at = @At("HEAD"))
+    private static void fixNullWorld(Inventory from, Inventory to, ItemStack stack, int i, Direction direction, CallbackInfoReturnable<ItemStack> cir) {
+        if (Settings.blockEntityNullWorldFix && from instanceof BlockEntity && to instanceof BlockEntity && !((BlockEntity) to).hasWorld()) {
+            BlockEntity targetBlockEntity = (BlockEntity) to;
+            LogManager.getLogger().warn("BlockEntity has no world: " + BlockEntityType.getId(targetBlockEntity.getType()) + " @" + targetBlockEntity.getPos());
+            targetBlockEntity.setWorld(((BlockEntity) from).getWorld());
         }
     }
 

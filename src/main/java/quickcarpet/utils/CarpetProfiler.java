@@ -282,7 +282,7 @@ public class CarpetProfiler
         Identifier dim = DimensionType.getId(key.getLeft().dimensionType);
         Object e = key.getRight();
         Identifier ent = e instanceof EntityType ? EntityType.getId((EntityType) e) : BlockEntityType.getId((BlockEntityType) e);
-        return ts("carpet.profiler.entity.line", msptGoal == 0 ? WHITE : getHeatmapColor(value, msptGoal), ent, dim, String.format("%.3f", value));
+        return t("carpet.profiler.entity.line", ent, dim, formats("%.3f", msptGoal == 0 ? WHITE : getHeatmapColor(value, msptGoal), value));
     }
 
     private static void finalizeTickEntitiesReport(MinecraftServer server) {
