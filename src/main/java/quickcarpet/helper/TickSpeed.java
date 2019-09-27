@@ -15,6 +15,7 @@ import quickcarpet.logging.loghelpers.LogParameter;
 import quickcarpet.pubsub.PubSubInfoProvider;
 import quickcarpet.utils.Messenger;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 import static quickcarpet.utils.Messenger.*;
@@ -85,6 +86,24 @@ public class TickSpeed {
         tickWarpCallback = callback;
         tickWarpSender = source;
         return ts("command.tick.warp.start", GRAY + "" + ITALIC);
+    }
+
+    public long getWarpTimeTotal() {
+        return tickWarpScheduledTicks;
+    }
+
+    public long getWarpTimeRemaining() {
+        return timeBias;
+    }
+
+    @Nullable
+    public ServerCommandSource getTickWarpSender() {
+        return tickWarpSender;
+    }
+
+    @Nullable
+    public String getTickWarpCallback() {
+        return tickWarpCallback;
     }
 
     private void finishTickWarp() {

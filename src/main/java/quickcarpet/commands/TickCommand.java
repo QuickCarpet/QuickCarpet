@@ -32,7 +32,7 @@ public class TickCommand {
                     .suggests((c, b) -> suggestMatching(new String[]{"20"},b))
                     .executes(c -> setTps(c.getSource(), getFloat(c, "rate")))))
             .then(literal("warp")
-                .executes(c-> setWarp(c.getSource(), 0, null))
+                .executes(c-> displayStatus(c.getSource()))
                 .then(argument("ticks", integer(0,4000000))
                     .suggests((c, b) -> suggestMatching(new String[]{"3600","72000"},b))
                     .executes(c -> setWarp(c.getSource(), getInteger(c,"ticks"), null))
@@ -74,7 +74,25 @@ public class TickCommand {
     private static int setWarp(ServerCommandSource source, int advance, String tailCommand) {
         Text message = QuickCarpet.getInstance().tickSpeed.setTickWarp(source, advance, tailCommand);
         if (message != null) m(source, message);
-        return 1;
+        return advance;
+    }
+
+    private static int displayStatus(ServerCommandSource source) {
+        TickSpeed tickSpeed = QuickCarpet.getInstance().tickSpeed;
+        long warpTotal = tickSpeed.getWarpTimeTotal();
+        if (warpTotal == 0) {
+            m(source, ts("command.tick.warp.status.inactive", YELLOW));
+            return 0;
+        }
+        long warpRemaining = tickSpeed.getWarpTimeRemaining();
+        long warpDone = warpTotal - warpRemaining;
+        double percentDone = Math.round(warpDone * 1000.0 / warpTotal) / 10.0;
+        m(source, ts("command.tick.warp.status.active", DARK_GREEN, warpDone, warpTotal, percentDone));
+        ServerCommandSource sender = tickSpeed.getTickWarpSender();
+        if (sender != null) m(source, t("command.tick.warp.status.startedBy", sender.getDisplayName()));
+        String callback = tickSpeed.getTickWarpCallback();
+        if (callback != null) m(source, t("command.tick.warp.status.callback", callback));
+        return warpRemaining > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) warpRemaining;
     }
 
     private static int step(int ticks) {
