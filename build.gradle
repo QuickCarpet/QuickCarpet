@@ -68,7 +68,7 @@ static def gitBranch() {
 	proc.in.eachLine { line -> branch = line }
 	proc.err.eachLine { line -> println line }
 	proc.waitFor()
-	branch
+	branch.substring(branch.lastIndexOf('/') + 1)
 }
 
 static def gitStatus() {
