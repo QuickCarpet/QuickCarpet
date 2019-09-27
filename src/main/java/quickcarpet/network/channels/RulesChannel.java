@@ -80,7 +80,7 @@ public class RulesChannel implements PluginChannelHandler {
             ListTag extraList = new ListTag();
             if (rule.extraInfo != null) {
                 String[] extraInfo = Translations.translate(rule.extraInfo, player).asFormattedString().split("\n");
-                for (String extra : extraInfo) extraList.add(new StringTag(extra));
+                for (String extra : extraInfo) extraList.add(StringTag.method_23256(extra));
             }
             ruleTag.put("ExtraInfo", extraList);
             rulesList.add(ruleTag);

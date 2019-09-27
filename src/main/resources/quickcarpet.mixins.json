@@ -13,6 +13,7 @@
     "ChestBlockEntityMixin",
     "ChunkSectionMixin",
     "ClientConnectionMixin",
+    "CommandExceptionAccessor",
     "CommandManagerMixin",
     "CoralBlockMixin",
     "CoralFeatureMixin",
@@ -63,7 +64,6 @@
     "ZombieEntityMixin"
   ],
   "client": [
-    "client.BlockEntityRenderDispatcherMixin",
     "client.ClientPlayNetworkHandlerMixin",
     "client.ClientWorldMixin",
     "client.InGameHudMixin",

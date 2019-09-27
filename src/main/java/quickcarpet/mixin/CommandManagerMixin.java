@@ -46,12 +46,12 @@ public abstract class CommandManagerMixin {
     }
 
     @Feature("core")
-    @Redirect(method = "execute", at = @At(value = "INVOKE", target = "Lnet/minecraft/command/CommandException;getMessageText()Lnet/minecraft/text/Text;"))
+    @Redirect(method = "execute", at = @At(value = "INVOKE", target = "Lnet/minecraft/command/CommandException;getMessage()Lnet/minecraft/text/Text;"))
     private Text translateError(CommandException e, ServerCommandSource source, String command) {
         Entity entity = source.getEntity();
         if (entity instanceof ServerPlayerEntity) {
-            return Translations.translate(e.getMessageText(), (ServerPlayerEntity) entity);
+            return Translations.translate(((CommandExceptionAccessor) e).getMessageText(), (ServerPlayerEntity) entity);
         }
-        return e.getMessageText();
+        return ((CommandExceptionAccessor) e).getMessageText();
     }
 }
