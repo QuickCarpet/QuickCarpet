@@ -41,6 +41,7 @@ public class CarpetRegistry {
     public static final Tag<Block> PISTON_OVERRIDE_IMMOVABLE = BlockTagsAccessor.register("carpet:piston_immovable");
     public static final Tag<Block> PISTON_OVERRIDE_DESTROY = BlockTagsAccessor.register("carpet:piston_destroy");
     public static final Tag<Block> PISTON_OVERRIDE_WEAK_STICKY = BlockTagsAccessor.register("carpet:piston_weak_sticky");
+    public static Block HONEY_BLOCK = Blocks.YELLOW_STAINED_GLASS;
 
 
     private static <T extends BlockEntity> BlockEntityType<T> registerBlockEntity(String id, Supplier<T> supplier, Block... blocks) {

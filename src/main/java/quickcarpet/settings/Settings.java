@@ -111,6 +111,9 @@ public class Settings {
     @Rule(category = {FEATURE,EXPERIMENTAL})
     public static boolean movableBlockOverrides = false;
 
+    @Rule(category = {FEATURE,EXPERIMENTAL})
+    public static boolean stickyHoneyBlocks = false;
+
     @Rule(category = SURVIVAL)
     public static boolean stackableShulkerBoxes = false;
 
