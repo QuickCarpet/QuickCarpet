@@ -115,7 +115,7 @@ public abstract class ServerWorldMixin extends World {
     private void tickFreeze(BooleanSupplier shouldContinueTicking, CallbackInfo ci) {
         if (QuickCarpet.getInstance().tickSpeed.isPaused()) {
             for (ServerPlayerEntity p : this.players) p.tick();
-            this.method_14178().tick(shouldContinueTicking);
+            this.getChunkManager().tick(shouldContinueTicking);
             ci.cancel();
         }
     }
