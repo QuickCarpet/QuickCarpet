@@ -45,6 +45,14 @@ public class PistonBlockMixin extends FacingBlock {
         }
     }
 
+    @Inject(method = "isMovable", at = @At("HEAD"), cancellable = true)
+    private static void betterHoneyMakeOtherImmovable(BlockState state, World world, BlockPos pos, Direction moveDir, boolean boolean_1, Direction side, CallbackInfoReturnable<Boolean> cir) {
+        if (!quickcarpet.settings.Settings.betterHoneyBlock || side.getOpposite() != moveDir) return;
+        if (!PistonBehaviors.shouldStickyBlockStick(world, pos, moveDir)) { // checks from the next block backwards to prevent pulling
+            cir.setReturnValue(false);
+        }
+    }
+
     @Feature("additionalMovableBlocks")
     @Inject(method = "isMovable", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;hasBlockEntity()Z"),
             cancellable = true)

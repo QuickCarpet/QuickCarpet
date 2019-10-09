@@ -346,15 +346,12 @@ public abstract class PistonHandlerMixin {
 
     }
 
-
-    @Redirect(method = "method_11538", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/piston/PistonHandler;tryMove(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/Direction;)Z"))
-    private boolean betterHoneyBlock(PistonHandler pistonHandler, BlockPos otherBlockPos, Direction directionToOther) {
-        if (Settings.betterHoneyBlock) {
-            Block selfBlock = world.getBlockState(otherBlockPos.offset(directionToOther.getOpposite())).getBlock();
-            Block otherBlock = world.getBlockState(otherBlockPos).getBlock();
-            if (selfBlock != otherBlock && method_23367(selfBlock) && method_23367(otherBlock)) return true;
+    @Redirect(method = "method_11538", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/Direction;getAxis()Lnet/minecraft/util/math/Direction$Axis;", ordinal = 0))
+    private Direction.Axis betterHoneyBlock(Direction direction, BlockPos pos) {
+        if (Settings.betterHoneyBlock && !PistonBehaviors.shouldStickyBlockStick(world, pos, direction)) {
+            return this.direction.getAxis(); // ignore
         }
-        return tryMove(otherBlockPos, directionToOther);
+        return direction.getAxis(); // do the sticky thing
     }
 
 }
