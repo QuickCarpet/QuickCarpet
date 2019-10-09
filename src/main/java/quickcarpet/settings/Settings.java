@@ -204,8 +204,8 @@ public class Settings {
     @Rule(category = FIX)
     public static boolean blockEntityNullWorldFix = true;
 
-    @Rule(category = {FEATURE, EXPERIMENTAL})
-    public static RenewableBeeHiveBiomes renewableBeeHives = RenewableBeeHiveBiomes.NONE;
+    // @Rule(category = {FEATURE, EXPERIMENTAL})
+    // public static RenewableBeeHiveBiomes renewableBeeHives = RenewableBeeHiveBiomes.NONE;
 
     public enum RenewableBeeHiveBiomes {
         NONE, FLOWER, FLOWER_AND_PLAINS, ALL

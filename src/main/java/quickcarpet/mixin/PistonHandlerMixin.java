@@ -99,13 +99,11 @@ public abstract class PistonHandlerMixin {
      * @author 2No2Name
      */
     @Feature("movableBlockEntities")
-    @Redirect(method = "tryMove",
-            at = @At(value = "FIELD", target = "Lnet/minecraft/block/Blocks;SLIME_BLOCK:Lnet/minecraft/block/Block;"))
-    private Block redirectSlimeBlock() {
-        if (Settings.movableBlockEntities && isStickyOnSide(blockState_1, this.direction.getOpposite()))
-            return blockState_1.getBlock(); //this makes the comparison in the while condition "while(blockState_1.getBlock() == redirectSlimeBlock())" evaluate to true, so the block is treated as sticky
-        else
-            return Blocks.SLIME_BLOCK; //vanilla behavior
+    @Inject(method = "method_23367", at = @At("HEAD"), cancellable = true)
+    private void modifiedIsSticky(Block block, CallbackInfoReturnable<Boolean> cir) {
+        if (Settings.movableBlockEntities && isStickyOnSide(blockState_1, this.direction.getOpposite())) {
+            cir.setReturnValue(true);
+        }
     }
 
 

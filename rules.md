@@ -292,14 +292,6 @@ Options: `9`, `15`, `30`
 Categories: creative  
 Validator: `> 0`  
 
-## renewableBeeHives
-Bee hives can generate on trees planted in these biomes
-
-Type: `RenewableBeeHiveBiomes`  
-Default: `none`  
-Options: `none`, `flower`, `flower_and_plains`, `all`  
-Categories: feature, experimental  
-
 ## renewableCoral
 Coral structures will grow with bonemeal from coral plants
 

@@ -22,7 +22,7 @@ public class ObsidianBlock extends Block {
     }
 
     @Override
-    public void onScheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
+    public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         for (Direction dir : Direction.values()) {
             FluidState neighbor = world.getFluidState(pos.offset(dir));
             if (neighbor.getFluid() != Fluids.LAVA || !neighbor.isStill()) return;

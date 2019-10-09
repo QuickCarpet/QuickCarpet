@@ -60,8 +60,9 @@ public class ClientPubSubListener implements ClientPluginChannelHandler {
             switch (valueType) {
                 case TYPE_NBT: {
                     CompoundTag compound = buf.readCompoundTag();
-                    if (compound.containsKey("")) {
-                        values.put(name, compound.getTag(""));
+                    if (compound == null) break;
+                    if (compound.contains("")) {
+                        values.put(name, compound.get(""));
                     } else {
                         values.put(name, compound);
                     }

@@ -13,7 +13,6 @@
     "ChestBlockEntityMixin",
     "ChunkSectionMixin",
     "ClientConnectionMixin",
-    "CommandExceptionAccessor",
     "CommandManagerMixin",
     "CoralBlockMixin",
     "CoralFeatureMixin",

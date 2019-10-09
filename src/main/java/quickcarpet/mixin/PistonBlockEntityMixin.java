@@ -108,7 +108,7 @@ public abstract class PistonBlockEntityMixin extends BlockEntity implements IPis
 
     @Inject(method = "fromTag", at = @At(value = "TAIL"))
     private void onFromTag(CompoundTag compoundTag_1, CallbackInfo ci) {
-        if (Settings.movableBlockEntities && compoundTag_1.containsKey("carriedTileEntity", 10)) {
+        if (Settings.movableBlockEntities && compoundTag_1.contains("carriedTileEntity", 10)) {
             if (this.pushedBlock.getBlock() instanceof BlockEntityProvider)
                 this.carriedBlockEntity = ((BlockEntityProvider) (this.pushedBlock.getBlock())).createBlockEntity(this.world);
             if (carriedBlockEntity != null) //Can actually be null, as BlockPistonMoving.createNewTileEntity(...) returns null
