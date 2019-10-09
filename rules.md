@@ -15,6 +15,14 @@ Default: `false`
 Options: `true`, `false`  
 Categories: feature, experimental  
 
+## betterHoneyBlock
+Makes honey blocks and slime blocks not stick to each other
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: feature, experimental  
+
 ## blockEntityNullWorldFix
 Fixes some crashes with block entities
 

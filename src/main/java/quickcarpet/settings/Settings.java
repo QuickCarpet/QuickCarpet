@@ -207,6 +207,9 @@ public class Settings {
     // @Rule(category = {FEATURE, EXPERIMENTAL})
     // public static RenewableBeeHiveBiomes renewableBeeHives = RenewableBeeHiveBiomes.NONE;
 
+    @Rule(category = {FEATURE, EXPERIMENTAL})
+    public static boolean betterHoneyBlock = false;
+
     public enum RenewableBeeHiveBiomes {
         NONE, FLOWER, FLOWER_AND_PLAINS, ALL
     }

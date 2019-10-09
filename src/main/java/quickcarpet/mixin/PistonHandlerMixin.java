@@ -282,6 +282,8 @@ public abstract class PistonHandlerMixin {
     @Shadow @Final
     private boolean field_12247; //IsExtending
 
+    @Shadow protected abstract boolean method_23367(Block block_1);
+
     @Inject(method = "calculatePush", at = @At(value = "RETURN", ordinal = 4, shift = At.Shift.BEFORE),locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
     private void decideOnWeaklyStickingBlocks(CallbackInfoReturnable<Boolean> cir){
 
@@ -344,5 +346,15 @@ public abstract class PistonHandlerMixin {
 
     }
 
+
+    @Redirect(method = "method_11538", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/piston/PistonHandler;tryMove(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/Direction;)Z"))
+    private boolean betterHoneyBlock(PistonHandler pistonHandler, BlockPos otherBlockPos, Direction directionToOther) {
+        if (Settings.betterHoneyBlock) {
+            Block selfBlock = world.getBlockState(otherBlockPos.offset(directionToOther.getOpposite())).getBlock();
+            Block otherBlock = world.getBlockState(otherBlockPos).getBlock();
+            if (selfBlock != otherBlock && method_23367(selfBlock) && method_23367(otherBlock)) return true;
+        }
+        return tryMove(otherBlockPos, directionToOther);
+    }
 
 }
