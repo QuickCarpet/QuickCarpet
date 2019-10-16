@@ -28,7 +28,7 @@ public abstract class LivingEntityMixin extends Entity {
     private void convertSandToSoulsand(DamageSource source, CallbackInfo ci) {
         if (!Settings.mobInFireConvertsSandToSoulsand) return;
 
-        BlockPos pos = new BlockPos(this.method_23317(), this.method_23318(), this.method_23321()); // getX/Y/Z
+        BlockPos pos = new BlockPos(this.getX(), this.getY(), this.getZ());
         BlockState statePos = this.world.getBlockState(pos);
 
         BlockPos below = pos.method_10074(); // method_10074 = down

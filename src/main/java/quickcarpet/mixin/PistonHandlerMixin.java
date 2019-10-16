@@ -99,14 +99,13 @@ public abstract class PistonHandlerMixin {
      * @author 2No2Name
      */
     @Feature("movableBlockEntities")
-    @Inject(method = "method_23367", at = @At("HEAD"), cancellable = true)
-    private void modifiedIsSticky(Block block, CallbackInfoReturnable<Boolean> cir) {
+    @Redirect(method = "tryMove", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/piston/PistonHandler;method_23367(Lnet/minecraft/block/Block;)Z"))
+    private boolean modifiedIsSticky(Block block) {
         if (Settings.movableBlockEntities && isStickyOnSide(blockState_1, this.direction.getOpposite())) {
-            cir.setReturnValue(true);
+           return true;
         }
+        return method_23367(block);
     }
-
-
 
     /**
      * @param blockState blockState of one block
@@ -282,7 +281,9 @@ public abstract class PistonHandlerMixin {
     @Shadow @Final
     private boolean field_12247; //IsExtending
 
-    @Shadow protected abstract boolean method_23367(Block block_1);
+    @Shadow private static boolean method_23367(Block block_1) {
+        throw new AbstractMethodError();
+    }
 
     @Inject(method = "calculatePush", at = @At(value = "RETURN", ordinal = 4, shift = At.Shift.BEFORE),locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
     private void decideOnWeaklyStickingBlocks(CallbackInfoReturnable<Boolean> cir){
@@ -345,13 +346,4 @@ public abstract class PistonHandlerMixin {
             cir.setReturnValue(false);
 
     }
-
-    @Redirect(method = "method_11538", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/Direction;getAxis()Lnet/minecraft/util/math/Direction$Axis;", ordinal = 0))
-    private Direction.Axis betterHoneyBlock(Direction direction, BlockPos pos) {
-        if (Settings.betterHoneyBlock && !PistonBehaviors.shouldStickyBlockStick(world, pos, direction)) {
-            return this.direction.getAxis(); // ignore
-        }
-        return direction.getAxis(); // do the sticky thing
-    }
-
 }

@@ -15,14 +15,6 @@ Default: `false`
 Options: `true`, `false`  
 Categories: feature, experimental  
 
-## betterHoneyBlock
-Makes honey blocks and slime blocks not stick to each other
-
-Type: `boolean`  
-Default: `false`  
-Options: `true`, `false`  
-Categories: feature, experimental  
-
 ## commandCameramode
 Enables /c and /s commands to quickly switch between camera and survival modes
 
