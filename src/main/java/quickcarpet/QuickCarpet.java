@@ -8,6 +8,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import quickcarpet.commands.*;
@@ -21,16 +22,15 @@ import quickcarpet.network.channels.StructureChannel;
 import quickcarpet.pubsub.PubSubManager;
 import quickcarpet.pubsub.PubSubMessenger;
 import quickcarpet.settings.Settings;
-import quickcarpet.utils.CarpetProfiler;
-import quickcarpet.utils.CarpetRegistry;
-import quickcarpet.utils.HUDController;
-import quickcarpet.utils.Translations;
+import quickcarpet.utils.*;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-public final class QuickCarpet implements ModInitializer, ModuleHost {
+public final class QuickCarpet implements ModInitializer, ModuleHost, ServerEventListener {
     private static final Logger LOG = LogManager.getLogger();
     public static final PubSubManager PUBSUB = new PubSubManager();
 
@@ -58,7 +58,8 @@ public final class QuickCarpet implements ModInitializer, ModuleHost {
         return instance;
     }
 
-    public void init(MinecraftServer server) {
+    @Override
+    public void onServerInit(MinecraftServer server) {
         minecraft_server = server;
         tickSpeed = new TickSpeed(false);
         loggers = new LoggerManager();
@@ -69,12 +70,14 @@ public final class QuickCarpet implements ModInitializer, ModuleHost {
         for (QuickCarpetModule m : modules) m.onServerInit(server);
     }
 
+    @Override
     public void onServerLoaded(MinecraftServer server) {
         Settings.MANAGER.init(server);
         for (QuickCarpetModule m : modules) m.onServerLoaded(server);
-        registerCarpetCommands();
+        registerCommands(dispatcher);
     }
 
+    @Override
     public void tick(MinecraftServer server) {
         tickSpeed.tick(server);
         HUDController.update(server);
@@ -82,7 +85,8 @@ public final class QuickCarpet implements ModInitializer, ModuleHost {
         StructureChannel.instance.tick();
         for (QuickCarpetModule m : modules) m.tick(server);
     }
-    
+
+    @Override
     public void onGameStarted(EnvType env) {
         CarpetRegistry.init();
         CarpetProfiler.init();
@@ -101,7 +105,8 @@ public final class QuickCarpet implements ModInitializer, ModuleHost {
         }
     }
 
-    public void registerCarpetCommands() {
+    @Override
+    public void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher) {
         CarpetCommand.register(dispatcher);
         TickCommand.register(dispatcher);
         CarpetFillCommand.register(dispatcher);
@@ -114,6 +119,7 @@ public final class QuickCarpet implements ModInitializer, ModuleHost {
         PingCommand.register(dispatcher);
         CameraModeCommand.register(dispatcher);
         MeasureCommand.register(dispatcher);
+        WaypointCommand.register(dispatcher);
         for (QuickCarpetModule m : modules) m.registerCommands(dispatcher);
     }
 
@@ -133,6 +139,40 @@ public final class QuickCarpet implements ModInitializer, ModuleHost {
     }
 
     @Override
+    public void onPlayerConnect(ServerPlayerEntity player) {
+        loggers.onPlayerConnect(player);
+        pluginChannels.onPlayerConnect(player);
+        for (QuickCarpetModule m : modules) m.onPlayerConnect(player);
+    }
+
+    @Override
+    public void onPlayerDisconnect(ServerPlayerEntity player) {
+        loggers.onPlayerDisconnect(player);
+        pluginChannels.onPlayerDisconnect(player);
+        for (QuickCarpetModule m : modules) m.onPlayerDisconnect(player);
+    }
+
+    @Override
+    public void onWorldLoaded(ServerWorld world) {
+        try {
+            Map<String, Waypoint> waypoints = ((WaypointContainer) world).getWaypoints();
+            waypoints.clear();
+            waypoints.putAll(Waypoint.loadWaypoints((WaypointContainer) world));
+        } catch (Exception e) {
+            LOG.error("Error loading waypoints for " + world.getLevelProperties().getLevelName() + "/" + world.getDimension().getType());
+        }
+    }
+
+    @Override
+    public void onWorldSaved(ServerWorld world) {
+        try {
+            Waypoint.saveWaypoints((WaypointContainer) world);
+        } catch (Exception e) {
+            LOG.error("Error saving waypoints for " + world.getLevelProperties().getLevelName() + "/" + world.getDimension().getType());
+        }
+    }
+
+    @Override
     public void onInitialize() {
 
     }
@@ -141,15 +181,7 @@ public final class QuickCarpet implements ModInitializer, ModuleHost {
         return Build.VERSION.contains("dev") || FabricLoader.getInstance().isDevelopmentEnvironment();
     }
 
-    public void onPlayerConnect(ServerPlayerEntity player) {
-        loggers.onPlayerConnect(player);
-        pluginChannels.onPlayerConnect(player);
-        for (QuickCarpetModule m : modules) m.onPlayerConnect(player);
-    }
-
-    public void onPlayerDisconnect(ServerPlayerEntity player) {
-        loggers.onPlayerDisconnect(player);
-        pluginChannels.onPlayerDisconnect(player);
-        for (QuickCarpetModule m : modules) m.onPlayerDisconnect(player);
+    public static File getConfigFile(String name) {
+        return minecraft_server.getLevelStorage().resolveFile(minecraft_server.getLevelName(), name);
     }
 }

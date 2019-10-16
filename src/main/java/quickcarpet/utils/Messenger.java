@@ -199,6 +199,10 @@ public class Messenger {
         return tp(desc, pos.x, pos.y, pos.z);
     }
 
+    public static Text tp(String desc, Waypoint waypoint) {
+        return tp(desc, waypoint.position);  //TODO: tp to waypoint
+    }
+
     public static Text tp(String desc, BlockPos pos) {
         return tp(desc, pos.getX(), pos.getY(), pos.getZ());
     }
@@ -286,6 +290,10 @@ public class Messenger {
             if (field instanceof Text) {
                 message.append((Text) field);
                 previousText = (Text) field;
+            } else if (field instanceof Formattable) {
+                Text t = ((Formattable) field).format();
+                message.append(t);
+                previousText = t;
             } else if (field instanceof String) {
                 Text comp = formatComponent((String) field, previousText);
                 if (comp != previousText) message.append(comp);
@@ -310,6 +318,7 @@ public class Messenger {
     }
 
     public static TranslatableText t(@Nonnull String key, Object... args) {
+        for (int i = 0; i < args.length; i++) if (args[i] instanceof Formattable) args[i] = ((Formattable) args[i]).format();
         return new TranslatableText(key, args);
     }
 
@@ -370,5 +379,9 @@ public class Messenger {
         for (PlayerEntity player : server.getPlayerManager().getPlayerList()) {
             send(player, message);
         }
+    }
+
+    public interface Formattable {
+        Text format();
     }
 }

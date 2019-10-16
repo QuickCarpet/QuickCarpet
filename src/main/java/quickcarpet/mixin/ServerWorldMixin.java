@@ -3,7 +3,6 @@ package quickcarpet.mixin;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerTickScheduler;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.profiler.Profiler;
@@ -24,23 +23,36 @@ import quickcarpet.QuickCarpet;
 import quickcarpet.annotation.Feature;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.CarpetProfiler;
+import quickcarpet.utils.Waypoint;
+import quickcarpet.utils.WaypointContainer;
 
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 @Mixin(ServerWorld.class)
-public abstract class ServerWorldMixin extends World {
+public abstract class ServerWorldMixin extends World implements WaypointContainer {
     @Shadow @Final private List<ServerPlayerEntity> players;
-
-    @Shadow public abstract ServerChunkManager method_14178();
-
     @Shadow private boolean allPlayersSleeping;
+
+    private Map<String, Waypoint> waypoints = new TreeMap<>();
 
     protected ServerWorldMixin(LevelProperties levelProperties_1, DimensionType dimensionType_1, BiFunction<World, Dimension, ChunkManager> biFunction_1, Profiler profiler_1, boolean boolean_1) {
         super(levelProperties_1, dimensionType_1, biFunction_1, profiler_1, boolean_1);
+    }
+
+    @Override
+    public Map<String, Waypoint> getWaypoints() {
+        return waypoints;
+    }
+
+    @Override
+    public DimensionType getDimensionType() {
+        return dimension.getType();
     }
 
     @Feature("profiler")

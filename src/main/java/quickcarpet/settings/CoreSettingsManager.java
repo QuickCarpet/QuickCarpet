@@ -62,7 +62,7 @@ public class CoreSettingsManager extends SettingsManager {
 
     private File getFile() {
         if (!initialized) throw new IllegalStateException("Not initialized");
-        return server.getLevelStorage().resolveFile(server.getLevelName(), "carpet.conf");
+        return QuickCarpet.getConfigFile("carpet.conf");
     }
 
     @Override

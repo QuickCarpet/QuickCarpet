@@ -54,6 +54,7 @@
     "SpawnRestrictionMixin",
     "StructureMixin",
     "TagContainerMixin",
+    "TeleportCommandMixin",
     "ThreadedAnvilChunkStorageMixin",
     "TntEntityMixin",
     "WorldChunkMixin",

@@ -54,6 +54,9 @@ public class Settings {
     @Rule(category = COMMANDS)
     public static boolean commandMeasure = true;
 
+    @Rule(category = COMMANDS)
+    public static boolean commandWaypoint = true;
+
     @CreativeDefault("false")
     @Rule(category = CREATIVE)
     public static boolean fillUpdates = true;

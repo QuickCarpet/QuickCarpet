@@ -107,6 +107,14 @@ Default: `true`
 Options: `true`, `false`  
 Categories: commands  
 
+## commandWaypoint
+carpet.rule.commandWaypoint.description
+
+Type: `boolean`  
+Default: `true`  
+Options: `true`, `false`  
+Categories: commands  
+
 ## conversionDupingFix
 Fixes duping via zombie conversion
 
