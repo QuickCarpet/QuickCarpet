@@ -8,6 +8,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.container.NameableContainerProvider;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.hit.BlockHitResult;
@@ -44,7 +45,7 @@ public class CraftingTableBlockMixin extends Block implements BlockEntityProvide
     }
 
     @Inject(method = "onUse", at = @At("HEAD"), cancellable = true)
-    private void onActivate(BlockState blockState, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<Boolean> cir) {
+    private void onActivate(BlockState blockState, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir) {
         if (!hasBlockEntity()) return;
         if (!world.isClient) {
             BlockEntity blockEntity = world.getBlockEntity(pos);
@@ -52,7 +53,7 @@ public class CraftingTableBlockMixin extends Block implements BlockEntityProvide
                 player.openContainer((NameableContainerProvider) blockEntity);
             }
         }
-        cir.setReturnValue(true);
+        cir.setReturnValue(ActionResult.SUCCESS);
         cir.cancel();
     }
 
