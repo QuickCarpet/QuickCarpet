@@ -13,6 +13,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.command.TeleportCommand;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Lazy;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.village.TradeOffers;
 import net.minecraft.world.World;
@@ -43,14 +44,14 @@ public class Reflection {
         PRIMITIVE_TYPE_DESCRIPTORS.put("boolean", "Z");
     }
 
-    private static MappingResolver MAPPINGS = FabricLoader.getInstance().getMappingResolver();
+    private static Lazy<MappingResolver> MAPPINGS = new Lazy<>(() -> FabricLoader.getInstance().getMappingResolver());
 
     private static String unmapToIntermediary(Class<?> cls) {
-        return MAPPINGS.unmapClassName("intermediary", cls.getName());
+        return MAPPINGS.get().unmapClassName("intermediary", cls.getName());
     }
 
     private static Class<?> classForName(String intermediary) throws ClassNotFoundException {
-        return Class.forName(MAPPINGS.mapClassName("intermediary", intermediary));
+        return Class.forName(MAPPINGS.get().mapClassName("intermediary", intermediary));
     }
 
     private static MethodHandle getMappedMethod(Class<?> owner, String intermediary, Class<?> retType, Class<?> ...args) throws IllegalAccessException, NoSuchMethodException {
@@ -68,7 +69,7 @@ public class Reflection {
         } else {
             descriptor.append("L").append(unmapToIntermediary(retType).replace('.', '/')).append(";");
         }
-        String obf = MAPPINGS.mapMethodName("intermediary", unmapToIntermediary(owner), intermediary, descriptor.toString());
+        String obf = MAPPINGS.get().mapMethodName("intermediary", unmapToIntermediary(owner), intermediary, descriptor.toString());
         System.out.printf("%s%s -> %s\n", intermediary, descriptor, obf);
         try {
             Method m = MAPPINGS.getClass().getDeclaredMethod("getNamespaceData", String.class);
