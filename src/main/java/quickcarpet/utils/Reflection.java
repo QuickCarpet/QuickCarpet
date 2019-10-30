@@ -2,7 +2,6 @@ package quickcarpet.utils;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.MappingResolver;
-import net.fabricmc.mappings.EntryTriple;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -21,11 +20,9 @@ import net.minecraft.world.World;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -70,21 +67,6 @@ public class Reflection {
             descriptor.append("L").append(unmapToIntermediary(retType).replace('.', '/')).append(";");
         }
         String obf = MAPPINGS.get().mapMethodName("intermediary", unmapToIntermediary(owner), intermediary, descriptor.toString());
-        System.out.printf("%s%s -> %s\n", intermediary, descriptor, obf);
-        try {
-            Method m = MAPPINGS.getClass().getDeclaredMethod("getNamespaceData", String.class);
-            m.setAccessible(true);
-            Object nsData = m.invoke(MAPPINGS, "intermediary");
-            Field f = nsData.getClass().getDeclaredField("methodNames");
-            f.setAccessible(true);
-            Map<EntryTriple, String> methodNames = (Map<EntryTriple, String>) f.get(nsData);
-            for (Map.Entry<EntryTriple, String> method : methodNames.entrySet()) {
-                if (!method.getKey().getName().equals(obf)) continue;
-                System.out.println(method);
-            }
-        } catch (ReflectiveOperationException e) {
-            e.printStackTrace();
-        }
         Method m = owner.getDeclaredMethod(obf, args);
         m.setAccessible(true);
         return LOOKUP.unreflect(m);
@@ -168,7 +150,7 @@ public class Reflection {
 
         static {
             scheduleBlockRender = getScheduleBlockRender();
-            newScheduleBlockRender = scheduleBlockRender.type().parameterCount() == 3;
+            newScheduleBlockRender = scheduleBlockRender.type().parameterCount() == 4;
         }
 
         private static MethodHandle getScheduleBlockRender() {
