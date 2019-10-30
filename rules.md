@@ -108,7 +108,7 @@ Options: `true`, `false`
 Categories: commands  
 
 ## commandWaypoint
-carpet.rule.commandWaypoint.description
+Enables /waypoint command for managing waypoints and /tp [entities] waypoint
 
 Type: `boolean`  
 Default: `true`  

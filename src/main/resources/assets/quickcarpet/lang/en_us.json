@@ -38,6 +38,7 @@
   "carpet.rule.commandCameramode.description": "Enables /c and /s commands to quickly switch between camera and survival modes",
   "carpet.rule.commandCameramode.extra": "/c and /s commands are available to all players regardless of their permission levels",
   "carpet.rule.commandMeasure.description": "Enables /measure command for measuring distances",
+  "carpet.rule.commandWaypoint.description": "Enables /waypoint command for managing waypoints and /tp [entities] waypoint",
   "carpet.rule.fillUpdates.description": "fill/clone/setblock and structure blocks cause block updates",
   "carpet.rule.fillLimit.description": "Customizable fill/clone volume limit",
   "carpet.rule.hopperCounters.description": "Hoppers pointing to wool will count items passing through them",
