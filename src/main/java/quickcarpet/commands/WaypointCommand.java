@@ -43,7 +43,8 @@ public class WaypointCommand {
     private static final SimpleCommandExceptionType INVALID_PAGE = new SimpleCommandExceptionType(t("command.waypoint.list.invalidPage"));
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        LiteralArgumentBuilder<ServerCommandSource> waypoint = literal("waypoint").requires(s -> Settings.commandWaypoint);
+        LiteralArgumentBuilder<ServerCommandSource> waypoint = literal("waypoint")
+            .requires(s -> s.hasPermissionLevel(Settings.commandWaypoint));
         waypoint.then(literal("add")
             .then(argument("name", string()).executes(WaypointCommand::add)
             .then(argument("position", vec3()).executes(WaypointCommand::add)

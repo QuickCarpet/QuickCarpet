@@ -12,7 +12,7 @@ import static quickcarpet.utils.Messenger.*;
 public class PingCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         LiteralArgumentBuilder<ServerCommandSource> ping = literal("ping")
-            .requires((player) -> Settings.commandPing)
+            .requires(s -> s.hasPermissionLevel(Settings.commandPing))
             .executes(c -> {
                 ServerPlayerEntity player = c.getSource().getPlayer();
                 int pingMs = player.pingMilliseconds;

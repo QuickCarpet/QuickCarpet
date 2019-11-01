@@ -30,11 +30,11 @@ import static quickcarpet.utils.Messenger.*;
 public class LogCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         LiteralArgumentBuilder<ServerCommandSource> log = literal("log")
-            .requires((player) -> Settings.commandLog)
+            .requires(s -> s.hasPermissionLevel(Settings.commandLog))
             .executes((context) -> listLogs(context.getSource()))
             .then(literal("clear")
                 .executes(c -> unsubFromAll(c.getSource(), c.getSource().getName()))
-                .then(argument("player", StringArgumentType.word())
+                .then(argument("player", StringArgumentType.word()).requires(s -> s.hasPermissionLevel(2))
                     .suggests((c, b)-> CommandSource.suggestMatching(c.getSource().getPlayerNames(), b))
                     .executes(c -> unsubFromAll(c.getSource(), getString(c, "player")))));
 
@@ -50,7 +50,7 @@ public class LogCommand {
             }
         }
 
-        LiteralArgumentBuilder<ServerCommandSource> playerArg = literal("player")
+        LiteralArgumentBuilder<ServerCommandSource> playerArg = literal("player").requires(s -> s.hasPermissionLevel(2))
                 .then(argument("player", StringArgumentType.word())
                 .suggests( (c, b) -> CommandSource.suggestMatching(c.getSource().getPlayerNames(),b))
                 .executes(LogCommand::subscribe)

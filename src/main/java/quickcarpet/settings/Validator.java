@@ -64,6 +64,19 @@ public interface Validator<T> {
         }
     }
 
+    class OpLevel implements Validator<Integer> {
+        @Override
+        public Optional<TranslatableText> validate(Integer value) {
+            if (value >= 0 && value <= 4) return Optional.empty();
+            return Optional.of(t("carpet.validator.range", s("0", CYAN), s("4"), CYAN));
+        }
+
+        @Override
+        public String getName() {
+            return "OP Level (0-4)";
+        }
+    }
+
     abstract class Range<T extends Comparable<T>> implements Validator<T> {
         public final T min;
         public final T max;

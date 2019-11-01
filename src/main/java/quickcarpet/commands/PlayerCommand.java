@@ -49,7 +49,7 @@ public class PlayerCommand {
     // TODO: allow any order like execute
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         LiteralArgumentBuilder<ServerCommandSource> literalargumentbuilder = literal("player")
-            .requires((player) -> Settings.commandPlayer)
+            .requires(s -> s.hasPermissionLevel(Settings.commandPlayer))
             .then(argument("player", word())
                 .suggests( (c, b) -> CommandSource.suggestMatching(getPlayers(c.getSource()), b))
                 .then(literal("stop").executes(PlayerCommand::stop))

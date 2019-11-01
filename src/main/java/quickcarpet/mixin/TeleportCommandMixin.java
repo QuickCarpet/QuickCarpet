@@ -41,12 +41,12 @@ public abstract class TeleportCommandMixin {
             from = @At(value = "CONSTANT", args = "stringValue=destination", ordinal = 1),
             to = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/CommandDispatcher;register(Lcom/mojang/brigadier/builder/LiteralArgumentBuilder;)Lcom/mojang/brigadier/tree/LiteralCommandNode;", ordinal = 0)))
     private static <T extends ArgumentBuilder<ServerCommandSource, ?>> T waypointTeleport(LiteralArgumentBuilder<ServerCommandSource> node, ArgumentBuilder<ServerCommandSource, ?> argument) {
-        node.then(literal("waypoint").requires(s -> Settings.commandWaypoint)
+        node.then(literal("waypoint").requires(s -> s.hasPermissionLevel(Settings.commandWaypoint))
             .then(argument("waypoint", greedyString())
             .suggests(WaypointCommand::suggest)
             .executes(TeleportCommandMixin::teleportSourceToWaypoint)));
         node.then(argument("targets", entities())
-            .then(literal("waypoint").requires(s -> Settings.commandWaypoint)
+            .then(literal("waypoint").requires(s -> s.hasPermissionLevel(Settings.commandWaypoint))
             .then(argument("waypoint", greedyString())
             .suggests(WaypointCommand::suggest)
             .executes(TeleportCommandMixin::teleportEntitiesToWaypoint))));

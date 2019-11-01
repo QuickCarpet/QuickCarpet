@@ -24,96 +24,104 @@ Options: `true`, `false`
 Categories: fix  
 
 ## commandCameramode
-Enables /c and /s commands to quickly switch between camera and survival modes
+Enables /c and /s commands to quickly switch between camera and survival modes for players with this permission level
 
-/c and /s commands are available to all players regardless of their permission levels  
-Type: `boolean`  
-Default: `true`  
-Options: `true`, `false`  
+Type: `int`  
+Default: `2`  
 Categories: commands  
+Validator: `OP Level (0-4)`  
 
 ## commandCarpetClone
-Enables /carpetclone command
+Enables /carpetclone command for players with this permission level
 
 This is a replica of the /clone command for fillUpdates and fillLimits  
-Type: `boolean`  
-Default: `true`  
-Options: `true`, `false`  
+Type: `int`  
+Default: `2`  
 Categories: commands  
+Validator: `OP Level (0-4)`  
 
 ## commandCarpetFill
-Enables /carpetfill command
+Enables /carpetfill command for players with this permission level
 
 This is a replica of the /fill command for fillUpdates and fillLimits  
-Type: `boolean`  
-Default: `true`  
-Options: `true`, `false`  
+Type: `int`  
+Default: `2`  
 Categories: commands  
+Validator: `OP Level (0-4)`  
 
 ## commandCarpetSetBlock
-Enables /carpetsetblock command
+Enables /carpetsetblock command for players with this permission level
 
 This is a replica of the /setblock command for fillUpdates and fillLimits  
-Type: `boolean`  
-Default: `true`  
-Options: `true`, `false`  
+Type: `int`  
+Default: `2`  
 Categories: commands  
+Validator: `OP Level (0-4)`  
 
 ## commandLog
-Enables /log command to monitor events in the game via chat and overlays
+Enables /log command to monitor events in the game via chat and overlays for players with this permission level
 
-Type: `boolean`  
-Default: `true`  
-Options: `true`, `false`  
+Type: `int`  
+Default: `0`  
 Categories: commands  
+Validator: `OP Level (0-4)`  
 
 ## commandMeasure
-Enables /measure command for measuring distances
+Enables /measure command for measuring distances for players with this permission level
 
-Type: `boolean`  
-Default: `true`  
-Options: `true`, `false`  
+Type: `int`  
+Default: `0`  
 Categories: commands  
+Validator: `OP Level (0-4)`  
 
 ## commandPing
-Enables /ping for players to get their ping
+Enables /ping for players to get their ping for players with this permission level
 
-Type: `boolean`  
-Default: `true`  
-Options: `true`, `false`  
+Type: `int`  
+Default: `0`  
 Categories: commands  
+Validator: `OP Level (0-4)`  
 
 ## commandPlayer
-Enables /player command to control/spawn players
+Enables /player command to control/spawn players for players with this permission level
 
-Type: `boolean`  
-Default: `true`  
-Options: `true`, `false`  
+Type: `int`  
+Default: `0`  
 Categories: commands  
+Validator: `OP Level (0-4)`  
 
 ## commandSpawn
-Enables /spawn command for spawn tracking
+Enables /spawn command for spawn tracking for players with this permission level
 
-Type: `boolean`  
-Default: `true`  
-Options: `true`, `false`  
+Type: `int`  
+Default: `0`  
 Categories: commands  
+Validator: `OP Level (0-4)`  
 
 ## commandTick
-Enables /tick command to control game speed
+Enables /tick command to analyze game speed for players with this permission level
 
-Type: `boolean`  
-Default: `true`  
-Options: `true`, `false`  
+Type: `int`  
+Default: `0`  
 Categories: commands  
+Validator: `OP Level (0-4)`  
+
+## commandTickManipulate
+Allows the tick rate modifications of /tick for players with this permission level
+
+Values lower then commandTick have no effect  
+Type: `int`  
+Default: `2`  
+Categories: commands  
+Validator: `OP Level (0-4)`  
 
 ## commandWaypoint
-Enables /waypoint command for managing waypoints and /tp [entities] waypoint
+Enables /waypoint command for managing waypoints for players with this permission level and /tp [entities] waypoint (for permission level 2)
 
-Type: `boolean`  
-Default: `true`  
-Options: `true`, `false`  
+Type: `int`  
+Default: `0`  
 Categories: commands  
+Validator: `OP Level (0-4)`  
 
 ## conversionDupingFix
 Fixes duping via zombie conversion
@@ -357,7 +365,6 @@ Be aware that a border of 11 chunks will stay loaded around that, once those chu
 Higher levels need lots of RAM (up to 7569 chunks loaded with level 32)  
 Type: `int`  
 Default: `11`  
-Options:   
 Categories: experimental  
 Validator: `quickcarpet.settings.Settings$SpawnChunkLevel`  
 

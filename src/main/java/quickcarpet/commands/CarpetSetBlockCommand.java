@@ -29,7 +29,8 @@ public class CarpetSetBlockCommand {
     private static final SimpleCommandExceptionType FAILED_EXCEPTION = new SimpleCommandExceptionType(new TranslatableText("commands.setblock.failed"));
 
     public static void register(CommandDispatcher<ServerCommandSource> commandDispatcher_1) {
-        LiteralArgumentBuilder<ServerCommandSource> carpetsetblock = literal("carpetsetblock").requires(player -> Settings.commandCarpetSetBlock)
+        LiteralArgumentBuilder<ServerCommandSource> carpetsetblock = literal("carpetsetblock")
+            .requires(s -> s.hasPermissionLevel(Settings.commandCarpetSetBlock))
             .then(argument("pos", blockPos())
             .then((argument("block", blockState())
                 .executes((commandContext_1) -> execute(commandContext_1.getSource(), getLoadedBlockPos(commandContext_1, "pos"), getBlockState(commandContext_1, "block"), Mode.REPLACE, null)))
