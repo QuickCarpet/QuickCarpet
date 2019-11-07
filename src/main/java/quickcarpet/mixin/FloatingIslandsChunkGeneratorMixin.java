@@ -28,6 +28,6 @@ public abstract class FloatingIslandsChunkGeneratorMixin extends SurfaceChunkGen
                 return Feature.END_CITY.getMonsterSpawns();
             }
         }
-        return this.world.getBiome(blockPos_1).getEntitySpawnList(entityCategory_1);
+        return this.world.getBiomeAccess().getBiome(blockPos_1).getEntitySpawnList(entityCategory_1);
     }
 }

@@ -259,7 +259,7 @@ public class PlayerActionPack {
                             if (ap.curBlockDamageMP >= 1) {
                                 player.interactionManager.processBlockBreakingAction(pos, PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK, side, player.server.getWorldHeight());
                             }
-                            player.world.setBlockBreakingProgress(-1, pos, (int) (ap.curBlockDamageMP * 10));
+                            player.world.setBlockBreakingInfo(-1, pos, (int) (ap.curBlockDamageMP * 10));
                         }
                         player.updateLastActionTime();
                         player.swingHand(Hand.MAIN_HAND);
@@ -272,7 +272,7 @@ public class PlayerActionPack {
             void inactiveTick(ServerPlayerEntity player, Action action) {
                 PlayerActionPack ap = ((ActionPackOwner) player).getActionPack();
                 if (ap.currentBlock == null) return;
-                player.world.setBlockBreakingProgress(-1, ap.currentBlock, -1);
+                player.world.setBlockBreakingInfo(-1, ap.currentBlock, -1);
                 player.interactionManager.processBlockBreakingAction(ap.currentBlock, PlayerActionC2SPacket.Action.ABORT_DESTROY_BLOCK, Direction.DOWN, player.server.getWorldHeight());
             }
         },

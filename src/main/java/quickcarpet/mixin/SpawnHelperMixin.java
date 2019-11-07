@@ -66,12 +66,12 @@ public class SpawnHelperMixin {
     private static boolean doesNotCollide(ServerWorld world, Box bbox) {
         if (!Settings.optimizedSpawning) return world.doesNotCollide(bbox);
         BlockPos.Mutable blockpos = new BlockPos.Mutable();
-        int minX = MathHelper.floor(bbox.minX);
-        int minY = MathHelper.floor(bbox.minY);
-        int minZ = MathHelper.floor(bbox.minZ);
-        int maxX = MathHelper.floor(bbox.maxX);
-        int maxY = MathHelper.floor(bbox.maxY);
-        int maxZ = MathHelper.floor(bbox.maxZ);
+        int minX = MathHelper.floor(bbox.x1);
+        int minY = MathHelper.floor(bbox.y1);
+        int minZ = MathHelper.floor(bbox.z1);
+        int maxX = MathHelper.floor(bbox.x2);
+        int maxY = MathHelper.floor(bbox.y2);
+        int maxZ = MathHelper.floor(bbox.z2);
         for (int x = minX; x <= maxX; x++) {
             for (int z = minZ; z <= maxZ; z++) {
                 for (int y = minY; y <= maxY; y++) {

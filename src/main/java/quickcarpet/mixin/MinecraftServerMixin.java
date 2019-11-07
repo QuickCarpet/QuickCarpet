@@ -7,8 +7,8 @@ import com.mojang.datafixers.DataFixer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.WorldGenerationProgressListenerFactory;
 import net.minecraft.server.command.CommandManager;
-import net.minecraft.util.SystemUtil;
 import net.minecraft.util.UserCache;
+import net.minecraft.util.Util;
 import net.minecraft.util.profiler.DisableableProfiler;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Final;
@@ -79,10 +79,10 @@ public abstract class MinecraftServerMixin {
             long behind = 0L;
             if (tickSpeed.tickWarpStartTime != 0 && tickSpeed.continueWarp()) {
                 //making sure server won't flop after the warp or if the warp is interrupted
-                this.timeReference = this.field_4557 = SystemUtil.getMeasuringTimeMs();
+                this.timeReference = this.field_4557 = Util.getMeasuringTimeMs();
             } else {
                 mspt = tickSpeed.msptGoal; // regular tick
-                behind = SystemUtil.getMeasuringTimeMs() - this.timeReference;
+                behind = Util.getMeasuringTimeMs() - this.timeReference;
             }
             //end tick deciding
             //smoothed out delay to include mspt component. With 50L gives defaults.
@@ -109,7 +109,7 @@ public abstract class MinecraftServerMixin {
             this.tick(this::shouldKeepTicking);
             this.profiler.swap("nextTickWait");
             this.field_19249 = true;
-            this.field_19248 = Math.max(SystemUtil.getMeasuringTimeMs() + /*50L*/ (long) mspt, this.timeReference);
+            this.field_19248 = Math.max(Util.getMeasuringTimeMs() + /*50L*/ (long) mspt, this.timeReference);
             this.method_16208();
             this.profiler.pop();
             this.profiler.endTick();
