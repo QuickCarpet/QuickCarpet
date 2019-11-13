@@ -20,6 +20,7 @@ import net.minecraft.world.World;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -139,6 +140,19 @@ public class Reflection {
             Constructor<T> constr = cls.getDeclaredConstructor();
             constr.setAccessible(true);
             return constr.newInstance();
+        } catch (ReflectiveOperationException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void setFinalField(Object target, String name, Class<?> type, Object value) {
+        Class<?> targetType = target.getClass();
+        String desc = type.isPrimitive() ? PRIMITIVE_TYPE_DESCRIPTORS.get(type.getName()) : "L" + type.getName().replace('.', '/') + ";";
+        String fieldName = MAPPINGS.get().mapFieldName("intermediary", unmapToIntermediary(target.getClass()), name, desc);
+        try {
+            Field f = targetType.getField(fieldName);
+            f.setAccessible(true);
+            f.set(target, value);
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }

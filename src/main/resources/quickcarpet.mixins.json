@@ -3,7 +3,6 @@
   "package": "quickcarpet.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "AbstractTreeFeatureMixin",
     "BlockItemMixin",
     "BlockPlacementDispenserBehaviorMixin",
     "BlocksMixin",
@@ -43,6 +42,7 @@
     "PlayerListHeaderS2CPacketAccessor",
     "PlayerManagerMixin",
     "PoweredRailBlockMixin",
+    "SaplingGeneratorMixin",
     "ServerChunkManagerAccessor",
     "ServerChunkManagerMixin",
     "ServerNetworkIoAccessor",
