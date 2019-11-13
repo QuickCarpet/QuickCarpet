@@ -62,7 +62,7 @@ public class CoreSettingsManager extends SettingsManager {
 
     private File getFile() {
         if (!initialized) throw new IllegalStateException("Not initialized");
-        return server.getLevelStorage().resolveFile(server.getLevelName(), "carpet.conf");
+        return QuickCarpet.getConfigFile("carpet.conf");
     }
 
     @Override
@@ -78,7 +78,7 @@ public class CoreSettingsManager extends SettingsManager {
                 if (line.isEmpty()) continue;
                 if (line.equalsIgnoreCase("locked")) {
                     this.locked = true;
-                    LOG.info("[CM]: " + Build.NAME + " is locked by the administrator");
+                    LOG.info("[" + Build.NAME + "]: " + Build.NAME + " is locked by the administrator");
                     disableAll(RuleCategory.COMMANDS, false);
                     continue;
                 }
@@ -86,23 +86,35 @@ public class CoreSettingsManager extends SettingsManager {
                 if (kv.length == 2) {
                     ParsedRule rule = rulesByName.get(kv[0]);
                     if (rule == null) {
-                        LOG.error("[CM]: Setting " + kv[0] + " is not a valid - ignoring...");
+                        LOG.error("[" + Build.NAME + "]: Setting " + kv[0] + " is not a valid - ignoring...");
                         continue;
                     }
                     try {
-                        rule.load(kv[1]);
-                        LOG.info("[CM]: loaded setting " + rule.name + " as " + rule.getAsString() + " from carpet.conf");
+                        String value = convertRuleDefaultIfNeeded(rule, kv[1]);
+                        if (!value.equals(kv[1])) {
+                            LOG.info("[" + Build.NAME + "]: converted " + rule.name + " from " + kv[1] + " to " + value);
+                        }
+                        rule.load(value);
+                        LOG.info("[" + Build.NAME + "]: loaded setting " + rule.name + " as " + rule.getAsString() + " from carpet.conf");
                     } catch (IllegalArgumentException e) {
-                        LOG.error("[CM]: The value " + kv[1] + " for " + rule.name + " is not valid - ignoring...");
+                        LOG.error("[" + Build.NAME + "]: The value " + kv[1] + " for " + rule.name + " is not valid - ignoring...");
                     }
                 } else {
-                    LOG.error("[CM]: Unknown line '" + line + "' - ignoring...");
+                    LOG.error("[" + Build.NAME + "]: Unknown line '" + line + "' - ignoring...");
                 }
             }
         } catch (FileNotFoundException ignored) {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private static String convertRuleDefaultIfNeeded(ParsedRule<?> rule, String value) {
+        if (rule.categories.contains(RuleCategory.COMMANDS) && rule.type == int.class) {
+            if ("true".equals(value)) return "0";
+            if ("false".equals(value)) return "4";
+        }
+        return value;
     }
 
     void save() {
@@ -132,7 +144,9 @@ public class CoreSettingsManager extends SettingsManager {
             }
             ps.println("Type: `" + rule.type.getSimpleName() + "`  ");
             ps.println("Default: `" + rule.defaultAsString + "`  ");
-            ps.println("Options: " + rule.options.stream().map(s -> "`" + s + "`").collect(Collectors.joining(", ")) + "  ");
+            if (!rule.options.isEmpty()) {
+                ps.println("Options: " + rule.options.stream().map(s -> "`" + s + "`").collect(Collectors.joining(", ")) + "  ");
+            }
             String categories = rule.categories.stream().map(c -> c.lowerCase).collect(Collectors.joining(", "));
             if (!categories.isEmpty()) ps.println("Categories: " + categories + "  ");
             if (rule.validator.getClass() != Validator.AlwaysTrue.class) ps.println("Validator: `" + rule.validator.getName() + "`  ");

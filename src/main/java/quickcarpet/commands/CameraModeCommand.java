@@ -17,13 +17,13 @@ import static net.minecraft.server.command.CommandManager.literal;
 public class CameraModeCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         LiteralArgumentBuilder<ServerCommandSource> camera = literal("c").
-                requires((player) -> Settings.commandCameramode).
+                requires(s -> s.hasPermissionLevel(Settings.commandCameramode)).
                 executes((c) -> cameraMode(c.getSource(), c.getSource().getPlayer())).
                 then(argument("player", EntityArgumentType.player()).
                         executes( (c) -> cameraMode(c.getSource(), EntityArgumentType.getPlayer(c, "player"))));
 
         LiteralArgumentBuilder<ServerCommandSource> survival = literal("s").
-                requires((player) -> Settings.commandCameramode).
+                requires(s -> s.hasPermissionLevel(Settings.commandCameramode)).
                 executes((c) -> survivalMode(
                         c.getSource(),
                         c.getSource().getPlayer())).
@@ -34,8 +34,7 @@ public class CameraModeCommand {
         dispatcher.register(survival);
     }
 
-    private static boolean hasPermission(ServerCommandSource source, PlayerEntity target)
-    {
+    private static boolean hasPermission(ServerCommandSource source, PlayerEntity target) {
         try {
             return source.hasPermissionLevel(2) || source.getPlayer() == target;
         } catch (CommandSyntaxException e) {

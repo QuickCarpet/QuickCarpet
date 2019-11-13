@@ -24,7 +24,7 @@ public abstract class ServerChunkManagerMixin {
     @Feature("spawnTracker")
     @Redirect(
         method = "method_20801",
-        at = @At(value = "INVOKE", target = "Lit/unimi/dsi/fastutil/objects/Object2IntMap;getInt(Ljava/lang/Object;)I"),
+        at = @At(value = "INVOKE", target = "Lit/unimi/dsi/fastutil/objects/Object2IntMap;getInt(Ljava/lang/Object;)I", remap = false),
         require = 1, allow = 1
     )
     private int onMobcapCheck(Object2IntMap mobcaps, Object key) {

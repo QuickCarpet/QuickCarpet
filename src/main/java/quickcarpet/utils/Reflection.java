@@ -6,7 +6,13 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.client.network.packet.PlayerPositionLookS2CPacket;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.command.TeleportCommand;
+import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Lazy;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.village.TradeOffers;
 import net.minecraft.world.World;
@@ -16,10 +22,55 @@ import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Set;
 import java.util.function.Supplier;
 
 public class Reflection {
     public static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
+    private static HashMap<String, String> PRIMITIVE_TYPE_DESCRIPTORS = new HashMap<>();
+    static {
+        PRIMITIVE_TYPE_DESCRIPTORS.put("void", "V");
+        PRIMITIVE_TYPE_DESCRIPTORS.put("byte", "B");
+        PRIMITIVE_TYPE_DESCRIPTORS.put("char", "C");
+        PRIMITIVE_TYPE_DESCRIPTORS.put("double", "D");
+        PRIMITIVE_TYPE_DESCRIPTORS.put("float", "F");
+        PRIMITIVE_TYPE_DESCRIPTORS.put("int", "I");
+        PRIMITIVE_TYPE_DESCRIPTORS.put("long", "J");
+        PRIMITIVE_TYPE_DESCRIPTORS.put("short", "S");
+        PRIMITIVE_TYPE_DESCRIPTORS.put("boolean", "Z");
+    }
+
+    private static Lazy<MappingResolver> MAPPINGS = new Lazy<>(() -> FabricLoader.getInstance().getMappingResolver());
+
+    private static String unmapToIntermediary(Class<?> cls) {
+        return MAPPINGS.get().unmapClassName("intermediary", cls.getName());
+    }
+
+    private static Class<?> classForName(String intermediary) throws ClassNotFoundException {
+        return Class.forName(MAPPINGS.get().mapClassName("intermediary", intermediary));
+    }
+
+    private static MethodHandle getMappedMethod(Class<?> owner, String intermediary, Class<?> retType, Class<?> ...args) throws IllegalAccessException, NoSuchMethodException {
+        StringBuilder descriptor = new StringBuilder("(");
+        for (Class<?> arg : args) {
+            if (arg.isPrimitive()) {
+                descriptor.append(PRIMITIVE_TYPE_DESCRIPTORS.get(arg.getName()));
+            } else {
+                descriptor.append("L").append(unmapToIntermediary(arg).replace('.', '/')).append(";");
+            }
+        }
+        descriptor.append(')');
+        if (retType.isPrimitive()) {
+            descriptor.append(PRIMITIVE_TYPE_DESCRIPTORS.get(retType.getName()));
+        } else {
+            descriptor.append("L").append(unmapToIntermediary(retType).replace('.', '/')).append(";");
+        }
+        String obf = MAPPINGS.get().mapMethodName("intermediary", unmapToIntermediary(owner), intermediary, descriptor.toString());
+        Method m = owner.getDeclaredMethod(obf, args);
+        m.setAccessible(true);
+        return LOOKUP.unreflect(m);
+    }
 
     private static final Class<? extends TradeOffers.Factory> SELL_ITEM_FACTORY_CLASS = TradeOffers.WANDERING_TRADER_TRADES.get(1)[0].getClass();
     private static final MethodHandle newSellItemFactoryHandle = getNewSellItemFactoryHandle();
@@ -94,34 +145,22 @@ public class Reflection {
     }
 
     private static class ScheduleBlockRenderHandler {
-        private static final String INT_WORLD = "net.minecraft.class_1937";
-        private static final String INT_SCHEDULE_BLOCK_RENDER = "method_16109";
-        private static final String INT_SBR_DESC_14_3 = "(Lnet/minecraft/class_2338;)V";
-        private static final String INT_SBR_DESC_14_4 = "(Lnet/minecraft/class_2338;Lnet/minecraft/class_2680;Lnet/minecraft/class_2680;)V";
-
         private static final MethodHandle scheduleBlockRender;
         private static final boolean newScheduleBlockRender;
 
         static {
-            Method scheduleBlockRenderMethod = getScheduleBlockRender();
-            try {
-                scheduleBlockRender = LOOKUP.unreflect(scheduleBlockRenderMethod);
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-            newScheduleBlockRender = scheduleBlockRenderMethod.getParameterTypes().length == 3;
+            scheduleBlockRender = getScheduleBlockRender();
+            newScheduleBlockRender = scheduleBlockRender.type().parameterCount() == 4;
         }
 
-        private static Method getScheduleBlockRender() {
-            MappingResolver mappings = FabricLoader.getInstance().getMappingResolver();
+        private static MethodHandle getScheduleBlockRender() {
             try {
-                String oldName = mappings.mapMethodName("intermediary", INT_WORLD, INT_SCHEDULE_BLOCK_RENDER, INT_SBR_DESC_14_3);
-                return World.class.getMethod(oldName, BlockPos.class);
+                return getMappedMethod(World.class, "method_16109", void.class, BlockPos.class);
             } catch (ReflectiveOperationException e) {
                 try {
-                    String newName = mappings.mapMethodName("intermediary", INT_WORLD, INT_SCHEDULE_BLOCK_RENDER, INT_SBR_DESC_14_4);
-                    return World.class.getMethod(newName, BlockPos.class, BlockState.class, BlockState.class);
-                } catch (NoSuchMethodException ex) {
+                    return getMappedMethod(World.class, "method_16109", void.class, BlockPos.class, BlockState.class, BlockState.class);
+                } catch (ReflectiveOperationException ex) {
+                    ex.addSuppressed(e);
                     throw new IllegalStateException(ex);
                 }
             }
@@ -137,6 +176,31 @@ public class Reflection {
             }
         } catch (Throwable t) {
             throw new RuntimeException(t);
+        }
+    }
+
+    private static class TeleportHandler {
+        private static final String INT_LOOK_TARGET = "net.minecraft.class_3143$class_3144";
+        private static final MethodHandle teleport;
+
+        static {
+            try {
+                teleport = getMappedMethod(TeleportCommand.class,
+                    "method_13766", void.class,
+                    ServerCommandSource.class, Entity.class, ServerWorld.class,
+                    double.class, double.class, double.class, Set.class,
+                    float.class, float.class, classForName(INT_LOOK_TARGET));
+            } catch (ReflectiveOperationException e) {
+                throw new IllegalStateException(e);
+            }
+        }
+    }
+
+    public static void teleport(ServerCommandSource source, Entity entity_1, ServerWorld world, double x, double y, double z, Set<PlayerPositionLookS2CPacket.Flag> flags, float yaw, float pitch) {
+        try {
+            TeleportHandler.teleport.invoke(source, entity_1, world, x, y, z, flags, yaw, pitch, null);
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
         }
     }
 }

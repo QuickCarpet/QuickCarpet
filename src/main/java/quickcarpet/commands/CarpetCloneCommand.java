@@ -42,7 +42,7 @@ public class CarpetCloneCommand {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         LiteralArgumentBuilder<ServerCommandSource> carpetclone = literal("carpetclone")
-            .requires((player) -> Settings.commandCarpetClone)
+            .requires(s -> s.hasPermissionLevel(Settings.commandCarpetClone))
             .then(argument("begin", blockPos())
             .then(argument("end", blockPos())
             .then((argument("destination", blockPos())

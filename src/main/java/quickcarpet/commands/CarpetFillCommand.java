@@ -47,7 +47,7 @@ public class CarpetFillCommand {
 
     public static void register(CommandDispatcher<ServerCommandSource> commandDispatcher_1) {
         LiteralArgumentBuilder<ServerCommandSource> carpetfill = literal("carpetfill")
-            .requires((player) -> Settings.commandCarpetFill)
+            .requires(s -> s.hasPermissionLevel(Settings.commandCarpetFill))
             .then(argument("from", blockPos())
             .then(argument("to", blockPos())
             .then(argument("block", blockState())

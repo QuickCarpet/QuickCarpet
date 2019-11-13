@@ -28,7 +28,7 @@ if (branch != "master") {
 	project.mod_version += "+" + branch;
 }
 
-archivesBaseName = project.archives_base_name
+archivesBaseName = project.name
 version = project.mod_version
 group = project.maven_group
 

@@ -24,35 +24,41 @@ import static quickcarpet.settings.RuleCategory.*;
 public class Settings {
     public static final CoreSettingsManager MANAGER = new CoreSettingsManager(Settings.class);
 
-    @Rule(category = COMMANDS)
-    public static boolean commandTick = true;
+    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
+    public static int commandTick = 0;
 
-    @Rule(category = COMMANDS)
-    public static boolean commandPing = true;
+    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
+    public static int commandTickManipulate = 2;
 
-    @Rule(category = COMMANDS)
-    public static boolean commandCarpetFill = true;
+    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
+    public static int commandPing = 0;
 
-    @Rule(category = COMMANDS)
-    public static boolean commandCarpetClone = true;
+    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
+    public static int commandCarpetFill = 2;
 
-    @Rule(category = COMMANDS)
-    public static boolean commandCarpetSetBlock = true;
+    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
+    public static int commandCarpetClone = 2;
 
-    @Rule(category = COMMANDS)
-    public static boolean commandPlayer = true;
+    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
+    public static int commandCarpetSetBlock = 2;
 
-    @Rule(category = COMMANDS)
-    public static boolean commandLog = true;
+    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
+    public static int commandPlayer = 0;
 
-    @Rule(category = COMMANDS)
-    public static boolean commandSpawn = true;
+    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
+    public static int commandLog = 0;
 
-    @Rule(category = COMMANDS)
-    public static boolean commandCameramode = true;
+    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
+    public static int commandSpawn = 0;
 
-    @Rule(category = COMMANDS)
-    public static boolean commandMeasure = true;
+    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
+    public static int commandCameramode = 2;
+
+    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
+    public static int commandMeasure = 0;
+
+    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
+    public static int commandWaypoint = 0;
 
     @CreativeDefault("false")
     @Rule(category = CREATIVE)

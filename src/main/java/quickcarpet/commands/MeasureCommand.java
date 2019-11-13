@@ -21,7 +21,7 @@ import static quickcarpet.utils.Messenger.*;
 public class MeasureCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         LiteralArgumentBuilder<ServerCommandSource> distance = CommandManager.literal("measure")
-            .requires(s -> Settings.commandMeasure)
+            .requires(s -> s.hasPermissionLevel(Settings.commandMeasure))
             .then(argument("from", vec3())
                 .executes(c -> MeasureCommand.fromPosToSource(c.getSource(), getPosArgument(c, "from")))
                 .then(argument("to", vec3())

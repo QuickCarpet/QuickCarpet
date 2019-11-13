@@ -30,11 +30,11 @@ import static quickcarpet.utils.Messenger.*;
 public class LogCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         LiteralArgumentBuilder<ServerCommandSource> log = literal("log")
-            .requires((player) -> Settings.commandLog)
+            .requires(s -> s.hasPermissionLevel(Settings.commandLog))
             .executes((context) -> listLogs(context.getSource()))
             .then(literal("clear")
                 .executes(c -> unsubFromAll(c.getSource(), c.getSource().getName()))
-                .then(argument("player", StringArgumentType.word())
+                .then(argument("player", StringArgumentType.word()).requires(s -> s.hasPermissionLevel(2))
                     .suggests((c, b)-> CommandSource.suggestMatching(c.getSource().getPlayerNames(), b))
                     .executes(c -> unsubFromAll(c.getSource(), getString(c, "player")))));
 
@@ -50,7 +50,7 @@ public class LogCommand {
             }
         }
 
-        LiteralArgumentBuilder<ServerCommandSource> playerArg = literal("player")
+        LiteralArgumentBuilder<ServerCommandSource> playerArg = literal("player").requires(s -> s.hasPermissionLevel(2))
                 .then(argument("player", StringArgumentType.word())
                 .suggests( (c, b) -> CommandSource.suggestMatching(c.getSource().getPlayerNames(),b))
                 .executes(LogCommand::subscribe)
@@ -74,27 +74,13 @@ public class LogCommand {
         dispatcher.register(log);
     }
 
-    private static <T> T getOrNull(CommandContext<ServerCommandSource> context, String argument, Class<T> type) {
-        try {
-            return context.getArgument(argument, type);
-        } catch (IllegalArgumentException e) {
-            if (e.getMessage().startsWith("No such argument")) return null;
-            throw e;
-        }
-    }
-
-    private static <T> T getOrDefault(CommandContext<ServerCommandSource> context, String argument, T defaultValue) {
-        T value = getOrNull(context, argument, (Class<T>) defaultValue.getClass());
-        return value == null ? defaultValue : value;
-    }
-
     private static int subscribe(CommandContext<ServerCommandSource> context, String handlerName) {
-        String player = getOrDefault(context, "player", context.getSource().getName());
+        String player = Utils.getOrDefault(context, "player", context.getSource().getName());
         String logger = getString(context, "log name");
-        String option = getOrNull(context, "option", String.class);
+        String option = Utils.getOrNull(context, "option", String.class);
         LogHandler handler = null;
         if (handlerName != null) {
-            String extra = getOrNull(context, "extra", String.class);
+            String extra = Utils.getOrNull(context, "extra", String.class);
             String[] extraArgs = extra == null ? new String[0] : extra.split(" ");
             handler = LogHandlers.createHandler(handlerName, extraArgs);
         }

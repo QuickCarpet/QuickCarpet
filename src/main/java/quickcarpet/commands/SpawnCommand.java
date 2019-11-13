@@ -27,7 +27,7 @@ import static quickcarpet.utils.Messenger.*;
 public class SpawnCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         LiteralArgumentBuilder<ServerCommandSource> builder = literal("spawn")
-            .requires((player) -> Settings.commandSpawn)
+            .requires(s -> s.hasPermissionLevel(Settings.commandSpawn))
             .then(literal("mobcaps")
                 .executes(c -> sendMobcaps(c.getSource(), null))
                 .then(argument("dimension", dimension())
