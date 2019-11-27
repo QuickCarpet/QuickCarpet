@@ -207,6 +207,9 @@ public class Settings {
     @Rule(category = {FEATURE, EXPERIMENTAL})
     public static BreakBlockDispenserBehavior.Option dispensersBreakBlocks = BreakBlockDispenserBehavior.Option.FALSE;
 
+    @Rule(category = FEATURE)
+    public static boolean dispensersShearVines = false;
+
     @Rule(category = FIX)
     public static boolean blockEntityNullWorldFix = true;
 

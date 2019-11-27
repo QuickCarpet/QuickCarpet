@@ -5,16 +5,13 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.dispenser.ItemDispenserBehavior;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPointer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import quickcarpet.settings.Settings;
 
-import java.util.Random;
-
-public class TillSoilDispenserBehaviour extends ItemDispenserBehavior
+public class TillSoilDispenserBehavior extends ItemDispenserBehavior
 {
     @Override
     protected ItemStack dispenseSilently(BlockPointer blockPointer_1, ItemStack itemStack_1)
@@ -42,7 +39,7 @@ public class TillSoilDispenserBehaviour extends ItemDispenserBehavior
             world.setBlockState(down, Blocks.DIRT.getDefaultState());
             
         
-        if (itemStack_1.damage(1, (Random)world.random, (ServerPlayerEntity)null))
+        if (itemStack_1.damage(1, world.random, null))
             itemStack_1.setCount(0);
         
         return itemStack_1;

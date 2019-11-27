@@ -14,7 +14,7 @@ import net.minecraft.util.registry.Registry;
 import quickcarpet.feature.BreakBlockDispenserBehavior;
 import quickcarpet.feature.CraftingTableBlockEntity;
 import quickcarpet.feature.PlaceBlockDispenserBehavior;
-import quickcarpet.feature.TillSoilDispenserBehaviour;
+import quickcarpet.feature.TillSoilDispenserBehavior;
 import quickcarpet.mixin.BlockTagsAccessor;
 
 import java.util.List;
@@ -33,7 +33,7 @@ public class CarpetRegistry {
     public static final Tag<Block> DISPENSER_BLOCK_BLACKLIST = BlockTagsAccessor.register("carpet:dispenser_placeable_blacklist");
     public static final DispenserBehavior PLACE_BLOCK_DISPENSER_BEHAVIOR = new PlaceBlockDispenserBehavior();
     public static final DispenserBehavior BREAK_BLOCK_DISPENSER_BEHAVIOR = new BreakBlockDispenserBehavior();
-    public static final DispenserBehavior DISPENSERS_TILL_SOIL_BEHAVIOR = new TillSoilDispenserBehaviour();
+    public static final DispenserBehavior DISPENSERS_TILL_SOIL_BEHAVIOR = new TillSoilDispenserBehavior();
 
     //Additional Movable Blocks
     public static final Tag<Block> PISTON_OVERRIDE_MOVABLE = BlockTagsAccessor.register("carpet:piston_movable");
