@@ -7,6 +7,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.*;
+import org.spongepowered.asm.mixin.Implements;
 import org.spongepowered.asm.mixin.Interface;
 import org.spongepowered.asm.mixin.Mixin;
 import quickcarpet.annotation.Feature;
@@ -17,7 +18,7 @@ import java.util.Random;
 
 @Feature("renewableCoral")
 @Mixin(CoralBlock.class)
-@Interface(iface = Fertilizable.class, prefix = "fert$")
+@Implements(@Interface(iface = Fertilizable.class, prefix = "fert$"))
 public abstract class CoralBlockMixin implements Fertilizable
 {
     public boolean isFertilizable(BlockView var1, BlockPos var2, BlockState var3, boolean var4)

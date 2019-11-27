@@ -22,7 +22,8 @@ import java.util.function.Supplier;
 
 public class CarpetRegistry {
     // Initializes Reflection
-    public static final BlockEntityType<CraftingTableBlockEntity> CRAFTING_TABLE_BLOCK_ENTITY_TYPE = registerBlockEntity("carpet:crafting_table", CraftingTableBlockEntity::new, Blocks.CRAFTING_TABLE);
+    public static final String CRAFTING_TABLE_BLOCK_ENTITY_ID = "carpet:crafting_table";
+    public static final BlockEntityType<CraftingTableBlockEntity> CRAFTING_TABLE_BLOCK_ENTITY_TYPE = registerBlockEntity(CRAFTING_TABLE_BLOCK_ENTITY_ID, CraftingTableBlockEntity::new, Blocks.CRAFTING_TABLE);
 
     static { BlockTags.getContainer(); } // load BlockTags class
     public static final Tag<Block> SIMPLE_FULL_BLOCK = new BlockPropertyTag(new Identifier("carpet:simple_full_block"), BlockState::isSimpleFullBlock);
@@ -49,5 +50,9 @@ public class CarpetRegistry {
 
     public static void init() {
         // initializes statics of CarpetRegistry
+    }
+
+    public static boolean isIgnoredForSync(String key) {
+        return CRAFTING_TABLE_BLOCK_ENTITY_ID.equals(key);
     }
 }

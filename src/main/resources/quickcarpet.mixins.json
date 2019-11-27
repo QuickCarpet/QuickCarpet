@@ -43,6 +43,7 @@
     "PlayerListHeaderS2CPacketAccessor",
     "PlayerManagerMixin",
     "PoweredRailBlockMixin",
+    "RegistrySyncManagerMixin",
     "ServerChunkManagerAccessor",
     "ServerChunkManagerMixin",
     "ServerNetworkIoAccessor",
