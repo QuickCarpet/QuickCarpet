@@ -14,6 +14,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPointer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.World;
 import quickcarpet.settings.Settings;
 
 public class BreakBlockDispenserBehavior extends ItemDispenserBehavior {
@@ -56,13 +57,7 @@ public class BreakBlockDispenserBehavior extends ItemDispenserBehavior {
         if (!silkTouch) {
             if (!world.breakBlock(target, true)) return false;
         } else {
-            LootContext.Builder builder = new LootContext.Builder(world).setRandom(world.random);
-            builder.put(LootContextParameters.POSITION, target);
-            builder.put(LootContextParameters.TOOL, SILK_TOUCH_TOOL);
-            Block.dropStacks(state, builder);
-            FluidState fluidState = world.getFluidState(target);
-            world.setBlockState(target, fluidState.getBlockState());
-            world.playLevelEvent(2001, target, Block.getRawIdFromState(state));
+            breakBlock(world, target, state, SILK_TOUCH_TOOL);
         }
         spawnParticles(blockPointer, blockPointer.getBlockState().get(DispenserBlock.FACING));
         return true;
@@ -70,5 +65,17 @@ public class BreakBlockDispenserBehavior extends ItemDispenserBehavior {
 
     public enum Option {
         FALSE, NORMAL, SILK_TOUCH
+    }
+
+    public static void breakBlock(World world, BlockPos pos, BlockState blockState, ItemStack tool) {
+        LootContext.Builder builder = new LootContext.Builder((ServerWorld) world).setRandom(world.random);
+        builder.put(LootContextParameters.POSITION, pos).put(LootContextParameters.TOOL, tool);
+        blockState.getDroppedStacks(builder).forEach(drop -> {
+            Block.dropStack(world, pos, drop);
+        });
+        blockState.onStacksDropped(world, pos, ItemStack.EMPTY);
+        FluidState fluidState = world.getFluidState(pos);
+        world.setBlockState(pos, fluidState.getBlockState());
+        world.playLevelEvent(2001, pos, Block.getRawIdFromState(blockState));
     }
 }

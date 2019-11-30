@@ -167,7 +167,7 @@ public class CarpetCloneCommand {
                             world.updateNeighbors(blockInfo.pos, blockInfo.state.getBlock());
                         }
 
-                        world.method_14196().copyScheduledTicks(sourceBox, relative);
+                        world.getBlockTickScheduler().copyScheduledTicks(sourceBox, relative);
                     }
 
                     if (numBlocks == 0) {

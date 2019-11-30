@@ -21,7 +21,7 @@ public class ClientConnectionMixin {
     }
 
     @Feature("packetCounter")
-    @Inject(method = "method_10770", at = @At("HEAD"))
+    @Inject(method = "channelRead0", at = @At("HEAD"))
     private void countPacketIn(ChannelHandlerContext channelHandlerContext_1, Packet<?> packet_1, CallbackInfo ci) {
         PacketCounter.totalIn++;
     }

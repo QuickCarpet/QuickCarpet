@@ -24,7 +24,7 @@ public abstract class PistonBlockEntityRendererMixin extends BlockEntityRenderer
         super(renderDispatcher);
     }
 
-    @Inject(method = "method_3576", at = @At(value = "INVOKE",
+    @Inject(method = "render", at = @At(value = "INVOKE",
             target ="Lnet/minecraft/client/render/block/entity/PistonBlockEntityRenderer;method_3575(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/world/World;ZI)V",
             ordinal = 3))
     private void updateRenderBool(PistonBlockEntity pistonBlockEntity_1, float float_1, MatrixStack matrixStack_1, VertexConsumerProvider vertexConsumerProvider_1, int int_1, int int_2, CallbackInfo ci) {
@@ -33,7 +33,7 @@ public abstract class PistonBlockEntityRendererMixin extends BlockEntityRenderer
             pistonBlockEntityExt.setRenderCarriedBlockEntity(Settings.movableBlockEntities && pistonBlockEntityExt.getCarriedBlockEntity() != null);
     }
 
-    @Inject(method = "method_3576", at = @At("RETURN"))
+    @Inject(method = "render", at = @At("RETURN"))
     private void endMethod3576(PistonBlockEntity pistonBlockEntity_1, float partialTicks, MatrixStack transform, VertexConsumerProvider bufferWrapper, int int_1, int int_2, CallbackInfo ci) {
         IPistonBlockEntity pistonBlockEntityExt = (IPistonBlockEntity) pistonBlockEntity_1;
         if (pistonBlockEntityExt.getRenderCarriedBlockEntity()) {
@@ -51,7 +51,7 @@ public abstract class PistonBlockEntityRendererMixin extends BlockEntityRenderer
     }
 
     @Feature(value = "smoothPistons", bug = @BugFix(""))
-    @ModifyConstant(method = "method_3576", constant = @Constant(floatValue = 4f))
+    @ModifyConstant(method = "render", constant = @Constant(floatValue = 4f))
     private float fixShort(float shortCutoff) {
         return 0.5f;
     }

@@ -18,7 +18,7 @@ public class Mobcaps {
     }
 
     public static Map<EntityCategory, Pair<Integer, Integer>> getMobcaps(ServerWorld world) {
-        int chunks = ((ServerChunkManagerAccessor) world.method_14178()).getTicketManager().getLevelCount();
+        int chunks = ((ServerChunkManagerAccessor) world.getChunkManager()).getTicketManager().getLevelCount();
         Object2IntMap<EntityCategory> mobs = world.getMobCountsByCategory();
         EnumMap<EntityCategory, Pair<Integer, Integer>> mobcaps = new EnumMap<>(EntityCategory.class);
         for (EntityCategory category : EntityCategory.values()) {

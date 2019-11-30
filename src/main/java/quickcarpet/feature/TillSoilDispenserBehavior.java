@@ -11,47 +11,40 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import quickcarpet.settings.Settings;
 
-public class TillSoilDispenserBehavior extends ItemDispenserBehavior
-{
+public class TillSoilDispenserBehavior extends ItemDispenserBehavior {
     @Override
-    protected ItemStack dispenseSilently(BlockPointer blockPointer_1, ItemStack itemStack_1)
-    {
-        if (!Settings.dispensersTillSoil)
-            return super.dispenseSilently(blockPointer_1, itemStack_1);
-    
+    protected ItemStack dispenseSilently(BlockPointer blockPointer_1, ItemStack stack) {
+        if (!Settings.dispensersTillSoil) return super.dispenseSilently(blockPointer_1, stack);
+
         World world = blockPointer_1.getWorld();
         Direction direction = blockPointer_1.getBlockState().get(DispenserBlock.FACING);
         BlockPos front = blockPointer_1.getBlockPos().offset(direction);
-        BlockPos down = blockPointer_1.getBlockPos().method_10074().offset(direction); // method_10074 = down
+        BlockPos down = blockPointer_1.getBlockPos().down().offset(direction);
         BlockState frontState = world.getBlockState(front);
         BlockState downState = world.getBlockState(down);
-        
-        if (isFarmland(frontState) || isFarmland(downState))
-            return itemStack_1;
-        
-        if (canDirectlyTurnToFarmland(frontState))
+
+        if (isFarmland(frontState) || isFarmland(downState)) return stack;
+
+        if (canDirectlyTurnToFarmland(frontState)) {
             world.setBlockState(front, Blocks.FARMLAND.getDefaultState());
-        else if (canDirectlyTurnToFarmland(downState))
+        } else if (canDirectlyTurnToFarmland(downState)) {
             world.setBlockState(down, Blocks.FARMLAND.getDefaultState());
-        else if (frontState.getBlock() == Blocks.COARSE_DIRT)
+        } else if (frontState.getBlock() == Blocks.COARSE_DIRT) {
             world.setBlockState(front, Blocks.DIRT.getDefaultState());
-        else if (downState.getBlock() == Blocks.COARSE_DIRT)
+        } else if (downState.getBlock() == Blocks.COARSE_DIRT) {
             world.setBlockState(down, Blocks.DIRT.getDefaultState());
-            
-        
-        if (itemStack_1.damage(1, world.random, null))
-            itemStack_1.setCount(0);
-        
-        return itemStack_1;
+        }
+
+        if (stack.damage(1, world.random, null)) stack.setCount(0);
+
+        return stack;
     }
-    
-    private boolean canDirectlyTurnToFarmland(BlockState state)
-    {
+
+    private boolean canDirectlyTurnToFarmland(BlockState state) {
         return state.getBlock() == Blocks.DIRT || state.getBlock() == Blocks.GRASS_BLOCK || state.getBlock() == Blocks.GRASS_PATH;
     }
-    
-    private boolean isFarmland(BlockState state)
-    {
+
+    private boolean isFarmland(BlockState state) {
         return state.getBlock() == Blocks.FARMLAND;
     }
 }

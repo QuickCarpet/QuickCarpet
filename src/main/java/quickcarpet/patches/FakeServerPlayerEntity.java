@@ -58,7 +58,7 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
         interactionManagerIn.setGameMode(gamemode);
         server.getPlayerManager().sendToDimension(new EntitySetHeadYawS2CPacket(instance, (byte) (instance.headYaw * 256 / 360)), instance.dimension);
         server.getPlayerManager().sendToDimension(new EntityPositionS2CPacket(instance), instance.dimension);
-        instance.getServerWorld().method_14178().updateCameraPosition(instance);
+        instance.getServerWorld().getChunkManager().updateCameraPosition(instance);
         instance.dataTracker.set(PLAYER_MODEL_BIT_MASK, (byte) 0x7f); // show all model layers (incl. capes)
         return instance;
     }
@@ -83,7 +83,7 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
 
         server.getPlayerManager().sendToDimension(new EntitySetHeadYawS2CPacket(shadow, (byte) (real.headYaw * 256 / 360)), shadow.dimension);
         server.getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.ADD_PLAYER, shadow));
-        real.getServerWorld().method_14178().updateCameraPosition(shadow);
+        real.getServerWorld().getChunkManager().updateCameraPosition(shadow);
         return shadow;
     }
 
@@ -111,7 +111,7 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
 
     @Override
     public void kill() {
-        this.server.method_18858(new ServerTask(this.server.getTicks(), () -> {
+        this.server.send(new ServerTask(this.server.getTicks(), () -> {
             this.networkHandler.onDisconnected(Messenger.s("Killed"));
         }));
     }
@@ -125,7 +125,7 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
         this.tickMovement();
         if (this.getServer().getTicks() % 10 == 0) {
             this.networkHandler.syncWithPlayerPosition();
-            this.getServerWorld().method_14178().updateCameraPosition(this);
+            this.getServerWorld().getChunkManager().updateCameraPosition(this);
         }
     }
 

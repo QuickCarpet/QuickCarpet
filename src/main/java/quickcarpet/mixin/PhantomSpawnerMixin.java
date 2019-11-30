@@ -19,7 +19,7 @@ public class PhantomSpawnerMixin {
         if (!spawnMonsters || !Settings.phantomsRespectMobcap) return;
         EntityCategory category = EntityType.PHANTOM.getCategory();
         int mobs = world.getMobCountsByCategory().getOrDefault(category, 0);
-        int chunks = ((ServerChunkManagerAccessor) world.method_14178()).getTicketManager().getLevelCount();
+        int chunks = ((ServerChunkManagerAccessor) world.getChunkManager()).getTicketManager().getLevelCount();
         int max = chunks * category.getSpawnCap() / (17 * 17);
         if (mobs > max) {
             cir.setReturnValue(0);
