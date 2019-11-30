@@ -1,14 +1,11 @@
 package quickcarpet.mixin;
 
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerTickScheduler;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkManager;
-import net.minecraft.world.chunk.ChunkSection;
 import net.minecraft.world.chunk.WorldChunk;
 import net.minecraft.world.dimension.Dimension;
 import net.minecraft.world.dimension.DimensionType;
@@ -123,13 +120,6 @@ public abstract class ServerWorldMixin extends World implements WaypointContaine
             this.getChunkManager().tick(shouldContinueTicking);
             ci.cancel();
         }
-    }
-
-    @Feature("optimizedFluidTicks")
-    @Redirect(method = "tickChunk", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/ChunkSection;getFluidState(III)Lnet/minecraft/fluid/FluidState;"), require = 0)
-    private FluidState optimizedFluidTick(ChunkSection chunkSection, int x, int y, int z) {
-        if (Settings.optimizedFluidTicks && !chunkSection.hasRandomFluidTicks()) return Fluids.EMPTY.getDefaultState();
-        return chunkSection.getFluidState(x, y, z);
     }
 
     @Feature("sleepingThreshold")

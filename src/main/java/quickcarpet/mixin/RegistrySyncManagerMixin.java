@@ -7,13 +7,13 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import quickcarpet.utils.CarpetRegistry;
 
-@Mixin(value = RegistrySyncManager.class, remap = false)
+@Mixin(value = RegistrySyncManager.class)
 public class RegistrySyncManagerMixin {
     @Redirect(method = "toTag", at = @At(
         value = "INVOKE",
         target = "Lnet/minecraft/nbt/CompoundTag;putInt(Ljava/lang/String;I)V",
         ordinal = 0
-    ), remap = false)
+    ))
     private static void redirectPutInt(CompoundTag compoundTag, String key, int value) {
         if (CarpetRegistry.isIgnoredForSync(key)) return;
         compoundTag.putInt(key, value);

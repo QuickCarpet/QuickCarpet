@@ -1,6 +1,5 @@
 package quickcarpet.mixin;
 
-import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityCategory;
 import net.minecraft.entity.EntityType;
@@ -52,7 +51,7 @@ public class SpawnHelperMixin {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/EntityType;getCategory()Lnet/minecraft/entity/EntityCategory;"),
             locals = LocalCapture.CAPTURE_FAILHARD
     )
-    private static void onAttempt(EntityCategory category, ServerWorld world, WorldChunk chunk, BlockPos spawnPoint, CallbackInfo ci, ChunkGenerator chunkGenerator_1, int mobsSpawned, BlockPos startPos, int x, int y, int z, BlockState state, BlockPos.Mutable blockPos, int pack, int packX, int packZ, int int_8, Biome.SpawnEntry spawnEntry) {
+    private static void onAttempt(EntityCategory category, ServerWorld world, WorldChunk chunk, BlockPos spawnPoint, CallbackInfo ci, ChunkGenerator chunkGenerator_1, int mobsSpawned, BlockPos startPos, int x, int y, int z, BlockPos.Mutable blockPos, int pack, int packX, int packZ, int int_8, Biome.SpawnEntry spawnEntry) {
         if (spawnEntry == null) return; // no type selected yet
         Vec3d pos = new Vec3d(blockPos.getX() + 0.5, blockPos.getY(), blockPos.getZ() + 0.5);
         SpawnTracker.registerAttempt(world.getDimension().getType(), pos, spawnEntry.type);
