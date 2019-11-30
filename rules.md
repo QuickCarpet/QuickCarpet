@@ -140,6 +140,14 @@ Default: `false`
 Options: `false`, `whitelist`, `blacklist`, `all`  
 Categories: experimental, feature  
 
+## dispensersShearVines
+carpet.rule.dispensersShearVines.description
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: feature  
+
 ## dispensersTillSoil
 Dispensers with hoes can till soil
 

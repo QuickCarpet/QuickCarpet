@@ -213,6 +213,8 @@ public class Settings {
     public enum RenewableBeeHiveBiomes {
         NONE, FLOWER, FLOWER_AND_PLAINS, ALL
     }
+    @Rule(category = FEATURE)
+    public static boolean dispensersShearVines = false;
 
     public static void main(String[] args) throws IOException {
         Bootstrap.initialize();

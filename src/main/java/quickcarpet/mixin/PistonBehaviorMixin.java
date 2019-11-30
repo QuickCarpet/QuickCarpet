@@ -1,7 +1,7 @@
 package quickcarpet.mixin;
 
 import net.minecraft.block.piston.PistonBehavior;
-import org.spongepowered.asm.lib.Opcodes;
+import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -10,10 +10,9 @@ import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.Slice;
 import quickcarpet.utils.PistonBehaviors;
 
-
-
-
-//Thanks to skyrising for this code
+/**
+ * @author 2No2Name, skyrising
+ */
 @Mixin(PistonBehavior.class)
 class PistonBehaviorMixin {
     private static @Final

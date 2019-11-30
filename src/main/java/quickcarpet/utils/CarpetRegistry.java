@@ -14,7 +14,7 @@ import net.minecraft.util.registry.Registry;
 import quickcarpet.feature.BreakBlockDispenserBehavior;
 import quickcarpet.feature.CraftingTableBlockEntity;
 import quickcarpet.feature.PlaceBlockDispenserBehavior;
-import quickcarpet.feature.TillSoilDispenserBehaviour;
+import quickcarpet.feature.TillSoilDispenserBehavior;
 import quickcarpet.mixin.BlockTagsAccessor;
 
 import java.util.List;
@@ -22,7 +22,8 @@ import java.util.function.Supplier;
 
 public class CarpetRegistry {
     // Initializes Reflection
-    public static final BlockEntityType<CraftingTableBlockEntity> CRAFTING_TABLE_BLOCK_ENTITY_TYPE = registerBlockEntity("carpet:crafting_table", CraftingTableBlockEntity::new, Blocks.CRAFTING_TABLE);
+    public static final String CRAFTING_TABLE_BLOCK_ENTITY_ID = "carpet:crafting_table";
+    public static final BlockEntityType<CraftingTableBlockEntity> CRAFTING_TABLE_BLOCK_ENTITY_TYPE = registerBlockEntity(CRAFTING_TABLE_BLOCK_ENTITY_ID, CraftingTableBlockEntity::new, Blocks.CRAFTING_TABLE);
 
     static { BlockTags.getContainer(); } // load BlockTags class
     public static final Tag<Block> SIMPLE_FULL_BLOCK = new BlockPropertyTag(new Identifier("carpet:simple_full_block"), BlockState::isSimpleFullBlock);
@@ -33,7 +34,7 @@ public class CarpetRegistry {
     public static final Tag<Block> DISPENSER_BLOCK_BLACKLIST = BlockTagsAccessor.register("carpet:dispenser_placeable_blacklist");
     public static final DispenserBehavior PLACE_BLOCK_DISPENSER_BEHAVIOR = new PlaceBlockDispenserBehavior();
     public static final DispenserBehavior BREAK_BLOCK_DISPENSER_BEHAVIOR = new BreakBlockDispenserBehavior();
-    public static final DispenserBehavior DISPENSERS_TILL_SOIL_BEHAVIOR = new TillSoilDispenserBehaviour();
+    public static final DispenserBehavior DISPENSERS_TILL_SOIL_BEHAVIOR = new TillSoilDispenserBehavior();
 
     //Additional Movable Blocks
     public static final Tag<Block> PISTON_OVERRIDE_MOVABLE = BlockTagsAccessor.register("carpet:piston_movable");
@@ -49,5 +50,9 @@ public class CarpetRegistry {
 
     public static void init() {
         // initializes statics of CarpetRegistry
+    }
+
+    public static boolean isIgnoredForSync(String key) {
+        return CRAFTING_TABLE_BLOCK_ENTITY_ID.equals(key);
     }
 }

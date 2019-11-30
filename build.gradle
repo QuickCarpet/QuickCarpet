@@ -47,6 +47,10 @@ dependencies {
 	modCompile "net.fabricmc.fabric-api:fabric-resource-loader-v0:${project.fabric_resource_loader_v0_version}"
 	include "net.fabricmc.fabric-api:fabric-resource-loader-v0:${project.fabric_resource_loader_v0_version}"
 
+	modCompile "net.fabricmc.fabric-api:fabric-api-base:${project.fabric_api_base_version}"
+	modCompile "net.fabricmc.fabric-api:fabric-networking-v0:${project.fabric_networking_v0_version}"
+	modCompile "net.fabricmc.fabric-api:fabric-registry-sync-v0:${project.fabric_registry_sync_v0_version}"
+
 	// javax.annotation.Nullable/Nonnull
 	compileOnly "com.google.code.findbugs:jsr305:3.0.1"
 
