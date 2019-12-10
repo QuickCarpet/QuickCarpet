@@ -23,6 +23,9 @@
   "mixins": [
     "quickcarpet.mixins.json"
   ],
+  "requires": {
+    "minecraft": "~1.15-rc.4"
+  },
   "recommends": {
     "malilib": "${malilib_version}",
     "fabric-resource-loader-v0": "*"
