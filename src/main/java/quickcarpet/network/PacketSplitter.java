@@ -12,7 +12,7 @@ import net.minecraft.server.network.packet.CustomPayloadC2SPacket;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 import org.apache.commons.lang3.tuple.Pair;
-import quickcarpet.mixin.CustomPayloadC2SPacketAccessor;
+import quickcarpet.mixin.accessor.CustomPayloadC2SPacketAccessor;
 
 import java.util.HashMap;
 import java.util.Map;

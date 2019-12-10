@@ -175,10 +175,6 @@ public class Settings {
 
     @Rule(category = {SURVIVAL, FIX, EXPERIMENTAL})
     public static boolean phantomsRespectMobcap = false;
-
-    @Rule(category = {FIX, EXPERIMENTAL}, bug = @BugFix(value = "MC-152636", fixVersion = "1.14.4-pre1"))
-    @BugFixDefault
-    public static boolean conversionDupingFix = false;
     
     @Rule(category = FEATURE)
     public static boolean renewableCoral = false;
@@ -192,7 +188,7 @@ public class Settings {
     @Rule(category = {FEATURE, SURVIVAL}, options = {"0", "50", "100"}, validator = SleepingThreshold.class)
     public static double sleepingThreshold = 100;
 
-    @Rule(category = {OPTIMIZATIONS, EXPERIMENTAL})
+    @Rule(category = {OPTIMIZATIONS, EXPERIMENTAL}, deprecated = "2No2Name's mod includes this and much more")
     public static boolean optimizedInventories = false;
 
     public static class SleepingThreshold extends Validator.Range<Double> {

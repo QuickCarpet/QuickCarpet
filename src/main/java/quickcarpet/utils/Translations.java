@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.*;
-import quickcarpet.mixin.ServerPlayerEntityAccessor;
+import quickcarpet.mixin.accessor.ServerPlayerEntityAccessor;
 import quickcarpet.module.QuickCarpetModule;
 
 import java.io.IOException;

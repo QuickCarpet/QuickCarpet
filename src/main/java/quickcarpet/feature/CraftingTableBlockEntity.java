@@ -16,7 +16,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.DefaultedList;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.math.Direction;
-import quickcarpet.mixin.CraftingInventoryAccessor;
+import quickcarpet.mixin.accessor.CraftingInventoryAccessor;
 import quickcarpet.utils.CarpetRegistry;
 
 import javax.annotation.Nullable;

@@ -23,6 +23,7 @@ import quickcarpet.pubsub.PubSubManager;
 import quickcarpet.pubsub.PubSubMessenger;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.*;
+import quickcarpet.utils.extensions.WaypointContainer;
 
 import java.io.File;
 import java.io.IOException;

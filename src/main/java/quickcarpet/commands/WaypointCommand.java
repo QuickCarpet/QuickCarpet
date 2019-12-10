@@ -17,7 +17,7 @@ import net.minecraft.world.dimension.DimensionType;
 import quickcarpet.QuickCarpet;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.Waypoint;
-import quickcarpet.utils.WaypointContainer;
+import quickcarpet.utils.extensions.WaypointContainer;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;

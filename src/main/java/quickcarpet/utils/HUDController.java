@@ -16,7 +16,7 @@ import quickcarpet.helper.TickSpeed;
 import quickcarpet.logging.Logger;
 import quickcarpet.logging.Loggers;
 import quickcarpet.logging.loghelpers.PacketCounter;
-import quickcarpet.mixin.PlayerListHeaderS2CPacketAccessor;
+import quickcarpet.mixin.accessor.PlayerListHeaderS2CPacketAccessor;
 
 import java.util.*;
 import java.util.function.Consumer;

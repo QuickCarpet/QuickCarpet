@@ -20,19 +20,18 @@ import quickcarpet.annotation.Feature;
 import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
 
+@Feature("tickSpeed")
 @Mixin(ClientWorld.class)
 public abstract class ClientWorldMixin extends World {
     protected ClientWorldMixin(LevelProperties properties, DimensionType dimensionType, BiFunction<World, Dimension, ChunkManager> biFunction_1, Profiler profiler, boolean boolean_1) {
         super(properties, dimensionType, biFunction_1, profiler, boolean_1);
     }
 
-    @Feature("tickSpeed")
     @Inject(method = "tick", at = @At("HEAD"), cancellable = true)
     private void tickFreeze(BooleanSupplier shouldContinueTicking, CallbackInfo ci) {
         if (QuickCarpet.getInstance().client.tickSpeed.isPaused()) ci.cancel();
     }
 
-    @Feature("tickSpeed")
     @Redirect(method = "tickEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientChunkManager;shouldTickEntity(Lnet/minecraft/entity/Entity;)Z"))
     private boolean tickFreezeEntities(ClientChunkManager clientChunkManager, Entity entity) {
         if (QuickCarpet.getInstance().client.tickSpeed.isPaused()) {

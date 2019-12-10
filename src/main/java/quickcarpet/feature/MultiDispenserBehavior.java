@@ -4,8 +4,8 @@ import net.minecraft.block.dispenser.FallibleItemDispenserBehavior;
 import net.minecraft.block.dispenser.ItemDispenserBehavior;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPointer;
-import quickcarpet.mixin.FallibleItemDispenserBehaviorAccessor;
-import quickcarpet.mixin.ItemDispenserBehaviorAccessor;
+import quickcarpet.mixin.accessor.FallibleItemDispenserBehaviorAccessor;
+import quickcarpet.mixin.accessor.ItemDispenserBehaviorAccessor;
 
 public class MultiDispenserBehavior extends FallibleItemDispenserBehavior {
     private ItemDispenserBehavior[] behaviors;

@@ -8,7 +8,7 @@ import net.minecraft.world.dimension.DimensionType;
 import quickcarpet.QuickCarpet;
 import quickcarpet.logging.Logger;
 import quickcarpet.logging.loghelpers.LogParameter;
-import quickcarpet.mixin.ServerChunkManagerAccessor;
+import quickcarpet.mixin.accessor.ServerChunkManagerAccessor;
 
 import java.util.*;
 

@@ -2,6 +2,10 @@ package quickcarpet.helper;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+
+import javax.annotation.Nullable;
 
 public class NBTHelper {
     // From nbt/Tag.java createTag()
@@ -19,15 +23,26 @@ public class NBTHelper {
     public static final int TAG_INTARRAY = 11;
     public static final int TAG_LONGARRAY = 12;
 
+    @Nullable
+    public static CompoundTag getBlockEntityTag(ItemStack stack) {
+        CompoundTag tag = stack.getTag();
+        return tag == null ? null : getTagOrNull(tag, "BlockEntitiyTag", TAG_COMPOUND);
+    }
+
+    @Nullable
+    public static <T extends Tag> T getTagOrNull(CompoundTag tag, String key, int type) {
+        if (!tag.contains(key, type)) return null;
+        //noinspection unchecked
+        return (T) tag.get(key);
+    }
+
     public static boolean cleanUpShulkerBoxTag(ItemStack stack) {
         boolean changed = false;
-        CompoundTag tag = stack.getTag();
 
-        if (tag == null || !tag.contains("BlockEntityTag", TAG_COMPOUND))
-            return false;
-
-        CompoundTag bet = tag.getCompound("BlockEntityTag");
-        if (bet.contains("Items", TAG_LIST) && bet.getList("Items", TAG_COMPOUND).isEmpty()) {
+        CompoundTag bet = getBlockEntityTag(stack);
+        if (bet == null) return false;
+        ListTag items = getTagOrNull(bet, "Items", TAG_LIST);
+        if (items != null && items.isEmpty()) {
             bet.remove("Items");
             changed = true;
         }
@@ -41,11 +56,9 @@ public class NBTHelper {
     }
 
     public static boolean hasShulkerBoxItems(ItemStack stack) {
-        CompoundTag tag = stack.getTag();
-        if (tag == null || !tag.contains("BlockEntityTag", TAG_COMPOUND)) {
-            return false;
-        }
-        CompoundTag bet = tag.getCompound("BlockEntityTag");
-        return bet.contains("Items", TAG_LIST) && !bet.getList("Items", TAG_COMPOUND).isEmpty();
+        CompoundTag bet = getBlockEntityTag(stack);
+        if (bet == null) return false;
+        ListTag items = getTagOrNull(bet, "Items", TAG_LIST);
+        return items != null && !items.isEmpty();
     }
 }

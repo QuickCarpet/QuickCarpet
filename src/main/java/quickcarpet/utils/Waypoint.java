@@ -17,6 +17,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.dimension.DimensionType;
 import quickcarpet.QuickCarpet;
 import quickcarpet.patches.FakeServerPlayerEntity;
+import quickcarpet.utils.extensions.WaypointContainer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -32,7 +33,8 @@ import static quickcarpet.utils.Messenger.*;
 public class Waypoint implements Comparable<Waypoint>, Messenger.Formattable {
     private static final Gson GSON = new GsonBuilder().registerTypeAdapter(CollectionAdapter.type, new CollectionAdapter()).setPrettyPrinting().create();
 
-    public final @Nonnull WaypointContainer world;
+    public final @Nonnull
+    WaypointContainer world;
     public final @Nonnull String name;
     public final @Nonnull Vec3d position;
     public final @Nonnull Vec2f rotation;

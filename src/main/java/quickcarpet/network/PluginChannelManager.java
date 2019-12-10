@@ -12,7 +12,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import quickcarpet.mixin.CustomPayloadC2SPacketAccessor;
+import quickcarpet.mixin.accessor.CustomPayloadC2SPacketAccessor;
 
 import java.util.*;
 import java.util.stream.Collectors;

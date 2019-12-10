@@ -12,7 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import quickcarpet.mixin.ItemUsageContextAccessor;
+import quickcarpet.mixin.accessor.ItemUsageContextAccessor;
 import quickcarpet.settings.Settings;
 
 public class AccurateBlockPlacement {

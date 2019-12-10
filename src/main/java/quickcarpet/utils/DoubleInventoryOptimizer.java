@@ -1,6 +1,7 @@
 package quickcarpet.utils;
 
 import net.minecraft.item.ItemStack;
+import quickcarpet.utils.extensions.OptimizedInventory;
 
 public class DoubleInventoryOptimizer extends InventoryOptimizer {
     private final OptimizedInventory first;

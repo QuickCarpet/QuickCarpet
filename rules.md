@@ -115,15 +115,6 @@ Default: `0`
 Categories: commands  
 Validator: `OP Level (0-4)`  
 
-## conversionDupingFix
-Fixes duping via zombie conversion
-
-Type: `boolean`  
-Default: `false`  
-Options: `true`, `false`  
-Categories: fix, experimental  
-Fixes: [MC-152636](https://bugs.mojang.com/browse/MC-152636) fixed in 1.14.4-pre1  
-
 ## dispensersBreakBlocks
 Gives dispensers the ability to break blocks using gunpowder
 

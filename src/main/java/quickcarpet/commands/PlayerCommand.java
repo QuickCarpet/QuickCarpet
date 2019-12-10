@@ -26,7 +26,7 @@ import quickcarpet.helper.PlayerActionPack.Action;
 import quickcarpet.helper.PlayerActionPack.ActionType;
 import quickcarpet.patches.FakeServerPlayerEntity;
 import quickcarpet.settings.Settings;
-import quickcarpet.utils.ActionPackOwner;
+import quickcarpet.utils.extensions.ActionPackOwner;
 
 import java.util.Arrays;
 import java.util.Collection;

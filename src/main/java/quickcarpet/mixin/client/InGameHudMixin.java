@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import quickcarpet.annotation.Feature;
-import quickcarpet.utils.IPlayerListHud;
+import quickcarpet.utils.extensions.ExtendedInGameHud;
 
 @Feature("logger.hud")
 @Mixin(InGameHud.class)
@@ -21,6 +21,6 @@ public abstract class InGameHudMixin
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;isInSingleplayer()Z"))
     private boolean onDraw(MinecraftClient minecraftClient) {
-        return this.client.isInSingleplayer() && !((IPlayerListHud) playerListHud).hasFooterOrHeader();
+        return this.client.isInSingleplayer() && !((ExtendedInGameHud) playerListHud).hasFooterOrHeader();
     }
 }

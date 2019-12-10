@@ -21,7 +21,9 @@ public class FakeServerPlayNetworkHandler extends ServerPlayNetworkHandler {
     public void sendPacket(final Packet<?> packetIn) {}
 
     @Override
-    public void disconnect(Text message) {}
+    public void disconnect(Text message) {
+        player.kill();
+    }
 
     @Override
     public void onDisconnected(Text text_1) {

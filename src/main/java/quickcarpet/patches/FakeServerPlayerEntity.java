@@ -17,9 +17,9 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.dimension.DimensionType;
-import quickcarpet.mixin.ServerNetworkIoAccessor;
-import quickcarpet.utils.ActionPackOwner;
+import quickcarpet.mixin.accessor.ServerNetworkIoAccessor;
 import quickcarpet.utils.Messenger;
+import quickcarpet.utils.extensions.ActionPackOwner;
 
 public class FakeServerPlayerEntity extends ServerPlayerEntity {
     private boolean hasStartingPos;

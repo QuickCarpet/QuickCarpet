@@ -15,7 +15,7 @@ import quickcarpet.feature.BreakBlockDispenserBehavior;
 import quickcarpet.feature.CraftingTableBlockEntity;
 import quickcarpet.feature.PlaceBlockDispenserBehavior;
 import quickcarpet.feature.TillSoilDispenserBehavior;
-import quickcarpet.mixin.BlockTagsAccessor;
+import quickcarpet.mixin.accessor.BlockTagsAccessor;
 
 import java.util.List;
 import java.util.function.Supplier;

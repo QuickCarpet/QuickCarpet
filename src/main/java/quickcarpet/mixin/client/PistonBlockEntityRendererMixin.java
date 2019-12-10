@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import quickcarpet.annotation.BugFix;
 import quickcarpet.annotation.Feature;
 import quickcarpet.settings.Settings;
-import quickcarpet.utils.IPistonBlockEntity;
+import quickcarpet.utils.extensions.ExtendedPistonBlockEntity;
 
 @Mixin(PistonBlockEntityRenderer.class)
 public abstract class PistonBlockEntityRendererMixin extends BlockEntityRenderer<PistonBlockEntity> {
@@ -28,14 +28,14 @@ public abstract class PistonBlockEntityRendererMixin extends BlockEntityRenderer
             target ="Lnet/minecraft/client/render/block/entity/PistonBlockEntityRenderer;method_3575(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/world/World;ZI)V",
             ordinal = 3))
     private void updateRenderBool(PistonBlockEntity pistonBlockEntity_1, float float_1, MatrixStack matrixStack_1, VertexConsumerProvider vertexConsumerProvider_1, int int_1, int int_2, CallbackInfo ci) {
-        IPistonBlockEntity pistonBlockEntityExt = (IPistonBlockEntity) pistonBlockEntity_1;
+        ExtendedPistonBlockEntity pistonBlockEntityExt = (ExtendedPistonBlockEntity) pistonBlockEntity_1;
         if (!pistonBlockEntityExt.isRenderModeSet())
             pistonBlockEntityExt.setRenderCarriedBlockEntity(Settings.movableBlockEntities && pistonBlockEntityExt.getCarriedBlockEntity() != null);
     }
 
     @Inject(method = "render", at = @At("RETURN"))
     private void endMethod3576(PistonBlockEntity pistonBlockEntity_1, float partialTicks, MatrixStack transform, VertexConsumerProvider bufferWrapper, int int_1, int int_2, CallbackInfo ci) {
-        IPistonBlockEntity pistonBlockEntityExt = (IPistonBlockEntity) pistonBlockEntity_1;
+        ExtendedPistonBlockEntity pistonBlockEntityExt = (ExtendedPistonBlockEntity) pistonBlockEntity_1;
         if (pistonBlockEntityExt.getRenderCarriedBlockEntity()) {
             BlockEntity carriedBlockEntity = pistonBlockEntityExt.getCarriedBlockEntity();
             if (carriedBlockEntity != null) {

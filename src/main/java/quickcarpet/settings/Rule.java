@@ -50,4 +50,6 @@ public @interface Rule {
      * List of Minecraft bugs this rule fixes
      */
     BugFix[] bug() default {};
+
+    String deprecated() default "";
 }
