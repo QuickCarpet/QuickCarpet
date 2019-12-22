@@ -9,6 +9,7 @@
     "accessor.FallibleItemDispenserBehaviorAccessor",
     "accessor.ItemDispenserBehaviorAccessor",
     "accessor.ItemUsageContextAccessor",
+    "accessor.KeepAliveC2SPacketAccessor",
     "accessor.PlayerListHeaderS2CPacketAccessor",
     "accessor.ServerChunkManagerAccessor",
     "accessor.ServerNetworkIoAccessor",
