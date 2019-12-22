@@ -10,6 +10,7 @@
     "accessor.ItemDispenserBehaviorAccessor",
     "accessor.ItemUsageContextAccessor",
     "accessor.KeepAliveC2SPacketAccessor",
+    "accessor.KeepAliveS2CPacketAccessor",
     "accessor.PlayerListHeaderS2CPacketAccessor",
     "accessor.ServerChunkManagerAccessor",
     "accessor.ServerNetworkIoAccessor",

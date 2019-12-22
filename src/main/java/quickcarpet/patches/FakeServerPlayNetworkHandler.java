@@ -9,6 +9,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.network.packet.KeepAliveC2SPacket;
 import net.minecraft.text.Text;
 import quickcarpet.mixin.accessor.KeepAliveC2SPacketAccessor;
+import quickcarpet.mixin.accessor.KeepAliveS2CPacketAccessor;
 
 public class FakeServerPlayNetworkHandler extends ServerPlayNetworkHandler {
     public FakeServerPlayNetworkHandler(MinecraftServer server, ClientConnection cc, ServerPlayerEntity playerIn) {
@@ -25,7 +26,7 @@ public class FakeServerPlayNetworkHandler extends ServerPlayNetworkHandler {
         if (packet instanceof KeepAliveS2CPacket) {
             KeepAliveS2CPacket ping = (KeepAliveS2CPacket) packet;
             KeepAliveC2SPacket pong = new KeepAliveC2SPacket();
-            ((KeepAliveC2SPacketAccessor) pong).setId(ping.getId());
+            ((KeepAliveC2SPacketAccessor) pong).setId(((KeepAliveS2CPacketAccessor) ping).getId());
             this.onKeepAlive(pong);
         }
     }
