@@ -9,6 +9,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import quickcarpet.commands.*;
@@ -176,6 +177,13 @@ public final class QuickCarpet implements ModInitializer, ModuleHost, ServerEven
     @Override
     public void onInitialize() {
 
+    }
+
+    @Override
+    public boolean isIgnoredForRegistrySync(Identifier registry, Identifier entry) {
+        if (CarpetRegistry.isIgnoredForSync(entry)) return true;
+        for (QuickCarpetModule m : modules) if (m.isIgnoredForRegistrySync(registry, entry)) return true;
+        return false;
     }
 
     public static boolean isDevelopment() {

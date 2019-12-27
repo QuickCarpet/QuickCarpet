@@ -236,6 +236,14 @@ Default: `false`
 Options: `true`, `false`  
 Categories: feature, experimental  
 
+## netherMaps
+carpet.rule.netherMaps.description
+
+Type: `boolean`  
+Default: `true`  
+Options: `true`, `false`  
+Categories: feature  
+
 ## optimizedFluidTicks
 Optimizes random ticks for fluids
 

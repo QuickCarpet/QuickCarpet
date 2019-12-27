@@ -6,6 +6,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Identifier;
 
 public interface ServerEventListener {
     default Class<?> getSettingsClass() {
@@ -43,4 +44,8 @@ public interface ServerEventListener {
         for (ServerWorld world : server.getWorlds()) onWorldSaved(world);
     }
     default void onWorldSaved(ServerWorld world) {}
+
+    default boolean isIgnoredForRegistrySync(Identifier registry, Identifier entry) {
+        return false;
+    }
 }
