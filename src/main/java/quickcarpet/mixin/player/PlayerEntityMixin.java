@@ -16,7 +16,7 @@ import quickcarpet.settings.Settings;
 public abstract class PlayerEntityMixin {
     @Shadow public abstract Iterable<ItemStack> getItemsHand();
 
-    @Inject(method = "getMaxPortalTime", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "getMaxNetherPortalTime", at = @At("HEAD"), cancellable = true)
     private void portalCreativeDelay(CallbackInfoReturnable<Integer> cir) {
         if (!Settings.portalCreativeDelay) return;
         int delay = 80;
