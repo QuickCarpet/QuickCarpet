@@ -237,10 +237,11 @@ Options: `true`, `false`
 Categories: feature, experimental  
 
 ## netherMaps
-carpet.rule.netherMaps.description
+Enables normal mapping of the nether
 
+Useful for builds above the nether roof or SkyBlock  
 Type: `boolean`  
-Default: `true`  
+Default: `false`  
 Options: `true`, `false`  
 Categories: feature  
 

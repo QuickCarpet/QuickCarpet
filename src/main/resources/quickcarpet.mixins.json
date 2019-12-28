@@ -29,6 +29,8 @@
     "fillUpdates.StructureMixin",
     "fillUpdates.WorldMixin",
     "hopperCounters.HopperBlockEntityMixin",
+    "netherMaps.FilledMapItemMixin",
+    "netherMaps.MapStateMixin",
     "optimizedFluidTicks.ChunkSectionMixin",
     "optimizedInventories.ChestBlockEntityMixin",
     "optimizedInventories.DoubleInventoryMixin",

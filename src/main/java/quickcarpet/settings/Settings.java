@@ -212,6 +212,9 @@ public class Settings {
     @Rule(category = FEATURE)
     public static boolean dispensersShearVines = false;
 
+    @Rule(category = FEATURE)
+    public static boolean netherMaps = false;
+
     public static void main(String[] args) throws IOException {
         Bootstrap.initialize();
         Translations.init();
