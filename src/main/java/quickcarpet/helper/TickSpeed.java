@@ -1,5 +1,6 @@
 package quickcarpet.helper;
 
+import com.google.gson.JsonObject;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
@@ -20,11 +21,11 @@ import java.util.*;
 
 import static quickcarpet.utils.Messenger.*;
 
-public class TickSpeed {
+public class TickSpeed implements quickcarpet.TelemetryProvider {
     public final boolean isClient;
     public float tickRateGoal = 20;
     public float msptGoal = 50;
-    private long timeBias = 0;
+    private long warpTimeRemaining = 0;
     public long tickWarpStartTime = 0;
     private long tickWarpScheduledTicks = 0;
     private int stepAmount = 0;
@@ -77,12 +78,12 @@ public class TickSpeed {
             finishTickWarp();
             return ts("command.tick.warp.interrupted", GRAY + "" + ITALIC);
         }
-        if (timeBias > 0) {
+        if (warpTimeRemaining > 0) {
             return ts("command.tick.warp.active", LIME);
         }
         tickWarpStartTime = System.nanoTime();
         tickWarpScheduledTicks = warpAmount;
-        timeBias = warpAmount;
+        warpTimeRemaining = warpAmount;
         tickWarpCallback = callback;
         tickWarpSender = source;
         return ts("command.tick.warp.start", GRAY + "" + ITALIC);
@@ -93,7 +94,7 @@ public class TickSpeed {
     }
 
     public long getWarpTimeRemaining() {
-        return timeBias;
+        return warpTimeRemaining;
     }
 
     @Nullable
@@ -107,7 +108,7 @@ public class TickSpeed {
     }
 
     private void finishTickWarp() {
-        long completed_ticks = tickWarpScheduledTicks - timeBias;
+        long completed_ticks = tickWarpScheduledTicks - warpTimeRemaining;
         double milis_to_complete = System.nanoTime() - tickWarpStartTime;
         if (milis_to_complete == 0.0) {
             milis_to_complete = 1.0;
@@ -141,16 +142,16 @@ public class TickSpeed {
         } else {
             Messenger.broadcast(QuickCarpet.minecraft_server, message);
         }
-        timeBias = 0;
+        warpTimeRemaining = 0;
 
     }
 
     public boolean continueWarp() {
-        if (timeBias > 0) {
-            if (timeBias == tickWarpScheduledTicks) { //first call after previous tick, adjust start time
+        if (warpTimeRemaining > 0) {
+            if (warpTimeRemaining == tickWarpScheduledTicks) { //first call after previous tick, adjust start time
                 tickWarpStartTime = System.nanoTime();
             }
-            timeBias -= 1;
+            warpTimeRemaining -= 1;
             return true;
         } else {
             finishTickWarp();
@@ -320,6 +321,23 @@ public class TickSpeed {
 
     public double getTPS() {
         return calculateTPS(getCurrentMSPT());
+    }
+
+    @Override
+    public JsonObject getTelemetryData() {
+        JsonObject obj = new JsonObject();
+        double mspt = getCurrentMSPT();
+        obj.addProperty("tps", calculateTPS(mspt));
+        obj.addProperty("mspt", mspt);
+        obj.addProperty("msptGoal", msptGoal);
+        obj.addProperty("paused", paused);
+        obj.addProperty("warpTimeRemaining", warpTimeRemaining);
+        JsonObject loadAvg = new JsonObject();
+        loadAvg.addProperty("1", loadAvg1min);
+        loadAvg.addProperty("5", loadAvg5min);
+        loadAvg.addProperty("15", loadAvg15min);
+        obj.add("loadAvg", loadAvg);
+        return obj;
     }
 
     public class LogCommandParameters extends AbstractMap<String, Double> implements Logger.CommandParameters<Double> {

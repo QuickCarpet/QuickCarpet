@@ -228,6 +228,7 @@ public class CarpetProfiler
         return reportType != null;
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean isActive(ReportType type) {
         return reportType == type;
     }

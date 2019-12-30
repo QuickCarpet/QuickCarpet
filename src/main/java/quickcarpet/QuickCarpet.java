@@ -1,18 +1,23 @@
 package quickcarpet;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.entity.EntityCategory;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Pair;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import quickcarpet.commands.*;
+import quickcarpet.helper.Mobcaps;
 import quickcarpet.helper.TickSpeed;
 import quickcarpet.logging.LoggerManager;
 import quickcarpet.module.ModuleHost;
@@ -32,7 +37,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-public final class QuickCarpet implements ModInitializer, ModuleHost, ServerEventListener {
+public final class QuickCarpet implements ModInitializer, ModuleHost, ServerEventListener, TelemetryProvider {
     private static final Logger LOG = LogManager.getLogger();
     public static final PubSubManager PUBSUB = new PubSubManager();
 
@@ -122,6 +127,7 @@ public final class QuickCarpet implements ModInitializer, ModuleHost, ServerEven
         CameraModeCommand.register(dispatcher);
         MeasureCommand.register(dispatcher);
         WaypointCommand.register(dispatcher);
+        TelemetryCommand.register(dispatcher);
         for (QuickCarpetModule m : modules) m.registerCommands(dispatcher);
     }
 
@@ -192,5 +198,34 @@ public final class QuickCarpet implements ModInitializer, ModuleHost, ServerEven
 
     public static File getConfigFile(String name) {
         return minecraft_server.getLevelStorage().resolveFile(minecraft_server.getLevelName(), name);
+    }
+
+    @Override
+    public JsonObject getTelemetryData() {
+        JsonObject obj = new JsonObject();
+        JsonObject server = new JsonObject();
+        server.addProperty("players", minecraft_server.getCurrentPlayerCount());
+        server.addProperty("maxPlayers", minecraft_server.getMaxPlayerCount());
+        obj.add("server", server);
+        JsonArray worlds = new JsonArray();
+        for (ServerWorld world : minecraft_server.getWorlds()) {
+            JsonObject worldObj = new JsonObject();
+            worldObj.addProperty("name", world.getLevelProperties().getLevelName());
+            worldObj.addProperty("dimension", world.getDimension().getType().toString());
+            worldObj.addProperty("loadedChunks", world.getChunkManager().getLoadedChunkCount());
+            Map<EntityCategory, Pair<Integer, Integer>> mobcaps = Mobcaps.getMobcaps(world);
+            JsonObject mobcapsObj = new JsonObject();
+            for (Map.Entry<EntityCategory, Pair<Integer, Integer>> mobcap : mobcaps.entrySet()) {
+                JsonObject mobcapObj = new JsonObject();
+                mobcapObj.addProperty("current", mobcap.getValue().getLeft());
+                mobcapObj.addProperty("max", mobcap.getValue().getRight());
+                mobcapsObj.add(mobcap.getKey().getName(), mobcapObj);
+            }
+            worldObj.add("mobcaps", mobcapsObj);
+            worlds.add(worldObj);
+        }
+        obj.add("worlds", worlds);
+        obj.add("tickSpeed", tickSpeed.getTelemetryData());
+        return obj;
     }
 }

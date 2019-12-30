@@ -13,6 +13,7 @@
     "accessor.KeepAliveS2CPacketAccessor",
     "accessor.PlayerListHeaderS2CPacketAccessor",
     "accessor.ServerChunkManagerAccessor",
+    "accessor.ServerCommandSourceAccessor",
     "accessor.ServerNetworkIoAccessor",
     "accessor.ServerPlayerEntityAccessor",
     "autoCraftingTable.CraftingTableBlockMixin",
