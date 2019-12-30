@@ -86,11 +86,21 @@ public final class QuickCarpet implements ModInitializer, ModuleHost, ServerEven
 
     @Override
     public void tick(MinecraftServer server) {
-        tickSpeed.tick(server);
-        HUDController.update(server);
-        PUBSUB.update(server.getTicks());
-        StructureChannel.instance.tick();
-        for (QuickCarpetModule m : modules) m.tick(server);
+        try {
+            tickSpeed.tick(server);
+            HUDController.update(server);
+            PUBSUB.update(server.getTicks());
+            StructureChannel.instance.tick();
+        } catch (RuntimeException e) {
+            LOG.error("Exception ticking " + Build.NAME, e);
+        }
+        for (QuickCarpetModule m : modules) {
+            try {
+                m.tick(server);
+            } catch (RuntimeException e) {
+                LOG.error("Exception ticking " + Build.NAME + " module " + m.getName(), e);
+            }
+        }
     }
 
     @Override
@@ -148,16 +158,36 @@ public final class QuickCarpet implements ModInitializer, ModuleHost, ServerEven
 
     @Override
     public void onPlayerConnect(ServerPlayerEntity player) {
-        loggers.onPlayerConnect(player);
-        pluginChannels.onPlayerConnect(player);
-        for (QuickCarpetModule m : modules) m.onPlayerConnect(player);
+        try {
+            loggers.onPlayerConnect(player);
+            pluginChannels.onPlayerConnect(player);
+        } catch (RuntimeException e) {
+            LOG.error("Exception during onPlayerConnect for " + player.getEntityName(), e);
+        }
+        for (QuickCarpetModule m : modules) {
+            try {
+                m.onPlayerConnect(player);
+            } catch (RuntimeException e) {
+                LOG.error("Exception during onPlayerConnect for " + player.getEntityName() + " in module " + m.getName(), e);
+            }
+        }
     }
 
     @Override
     public void onPlayerDisconnect(ServerPlayerEntity player) {
-        loggers.onPlayerDisconnect(player);
-        pluginChannels.onPlayerDisconnect(player);
-        for (QuickCarpetModule m : modules) m.onPlayerDisconnect(player);
+        try {
+            loggers.onPlayerDisconnect(player);
+            pluginChannels.onPlayerDisconnect(player);
+        } catch (RuntimeException e) {
+            LOG.error("Exception during onPlayerDisconnect for " + player.getEntityName(), e);
+        }
+        for (QuickCarpetModule m : modules) {
+            try {
+                m.onPlayerDisconnect(player);
+            } catch (RuntimeException e) {
+                LOG.error("Exception during onPlayerDisconnect for " + player.getEntityName() + " in module " + m.getName(), e);
+            }
+        }
     }
 
     @Override
