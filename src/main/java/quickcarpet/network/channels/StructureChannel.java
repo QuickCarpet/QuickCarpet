@@ -131,7 +131,7 @@ public class StructureChannel implements PluginChannelHandler {
 
     }
 
-    public void recordChunkSent(ServerPlayerEntity player, ChunkPos pos) {
+    public synchronized void recordChunkSent(ServerPlayerEntity player, ChunkPos pos) {
         if (!playerMap.containsKey(player)) return;
         playerMap.get(player).putIfAbsent(pos, 0);
     }
