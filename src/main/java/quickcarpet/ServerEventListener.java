@@ -45,6 +45,11 @@ public interface ServerEventListener {
     }
     default void onWorldSaved(ServerWorld world) {}
 
+    default void onWorldsUnloaded(MinecraftServer server) {
+        for (ServerWorld world : server.getWorlds()) onWorldUnloaded(world);
+    }
+    default void onWorldUnloaded(ServerWorld world) {}
+
     default boolean isIgnoredForRegistrySync(Identifier registry, Identifier entry) {
         return false;
     }

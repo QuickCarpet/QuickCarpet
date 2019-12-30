@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.function.Consumer;
 
 /**
  * Central interface for PubSub interactions
@@ -37,12 +38,15 @@ public final class PubSubManager {
     public PubSubNode getOrCreateNode(String name) {
         return knownNodes.computeIfAbsent(name, name1 -> {
             String[] path = name1.split("\\.");
-            PubSubNode node = ROOT.getOrCreateChildNode(path);
-            for (PubSubNode n = node; n != ROOT; n = n.parent) {
-                knownNodes.put(n.fullName, n);
-            }
-            return node;
+            return addKnownNode(ROOT.getOrCreateChildNode(path));
         });
+    }
+
+    public PubSubNode addKnownNode(PubSubNode node) {
+        for (PubSubNode n = node; n != ROOT; n = n.parent) {
+            knownNodes.put(n.fullName, n);
+        }
+        return node;
     }
 
     public void subscribe(PubSubNode node, PubSubSubscriber subscriber) {
@@ -59,5 +63,28 @@ public final class PubSubManager {
 
     public void update(int tickCounter) {
         ROOT.update(tickCounter);
+    }
+
+    public CallbackHandle addCallback(PubSubNode node, int interval, Consumer<PubSubNode> cb) {
+        return node.addCallback(new PubSubCallback() {
+            @Override
+            public boolean shouldUpdate(int tickCounter) {
+                return (tickCounter % interval) == 0;
+            }
+
+            @Override
+            public void update(PubSubNode node) {
+                cb.accept(node);
+            }
+        });
+    }
+
+    public CallbackHandle addCallback(PubSubNode node, PubSubCallback cb) {
+        return node.addCallback(cb);
+    }
+
+    public interface CallbackHandle {
+        boolean isActive();
+        void remove();
     }
 }

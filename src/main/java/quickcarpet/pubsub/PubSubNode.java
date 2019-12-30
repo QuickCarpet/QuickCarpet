@@ -14,14 +14,14 @@ public final class PubSubNode {
     public final @Nullable PubSubNode parent;
     public final Map<String, PubSubNode> children = new HashMap<>();
     private Set<PubSubSubscriber> subscribers = new LinkedHashSet<>();
+    private Set<PubSubCallback> callbacks = new LinkedHashSet<>();
 
     /**
         Keeps track of the number of subscribers in this branch of the tree (root -> subscriber)
         Used for only updating values if there are actually subscribers that would get them
      */
     private int totalSubscriberCount = 0;
-
-    @Nullable PubSubInfoProvider<?> provider;
+    private Object lastValue;
 
     PubSubNode(@Nullable PubSubNode parent, String name) {
         this.parent = parent;
@@ -30,7 +30,7 @@ public final class PubSubNode {
     }
 
     @Nullable
-    PubSubNode getChildNode(String ...path) {
+    public PubSubNode getChildNode(String ...path) {
         return getChildNode(path, 0, false);
     }
 
@@ -39,7 +39,7 @@ public final class PubSubNode {
         return getChildNode(path.toArray(new String[0]), 0, false);
     }
 
-    PubSubNode getOrCreateChildNode(String ...path) {
+    public PubSubNode getOrCreateChildNode(String ...path) {
         return getChildNode(path, 0, true);
     }
 
@@ -80,9 +80,7 @@ public final class PubSubNode {
      */
     private void onSubscribe(PubSubSubscriber subscriber) {
         this.totalSubscriberCount++;
-        if (this.provider != null) {
-            subscriber.updateValue(this, this.provider.get());
-        }
+        if (lastValue != null) subscriber.updateValue(this, lastValue);
         for (PubSubNode child : children.values()) {
             child.onSubscribe(subscriber);
         }
@@ -119,6 +117,7 @@ public final class PubSubNode {
      * @see #publish(PubSubNode,Object)
      */
     void publish(Object value) {
+        lastValue = value;
         publish(this, value);
     }
 
@@ -141,12 +140,27 @@ public final class PubSubNode {
      */
     void update(int tickCounter) {
         if (totalSubscriberCount == 0) return;
-        if (this.provider != null && this.provider.shouldUpdate(tickCounter)) {
-            this.publish(this.provider.get());
+        for (PubSubCallback cb : this.callbacks) {
+            if (cb.shouldUpdate(tickCounter)) cb.update(this);
         }
         for (PubSubNode child : children.values()) {
             child.update(tickCounter);
         }
+    }
+
+    PubSubManager.CallbackHandle addCallback(PubSubCallback callback) {
+        callbacks.add(callback);
+        return new PubSubManager.CallbackHandle() {
+            @Override
+            public boolean isActive() {
+                return callbacks.contains(callback);
+            }
+
+            @Override
+            public void remove() {
+                callbacks.remove(callback);
+            }
+        };
     }
 
     @Override

@@ -1,5 +1,7 @@
 package quickcarpet;
 
+import com.google.common.collect.Multimap;
+import com.google.common.collect.MultimapBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.CommandDispatcher;
@@ -14,6 +16,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
+import net.minecraft.world.dimension.DimensionType;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import quickcarpet.commands.*;
@@ -27,12 +30,14 @@ import quickcarpet.network.channels.RulesChannel;
 import quickcarpet.network.channels.StructureChannel;
 import quickcarpet.pubsub.PubSubManager;
 import quickcarpet.pubsub.PubSubMessenger;
+import quickcarpet.pubsub.PubSubNode;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.*;
 import quickcarpet.utils.extensions.WaypointContainer;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -53,6 +58,9 @@ public final class QuickCarpet implements ModInitializer, ModuleHost, ServerEven
     private final PubSubMessenger pubSubMessenger = new PubSubMessenger(PUBSUB);
     private CommandDispatcher<ServerCommandSource> dispatcher;
     public LoggerManager loggers;
+
+    @SuppressWarnings("UnstableApiUsage")
+    private Multimap<ServerWorld, Runnable> worldUnloadCallbacks = MultimapBuilder.hashKeys().arrayListValues().build();
 
     // Fabric on dedicated server will call getInstance at return of DedicatedServer::<init>(...)
     // new CommandManager(...) is before that so QuickCarpet is created from that
@@ -191,14 +199,42 @@ public final class QuickCarpet implements ModInitializer, ModuleHost, ServerEven
     }
 
     @Override
+    public void onWorldsLoaded(MinecraftServer server) {
+        for (ServerWorld world : server.getWorlds()) onWorldLoaded(world);
+        for (QuickCarpetModule m : modules) m.onWorldsLoaded(server);
+    }
+
+    @Override
     public void onWorldLoaded(ServerWorld world) {
         try {
             Map<String, Waypoint> waypoints = ((WaypointContainer) world).getWaypoints();
             waypoints.clear();
             waypoints.putAll(Waypoint.loadWaypoints((WaypointContainer) world));
+            Identifier dimType = DimensionType.getId(world.getDimension().getType());
+            String prefix = dimType.getNamespace() + "." + dimType.getPath() + ".mob_cap";
+            PubSubNode mobCapNode = PUBSUB.getOrCreateNode(prefix);
+            for (EntityCategory category : EntityCategory.values()) {
+                PUBSUB.addKnownNode(mobCapNode.getOrCreateChildNode(category.getName(), "filled"));
+                PUBSUB.addKnownNode(mobCapNode.getOrCreateChildNode(category.getName(), "total"));
+            }
+            PubSubManager.CallbackHandle handle = PUBSUB.addCallback(mobCapNode, 20, node -> {
+                Map<EntityCategory, Pair<Integer, Integer>> mobcaps = Mobcaps.getMobcaps(world);
+                for (Map.Entry<EntityCategory, Pair<Integer, Integer>> entry : mobcaps.entrySet()) {
+                    PubSubNode categoryNode = node.getOrCreateChildNode(entry.getKey().getName());
+                    PUBSUB.publish(categoryNode.getOrCreateChildNode("filled"), entry.getValue().getLeft());
+                    PUBSUB.publish(categoryNode.getOrCreateChildNode("total"), entry.getValue().getRight());
+                }
+            });
+            worldUnloadCallbacks.put(world, handle::remove);
         } catch (Exception e) {
             LOG.error("Error loading waypoints for " + world.getLevelProperties().getLevelName() + "/" + world.getDimension().getType());
         }
+    }
+
+    @Override
+    public void onWorldsSaved(MinecraftServer server) {
+        for (ServerWorld world : server.getWorlds()) onWorldSaved(world);
+        for (QuickCarpetModule m : modules) m.onWorldsSaved(server);
     }
 
     @Override
@@ -208,6 +244,18 @@ public final class QuickCarpet implements ModInitializer, ModuleHost, ServerEven
         } catch (Exception e) {
             LOG.error("Error saving waypoints for " + world.getLevelProperties().getLevelName() + "/" + world.getDimension().getType());
         }
+    }
+
+    @Override
+    public void onWorldsUnloaded(MinecraftServer server) {
+        for (ServerWorld world : server.getWorlds()) onWorldUnloaded(world);
+        for (QuickCarpetModule m : modules) m.onWorldsUnloaded(server);
+    }
+
+    @Override
+    public void onWorldUnloaded(ServerWorld world) {
+        Collection<Runnable> callbacks = worldUnloadCallbacks.removeAll(world);
+        for (Runnable r : callbacks) r.run();
     }
 
     @Override

@@ -68,4 +68,9 @@ public abstract class MinecraftServerMixin {
         int sideLength = Settings.spawnChunkLevel * 2 - 1;
         return sideLength * sideLength;
     }
+
+    @Inject(method = "shutdown", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;save(ZZZ)Z", shift = At.Shift.AFTER))
+    private void onWorldsUnloaded(CallbackInfo ci) {
+        QuickCarpet.getInstance().onWorldsUnloaded((MinecraftServer) (Object) this);
+    }
 }

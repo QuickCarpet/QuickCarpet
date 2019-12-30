@@ -5,7 +5,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class PubSubInfoProvider<T> implements Supplier<T> {
+public class PubSubInfoProvider<T> implements Supplier<T>, PubSubCallback {
     public final PubSubNode node;
     public final int interval;
     private final Supplier<T> supplier;
@@ -27,7 +27,7 @@ public class PubSubInfoProvider<T> implements Supplier<T> {
         this.interval = interval;
         this.supplier = null;
         this.function = function;
-        node.provider = this;
+        node.addCallback(this);
     }
 
     public PubSubInfoProvider(PubSubNode node, int interval, Supplier<T> supplier) {
@@ -35,7 +35,7 @@ public class PubSubInfoProvider<T> implements Supplier<T> {
         this.interval = interval;
         this.supplier = supplier;
         this.function = null;
-        node.provider = this;
+        node.addCallback(this);
     }
 
     public PubSubInfoProvider<T> setPhase(int phase) {
@@ -48,6 +48,7 @@ public class PubSubInfoProvider<T> implements Supplier<T> {
         return this;
     }
 
+    @Override
     public boolean shouldUpdate(int tickCounter) {
         if (interval == 0) return false;
         return tickCounter % interval == phase;
@@ -59,6 +60,11 @@ public class PubSubInfoProvider<T> implements Supplier<T> {
             this.node.publish(newValue);
         }
         previous = Optional.of(newValue);
+    }
+
+    @Override
+    public void update(PubSubNode node) {
+        publish();
     }
 
     public T get() {
