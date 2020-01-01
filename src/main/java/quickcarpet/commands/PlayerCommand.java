@@ -88,11 +88,13 @@ public class PlayerCommand {
                 ).then(literal("spawn").executes(PlayerCommand::spawn)
                     .then(literal("at").then(argument("position", vec3()).executes(PlayerCommand::spawn)
                         .then(literal("facing").then(argument("direction", rotation()).executes(PlayerCommand::spawn)
-                            .then(literal("in").then(argument("dimension", dimension()).executes(PlayerCommand::spawn)))
-                        ))
-                    ))
-                )
-            );
+                            .then(literal("in").then(argument("dimension", dimension()).executes(PlayerCommand::spawn)
+                                .then(literal("as")
+                                    .then(literal("spectator").requires(s -> s.hasPermissionLevel(Settings.commandCameramode) || s.hasPermissionLevel(2)).executes(ctx -> spawn(ctx, GameMode.SPECTATOR)))
+                                    .then(literal("creative").requires(s -> s.hasPermissionLevel(2)).executes(ctx -> spawn(ctx, GameMode.CREATIVE)))
+                                    .then(literal("survival").executes(ctx -> spawn(ctx, GameMode.SURVIVAL)))
+                                    .then(literal("adventure").executes(ctx -> spawn(ctx, GameMode.ADVENTURE)))
+            )))))))));
         dispatcher.register(literalargumentbuilder);
     }
 
@@ -188,6 +190,10 @@ public class PlayerCommand {
     }
 
     private static int spawn(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        return spawn(context, GameMode.NOT_SET);
+    }
+
+    private static int spawn(CommandContext<ServerCommandSource> context, GameMode gameMode) throws CommandSyntaxException {
         if (cantSpawn(context)) return 0;
         ServerCommandSource source = context.getSource();
         Vec3d pos = tryGetArg(
@@ -204,6 +210,7 @@ public class PlayerCommand {
             ServerPlayerEntity player = context.getSource().getPlayer();
             mode = player.interactionManager.getGameMode();
         } catch (CommandSyntaxException ignored) {}
+        if (gameMode != GameMode.NOT_SET) mode = gameMode;
         String playerName = getString(context, "player");
         MinecraftServer server = source.getMinecraftServer();
         PlayerEntity player = FakeServerPlayerEntity.createFake(playerName, server, pos.x, pos.y, pos.z, facing.y, facing.x, dim, mode);
