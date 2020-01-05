@@ -215,7 +215,7 @@ Categories: commands
 ## isDevelopment
 Sets the isDevelopment constant
 
- For example enables the /test command  
+For example enables the /test command  
 Type: `boolean`  
 Default: `false`  
 Options: `true`, `false`  
