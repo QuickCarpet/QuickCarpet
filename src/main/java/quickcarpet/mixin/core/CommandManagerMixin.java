@@ -33,6 +33,11 @@ public abstract class CommandManagerMixin {
         QuickCarpet.getInstance().setCommandDispatcher(this.dispatcher);
     }
 
+    @Redirect(method = "<init>", at = @At(value = "FIELD", target = "Lnet/minecraft/SharedConstants;isDevelopment:Z"))
+    private boolean registerTest() {
+        return true;
+    }
+
     @Feature(value = "core", bug = @BugFix(value = "MC-124493", status = "WAI"))
     @Redirect(method = "execute", at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;isDebugEnabled()Z", remap = false))
     private boolean moreStackTraces(Logger logger) {

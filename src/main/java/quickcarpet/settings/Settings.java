@@ -1,6 +1,7 @@
 package quickcarpet.settings;
 
 import net.minecraft.Bootstrap;
+import net.minecraft.SharedConstants;
 import net.minecraft.server.world.ChunkTicketType;
 import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
@@ -214,6 +215,17 @@ public class Settings {
 
     @Rule(category = FEATURE)
     public static boolean netherMaps = false;
+
+    @Rule(category = EXPERIMENTAL, onChange = IsDevelopmentListener.class)
+    public static boolean isDevelopment = false;
+
+    public static class IsDevelopmentListener implements ChangeListener<Boolean> {
+        @Override
+        public void onChange(ParsedRule<Boolean> rule, Boolean previous) {
+            SharedConstants.isDevelopment = isDevelopment;
+            MANAGER.resendCommandTree();
+        }
+    }
 
     public static void main(String[] args) throws IOException {
         Bootstrap.initialize();

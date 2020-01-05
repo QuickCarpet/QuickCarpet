@@ -84,6 +84,8 @@
   "carpet.rule.renewableBeeHives.description": "Bee hives can generate on trees planted in these biomes",
   "carpet.rule.netherMaps.description": "Enables normal mapping of the nether",
   "carpet.rule.netherMaps.extra": "Useful for builds above the nether roof or SkyBlock",
+  "carpet.rule.isDevelopment.description": "Sets the isDevelopment constant",
+  "carpet.rule.isDevelopment.extra": " For example enables the /test command",
   "carpet.validator.positive": "Must be positive",
   "carpet.validator.nonNegative": "Must be non-negative",
   "carpet.validator.negative": "Must be negative",

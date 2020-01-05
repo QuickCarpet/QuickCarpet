@@ -212,6 +212,15 @@ Default: `false`
 Options: `true`, `false`  
 Categories: commands  
 
+## isDevelopment
+Sets the isDevelopment constant
+
+ For example enables the /test command  
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: experimental  
+
 ## mobInFireConvertsSandToSoulsand
 If a living entity dies on sand with fire on top the sand will convert into soul sand
 
