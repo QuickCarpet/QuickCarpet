@@ -11,6 +11,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.command.TeleportCommand;
+import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Lazy;
 import net.minecraft.util.math.BlockPos;
@@ -25,6 +26,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 public class Reflection {
@@ -68,9 +70,27 @@ public class Reflection {
             descriptor.append("L").append(unmapToIntermediary(retType).replace('.', '/')).append(";");
         }
         String obf = MAPPINGS.get().mapMethodName("intermediary", unmapToIntermediary(owner), intermediary, descriptor.toString());
-        Method m = owner.getDeclaredMethod(obf, args);
+        return getMethod(owner, obf, retType, args);
+    }
+
+    private static MethodHandle getMethod(Class<?> owner, String name, Class<?> retType, Class<?> ...args) throws IllegalAccessException, NoSuchMethodException {
+        Method m = owner.getDeclaredMethod(name, args);
         m.setAccessible(true);
         return LOOKUP.unreflect(m);
+    }
+
+    private static MethodHandle getAnyMethod(Class<?> owner, String[] names, Class<?> retType, Class<?> ...args) throws IllegalAccessException, NoSuchMethodException {
+        NoSuchMethodException ex = null;
+        for (String name : names) {
+            try {
+                return getMethod(owner, name, retType, args);
+            } catch (NoSuchMethodException e) {
+                if (ex == null) ex = e;
+                else ex.addSuppressed(e);
+            }
+        }
+        assert ex != null;
+        throw ex;
     }
 
     private static final Class<? extends TradeOffers.Factory> SELL_ITEM_FACTORY_CLASS = TradeOffers.WANDERING_TRADER_TRADES.get(1)[0].getClass();
@@ -213,6 +233,27 @@ public class Reflection {
     public static void teleport(ServerCommandSource source, Entity entity_1, ServerWorld world, double x, double y, double z, Set<PlayerPositionLookS2CPacket.Flag> flags, float yaw, float pitch) {
         try {
             TeleportHandler.teleport.invoke(source, entity_1, world, x, y, z, flags, yaw, pitch, null);
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
+    }
+
+    // WTF Fabric? https://github.com/FabricMC/intermediary/issues/6
+    private static class ServerChunkManagerTickHandler {
+        private static final MethodHandle tick;
+
+        static {
+            try {
+                tick = getAnyMethod(ServerChunkManager.class, new String[]{"a", "method_12127", "tick"}, void.class, BooleanSupplier.class);
+            } catch (ReflectiveOperationException e) {
+                throw new IllegalStateException(e);
+            }
+        }
+    }
+
+    public static void tickChunkManager(ServerChunkManager chunkManager, BooleanSupplier shouldKeepTicking) {
+        try {
+            ServerChunkManagerTickHandler.tick.invokeExact(chunkManager, shouldKeepTicking);
         } catch (Throwable throwable) {
             throw new RuntimeException(throwable);
         }

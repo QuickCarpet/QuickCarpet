@@ -1,6 +1,7 @@
 package quickcarpet.mixin.tickSpeed;
 
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.world.World;
@@ -16,6 +17,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import quickcarpet.QuickCarpet;
 import quickcarpet.annotation.Feature;
+import quickcarpet.utils.Reflection;
 
 import java.util.List;
 import java.util.function.BiFunction;
@@ -26,6 +28,8 @@ import java.util.function.BooleanSupplier;
 public abstract class ServerWorldMixin extends World {
     @Shadow @Final private List<ServerPlayerEntity> players;
 
+    @Shadow public abstract ServerChunkManager getChunkManager();
+
     protected ServerWorldMixin(LevelProperties levelProperties, DimensionType dimensionType, BiFunction<World, Dimension, ChunkManager> chunkManagerProvider, Profiler profiler, boolean isClient) {
         super(levelProperties, dimensionType, chunkManagerProvider, profiler, isClient);
     }
@@ -34,7 +38,7 @@ public abstract class ServerWorldMixin extends World {
     private void tickFreeze(BooleanSupplier shouldContinueTicking, CallbackInfo ci) {
         if (QuickCarpet.getInstance().tickSpeed.isPaused()) {
             for (ServerPlayerEntity p : this.players) p.tick();
-            this.getChunkManager().tick(shouldContinueTicking);
+            Reflection.tickChunkManager(this.getChunkManager(), shouldContinueTicking);
             ci.cancel();
         }
     }
