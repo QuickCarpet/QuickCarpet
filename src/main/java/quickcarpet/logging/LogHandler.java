@@ -1,11 +1,13 @@
 package quickcarpet.logging;
 
+import net.minecraft.client.network.packet.TitleS2CPacket;
 import net.minecraft.network.MessageType;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import quickcarpet.QuickCarpet;
 import quickcarpet.utils.HUDController;
+import quickcarpet.utils.Messenger;
 
 import java.util.Arrays;
 import java.util.function.Supplier;
@@ -27,6 +29,12 @@ public interface LogHandler
             ServerPlayerEntity player = QuickCarpet.minecraft_server.getPlayerManager().getPlayer(playerName);
             if (player != null)
                 HUDController.clearPlayerHUD(player);
+        }
+    };
+    LogHandler ACTION_BAR = new LogHandler() {
+        @Override
+        public void handle(Logger logger, ServerPlayerEntity player, Text[] message, Supplier<Logger.CommandParameters> commandParams) {
+            player.networkHandler.sendPacket(new TitleS2CPacket(TitleS2CPacket.Action.ACTIONBAR, Messenger.c((Object[]) message)));
         }
     };
 

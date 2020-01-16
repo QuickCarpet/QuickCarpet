@@ -22,6 +22,7 @@ public class LogHandlers {
                 return true;
             }
         });
+        registerCreator("action_bar", extraArgs -> LogHandler.ACTION_BAR);
     }
 
     private static void registerCreator(String name, LogHandler.LogHandlerCreator creator) {
