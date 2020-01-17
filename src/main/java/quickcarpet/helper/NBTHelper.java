@@ -26,7 +26,7 @@ public class NBTHelper {
     @Nullable
     public static CompoundTag getBlockEntityTag(ItemStack stack) {
         CompoundTag tag = stack.getTag();
-        return tag == null ? null : getTagOrNull(tag, "BlockEntitiyTag", TAG_COMPOUND);
+        return tag == null ? null : getTagOrNull(tag, "BlockEntityTag", TAG_COMPOUND);
     }
 
     @Nullable
