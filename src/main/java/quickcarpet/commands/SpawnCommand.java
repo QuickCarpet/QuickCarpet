@@ -84,7 +84,7 @@ public class SpawnCommand {
     private static int sendMobcaps(ServerCommandSource source, DimensionType dimension) {
         if (dimension == null) dimension = source.getWorld().getDimension().getType();
         Map<EntityCategory, Pair<Integer, Integer>> mobcaps = Mobcaps.getMobcaps(dimension);
-        m(source, t("command.spawn.mobcaps.title", Registry.DIMENSION.getId(dimension)));
+        m(source, t("command.spawn.mobcaps.title", Registry.DIMENSION_TYPE.getId(dimension)));
         for (Map.Entry<EntityCategory, Pair<Integer, Integer>> e : mobcaps.entrySet()) {
             EntityCategory category = e.getKey();
             Pair<Integer, Integer> pair = e.getValue();

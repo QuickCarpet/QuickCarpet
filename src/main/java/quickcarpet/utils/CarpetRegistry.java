@@ -44,7 +44,7 @@ public class CarpetRegistry {
 
 
     private static <T extends BlockEntity> BlockEntityType<T> registerBlockEntity(String id, Supplier<T> supplier, Block... blocks) {
-        return Registry.register(Registry.BLOCK_ENTITY, id, Reflection.newBlockEntityTypeBuilder(supplier, blocks).build(null));
+        return Registry.register(Registry.BLOCK_ENTITY_TYPE, id, Reflection.newBlockEntityTypeBuilder(supplier, blocks).build(null));
     }
 
     public static void init() {

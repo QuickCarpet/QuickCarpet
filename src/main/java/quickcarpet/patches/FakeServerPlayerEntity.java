@@ -104,7 +104,7 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
 
     public void applyStartingPosition() {
         if (hasStartingPos) {
-            this.setPositionAndAngles(startingX, startingY, startingZ, startingYaw, startingPitch);
+            this.refreshPositionAndAngles(startingX, startingY, startingZ, startingYaw, startingPitch);
             this.setVelocity(Vec3d.ZERO);
         }
     }

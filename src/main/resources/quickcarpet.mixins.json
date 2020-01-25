@@ -55,7 +55,6 @@
     "profiler.SpawnHelperMixin",
     "profiler.WorldMixin",
     "railPowerLimit.PoweredRailBlockMixin",
-    "renewableBeeHives.SaplingGeneratorMixin",
     "renewableCoral.CoralBlockMixin",
     "renewableCoral.CoralFeatureMixin",
     "renewableGravel.InfestedBlockMixin",

@@ -81,7 +81,6 @@
   "carpet.rule.movableBlockOverrides.description": "Override how pistons interact with any block. Adds weak stickyness behavior used by default for redstone components, flowerpots, etc.",
   "carpet.rule.accurateBlockPlacement.description": "Allows client mods to specify the orientation of placed blocks",
   "carpet.rule.dispensersBreakBlocks.description": "Gives dispensers the ability to break blocks using gunpowder",
-  "carpet.rule.renewableBeeHives.description": "Bee hives can generate on trees planted in these biomes",
   "carpet.rule.netherMaps.description": "Enables normal mapping of the nether",
   "carpet.rule.netherMaps.extra": "Useful for builds above the nether roof or SkyBlock",
   "carpet.rule.isDevelopment.description": "Sets the isDevelopment constant",
