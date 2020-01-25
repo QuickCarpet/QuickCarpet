@@ -44,7 +44,7 @@ public abstract class PistonHandlerMixin {
     @Shadow @Final private World world;
     @Shadow protected abstract boolean tryMove(BlockPos blockPos_1, Direction direction_1);
     @Shadow @Final private List<BlockPos> movedBlocks;
-    @Shadow @Final private Direction direction;
+    @Shadow @Final private Direction motionDirection;
     @Shadow @Final private List<BlockPos> brokenBlocks;
     @Shadow @Final private BlockPos posFrom;
     //Get access to the blockstate to check if it is a doubleblock later
@@ -99,12 +99,12 @@ public abstract class PistonHandlerMixin {
      * @author 2No2Name
      */
     @Feature("movableBlockEntities")
-    @Redirect(method = "tryMove", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/piston/PistonHandler;method_23367(Lnet/minecraft/block/Block;)Z"))
+    @Redirect(method = "tryMove", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/piston/PistonHandler;isBlockSticky(Lnet/minecraft/block/Block;)Z"))
     private boolean modifiedIsSticky(Block block) {
-        if (Settings.movableBlockEntities && isStickyOnSide(blockState_1, this.direction.getOpposite())) {
+        if (Settings.movableBlockEntities && isStickyOnSide(blockState_1, this.motionDirection.getOpposite())) {
            return true;
         }
-        return method_23367(block);
+        return isBlockSticky(block);
     }
 
     /**
@@ -199,7 +199,7 @@ public abstract class PistonHandlerMixin {
             if ((pistonBehavior == PistonBehaviors.WEAK_STICKY || pistonBehavior == PistonBehaviors.WEAK_STICKY_BREAKABLE) && !movedBlocks.contains(blockPos_1)) {
                 //block is being pushed: either move the block or crush it.
                 BlockPos brokenBefore = null;
-                if(arg1 == this.direction){
+                if(arg1 == this.motionDirection){
                     if(pistonBehavior == PistonBehaviors.WEAK_STICKY_BREAKABLE)
                         if(brokenBlocks.size()>0)
                             brokenBefore = brokenBlocks.get(brokenBlocks.size()-1);
@@ -233,7 +233,7 @@ public abstract class PistonHandlerMixin {
                 }
                 //weaklyMovedBlocks does not already contain blockPos_1
                 //Insert directly before the block that would push into blockPos_1 to make sure this block is moved first
-                int i1 = weaklyMovedBlocks.indexOf(blockPos_1.offset(this.direction.getOpposite()));
+                int i1 = weaklyMovedBlocks.indexOf(blockPos_1.offset(this.motionDirection.getOpposite()));
                 if(i1 != -1) {
                     weaklyMovedBlocks.add(i1,blockPos_1);
                     weaklyMovedBlocks_moveBefore.add(i1, weaklyMovedBlocks_moveBefore.get(i1));
@@ -251,7 +251,7 @@ public abstract class PistonHandlerMixin {
                     weaklyMovedBlocks_moveBreakBefore.add(brokenBefore);
                 }
 
-                BlockPos blockPos = blockPos_1.offset(this.direction);
+                BlockPos blockPos = blockPos_1.offset(this.motionDirection);
                 int j = weaklyMovedBlocks.indexOf(blockPos);
                 //reorder in case we just inserted a block in between two blocks
                 while(j > i1) {
@@ -270,7 +270,7 @@ public abstract class PistonHandlerMixin {
                     weaklyMovedBlocks_moveBreakBefore.add(i1,k2);//not neccessary to reorder breaking
                     ++i1;
 
-                    blockPos = blockPos_1.offset(this.direction);
+                    blockPos = blockPos_1.offset(this.motionDirection);
                     j = weaklyMovedBlocks.indexOf(blockPos);
                 }
                 cir.setReturnValue(true);
@@ -279,9 +279,9 @@ public abstract class PistonHandlerMixin {
     }
 
     @Shadow @Final
-    private boolean field_12247; //IsExtending
+    private boolean retracted; //IsExtending
 
-    @Shadow private static boolean method_23367(Block block_1) {
+    @Shadow private static boolean isBlockSticky(Block block_1) {
         throw new AbstractMethodError();
     }
 
@@ -302,7 +302,7 @@ public abstract class PistonHandlerMixin {
                     BlockPos blockPos = weaklyMovedBlocks.get(i);
                     boolean move = false;
 
-                    BlockPos posDestination = blockPos.offset(this.direction);
+                    BlockPos posDestination = blockPos.offset(this.motionDirection);
                     if(movedBlocks.contains(posDestination)) //intentionally not checking weaklyMovedBlocks.contains
                         move = true;
                         else {
@@ -312,7 +312,7 @@ public abstract class PistonHandlerMixin {
                         else if(b.getMaterial().isReplaceable()) {
                             move = true;
                             brokenBlocks.add(posDestination);
-                        }else if(b.getBlock() == Blocks.PISTON_HEAD && !field_12247 && posDestination.equals(this.posFrom.offset(this.direction.getOpposite()))){ //is the block in the way the piston head retracting?
+                        }else if(b.getBlock() == Blocks.PISTON_HEAD && !retracted && posDestination.equals(this.posFrom.offset(this.motionDirection.getOpposite()))){ //is the block in the way the piston head retracting?
                             move = true;
                         }
                     }
