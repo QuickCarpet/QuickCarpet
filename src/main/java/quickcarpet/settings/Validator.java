@@ -103,7 +103,7 @@ public interface Validator<T> {
         public Optional<TranslatableText> validate(T value) {
             int minCompare = value.compareTo(min);
             int maxCompare = value.compareTo(max);
-            if ((minCompare < 0 && 0 < maxCompare) || (minCompare == 0 && minIncluded) || (maxCompare == 0) && maxIncluded) return Optional.empty();
+            if ((0 < minCompare && maxCompare < 0) || (minCompare == 0 && minIncluded) || (maxCompare == 0) && maxIncluded) return Optional.empty();
             return Optional.of(t("carpet.validator.range", s(this.min.toString(), CYAN), s(this.max.toString(), CYAN)));
         }
     }
