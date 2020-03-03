@@ -27,7 +27,7 @@ public abstract class FallingBlockEntityMixin extends Entity {
             target = "Lnet/minecraft/entity/FallingBlockEntity;setVelocity(Lnet/minecraft/util/math/Vec3d;)V"),
             locals = LocalCapture.CAPTURE_FAILHARD)
     private void onTick(CallbackInfo ci, Block block_1, BlockPos blockPos_2) {
-        if (block_1.matches(BlockTags.ANVIL) && Settings.renewableSand
+        if (block_1.isIn(BlockTags.ANVIL) && Settings.renewableSand
                 && this.world.getBlockState(new BlockPos(this.getX(), this.getY() - 0.06, this.getZ())).getBlock() == Blocks.COBBLESTONE) {
             world.breakBlock(blockPos_2.down(), false);
             world.setBlockState(blockPos_2.down(), Blocks.SAND.getDefaultState(), 3);

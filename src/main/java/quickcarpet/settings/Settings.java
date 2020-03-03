@@ -61,6 +61,9 @@ public class Settings {
     @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
     public static int commandWaypoint = 0;
 
+    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
+    public static int commandFix = 2;
+
     @CreativeDefault("false")
     @Rule(category = CREATIVE)
     public static boolean fillUpdates = true;

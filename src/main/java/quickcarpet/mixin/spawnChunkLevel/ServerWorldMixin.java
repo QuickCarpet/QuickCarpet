@@ -14,11 +14,12 @@ import quickcarpet.annotation.Feature;
 import quickcarpet.settings.Settings;
 
 import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
 @Feature("spawnChunkLevel")
 @Mixin(ServerWorld.class)
 public abstract class ServerWorldMixin extends World {
-    protected ServerWorldMixin(LevelProperties levelProperties, DimensionType dimensionType, BiFunction<World, Dimension, ChunkManager> chunkManagerProvider, Profiler profiler, boolean isClient) {
+    protected ServerWorldMixin(LevelProperties levelProperties, DimensionType dimensionType, BiFunction<World, Dimension, ChunkManager> chunkManagerProvider, Supplier<Profiler> profiler, boolean isClient) {
         super(levelProperties, dimensionType, chunkManagerProvider, profiler, isClient);
         throw new AbstractMethodError();
     }

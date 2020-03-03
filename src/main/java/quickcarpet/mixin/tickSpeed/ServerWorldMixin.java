@@ -22,6 +22,7 @@ import quickcarpet.utils.Reflection;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
 @Feature("tickSpeed")
 @Mixin(ServerWorld.class)
@@ -30,7 +31,7 @@ public abstract class ServerWorldMixin extends World {
 
     @Shadow public abstract ServerChunkManager getChunkManager();
 
-    protected ServerWorldMixin(LevelProperties levelProperties, DimensionType dimensionType, BiFunction<World, Dimension, ChunkManager> chunkManagerProvider, Profiler profiler, boolean isClient) {
+    protected ServerWorldMixin(LevelProperties levelProperties, DimensionType dimensionType, BiFunction<World, Dimension, ChunkManager> chunkManagerProvider, Supplier<Profiler> profiler, boolean isClient) {
         super(levelProperties, dimensionType, chunkManagerProvider, profiler, isClient);
     }
 

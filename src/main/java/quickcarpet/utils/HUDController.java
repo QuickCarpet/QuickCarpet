@@ -1,8 +1,8 @@
 package quickcarpet.utils;
 
-import net.minecraft.client.network.packet.PlayerListHeaderS2CPacket;
 import net.minecraft.entity.EntityCategory;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.network.packet.s2c.play.PlayerListHeaderS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;

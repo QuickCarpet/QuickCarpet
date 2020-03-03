@@ -19,11 +19,12 @@ import quickcarpet.annotation.Feature;
 
 import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
 @Feature("tickSpeed")
 @Mixin(ClientWorld.class)
 public abstract class ClientWorldMixin extends World {
-    protected ClientWorldMixin(LevelProperties properties, DimensionType dimensionType, BiFunction<World, Dimension, ChunkManager> biFunction_1, Profiler profiler, boolean boolean_1) {
+    protected ClientWorldMixin(LevelProperties properties, DimensionType dimensionType, BiFunction<World, Dimension, ChunkManager> biFunction_1, Supplier<Profiler> profiler, boolean boolean_1) {
         super(properties, dimensionType, biFunction_1, profiler, boolean_1);
     }
 

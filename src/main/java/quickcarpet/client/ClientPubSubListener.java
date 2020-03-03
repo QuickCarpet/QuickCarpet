@@ -2,9 +2,9 @@ package quickcarpet.client;
 
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.network.packet.CustomPayloadS2CPacket;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 import org.apache.logging.log4j.LogManager;

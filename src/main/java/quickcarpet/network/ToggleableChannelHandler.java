@@ -1,7 +1,7 @@
 package quickcarpet.network;
 
+import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.network.packet.CustomPayloadC2SPacket;
 import net.minecraft.util.Identifier;
 
 public class ToggleableChannelHandler implements PluginChannelHandler {

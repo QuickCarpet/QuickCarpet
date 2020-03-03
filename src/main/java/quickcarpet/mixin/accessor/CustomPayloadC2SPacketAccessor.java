@@ -1,6 +1,6 @@
 package quickcarpet.mixin.accessor;
 
-import net.minecraft.server.network.packet.CustomPayloadC2SPacket;
+import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.PacketByteBuf;
 import org.spongepowered.asm.mixin.Mixin;

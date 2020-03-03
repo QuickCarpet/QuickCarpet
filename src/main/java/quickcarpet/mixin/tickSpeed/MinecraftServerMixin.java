@@ -1,8 +1,9 @@
 package quickcarpet.mixin.tickSpeed;
 
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.TickDurationMonitor;
 import net.minecraft.util.Util;
-import net.minecraft.util.profiler.DisableableProfiler;
+import net.minecraft.util.profiler.Profiler;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,6 +16,7 @@ import quickcarpet.QuickCarpet;
 import quickcarpet.annotation.Feature;
 import quickcarpet.helper.TickSpeed;
 
+import javax.annotation.Nullable;
 import java.util.function.BooleanSupplier;
 
 @Feature("tickSpeed")
@@ -25,7 +27,7 @@ public abstract class MinecraftServerMixin {
     @Shadow private long timeReference;
     @Shadow private long field_4557;
     @Shadow private boolean profilerStartQueued;
-    @Shadow @Final private DisableableProfiler profiler;
+    @Shadow @Final private Profiler profiler;
     @Shadow private volatile boolean loading;
     @Shadow private boolean field_19249;
     @Shadow private long field_19248;
@@ -33,6 +35,10 @@ public abstract class MinecraftServerMixin {
     @Shadow protected abstract boolean shouldKeepTicking();
     @Shadow protected abstract void method_16208();
     @Shadow protected abstract void tick(BooleanSupplier booleanSupplier);
+
+    @Shadow protected abstract void startMonitor(@Nullable TickDurationMonitor arg);
+
+    @Shadow protected abstract void endMonitor(@Nullable TickDurationMonitor arg);
 
     // Cancel a while statement
     @Redirect(method = "run", at = @At(value = "FIELD", target = "Lnet/minecraft/server/MinecraftServer;running:Z"))
@@ -75,20 +81,18 @@ public abstract class MinecraftServerMixin {
                 partialTimeReference--;
                 timeReference++;
             }
-            if (this.profilerStartQueued) {
-                this.profilerStartQueued = false;
-                this.profiler.getController().enable();
-            }
-
+            TickDurationMonitor monitor = TickDurationMonitor.create("Server");
+            this.startMonitor(monitor);
             this.profiler.startTick();
             this.profiler.push("tick");
             this.tick(this::shouldKeepTicking);
             this.profiler.swap("nextTickWait");
             this.field_19249 = true;
-            this.field_19248 = Math.max(Util.getMeasuringTimeMs() + /*50L*/ (long) mspt, this.timeReference);
+            this.field_19248 = Math.max(Util.getMeasuringTimeMs() + (long) mspt, this.timeReference);
             this.method_16208();
             this.profiler.pop();
             this.profiler.endTick();
+            this.endMonitor(monitor);
             this.loading = true;
         }
 

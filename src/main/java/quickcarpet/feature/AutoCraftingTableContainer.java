@@ -1,12 +1,12 @@
 package quickcarpet.feature;
 
-import net.minecraft.client.network.packet.ContainerSlotUpdateS2CPacket;
 import net.minecraft.container.CraftingTableContainer;
 import net.minecraft.container.Slot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.s2c.play.ContainerSlotUpdateS2CPacket;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 

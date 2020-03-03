@@ -27,16 +27,16 @@ import static quickcarpet.utils.Constants.SetBlockState.*;
 @Mixin(World.class)
 public abstract class WorldMixin implements ExtendedWorld {
     @Shadow @Final protected LevelProperties properties;
-    @Shadow @Final private Profiler profiler;
     @Shadow @Final public boolean isClient;
 
     @Shadow public abstract ChunkManager getChunkManager();
     @Shadow public abstract void updateListeners(BlockPos var1, BlockState var2, BlockState var3, int var4);
-    @Shadow public abstract void updateNeighbors(BlockPos blockPos_1, Block block_1);
     @Shadow public abstract void updateHorizontalAdjacent(BlockPos blockPos_1, Block block_1);
     @Shadow public abstract void onBlockChanged(BlockPos blockPos_1, BlockState blockState_1, BlockState blockState_2);
     @Shadow public abstract WorldChunk getWorldChunk(BlockPos blockPos_1);
     @Shadow public abstract BlockState getBlockState(BlockPos blockPos_1);
+
+    @Shadow public abstract Profiler getProfiler();
 
     /**
      * @author 2No2Name
@@ -58,9 +58,9 @@ public abstract class WorldMixin implements ExtendedWorld {
         BlockState previousState = this.getBlockState(pos);
 
         if (previousState != chunkState && (previousState.getOpacity((BlockView) this, pos) != chunkState.getOpacity((BlockView) this, pos) || previousState.getLuminance() != chunkState.getLuminance() || previousState.hasSidedTransparency() || chunkState.hasSidedTransparency())) {
-            this.profiler.push("queueCheckLight");
+            this.getProfiler().push("queueCheckLight");
             this.getChunkManager().getLightingProvider().checkBlock(pos);
-            this.profiler.pop();
+            this.getProfiler().pop();
         }
 
         if (previousState == state) {
@@ -73,7 +73,7 @@ public abstract class WorldMixin implements ExtendedWorld {
             }
 
             if (!this.isClient && (flags & 1) != 0) {
-                this.updateNeighbors(pos, chunkState.getBlock());
+                ((World) (Object) this).updateNeighbors(pos, chunkState.getBlock());
                 if (state.hasComparatorOutput()) {
                     this.updateHorizontalAdjacent(pos, block);
                 }
