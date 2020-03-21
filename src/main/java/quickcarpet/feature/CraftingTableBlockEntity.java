@@ -2,7 +2,6 @@ package quickcarpet.feature;
 
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.LockableContainerBlockEntity;
-import net.minecraft.container.Container;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftingInventory;
@@ -11,10 +10,11 @@ import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.recipe.*;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.DefaultedList;
 import net.minecraft.util.ItemScatterer;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.Direction;
 import quickcarpet.mixin.accessor.CraftingInventoryAccessor;
 import quickcarpet.utils.CarpetRegistry;
@@ -64,7 +64,7 @@ public class CraftingTableBlockEntity extends LockableContainerBlockEntity imple
     }
 
     @Override
-    protected Container createContainer(int id, PlayerInventory playerInventory) {
+    protected ScreenHandler createContainer(int id, PlayerInventory playerInventory) {
         AutoCraftingTableContainer container = new AutoCraftingTableContainer(id, playerInventory, this);
         this.openContainers.add(container);
         return container;

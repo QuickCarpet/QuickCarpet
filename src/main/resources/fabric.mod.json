@@ -24,7 +24,7 @@
     "quickcarpet.mixins.json"
   ],
   "depends": {
-    "minecraft": "~1.16-alpha.20.6.a"
+    "minecraft": "~1.16-alpha.20.12.a"
   },
   "recommends": {
     "malilib": "${malilib_version}",

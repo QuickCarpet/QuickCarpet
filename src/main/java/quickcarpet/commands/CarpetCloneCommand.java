@@ -6,7 +6,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.Dynamic2CommandExceptionType;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
@@ -108,7 +107,7 @@ public class CarpetCloneCommand {
                                         CompoundTag blockEntityTag = blockEntity.toTag(new CompoundTag());
                                         blocksWithEntity.add(new BlockInfo(destPos, state, blockEntityTag));
                                         updateOrder.addLast(srcPos);
-                                    } else if (!state.isFullOpaque(world, srcPos) && !Block.isShapeFullCube(state.getCollisionShape(world, srcPos))) {
+                                    } else if (!state.isOpaqueFullCube(world, srcPos) && state.isFullCube(world, srcPos)) {
                                         fullBlocks.add(new BlockInfo(destPos, state, null));
                                         updateOrder.addFirst(srcPos);
                                     } else {

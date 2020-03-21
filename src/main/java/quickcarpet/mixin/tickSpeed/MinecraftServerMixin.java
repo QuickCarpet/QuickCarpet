@@ -25,11 +25,11 @@ public abstract class MinecraftServerMixin {
     @Shadow @Final private static Logger LOGGER;
     @Shadow private volatile boolean running;
     @Shadow private long timeReference;
-    @Shadow private long field_4557;
+    @Shadow private long lastTimeReference;
     @Shadow private boolean profilerStartQueued;
     @Shadow @Final private Profiler profiler;
     @Shadow private volatile boolean loading;
-    @Shadow private boolean field_19249;
+    @Shadow private boolean waitingForNextTick;
     @Shadow private long field_19248;
 
     @Shadow protected abstract boolean shouldKeepTicking();
@@ -61,18 +61,18 @@ public abstract class MinecraftServerMixin {
             long behind = 0L;
             if (tickSpeed.tickWarpStartTime != 0 && tickSpeed.continueWarp()) {
                 //making sure server won't flop after the warp or if the warp is interrupted
-                this.timeReference = this.field_4557 = Util.getMeasuringTimeMs();
+                this.timeReference = this.lastTimeReference = Util.getMeasuringTimeMs();
             } else {
                 mspt = tickSpeed.msptGoal; // regular tick
                 behind = Util.getMeasuringTimeMs() - this.timeReference;
             }
             //end tick deciding
             //smoothed out delay to include mspt component. With 50L gives defaults.
-            if (behind > /*2000L*/1000L + 20 * mspt && this.timeReference - this.field_4557 >= /*15000L*/10000L + 100 * mspt) {
+            if (behind > /*2000L*/1000L + 20 * mspt && this.timeReference - this.lastTimeReference >= /*15000L*/10000L + 100 * mspt) {
                 float ticks = behind / mspt;//50L;
                 LOGGER.warn("Can't keep up! Is the server overloaded? Running {}ms or {} ticks behind", behind, ticks);
                 this.timeReference += ticks * mspt;//50L;
-                this.field_4557 = this.timeReference;
+                this.lastTimeReference = this.timeReference;
             }
 
             partialTimeReference += mspt - (long) mspt;
@@ -87,7 +87,7 @@ public abstract class MinecraftServerMixin {
             this.profiler.push("tick");
             this.tick(this::shouldKeepTicking);
             this.profiler.swap("nextTickWait");
-            this.field_19249 = true;
+            this.waitingForNextTick = true;
             this.field_19248 = Math.max(Util.getMeasuringTimeMs() + (long) mspt, this.timeReference);
             this.method_16208();
             this.profiler.pop();

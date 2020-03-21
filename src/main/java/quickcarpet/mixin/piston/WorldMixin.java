@@ -31,7 +31,7 @@ public abstract class WorldMixin implements ExtendedWorld {
 
     @Shadow public abstract ChunkManager getChunkManager();
     @Shadow public abstract void updateListeners(BlockPos var1, BlockState var2, BlockState var3, int var4);
-    @Shadow public abstract void updateHorizontalAdjacent(BlockPos blockPos_1, Block block_1);
+    @Shadow public abstract void updateComparators(BlockPos blockPos_1, Block block_1);
     @Shadow public abstract void onBlockChanged(BlockPos blockPos_1, BlockState blockState_1, BlockState blockState_2);
     @Shadow public abstract WorldChunk getWorldChunk(BlockPos blockPos_1);
     @Shadow public abstract BlockState getBlockState(BlockPos blockPos_1);
@@ -75,15 +75,15 @@ public abstract class WorldMixin implements ExtendedWorld {
             if (!this.isClient && (flags & 1) != 0) {
                 ((World) (Object) this).updateNeighbors(pos, chunkState.getBlock());
                 if (state.hasComparatorOutput()) {
-                    this.updateHorizontalAdjacent(pos, block);
+                    this.updateComparators(pos, block);
                 }
             }
 
             if ((flags & (NO_OBSERVER_UPDATE | NO_FILL_UPDATE)) == 0) {
                 int int_2 = flags & ~UPDATE_NEIGHBORS;
-                chunkState.method_11637((net.minecraft.world.IWorld) this, pos, int_2);
-                state.updateNeighborStates((net.minecraft.world.IWorld) this, pos, int_2);
-                state.method_11637((net.minecraft.world.IWorld) this, pos, int_2);
+                chunkState.prepare((net.minecraft.world.IWorld) this, pos, int_2);
+                state.updateNeighbors((net.minecraft.world.IWorld) this, pos, int_2);
+                state.prepare((net.minecraft.world.IWorld) this, pos, int_2);
             }
 
             this.onBlockChanged(pos, chunkState, previousState);

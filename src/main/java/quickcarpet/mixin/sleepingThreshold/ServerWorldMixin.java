@@ -46,7 +46,7 @@ public abstract class ServerWorldMixin extends World {
      * @reason Whole method is changed anyway
      */
     @Overwrite
-    public void updatePlayersSleeping() {
+    public void updateSleepingPlayers() {
         this.allPlayersSleeping = arePlayersSleeping(ServerPlayerEntity::isSleeping);
     }
 

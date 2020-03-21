@@ -280,7 +280,7 @@ public class PlayerActionPack {
             @Override
             void execute(ServerPlayerEntity player, Action action) {
                 if (action.limit == 1) {
-                    if (player.method_24828()) player.jump(); // onGround
+                    if (player.isOnGround()) player.jump(); // onGround
                 } else {
                     player.setJumping(true);
                 }

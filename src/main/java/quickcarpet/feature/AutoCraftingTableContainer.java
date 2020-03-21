@@ -1,16 +1,16 @@
 package quickcarpet.feature;
 
-import net.minecraft.container.CraftingTableContainer;
-import net.minecraft.container.Slot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.packet.s2c.play.ContainerSlotUpdateS2CPacket;
+import net.minecraft.network.packet.s2c.play.ScreenHandlerSlotUpdateS2CPacket;
+import net.minecraft.screen.CraftingScreenHandler;
+import net.minecraft.screen.slot.Slot;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-public class AutoCraftingTableContainer extends CraftingTableContainer {
+public class AutoCraftingTableContainer extends CraftingScreenHandler {
     private final CraftingTableBlockEntity blockEntity;
     private final PlayerEntity player;
 
@@ -42,7 +42,7 @@ public class AutoCraftingTableContainer extends CraftingTableContainer {
     public void onContentChanged(Inventory inv) {
         if (this.player instanceof ServerPlayerEntity) {
             ServerPlayNetworkHandler netHandler = ((ServerPlayerEntity) this.player).networkHandler;
-            netHandler.sendPacket(new ContainerSlotUpdateS2CPacket(this.syncId, 0, this.blockEntity.getInvStack(0)));
+            netHandler.sendPacket(new ScreenHandlerSlotUpdateS2CPacket(this.syncId, 0, this.blockEntity.getInvStack(0)));
         }
     }
 

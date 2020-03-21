@@ -1,13 +1,12 @@
 package quickcarpet.mixin.autoCraftingTable;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CraftingTableBlock;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.container.NameableContainerFactory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.screen.NamedScreenHandlerFactory;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.ItemScatterer;
@@ -21,6 +20,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import quickcarpet.annotation.Feature;
 import quickcarpet.feature.CraftingTableBlockEntity;
+import quickcarpet.utils.extensions.DynamicBlockEntityProvider;
 
 import javax.annotation.Nullable;
 
@@ -28,13 +28,13 @@ import static quickcarpet.settings.Settings.autoCraftingTable;
 
 @Feature("autoCraftingTable")
 @Mixin(CraftingTableBlock.class)
-public class CraftingTableBlockMixin extends Block implements BlockEntityProvider {
+public class CraftingTableBlockMixin extends Block implements DynamicBlockEntityProvider {
     protected CraftingTableBlockMixin(Settings block$Settings_1) {
         super(block$Settings_1);
     }
 
     @Override
-    public boolean hasBlockEntity() {
+    public boolean providesBlockEntity() {
         return autoCraftingTable;
     }
 
@@ -50,7 +50,7 @@ public class CraftingTableBlockMixin extends Block implements BlockEntityProvide
         if (!world.isClient) {
             BlockEntity blockEntity = world.getBlockEntity(pos);
             if (blockEntity instanceof CraftingTableBlockEntity) {
-                player.openContainer((NameableContainerFactory) blockEntity);
+                player.openHandledScreen((NamedScreenHandlerFactory) blockEntity);
             }
         }
         cir.setReturnValue(ActionResult.SUCCESS);
@@ -86,7 +86,7 @@ public class CraftingTableBlockMixin extends Block implements BlockEntityProvide
                 if (!craftingTableBlockEntity.output.isEmpty()) {
                     ItemScatterer.spawn(world, pos.getX(), pos.getY(), pos.getZ(), craftingTableBlockEntity.output);
                 }
-                world.updateHorizontalAdjacent(pos, this);
+                world.updateComparators(pos, this);
             }
 
             super.onBlockRemoved(state1, world, pos, state2, boolean_1);
