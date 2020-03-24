@@ -176,7 +176,10 @@ public class TickSpeed implements quickcarpet.TelemetryProvider {
         Measurement.tickAll();
         if (stepAmount > 0) {
             stepAmount--;
-            if (stepAmount == 0) paused = true;
+            if (stepAmount == 0) {
+                TICK_STEP_PUBSUB_PROVIDER.publish();
+                setPaused(true);
+            }
         }
     }
 
