@@ -102,7 +102,7 @@ public abstract class PistonBlockEntityMixin extends BlockEntity implements Exte
             else
                 blockState_2 = Block.getRenderingState(this.pushedBlock, this.world, this.pos);
             ((ExtendedWorld) (this.world)).setBlockStateWithBlockEntity(this.pos, blockState_2, this.carriedBlockEntity, 3);
-            this.world.breakBlock(this.pos, true);
+            this.world.breakBlock(this.pos, false);
         }
     }
 
