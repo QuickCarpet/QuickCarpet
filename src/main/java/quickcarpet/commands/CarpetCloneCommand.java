@@ -155,7 +155,7 @@ public class CarpetCloneCommand {
                             info.blockEntityTag.putInt("x", info.pos.getX());
                             info.blockEntityTag.putInt("y", info.pos.getY());
                             info.blockEntityTag.putInt("z", info.pos.getZ());
-                            blockEntity.fromTag(info.blockEntityTag);
+                            blockEntity.fromTag(info.state, info.blockEntityTag);
                             blockEntity.markDirty();
                         }
                         world.setBlockState(info.pos, info.state, SEND_TO_CLIENT | (Settings.fillUpdates ? 0 : NO_FILL_UPDATE));
