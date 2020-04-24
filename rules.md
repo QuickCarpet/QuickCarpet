@@ -7,6 +7,22 @@ Default: `true`
 Options: `true`, `false`  
 Categories: feature  
 
+## anvilledBlueIce
+Drop an anvil on packed ice blocks to get blue ice
+
+Value is the number of packed ice blocks required, 0 is disabled  
+Type: `int`  
+Default: `0`  
+Categories: feature, experimental  
+
+## anvilledPackedIce
+Drop an anvil on ice blocks to get packed ice
+
+Value is the number of ice blocks required, 0 is disabled  
+Type: `int`  
+Default: `0`  
+Categories: feature, experimental  
+
 ## autoCraftingTable
 Automatic crafting table
 

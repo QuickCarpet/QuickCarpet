@@ -221,6 +221,12 @@ public class Settings {
         }
     }
 
+    @Rule(category = {FEATURE, EXPERIMENTAL})
+    public static int anvilledPackedIce = 0;
+
+    @Rule(category = {FEATURE, EXPERIMENTAL})
+    public static int anvilledBlueIce = 0;
+
     public static void main(String[] args) throws IOException {
         Bootstrap.initialize();
         Translations.init();
