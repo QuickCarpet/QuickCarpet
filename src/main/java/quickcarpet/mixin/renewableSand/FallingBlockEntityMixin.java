@@ -23,14 +23,39 @@ public abstract class FallingBlockEntityMixin extends Entity {
         super(entityType_1, world_1);
     }
 
+    private int iceCount;
+    private int packedIceCount;
+
     @Inject(method = "tick", at = @At(value = "INVOKE", shift = At.Shift.AFTER, ordinal = 1,
             target = "Lnet/minecraft/entity/FallingBlockEntity;setVelocity(Lnet/minecraft/util/math/Vec3d;)V"),
-            locals = LocalCapture.CAPTURE_FAILHARD)
-    private void onTick(CallbackInfo ci, Block block_1, BlockPos blockPos_2) {
-        if (block_1.isIn(BlockTags.ANVIL) && Settings.renewableSand
-                && this.world.getBlockState(new BlockPos(this.getX(), this.getY() - 0.06, this.getZ())).getBlock() == Blocks.COBBLESTONE) {
-            world.breakBlock(blockPos_2.down(), false);
-            world.setBlockState(blockPos_2.down(), Blocks.SAND.getDefaultState(), 3);
+            locals = LocalCapture.CAPTURE_FAILHARD,
+            cancellable = true)
+    private void onTick(CallbackInfo ci, Block block, BlockPos pos) {
+        if (block.isIn(BlockTags.ANVIL)) {
+            BlockPos posBelow = new BlockPos(this.getX(), this.getY() - 0.06, this.getZ());
+            Block blockBelow = this.world.getBlockState(posBelow).getBlock();
+            if (Settings.renewableSand && blockBelow == Blocks.COBBLESTONE) {
+                world.breakBlock(posBelow, false);
+                world.setBlockState(posBelow, Blocks.SAND.getDefaultState(), 3);
+            } else if (Settings.anvilledPackedIce > 0 && blockBelow == Blocks.ICE) {
+                if (++iceCount < Settings.anvilledPackedIce) {
+                    world.breakBlock(posBelow, false);
+                    onGround = false;
+                    ci.cancel();
+                } else {
+                    world.breakBlock(posBelow, false);
+                    world.setBlockState(posBelow, Blocks.PACKED_ICE.getDefaultState(), 3);
+                }
+            } else if (Settings.anvilledBlueIce > 0 && blockBelow == Blocks.PACKED_ICE) {
+                if (++packedIceCount < Settings.anvilledBlueIce) {
+                    world.breakBlock(posBelow, false);
+                    onGround = false;
+                    ci.cancel();
+                } else {
+                    world.breakBlock(posBelow, false);
+                    world.setBlockState(posBelow, Blocks.BLUE_ICE.getDefaultState(), 3);
+                }
+            }
         }
     }
 }
