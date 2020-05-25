@@ -19,6 +19,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.dimension.DimensionType;
 import quickcarpet.helper.PlayerActionPack;
@@ -202,9 +203,9 @@ public class PlayerCommand {
         Vec2f facing = tryGetArg(
                 () -> RotationArgumentType.getRotation(context, "direction").toAbsoluteRotation(context.getSource()),
                 source::getRotation);
-        DimensionType dim = tryGetArg(
+        RegistryKey<DimensionType> dim = tryGetArg(
                 () -> DimensionArgumentType.getDimensionArgument(context, "dimension"),
-                () -> source.getWorld().dimension.getType());
+                () -> source.getMinecraftServer().method_29174().getRegistry().getKey(source.getWorld().getDimension()));
         GameMode mode = GameMode.CREATIVE;
         try {
             ServerPlayerEntity player = context.getSource().getPlayer();

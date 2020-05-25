@@ -6,6 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Final;
@@ -55,7 +56,7 @@ public abstract class CommandManagerMixin {
     private Text translateError(CommandException e, ServerCommandSource source, String command) {
         Entity entity = source.getEntity();
         if (entity instanceof ServerPlayerEntity) {
-            return Translations.translate(e.getTextMessage(), (ServerPlayerEntity) entity);
+            return Translations.translate((MutableText) e.getTextMessage(), (ServerPlayerEntity) entity);
         }
         return e.getTextMessage();
     }

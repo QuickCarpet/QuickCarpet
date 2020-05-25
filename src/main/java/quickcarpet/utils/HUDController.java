@@ -1,13 +1,16 @@
 package quickcarpet.utils;
 
-import net.minecraft.entity.EntityCategory;
+import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.PlayerListHeaderS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Pair;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import quickcarpet.QuickCarpet;
 import quickcarpet.helper.HopperCounter;
@@ -36,7 +39,7 @@ public class HUDController {
             double MSPT = tickSpeed.getCurrentMSPT();
             double TPS = tickSpeed.calculateTPS(MSPT);
             char color = Messenger.getHeatmapColor(MSPT, tickSpeed.msptGoal);
-            Text[] message = new Text[]{Messenger.c(
+            MutableText[] message = new MutableText[]{Messenger.c(
                     "g TPS: ", String.format(Locale.US, "%s %.1f", color, TPS),
                     "g  MSPT: ", String.format(Locale.US, "%s %.1f", color, MSPT))};
             logger.log(() -> message, () -> tickSpeed.LOG_COMMAND_PARAMETERS);
@@ -44,21 +47,22 @@ public class HUDController {
 
         registerLogger(Loggers.MOBCAPS, logger -> {
             logger.log((option, player) -> {
-                DimensionType dim = player.dimension;
+                World world = player.world;
+                RegistryKey<DimensionType> dim = world.getServer().method_29174().getRegistry().getKey(world.getDimension());
                 switch (option) {
                     case "overworld":
-                        dim = DimensionType.OVERWORLD;
+                        dim = DimensionType.OVERWORLD_REGISTRY_KEY;
                         break;
                     case "nether":
-                        dim = DimensionType.THE_NETHER;
+                        dim = DimensionType.THE_NETHER_REGISTRY_KEY;
                         break;
                     case "end":
-                        dim = DimensionType.THE_END;
+                        dim = DimensionType.THE_END_REGISTRY_KEY;
                         break;
                 }
                 List<Text> components = new ArrayList<>();
-                Map<EntityCategory, Pair<Integer, Integer>> mobcaps = Mobcaps.getMobcaps(dim);
-                for (Map.Entry<EntityCategory, Pair<Integer, Integer>> e : mobcaps.entrySet()) {
+                Map<SpawnGroup, Pair<Integer, Integer>> mobcaps = Mobcaps.getMobcaps(dim);
+                for (Map.Entry<SpawnGroup, Pair<Integer, Integer>> e : mobcaps.entrySet()) {
                     Pair<Integer, Integer> pair = e.getValue();
                     int actual = pair.getLeft();
                     int limit = pair.getRight();
@@ -69,18 +73,18 @@ public class HUDController {
                     components.add(Messenger.c("w  "));
                 }
                 components.remove(components.size() - 1);
-                return new Text[]{Messenger.c(components.toArray(new Object[0]))};
+                return new MutableText[]{Messenger.c(components.toArray(new Object[0]))};
             }, () -> Mobcaps.LogCommandParameters.INSTANCE);
         });
 
         registerLogger(Loggers.COUNTER, logger -> logger.log(color -> {
             HopperCounter counter = HopperCounter.getCounter(color);
-            List<Text> res = counter == null ? Collections.emptyList() : counter.format(QuickCarpet.minecraft_server, false, true);
-            return new Text[]{Messenger.c(res.toArray(new Object[0]))};
+            List<MutableText> res = counter == null ? Collections.emptyList() : counter.format(QuickCarpet.minecraft_server, false, true);
+            return new MutableText[]{Messenger.c(res.toArray(new Object[0]))};
         }, () -> HopperCounter.LogCommandParameters.INSTANCE));
 
         registerLogger(Loggers.PACKETS, logger -> logger.log(() -> {
-            Text[] ret = new Text[]{
+            MutableText[] ret = new MutableText[]{
                     Messenger.c("w I/" + PacketCounter.totalIn + " O/" + PacketCounter.totalOut),
             };
             PacketCounter.reset();
@@ -88,7 +92,7 @@ public class HUDController {
         }, () -> PacketCounter.LogCommandParameters.INSTANCE));
     }
 
-    public static void addMessage(ServerPlayerEntity player, Text hudMessage) {
+    public static void addMessage(ServerPlayerEntity player, MutableText hudMessage) {
         if (!PLAYER_HUDS.containsKey(player)) {
             PLAYER_HUDS.put(player, new ArrayList<>());
         } else {

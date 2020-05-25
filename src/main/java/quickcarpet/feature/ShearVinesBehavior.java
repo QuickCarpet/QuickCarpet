@@ -18,12 +18,12 @@ public class ShearVinesBehavior extends FallibleItemDispenserBehavior {
         BlockPos target = pointer.getBlockPos().offset(direction);
         BlockState targetState = world.getBlockState(target);
         if (targetState.getBlock() != Blocks.VINE) {
-            this.success = false;
+            this.setSuccess(false);
             return stack;
         }
         BreakBlockDispenserBehavior.breakBlock(world, target, targetState, stack);
         if (stack.damage(1, world.random, null)) stack.setCount(0);
-        this.success = true;
+        this.setSuccess(true);
         return stack;
     }
 }

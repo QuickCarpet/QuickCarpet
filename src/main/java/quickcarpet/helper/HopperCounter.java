@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.DyeColor;
@@ -65,13 +66,13 @@ public class HopperCounter
         }
     }
 
-    public static List<Text> formatAll(MinecraftServer server, boolean realtime)
+    public static List<MutableText> formatAll(MinecraftServer server, boolean realtime)
     {
-        List<Text> text = new ArrayList<>();
+        List<MutableText> text = new ArrayList<>();
 
         for (HopperCounter counter : COUNTERS.values()) {
             if (counter.getTotalItems() == 0) continue;
-            List<Text> temp = counter.format(server, realtime, false);
+            List<MutableText> temp = counter.format(server, realtime, false);
             if (!text.isEmpty()) text.add(s(""));
             text.add(c(style(counter.getColorText(), DARK_GREEN), s(":", GRAY)));
             text.addAll(temp);
@@ -86,7 +87,7 @@ public class HopperCounter
         return t("color.minecraft." + color.getName());
     }
 
-    public List<Text> format(MinecraftServer server, boolean realTime, boolean brief) {
+    public List<MutableText> format(MinecraftServer server, boolean realTime, boolean brief) {
         if (counter.isEmpty()) {
             if (brief) {
                 return Collections.singletonList(ts("counter.format", DARK_GREEN, getColorText(), "-", "-", "-"));
@@ -99,7 +100,7 @@ public class HopperCounter
             if (brief) {
                 return Collections.singletonList(ts("counter.format", CYAN, getColorText(), 0, 0, String.format("%.1f", ticks / 1200.0)));
             }
-            Text line = t("counter.none.color.timed", getColorText(), String.format("%.1f", ticks / 1200.0), realTime ? c(s(" - "), t("counter.realTime")) : s(""));
+            MutableText line = t("counter.none.color.timed", getColorText(), String.format("%.1f", ticks / 1200.0), realTime ? c(s(" - "), t("counter.realTime")) : s(""));
             line.append(" ");
             line.append(runCommand(s("[X]", "nb"), "/counter " + color.getName() + " reset", ts("counter.action.reset", GRAY)));
         }

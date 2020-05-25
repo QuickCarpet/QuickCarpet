@@ -7,6 +7,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 import quickcarpet.QuickCarpet;
@@ -135,7 +136,7 @@ public class TickSpeed implements quickcarpet.TelemetryProvider {
             }
             tickWarpCallback = null;
         }
-        Text message = ts("command.tick.warp.completed", GRAY + "" + ITALIC, tps, String.format("%.2f", mspt));
+        MutableText message = ts("command.tick.warp.completed", GRAY + "" + ITALIC, tps, String.format("%.2f", mspt));
         if (tickWarpSender != null) {
             m(tickWarpSender, message);
             tickWarpSender = null;

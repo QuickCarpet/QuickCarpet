@@ -233,7 +233,7 @@ public class PlayerActionPack {
                         BlockHitResult blockHit = (BlockHitResult) hit;
                         BlockPos pos = blockHit.getBlockPos();
                         Direction side = blockHit.getSide();
-                        if (player.canMine(player.world, pos, player.interactionManager.getGameMode())) return;
+                        if (player.isBlockBreakingRestricted(player.world, pos, player.interactionManager.getGameMode())) return;
                         if (ap.currentBlock != null && player.world.isAir(ap.currentBlock)) {
                             ap.currentBlock = null;
                             return;

@@ -3,12 +3,13 @@ package quickcarpet.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.entity.EntityCategory;
+import net.minecraft.entity.SpawnGroup;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.dimension.DimensionType;
 import quickcarpet.helper.Mobcaps;
 import quickcarpet.settings.Settings;
@@ -81,12 +82,15 @@ public class SpawnCommand {
         return 1;
     }
 
-    private static int sendMobcaps(ServerCommandSource source, DimensionType dimension) {
-        if (dimension == null) dimension = source.getWorld().getDimension().getType();
-        Map<EntityCategory, Pair<Integer, Integer>> mobcaps = Mobcaps.getMobcaps(dimension);
-        m(source, t("command.spawn.mobcaps.title", Registry.DIMENSION_TYPE.getId(dimension)));
-        for (Map.Entry<EntityCategory, Pair<Integer, Integer>> e : mobcaps.entrySet()) {
-            EntityCategory category = e.getKey();
+    private static int sendMobcaps(ServerCommandSource source, RegistryKey<DimensionType> dimension) {
+        if (dimension == null) {
+            Registry<DimensionType> dims = source.getMinecraftServer().method_29174().getRegistry();
+            dimension = dims.getKey(source.getWorld().getDimension());
+        }
+        Map<SpawnGroup, Pair<Integer, Integer>> mobcaps = Mobcaps.getMobcaps(dimension);
+        m(source, t("command.spawn.mobcaps.title", dimension.getValue()));
+        for (Map.Entry<SpawnGroup, Pair<Integer, Integer>> e : mobcaps.entrySet()) {
+            SpawnGroup category = e.getKey();
             Pair<Integer, Integer> pair = e.getValue();
             int cur = pair.getLeft();
             int max = pair.getRight();

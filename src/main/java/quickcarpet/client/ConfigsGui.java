@@ -31,7 +31,7 @@ public class ConfigsGui extends GuiConfigsBase {
 
     private int createButton(int x, int y, int width, ConfigGuiTab tab) {
         String label = tab.getDisplayName();
-        if (width < 0) width = this.textRenderer.getStringWidth(label) + 10;
+        if (width < 0) width = this.textRenderer.getWidth(label) + 10;
 
         ButtonGeneric button = new ButtonGeneric(x, y, width, 20, label);
         button.setEnabled(tab != selectedTab);

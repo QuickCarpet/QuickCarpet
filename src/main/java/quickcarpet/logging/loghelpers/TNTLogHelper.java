@@ -1,7 +1,7 @@
 package quickcarpet.logging.loghelpers;
 
 import net.minecraft.entity.TntEntity;
-import net.minecraft.text.Text;
+import net.minecraft.text.MutableText;
 import net.minecraft.util.math.Vec3d;
 import quickcarpet.logging.Logger;
 import quickcarpet.logging.Loggers;
@@ -40,11 +40,11 @@ public class TNTLogHelper {
         Loggers.TNT.log(option -> {
             switch (option) {
                 case "brief":
-                    return new Text[]{c(
+                    return new MutableText[]{c(
                             "l P ", style(dblt(primed.x, primed.y, primed.z, primedAngle), LIME),
                             "r  E ", style(dblt(exploded.x, exploded.y, exploded.z), RED))};
                 case "full":
-                    return new Text[]{c(
+                    return new MutableText[]{c(
                             "l P ", style(dblf(primed.x, primed.y, primed.z, primedAngle), LIME),
                             "r  E ", style(dblf(exploded.x, exploded.y, exploded.z), RED))};
             }

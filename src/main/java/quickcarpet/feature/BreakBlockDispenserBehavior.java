@@ -68,14 +68,14 @@ public class BreakBlockDispenserBehavior extends ItemDispenserBehavior {
     }
 
     public static void breakBlock(World world, BlockPos pos, BlockState blockState, ItemStack tool) {
-        LootContext.Builder builder = new LootContext.Builder((ServerWorld) world).setRandom(world.random);
-        builder.put(LootContextParameters.POSITION, pos).put(LootContextParameters.TOOL, tool);
+        LootContext.Builder builder = new LootContext.Builder((ServerWorld) world).random(world.random);
+        builder.parameter(LootContextParameters.POSITION, pos).parameter(LootContextParameters.TOOL, tool);
         blockState.getDroppedStacks(builder).forEach(drop -> {
             Block.dropStack(world, pos, drop);
         });
         blockState.onStacksDropped(world, pos, ItemStack.EMPTY);
         FluidState fluidState = world.getFluidState(pos);
         world.setBlockState(pos, fluidState.getBlockState());
-        world.playLevelEvent(2001, pos, Block.getRawIdFromState(blockState));
+        world.syncWorldEvent(2001, pos, Block.getRawIdFromState(blockState));
     }
 }

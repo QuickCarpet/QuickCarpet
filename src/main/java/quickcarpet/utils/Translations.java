@@ -17,12 +17,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Translations {
     public static final String DEFAULT_LOCALE = "en_us";
     private static final Gson GSON = new Gson();
     private static final Map<String, String> DEFAULT = new HashMap<>();
     private static final Map<String, Map<String, String>> TRANSLATIONS = new HashMap<>();
+    private static final Pattern ARG_FORMAT = Pattern.compile("%(?:(\\d+)\\$)?([A-Za-z%]|$)");
 
     public static void init() throws IOException {
         TRANSLATIONS.clear();
@@ -59,25 +61,25 @@ public class Translations {
         TRANSLATIONS.put(locale, translations);
     }
 
-    public static Text translate(Text text, ServerPlayerEntity player) {
+    public static MutableText translate(MutableText text, ServerPlayerEntity player) {
         return translate(text, ((ServerPlayerEntityAccessor) player).getClientLanguage());
     }
 
-    public static Text translate(Text text, String locale) {
-        Text translated = translatedCopy(text, locale);
-        Style style = text.getStyle().deepCopy();
+    public static MutableText translate(MutableText text, String locale) {
+        MutableText translated = translatedCopy(text, locale);
+        Style style = text.getStyle();
         HoverEvent hover = style.getHoverEvent();
         if (hover != null && hover.getAction() == HoverEvent.Action.SHOW_TEXT) {
-            style.setHoverEvent(new HoverEvent(hover.getAction(), translate(hover.getValue(), locale)));
+            style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, translate((MutableText) hover.getValue(HoverEvent.Action.SHOW_TEXT), locale)));
         }
         translated.setStyle(style);
         for (Text sibling : text.getSiblings()) {
-            translated.append(translate(sibling, locale));
+            translated.append(translate((MutableText) sibling, locale));
         }
         return translated;
     }
 
-    private static Text translatedCopy(Text text, String locale) {
+    private static MutableText translatedCopy(Text text, String locale) {
         if (!(text instanceof TranslatableText)) return text.copy();
         TranslatableText translatable = (TranslatableText) text;
         String key = translatable.getKey();
@@ -86,22 +88,22 @@ public class Translations {
         if (!TRANSLATIONS.containsKey(locale)) locale = "en_us";
         String translated = TRANSLATIONS.get(locale).get(key);
         if (translated == null) translated = DEFAULT.getOrDefault(key, key);
-        Matcher matcher = TranslatableText.ARG_FORMAT.matcher(translated);
-        List<Text> texts = new LinkedList<>();
+        Matcher matcher = ARG_FORMAT.matcher(translated);
+        List<MutableText> texts = new LinkedList<>();
         int previousEnd = 0;
         int argIndex = 0;
         while (matcher.find(previousEnd)) {
             int start = matcher.start();
             int end = matcher.end();
             if (start > previousEnd) {
-                Text between = new LiteralText(translated.substring(previousEnd, start));
-                between.getStyle().setParent(translatable.getStyle());
+                MutableText between = new LiteralText(translated.substring(previousEnd, start));
+                between.setStyle(between.getStyle().withParent(translatable.getStyle()));
                 texts.add(between);
             }
             String completeMatch = translated.substring(start, end);
             if ("%%".equals(completeMatch)) {
-                Text percent = new LiteralText("%");
-                percent.getStyle().setParent(translatable.getStyle());
+                MutableText percent = new LiteralText("%");
+                percent.setStyle(percent.getStyle().withParent(translatable.getStyle()));
                 texts.add(percent);
             } else {
                 String format = matcher.group(2);
@@ -115,24 +117,24 @@ public class Translations {
             previousEnd = end;
         }
         if (previousEnd < translated.length()) {
-            Text end = new LiteralText(translated.substring(previousEnd));
-            end.getStyle().setParent(translatable.getStyle());
+            MutableText end = new LiteralText(translated.substring(previousEnd));
+            end.setStyle(end.getStyle().withParent(translatable.getStyle()));
             texts.add(end);
         }
-        Text base = texts.remove(0);
+        MutableText base = texts.remove(0);
         texts.forEach(base::append);
         return base;
     }
 
-    private static Text getArg(TranslatableText text, int index, String locale) {
+    private static MutableText getArg(TranslatableText text, int index, String locale) {
         Object[] args = text.getArgs();
         if (index >= args.length) {
             throw new TranslationException(text, index);
         } else {
             Object arg = args[index];
-            if (arg instanceof Text) return translate((Text) arg, locale);
-            Text argFormatted = new LiteralText(String.valueOf(arg));
-            argFormatted.getStyle().setParent(text.getStyle());
+            if (arg instanceof MutableText) return translate((MutableText) arg, locale);
+            MutableText argFormatted = new LiteralText(String.valueOf(arg));
+            argFormatted.setStyle(argFormatted.getStyle().withParent(text.getStyle()));
             return argFormatted;
         }
     }

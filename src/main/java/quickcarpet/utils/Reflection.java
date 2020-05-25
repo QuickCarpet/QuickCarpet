@@ -14,6 +14,7 @@ import net.minecraft.server.command.TeleportCommand;
 import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Lazy;
+import net.minecraft.util.WorldSavePath;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.village.TradeOffers;
 import net.minecraft.world.World;
@@ -254,6 +255,26 @@ public class Reflection {
     public static void tickChunkManager(ServerChunkManager chunkManager, BooleanSupplier shouldKeepTicking) {
         try {
             ServerChunkManagerTickHandler.tick.invokeExact(chunkManager, shouldKeepTicking);
+        } catch (Throwable throwable) {
+            throw new RuntimeException(throwable);
+        }
+    }
+
+    private static MethodHandle newWorldSavePathHandle = getWorldSavePathConstructor();
+
+    private static MethodHandle getWorldSavePathConstructor() {
+        try {
+            Constructor<WorldSavePath> constructor = WorldSavePath.class.getDeclaredConstructor(String.class);
+            constructor.setAccessible(true);
+            return LOOKUP.unreflectConstructor(constructor);
+        } catch (ReflectiveOperationException e) {
+            throw new IllegalStateException(e);
+        }
+    }
+
+    public static WorldSavePath newWorldSavePath(String relative) {
+        try {
+            return (WorldSavePath) newWorldSavePathHandle.invokeExact(relative);
         } catch (Throwable throwable) {
             throw new RuntimeException(throwable);
         }

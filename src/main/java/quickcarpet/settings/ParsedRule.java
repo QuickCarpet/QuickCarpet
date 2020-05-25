@@ -277,7 +277,7 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
 
         @Override
         public String getMessage() {
-            return message.asFormattedString();
+            return message.getString();
         }
     }
 }

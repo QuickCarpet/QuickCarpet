@@ -11,21 +11,21 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.BlockView;
 
 import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class BlockPropertyTag extends Tag<Block> {
+public class BlockPropertyTag implements Tag<Block> {
+    public final Identifier id;
     private final Predicate<BlockState> property;
 
     public BlockPropertyTag(Identifier id, Predicate<BlockState> property) {
-        super(id);
+        this.id = id;
         this.property = property;
     }
 
     public BlockPropertyTag(Identifier id, BlockPropertyPredicate function) {
-        super(id);
+        this.id = id;
         this.property = state -> function.test(state, new SingleBlockView(state), BlockPos.ORIGIN);
     }
 
@@ -35,13 +35,8 @@ public class BlockPropertyTag extends Tag<Block> {
     }
 
     @Override
-    public Collection<Block> values() {
-        return Registry.BLOCK.stream().filter(this::contains).collect(Collectors.toSet());
-    }
-
-    @Override
-    public Collection<Entry<Block>> entries() {
-        return Collections.singleton(new CollectionEntry<>(values()));
+    public List<Block> values() {
+        return Registry.BLOCK.stream().filter(this::contains).collect(Collectors.toList());
     }
 
     @FunctionalInterface

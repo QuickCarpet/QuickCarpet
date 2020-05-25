@@ -20,10 +20,10 @@ public class FireChargeConvertsToNetherrackBehavior extends FallibleItemDispense
         if (state.getBlock() == Blocks.COBBLESTONE) {
             world.setBlockState(front, Blocks.NETHERRACK.getDefaultState());
             stack.decrement(1);
-            this.success = true;
+            this.setSuccess(true);
             return stack;
         } else {
-            this.success = false;
+            this.setSuccess(false);
         }
         return stack;
     }

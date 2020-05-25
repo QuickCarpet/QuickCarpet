@@ -27,8 +27,8 @@ public abstract class HopperBlockEntityMixin extends LootableContainerBlockEntit
     @Shadow public abstract double getHopperX();
     @Shadow public abstract double getHopperY();
     @Shadow public abstract double getHopperZ();
-    @Shadow public abstract void setInvStack(int int_1, ItemStack itemStack_1);
-    @Shadow public abstract int getInvSize();
+    @Shadow public abstract void setStack(int int_1, ItemStack itemStack_1);
+    @Shadow public abstract int size();
 
     @Inject(method = "insert", at = @At("HEAD"), cancellable = true)
     private void onInsert(CallbackInfoReturnable<Boolean> cir) {
@@ -39,11 +39,11 @@ public abstract class HopperBlockEntityMixin extends LootableContainerBlockEntit
 
 
             if (wool_color != null) {
-                for (int i = 0; i < this.getInvSize(); ++i) {
-                    if (!this.getInvStack(i).isEmpty()) {
-                        ItemStack itemstack = this.getInvStack(i);//.copy();
+                for (int i = 0; i < this.size(); ++i) {
+                    if (!this.getStack(i).isEmpty()) {
+                        ItemStack itemstack = this.getStack(i);//.copy();
                         HopperCounter.COUNTERS.get(wool_color).add(this.getWorld().getServer(), itemstack);
-                        this.setInvStack(i, ItemStack.EMPTY);
+                        this.setStack(i, ItemStack.EMPTY);
                     }
                 }
                 cir.setReturnValue(true);

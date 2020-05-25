@@ -10,10 +10,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
+import net.minecraft.text.MutableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.dimension.DimensionType;
 import quickcarpet.QuickCarpet;
 import quickcarpet.patches.FakeServerPlayerEntity;
@@ -21,11 +23,12 @@ import quickcarpet.utils.extensions.WaypointContainer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 
 import static quickcarpet.utils.Messenger.*;
@@ -54,12 +57,12 @@ public class Waypoint implements Comparable<Waypoint>, Messenger.Formattable {
         this(world, name, creator.getEntityName(), creator.getUuid(), position, rotation);
     }
 
-    public DimensionType getDimension() {
+    public RegistryKey<DimensionType> getDimension() {
         return world.getDimensionType();
     }
 
     public String getFullName() {
-        return DimensionType.getId(getDimension()) + "/" + name;
+        return getDimension().getValue() + "/" + name;
     }
 
     @Override
@@ -87,7 +90,7 @@ public class Waypoint implements Comparable<Waypoint>, Messenger.Formattable {
     }
 
     @Override
-    public Text format() {
+    public MutableText format() {
         return s(getDimension().toString()).append(s("/", GRAY)).append(s(name, YELLOW));
     }
 
@@ -107,10 +110,10 @@ public class Waypoint implements Comparable<Waypoint>, Messenger.Formattable {
 
     @Nullable
     public static Waypoint find(String name, WaypointContainer defaultWorld, Iterable<WaypointContainer> worlds) {
-        DimensionType dimension = null;
+        RegistryKey<DimensionType> dimension = null;
         int slash = name.indexOf('/');
         if (slash >= 0) {
-            dimension = DimensionType.byId(new Identifier(name.substring(0, slash)));
+            dimension = RegistryKey.of(Registry.DIMENSION_TYPE_KEY, new Identifier(name.substring(0, slash)));
             if (dimension != null) name = name.substring(slash + 1);
         }
         if (dimension == null) {
@@ -126,9 +129,9 @@ public class Waypoint implements Comparable<Waypoint>, Messenger.Formattable {
     }
 
     public static Map<String, Waypoint> loadWaypoints(WaypointContainer world) throws IOException {
-        File file = getWaypointFile(world);
-        if (!file.exists()) return new TreeMap<>();
-        try (FileReader reader = new FileReader(file)) {
+        Path file = getWaypointFile(world);
+        if (!Files.exists(file)) return new TreeMap<>();
+        try (BufferedReader reader = Files.newBufferedReader(file)) {
             Collection<Waypoint> waypoints = GSON.fromJson(reader, CollectionAdapter.type);
             TreeMap<String, Waypoint> map = new TreeMap<>();
             if (waypoints != null) {
@@ -139,22 +142,20 @@ public class Waypoint implements Comparable<Waypoint>, Messenger.Formattable {
     }
 
     public static void saveWaypoints(WaypointContainer world) throws IOException {
-        File file = getWaypointFile(world);
+        Path file = getWaypointFile(world);
         Map<String, Waypoint> waypoints = world.getWaypoints();
         if (waypoints.isEmpty()) {
-            if (file.exists()) {
-                //noinspection ResultOfMethodCallIgnored
-                file.delete();
-            }
+            Files.deleteIfExists(file);
             return;
         }
-        try(FileWriter writer = new FileWriter(file)) {
+        try(BufferedWriter writer = Files.newBufferedWriter(file)) {
             GSON.toJson(waypoints.values(), CollectionAdapter.type, writer);
         }
     }
 
-    public static File getWaypointFile(WaypointContainer world) {
-        return QuickCarpet.getConfigFile("waypoints" + world.getDimensionType().getSuffix() + ".json");
+    public static Path getWaypointFile(WaypointContainer world) {
+        DimensionType dimType = QuickCarpet.minecraft_server.method_29174().getRegistry().get(world.getDimensionType());
+        return QuickCarpet.getConfigFile(Reflection.newWorldSavePath("waypoints" + dimType.getSuffix() + ".json"));
     }
 
     public static class CollectionAdapter extends TypeAdapter<Collection<Waypoint>> {
@@ -166,7 +167,7 @@ public class Waypoint implements Comparable<Waypoint>, Messenger.Formattable {
             for (Waypoint w : waypoints) {
                 out.name(w.name);
                 out.beginObject();
-                out.name("dimension").value(DimensionType.getId(w.getDimension()).toString());
+                out.name("dimension").value(w.getDimension().getValue().toString());
                 out.name("x").value(w.position.x);
                 out.name("y").value(w.position.y);
                 out.name("z").value(w.position.z);
@@ -188,7 +189,7 @@ public class Waypoint implements Comparable<Waypoint>, Messenger.Formattable {
                 String name = in.nextName();
                 String creator = null;
                 UUID creatorUuid = null;
-                WaypointContainer world = (WaypointContainer) server.getWorld(DimensionType.OVERWORLD);
+                WaypointContainer world = (WaypointContainer) server.getWorld(DimensionType.OVERWORLD_REGISTRY_KEY);
                 Double x = null;
                 Double y = null;
                 Double z = null;
@@ -198,7 +199,7 @@ public class Waypoint implements Comparable<Waypoint>, Messenger.Formattable {
                 while (in.hasNext()) {
                     switch (in.nextName()) {
                         case "dimension": {
-                            world = (WaypointContainer) server.getWorld(DimensionType.byId(new Identifier(in.nextString())));
+                            world = (WaypointContainer) server.getWorld(RegistryKey.of(Registry.DIMENSION_TYPE_KEY, new Identifier(in.nextString())));
                             break;
                         }
                         case "x": x = in.nextDouble(); break;

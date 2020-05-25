@@ -1,9 +1,13 @@
 package quickcarpet.helper;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import net.minecraft.entity.EntityCategory;
+import net.minecraft.entity.SpawnGroup;
+import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Pair;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.SpawnHelper;
 import net.minecraft.world.dimension.DimensionType;
 import quickcarpet.QuickCarpet;
 import quickcarpet.logging.Logger;
@@ -13,20 +17,29 @@ import quickcarpet.mixin.accessor.ServerChunkManagerAccessor;
 import java.util.*;
 
 public class Mobcaps {
-    public static Map<EntityCategory, Pair<Integer, Integer>> getMobcaps(DimensionType dimensionType) {
+    public static Map<SpawnGroup, Pair<Integer, Integer>> getMobcaps(RegistryKey<DimensionType> dimensionType) {
         return getMobcaps(QuickCarpet.minecraft_server.getWorld(dimensionType));
     }
 
-    public static Map<EntityCategory, Pair<Integer, Integer>> getMobcaps(ServerWorld world) {
-        int chunks = ((ServerChunkManagerAccessor) world.getChunkManager()).getTicketManager().getLevelCount();
-        Object2IntMap<EntityCategory> mobs = world.getMobCountsByCategory();
-        EnumMap<EntityCategory, Pair<Integer, Integer>> mobcaps = new EnumMap<>(EntityCategory.class);
-        for (EntityCategory category : EntityCategory.values()) {
+    public static Map<SpawnGroup, Pair<Integer, Integer>> getMobcaps(ServerWorld world) {
+        int chunks = ((ServerChunkManagerAccessor) world.getChunkManager()).getTicketManager().getSpawningChunkCount();
+        SpawnHelper.Info spawnInfo = world.getChunkManager().getSpawnInfo();
+        if (spawnInfo == null) return Collections.emptyMap();
+        Object2IntMap<SpawnGroup> mobs = spawnInfo.getGroupToCount();
+        EnumMap<SpawnGroup, Pair<Integer, Integer>> mobcaps = new EnumMap<>(SpawnGroup.class);
+        for (SpawnGroup category : SpawnGroup.values()) {
             int cur = mobs.getOrDefault(category, 0);
-            int max = chunks * category.getSpawnCap() / (17 * 17);
+            int max = chunks * category.getCapacity() / (17 * 17);
             mobcaps.put(category, new Pair<>(cur, max));
         }
         return mobcaps;
+    }
+
+    public static boolean isBelowCap(ServerChunkManager chunkManager, SpawnGroup group) {
+        int count = chunkManager.getSpawnInfo().getGroupToCount().getInt(group);
+        int chunks = ((ServerChunkManagerAccessor) chunkManager).getTicketManager().getSpawningChunkCount();
+        int cap = chunks * group.getCapacity() / (17 * 17);
+        return count < cap;
     }
 
     public static class LogCommandParameters extends AbstractMap<String, Integer> implements Logger.CommandParameters<Integer> {
@@ -36,14 +49,16 @@ public class Mobcaps {
         @Override
         public Set<Entry<String, Integer>> entrySet() {
             LinkedHashSet<Entry<String, Integer>> entries = new LinkedHashSet<>();
-            for (DimensionType dim : DimensionType.getAll()) {
-                for (EntityCategory category : EntityCategory.values()) {
+            Registry<DimensionType> dims = QuickCarpet.minecraft_server.method_29174().getRegistry();
+            for (DimensionType dim : dims) {
+                RegistryKey<DimensionType> dimKey = dims.getKey(dim);
+                for (SpawnGroup category : SpawnGroup.values()) {
                     entries.add(new LogParameter<>(
-                            dim.toString() + "." + category.getName() + ".present",
-                            () -> getMobcaps(dim).get(category).getLeft()));
+                            dimKey.getValue().toString() + "." + category.getName() + ".present",
+                            () -> getMobcaps(dimKey).get(category).getLeft()));
                     entries.add(new LogParameter<>(
-                            dim.toString() + "." + category.getName() + ".limit",
-                            () -> getMobcaps(dim).get(category).getRight()));
+                            dimKey.getValue().toString() + "." + category.getName() + ".limit",
+                            () -> getMobcaps(dimKey).get(category).getRight()));
                 }
             }
             return entries;

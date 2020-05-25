@@ -9,8 +9,10 @@ import net.minecraft.command.CommandException;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
 import quickcarpet.Build;
 import quickcarpet.QuickCarpet;
 import quickcarpet.module.QuickCarpetModule;
@@ -110,7 +112,7 @@ public class CarpetCommand {
         Text valueText = s(rule.getAsString(), rule.getBoolValue() ? "lb" : "nb");
         Text status = t(rule.isDefault() ? "carpet.rule.value.default" : "carpet.rule.value.modified");
         m(player, t("carpet.rule.currentValue", valueText, status));
-        Text options = t("command.carpet.options");
+        MutableText options = t("command.carpet.options");
         options.append(s("[", YELLOW));
         boolean first = true;
         for (String o: rule.options) {
@@ -127,7 +129,7 @@ public class CarpetCommand {
         String color = "";
         if (option.equals(rule.defaultAsString) && !brackets) color += UNDERLINE;
         color += option.equals(rule.getAsString()) ? "bl" : "y";
-        Text baseText = s((brackets ? "[" : "") + option + (brackets ? "]" : ""), color);
+        MutableText baseText = s((brackets ? "[" : "") + option + (brackets ? "]" : ""), color);
         if (Settings.MANAGER.locked) {
             return hoverText(baseText, ts("carpet.locked", GRAY));
         }
@@ -137,7 +139,7 @@ public class CarpetCommand {
     private static <T> int setRule(ServerCommandSource source, ParsedRule<T> rule, T newValue) {
         try {
             rule.set(newValue, true);
-            Text changePermanently = c(s("["), t("command.carpet.changePermanently"), s("]"));
+            MutableText changePermanently = c(s("["), t("command.carpet.changePermanently"), s("]"));
             style(changePermanently, CYAN);
             hoverText(changePermanently, t("command.carpet.changePermanently.hover"));
             suggestCommand(changePermanently, "/carpet setDefault " + rule.name + " " + rule.getAsString());
@@ -169,8 +171,8 @@ public class CarpetCommand {
     }
 
     private static Text displayInteractiveSetting(ParsedRule<?> rule) {
-        Text text = s("- " + rule.name);
-        runCommand(text, "/carpet " + rule.name, style(rule.description.deepCopy(), YELLOW));
+        MutableText text = s("- " + rule.name);
+        runCommand(text, "/carpet " + rule.name, style(rule.description.copy(), YELLOW));
         boolean first = true;
         for (String option : rule.options) {
             if (first) {
@@ -185,7 +187,7 @@ public class CarpetCommand {
     private static int listSettings(ServerCommandSource source, Text title, Iterable<ParsedRule<?>> rules) {
         try {
             PlayerEntity player = source.getPlayer();
-            title.getStyle().setBold(true);
+            title.getStyle().withFormatting(Formatting.BOLD);
             m(player, title);
             for (ParsedRule rule : rules) {
                 m(player,displayInteractiveSetting(rule));
@@ -219,7 +221,7 @@ public class CarpetCommand {
         if (!modules.isEmpty()) {
             m(source, ts("command.carpet.modules", BOLD));
             for (QuickCarpetModule m : modules) {
-                Text button = s("[" + m.getId() + "]", CYAN);
+                MutableText button = s("[" + m.getId() + "]", CYAN);
                 runCommand(button, "/carpet list " + m.getId(), ts("command.carpet.modules.list", GRAY));
                 m(source, button, s(" " + m.getName() + " " + m.getVersion()));
             }
@@ -227,7 +229,7 @@ public class CarpetCommand {
         m(source, s(""));
         try {
             PlayerEntity player = source.getPlayer();
-            Text categories = ts("command.carpet.browseCategories", BOLD);
+            MutableText categories = ts("command.carpet.browseCategories", BOLD);
             boolean first = true;
             for (String name : RULE_CATEGORIES) {
                 if (first)  first = false;

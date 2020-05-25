@@ -153,7 +153,7 @@ public class Settings {
         public void onChange(ParsedRule<Integer> rule, Integer previous) {
             int newValue = rule.get();
             if (newValue == previous) return;
-            ServerWorld overworld = QuickCarpet.minecraft_server.getWorld(DimensionType.OVERWORLD);
+            ServerWorld overworld = QuickCarpet.minecraft_server.getWorld(DimensionType.OVERWORLD_REGISTRY_KEY);
             if (overworld != null) {
                 ChunkPos centerChunk = new ChunkPos(overworld.getSpawnPos());
                 ServerChunkManager chunkManager = (ServerChunkManager) overworld.getChunkManager();
