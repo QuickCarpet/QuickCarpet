@@ -1,4 +1,4 @@
-# QuickCarpet114
+# QuickCarpet
 Carpetmod for snapshot testing!
 This is not the official carpet vesion.
 Built on top of the Fabric modding framework.

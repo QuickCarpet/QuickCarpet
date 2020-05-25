@@ -13,7 +13,7 @@
     "sources": "https://github.com/DeadlyMC/QuickCarpet114",
     "issues": "https://github.com/DeadlyMC/QuickCarpet114/issues"
   },
-  "license": "CC0-1.0",
+  "license": "MIT",
   "environment": "*",
   "entrypoints": {
     "main": [
