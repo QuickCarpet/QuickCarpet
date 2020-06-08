@@ -387,7 +387,7 @@ public class Messenger {
             LOG.error("Message not delivered: " + message.getString());
             return;
         }
-        server.sendSystemMessage(message, Util.field_25140);
+        server.sendSystemMessage(message, Util.NIL_UUID);
         for (PlayerEntity player : server.getPlayerManager().getPlayerList()) {
             send(player, message);
         }

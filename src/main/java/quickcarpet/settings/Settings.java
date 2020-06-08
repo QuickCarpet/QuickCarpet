@@ -8,7 +8,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Unit;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.World;
 import quickcarpet.QuickCarpet;
 import quickcarpet.annotation.BugFix;
 import quickcarpet.feature.BreakBlockDispenserBehavior;
@@ -153,10 +153,10 @@ public class Settings {
         public void onChange(ParsedRule<Integer> rule, Integer previous) {
             int newValue = rule.get();
             if (newValue == previous) return;
-            ServerWorld overworld = QuickCarpet.minecraft_server.getWorld(DimensionType.OVERWORLD_REGISTRY_KEY);
+            ServerWorld overworld = QuickCarpet.minecraft_server.getWorld(World.OVERWORLD);
             if (overworld != null) {
                 ChunkPos centerChunk = new ChunkPos(overworld.getSpawnPos());
-                ServerChunkManager chunkManager = (ServerChunkManager) overworld.getChunkManager();
+                ServerChunkManager chunkManager = overworld.getChunkManager();
                 chunkManager.removeTicket(ChunkTicketType.START, centerChunk, previous, Unit.INSTANCE);
                 chunkManager.addTicket(ChunkTicketType.START, centerChunk, newValue, Unit.INSTANCE);
             }

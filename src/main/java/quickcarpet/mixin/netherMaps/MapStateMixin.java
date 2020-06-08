@@ -3,7 +3,7 @@ package quickcarpet.mixin.netherMaps;
 import net.minecraft.item.map.MapState;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.PersistentState;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -19,9 +19,9 @@ public abstract class MapStateMixin extends PersistentState {
         value = "FIELD",
         target = "Lnet/minecraft/item/map/MapState;dimension:Lnet/minecraft/util/registry/RegistryKey;"
     ))
-    private RegistryKey<DimensionType> redirectGetDimension(MapState state) {
-        if (Settings.netherMaps && state.dimension == DimensionType.THE_NETHER_REGISTRY_KEY) {
-            return DimensionType.OVERWORLD_REGISTRY_KEY;
+    private RegistryKey<World> redirectGetDimension(MapState state) {
+        if (Settings.netherMaps && state.dimension == World.NETHER) {
+            return World.OVERWORLD;
         }
         return state.dimension;
     }

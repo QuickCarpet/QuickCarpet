@@ -25,8 +25,8 @@ public abstract class ServerWorldMixin extends World implements WaypointContaine
     @Shadow @Final private MinecraftServer server;
     private Map<String, Waypoint> waypoints = new TreeMap<>();
 
-    protected ServerWorldMixin(MutableWorldProperties mutableWorldProperties, DimensionType dimensionType, Supplier<Profiler> supplier, boolean bl, boolean bl2, long l) {
-        super(mutableWorldProperties, dimensionType, supplier, bl, bl2, l);
+    protected ServerWorldMixin(MutableWorldProperties mutableWorldProperties, RegistryKey<World> registryKey, RegistryKey<DimensionType> registryKey2, DimensionType dimensionType, Supplier<Profiler> profiler, boolean bl, boolean bl2, long l) {
+        super(mutableWorldProperties, registryKey, registryKey2, dimensionType, profiler, bl, bl2, l);
     }
 
     @Override
@@ -35,7 +35,12 @@ public abstract class ServerWorldMixin extends World implements WaypointContaine
     }
 
     @Override
-    public RegistryKey<DimensionType> getDimensionType() {
-        return this.server.method_29174().getRegistry().getKey(getDimension());
+    public RegistryKey<World> getWaypointWorldKey() {
+        return this.getRegistryKey();
+    }
+
+    @Override
+    public DimensionType getWaypointDimensionType() {
+        return this.getDimension();
     }
 }

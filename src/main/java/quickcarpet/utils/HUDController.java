@@ -11,7 +11,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Pair;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 import quickcarpet.QuickCarpet;
 import quickcarpet.helper.HopperCounter;
 import quickcarpet.helper.Mobcaps;
@@ -48,16 +47,16 @@ public class HUDController {
         registerLogger(Loggers.MOBCAPS, logger -> {
             logger.log((option, player) -> {
                 World world = player.world;
-                RegistryKey<DimensionType> dim = world.getServer().method_29174().getRegistry().getKey(world.getDimension());
+                RegistryKey<World> dim = world.getRegistryKey();
                 switch (option) {
                     case "overworld":
-                        dim = DimensionType.OVERWORLD_REGISTRY_KEY;
+                        dim = World.OVERWORLD;
                         break;
                     case "nether":
-                        dim = DimensionType.THE_NETHER_REGISTRY_KEY;
+                        dim = World.NETHER;
                         break;
                     case "end":
-                        dim = DimensionType.THE_END_REGISTRY_KEY;
+                        dim = World.END;
                         break;
                 }
                 List<Text> components = new ArrayList<>();

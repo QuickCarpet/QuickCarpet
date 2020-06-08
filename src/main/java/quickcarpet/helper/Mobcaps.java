@@ -5,9 +5,9 @@ import net.minecraft.entity.SpawnGroup;
 import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Pair;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.SpawnHelper;
+import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import quickcarpet.QuickCarpet;
 import quickcarpet.logging.Logger;
@@ -17,8 +17,8 @@ import quickcarpet.mixin.accessor.ServerChunkManagerAccessor;
 import java.util.*;
 
 public class Mobcaps {
-    public static Map<SpawnGroup, Pair<Integer, Integer>> getMobcaps(RegistryKey<DimensionType> dimensionType) {
-        return getMobcaps(QuickCarpet.minecraft_server.getWorld(dimensionType));
+    public static Map<SpawnGroup, Pair<Integer, Integer>> getMobcaps(RegistryKey<World> dimension) {
+        return getMobcaps(QuickCarpet.minecraft_server.getWorld(dimension));
     }
 
     public static Map<SpawnGroup, Pair<Integer, Integer>> getMobcaps(ServerWorld world) {
@@ -49,16 +49,15 @@ public class Mobcaps {
         @Override
         public Set<Entry<String, Integer>> entrySet() {
             LinkedHashSet<Entry<String, Integer>> entries = new LinkedHashSet<>();
-            Registry<DimensionType> dims = QuickCarpet.minecraft_server.method_29174().getRegistry();
-            for (DimensionType dim : dims) {
-                RegistryKey<DimensionType> dimKey = dims.getKey(dim);
+            for (World world : QuickCarpet.minecraft_server.getWorlds()) {
+                RegistryKey<DimensionType> dimKey = world.getDimensionRegistryKey();
                 for (SpawnGroup category : SpawnGroup.values()) {
                     entries.add(new LogParameter<>(
                             dimKey.getValue().toString() + "." + category.getName() + ".present",
-                            () -> getMobcaps(dimKey).get(category).getLeft()));
+                            () -> getMobcaps((ServerWorld) world).get(category).getLeft()));
                     entries.add(new LogParameter<>(
                             dimKey.getValue().toString() + "." + category.getName() + ".limit",
-                            () -> getMobcaps(dimKey).get(category).getRight()));
+                            () -> getMobcaps((ServerWorld) world).get(category).getRight()));
                 }
             }
             return entries;

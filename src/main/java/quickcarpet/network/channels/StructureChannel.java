@@ -15,6 +15,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.feature.StructureFeature;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import quickcarpet.network.PacketSplitter;
@@ -95,8 +96,8 @@ public class StructureChannel implements PluginChannelHandler {
         for (ChunkPos pos : chunks) {
             if (!world.isChunkLoaded(pos.x, pos.z)) continue;
             Chunk chunk = world.getChunk(pos.x, pos.z);
-            for (Map.Entry<String, LongSet> e : chunk.getStructureReferences().entrySet()) {
-                references.merge(e.getKey(), e.getValue(), (a, b) -> {
+            for (Map.Entry<StructureFeature<?>, LongSet> e : chunk.getStructureReferences().entrySet()) {
+                references.merge(e.getKey().getName(), e.getValue(), (a, b) -> {
                     LongSet c = new LongOpenHashSet(a);
                     c.addAll(b);
                     return c;
@@ -110,7 +111,7 @@ public class StructureChannel implements PluginChannelHandler {
                 ChunkPos chunkPos = new ChunkPos(pos);
                 if (chunkMap.computeIntIfAbsent(chunkPos, c -> 1) > 1) continue;
                 Chunk chunk = world.getChunk(chunkPos.x, chunkPos.z);
-                starts.add(chunk.getStructureStart(ref.getKey()).toTag(chunkPos.x, chunkPos.z));
+                starts.add(chunk.getStructureStart(StructureFeature.STRUCTURES.get(ref.getKey())).toTag(chunkPos.x, chunkPos.z));
             }
         }
         CompoundTag data = new CompoundTag();

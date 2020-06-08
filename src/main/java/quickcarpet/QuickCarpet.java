@@ -17,8 +17,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 import net.minecraft.util.WorldSavePath;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.util.registry.RegistryTracker;
 import net.minecraft.world.level.ServerWorldProperties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -52,6 +51,7 @@ public final class QuickCarpet implements ModInitializer, ModuleHost, ServerEven
     private static QuickCarpet instance = new QuickCarpet();
 
     public static MinecraftServer minecraft_server;
+    public RegistryTracker.Modifiable dimensionTracker;
     public TickSpeed tickSpeed;
 
     @Environment(EnvType.CLIENT)
@@ -213,7 +213,7 @@ public final class QuickCarpet implements ModInitializer, ModuleHost, ServerEven
             Map<String, Waypoint> waypoints = ((WaypointContainer) world).getWaypoints();
             waypoints.clear();
             waypoints.putAll(Waypoint.loadWaypoints((WaypointContainer) world));
-            Identifier dimType = getDimensionType(world.getDimension()).getValue();
+            Identifier dimType = world.getRegistryKey().getValue();
             String prefix = dimType.getNamespace() + "." + dimType.getPath() + ".mob_cap";
             PubSubNode mobCapNode = PUBSUB.getOrCreateNode(prefix);
             for (SpawnGroup category : SpawnGroup.values()) {
@@ -230,7 +230,7 @@ public final class QuickCarpet implements ModInitializer, ModuleHost, ServerEven
             });
             worldUnloadCallbacks.put(world, handle::remove);
         } catch (Exception e) {
-            LOG.error("Error loading waypoints for " + ((ServerWorldProperties) world.getLevelProperties()).getLevelName() + "/" + getDimensionType(world.getDimension()).getValue());
+            LOG.error("Error loading waypoints for " + ((ServerWorldProperties) world.getLevelProperties()).getLevelName() + "/" + world.getRegistryKey().getValue());
         }
     }
 
@@ -245,7 +245,7 @@ public final class QuickCarpet implements ModInitializer, ModuleHost, ServerEven
         try {
             Waypoint.saveWaypoints((WaypointContainer) world);
         } catch (Exception e) {
-            LOG.error("Error saving waypoints for " + ((ServerWorldProperties) world.getLevelProperties()).getLevelName() + "/" + getDimensionType(world.getDimension()).getValue());
+            LOG.error("Error saving waypoints for " + ((ServerWorldProperties) world.getLevelProperties()).getLevelName() + "/" + world.getRegistryKey().getValue());
         }
     }
 
@@ -278,11 +278,7 @@ public final class QuickCarpet implements ModInitializer, ModuleHost, ServerEven
     }
 
     public static Path getConfigFile(WorldSavePath name) {
-        return minecraft_server.method_27050(name);
-    }
-
-    private RegistryKey<DimensionType> getDimensionType(DimensionType type) {
-        return minecraft_server.method_29174().getRegistry().getKey(type);
+        return minecraft_server.getSavePath(name);
     }
 
     @Override
@@ -296,7 +292,7 @@ public final class QuickCarpet implements ModInitializer, ModuleHost, ServerEven
         for (ServerWorld world : minecraft_server.getWorlds()) {
             JsonObject worldObj = new JsonObject();
             worldObj.addProperty("name", ((ServerWorldProperties) world.getLevelProperties()).getLevelName());
-            worldObj.addProperty("dimension", getDimensionType(world.getDimension()).toString());
+            worldObj.addProperty("dimension", world.getRegistryKey().getValue().toString());
             worldObj.addProperty("loadedChunks", world.getChunkManager().getLoadedChunkCount());
             Map<SpawnGroup, Pair<Integer, Integer>> mobcaps = Mobcaps.getMobcaps(world);
             JsonObject mobcapsObj = new JsonObject();

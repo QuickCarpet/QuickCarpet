@@ -12,8 +12,8 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.MutableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 import quickcarpet.QuickCarpet;
 import quickcarpet.logging.Logger;
 import quickcarpet.logging.Loggers;
@@ -30,7 +30,7 @@ import static quickcarpet.utils.Messenger.*;
 
 public class CarpetProfiler
 {
-    private static final Map<DimensionType, Measurement> MEASUREMENTS = new HashMap<>();
+    private static final Map<RegistryKey<World>, Measurement> MEASUREMENTS = new HashMap<>();
     private static int ticksTotal = 0;
     private static int ticksRemaining = 0;
     private static ReportType reportType = null;
@@ -87,7 +87,7 @@ public class CarpetProfiler
     }
 
     private static class Measurement {
-        final @Nullable DimensionType dimensionType;
+        final @Nullable RegistryKey<World> dimension;
         final Object2LongMap<SectionType> sections;
         final Object2IntMap<SectionType> sectionCount;
         final Object2LongMap<EntityType> entityTimes = new Object2LongOpenHashMap<>();
@@ -104,9 +104,9 @@ public class CarpetProfiler
         private BlockEntityType currentBlockEntity;
         private long currentBlockEntityStart;
 
-        Measurement(@Nullable DimensionType dimensionType) {
-            this.dimensionType = dimensionType;
-            if (dimensionType == null) {
+        Measurement(@Nullable RegistryKey<World> dimension) {
+            this.dimension = dimension;
+            if (dimension == null) {
                 this.sections = new Object2LongArrayMap<>(SectionType.GLOBAL, new long[SectionType.GLOBAL.length]);
                 this.sectionCount = new Object2IntArrayMap<>(SectionType.GLOBAL, new int[SectionType.GLOBAL.length]);
             } else {
@@ -151,7 +151,7 @@ public class CarpetProfiler
 
         void gc(long ms) {
             long ns = ms * 1_000_000;
-            if (dimensionType == null) {
+            if (dimension == null) {
                 sections.put(SectionType.GC, sections.getLong(SectionType.GC) + ns);
                 sectionCount.put(SectionType.GC, sectionCount.getInt(SectionType.GC) + 1);
             }
@@ -167,7 +167,7 @@ public class CarpetProfiler
         reportType = type;
         MEASUREMENTS.put(null, new Measurement(null));
         for (ServerWorld world : QuickCarpet.minecraft_server.getWorlds()) {
-            MEASUREMENTS.put(world.getDimension(), new Measurement(world.getDimension()));
+            MEASUREMENTS.put(world.getRegistryKey(), new Measurement(world.getRegistryKey()));
         }
 
         ticksRemaining = ticks;
@@ -269,7 +269,7 @@ public class CarpetProfiler
                 }
             }
             if (!messages.isEmpty()) {
-                broadcast(server, String.valueOf(world.method_27983().getValue()));
+                broadcast(server, String.valueOf(world.getRegistryKey().getValue()));
                 for (MutableText m : messages) broadcast(server, m);
             }
         }
@@ -281,7 +281,7 @@ public class CarpetProfiler
 
     private static MutableText format(Object2LongMap.Entry<Pair<Measurement, Object>> entry, double value, double msptGoal) {
         Pair<Measurement, Object> key = entry.getKey();
-        Identifier dim = QuickCarpet.minecraft_server.method_29174().getRegistry().getId(key.getLeft().dimensionType);
+        Identifier dim = key.getLeft().dimension.getValue();
         Object e = key.getRight();
         Identifier ent = e instanceof EntityType ? EntityType.getId((EntityType) e) : BlockEntityType.getId((BlockEntityType) e);
         return t("carpet.profiler.entity.line", ent, dim, formats("%.3f", msptGoal == 0 ? WHITE : getHeatmapColor(value, msptGoal), value));

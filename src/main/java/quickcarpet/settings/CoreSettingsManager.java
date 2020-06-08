@@ -9,8 +9,12 @@ import quickcarpet.utils.Reflection;
 import quickcarpet.utils.Translations;
 
 import javax.annotation.Nullable;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -106,7 +110,7 @@ public class CoreSettingsManager extends SettingsManager {
                     LOG.error("[" + Build.NAME + "]: Unknown line '" + line + "' - ignoring...");
                 }
             }
-        } catch (FileNotFoundException ignored) {
+        } catch (NoSuchFileException ignored) {
         } catch (IOException e) {
             e.printStackTrace();
         }

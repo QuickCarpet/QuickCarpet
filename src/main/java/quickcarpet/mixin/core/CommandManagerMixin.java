@@ -30,7 +30,7 @@ public abstract class CommandManagerMixin {
 
     @Feature("core")
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void onRegister(boolean boolean_1, CallbackInfo ci) {
+    private void onRegister(CommandManager.RegistrationEnvironment environment, CallbackInfo ci) {
         QuickCarpet.getInstance().setCommandDispatcher(this.dispatcher);
     }
 

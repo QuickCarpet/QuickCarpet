@@ -8,9 +8,8 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.World;
 import quickcarpet.helper.Mobcaps;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.SpawnTracker;
@@ -82,10 +81,9 @@ public class SpawnCommand {
         return 1;
     }
 
-    private static int sendMobcaps(ServerCommandSource source, RegistryKey<DimensionType> dimension) {
+    private static int sendMobcaps(ServerCommandSource source, RegistryKey<World> dimension) {
         if (dimension == null) {
-            Registry<DimensionType> dims = source.getMinecraftServer().method_29174().getRegistry();
-            dimension = dims.getKey(source.getWorld().getDimension());
+            dimension = source.getWorld().getRegistryKey();
         }
         Map<SpawnGroup, Pair<Integer, Integer>> mobcaps = Mobcaps.getMobcaps(dimension);
         m(source, t("command.spawn.mobcaps.title", dimension.getValue()));

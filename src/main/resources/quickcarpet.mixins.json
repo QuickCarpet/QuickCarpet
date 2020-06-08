@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "accessor.BlockTagsAccessor",
+    "accessor.ClientSettingsC2SPacketAccessor",
     "accessor.CraftingInventoryAccessor",
     "accessor.CustomPayloadC2SPacketAccessor",
     "accessor.FallibleItemDispenserBehaviorAccessor",
@@ -15,7 +16,6 @@
     "accessor.ServerChunkManagerAccessor",
     "accessor.ServerCommandSourceAccessor",
     "accessor.ServerNetworkIoAccessor",
-    "accessor.ServerPlayerEntityAccessor",
     "autoCraftingTable.CraftingTableBlockMixin",
     "blockPlacement.BlockItemMixin",
     "blockPlacement.ServerPlayInteractionManagerMixin",
@@ -24,6 +24,7 @@
     "core.CommandManagerMixin",
     "core.MinecraftDedicatedServerMixin",
     "core.MinecraftServerMixin",
+    "core.ServerPlayerEntityMixin",
     "core.ServerPlayNetworkHandlerMixin",
     "core.TagContainerMixin",
     "core.TestCommandMixin",

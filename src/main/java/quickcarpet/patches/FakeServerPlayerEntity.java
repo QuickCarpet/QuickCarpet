@@ -17,7 +17,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.GameMode;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.World;
 import quickcarpet.mixin.accessor.ServerNetworkIoAccessor;
 import quickcarpet.utils.Messenger;
 import quickcarpet.utils.extensions.ActionPackOwner;
@@ -27,8 +27,8 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
     private double startingX, startingY, startingZ;
     private float startingYaw, startingPitch;
 
-    public static FakeServerPlayerEntity createFake(String username, MinecraftServer server, double x, double y, double z, double yaw, double pitch, RegistryKey<DimensionType> dimType, GameMode gamemode) {
-        ServerWorld worldIn = server.getWorld(dimType);
+    public static FakeServerPlayerEntity createFake(String username, MinecraftServer server, double x, double y, double z, double yaw, double pitch, RegistryKey<World> dimension, GameMode gamemode) {
+        ServerWorld worldIn = server.getWorld(dimension);
         ServerPlayerInteractionManager interactionManagerIn = new ServerPlayerInteractionManager(worldIn);
         GameProfile gameprofile = server.getUserCache().findByName(username);
         if (gameprofile == null) {
@@ -41,8 +41,7 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
         FakeClientConnection connection = new FakeClientConnection(NetworkSide.SERVERBOUND);
         ((ServerNetworkIoAccessor) server.getNetworkIo()).getConnections().add(connection);
         server.getPlayerManager().onPlayerConnect(connection, instance);
-        DimensionType dimension = server.method_29174().getRegistry().get(dimType);
-        if (instance.world.getDimension() != dimension) {
+        if (instance.world.getDimensionRegistryKey() != worldIn.getDimensionRegistryKey()) {
             ServerWorld old_world = (ServerWorld) instance.world;
             old_world.removePlayer(instance);
             instance.removed = false;
@@ -57,8 +56,8 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
         instance.networkHandler.requestTeleport(x, y, z, (float) yaw, (float) pitch);
         instance.stepHeight = 0.6F;
         interactionManagerIn.setGameMode(gamemode);
-        server.getPlayerManager().sendToDimension(new EntitySetHeadYawS2CPacket(instance, (byte) (instance.headYaw * 256 / 360)), instance.world.method_27983());
-        server.getPlayerManager().sendToDimension(new EntityPositionS2CPacket(instance), instance.world.method_27983());
+        server.getPlayerManager().sendToDimension(new EntitySetHeadYawS2CPacket(instance, (byte) (instance.headYaw * 256 / 360)), instance.world.getRegistryKey());
+        server.getPlayerManager().sendToDimension(new EntityPositionS2CPacket(instance), instance.world.getRegistryKey());
         instance.getServerWorld().getChunkManager().updateCameraPosition(instance);
         instance.dataTracker.set(PLAYER_MODEL_PARTS, (byte) 0x7f); // show all model layers (incl. capes)
         return instance;
@@ -82,7 +81,7 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
         shadow.stepHeight = 0.6F;
         shadow.dataTracker.set(PLAYER_MODEL_PARTS, real.getDataTracker().get(PLAYER_MODEL_PARTS));
 
-        server.getPlayerManager().sendToDimension(new EntitySetHeadYawS2CPacket(shadow, (byte) (real.headYaw * 256 / 360)), shadow.world.method_27983());
+        server.getPlayerManager().sendToDimension(new EntitySetHeadYawS2CPacket(shadow, (byte) (real.headYaw * 256 / 360)), shadow.world.getRegistryKey());
         server.getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.ADD_PLAYER, shadow));
         real.getServerWorld().getChunkManager().updateCameraPosition(shadow);
         return shadow;

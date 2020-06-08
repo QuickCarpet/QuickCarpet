@@ -147,7 +147,7 @@ public class PistonBlockMixin extends FacingBlock {
             locals = LocalCapture.CAPTURE_FAILHARD)
     private void setBlockEntityWithCarried(World world_1, BlockPos blockPos_1, Direction direction_1, boolean boolean_1,
            CallbackInfoReturnable<Boolean> cir, BlockPos blockPos_2, PistonHandler pistonHandler_1, Map<BlockPos, BlockState> map,
-           List list_1, List list_2, List list_3, int int_2, BlockState[] blockStates_1, Direction direction_2,
+           List list_1, List list_2, List list_3, BlockState[] blockStates_1, Direction direction_2, int int_2,
            int int_3, BlockPos blockPos_4) {
         BlockEntity blockEntityPiston = PistonExtensionBlock.createBlockEntityPiston((BlockState) list_2.get(int_3),
                 direction_1, boolean_1, false);
@@ -172,7 +172,7 @@ public class PistonBlockMixin extends FacingBlock {
     }
 
     @Inject(method = "tryMove", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/world/World;addBlockAction(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;II)V",
+            target = "Lnet/minecraft/world/World;addSyncedBlockEvent(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;II)V",
             ordinal = 1, shift = At.Shift.BEFORE))
     private void doubleRetraction(World world, BlockPos pos, BlockState state, CallbackInfo ci) {
         if (quickcarpet.settings.Settings.doubleRetraction) {
@@ -182,7 +182,7 @@ public class PistonBlockMixin extends FacingBlock {
 
 
     @Feature("additionalMovableBlocks")
-    @Redirect(method = "onBlockAction", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getPistonBehavior()Lnet/minecraft/block/piston/PistonBehavior;"))
+    @Redirect(method = "onSyncedBlockEvent", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getPistonBehavior()Lnet/minecraft/block/piston/PistonBehavior;"))
     private PistonBehavior returnNormalWhenMovable(BlockState blockState){
         PistonBehavior pistonBehavior = blockState.getPistonBehavior();
         if(pistonBehavior == PistonBehaviors.WEAK_STICKY_BREAKABLE || pistonBehavior == PistonBehaviors.WEAK_STICKY)

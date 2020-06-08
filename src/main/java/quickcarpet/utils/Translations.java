@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.*;
-import quickcarpet.mixin.accessor.ServerPlayerEntityAccessor;
 import quickcarpet.module.QuickCarpetModule;
+import quickcarpet.utils.extensions.PlayerWithLanguage;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -62,7 +62,7 @@ public class Translations {
     }
 
     public static MutableText translate(MutableText text, ServerPlayerEntity player) {
-        return translate(text, ((ServerPlayerEntityAccessor) player).getClientLanguage());
+        return translate(text, ((PlayerWithLanguage) player).getLanguage());
     }
 
     public static MutableText translate(MutableText text, String locale) {

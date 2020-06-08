@@ -16,7 +16,7 @@ import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.World;
 import quickcarpet.QuickCarpet;
 import quickcarpet.patches.FakeServerPlayerEntity;
 import quickcarpet.utils.extensions.WaypointContainer;
@@ -57,8 +57,8 @@ public class Waypoint implements Comparable<Waypoint>, Messenger.Formattable {
         this(world, name, creator.getEntityName(), creator.getUuid(), position, rotation);
     }
 
-    public RegistryKey<DimensionType> getDimension() {
-        return world.getDimensionType();
+    public RegistryKey<World> getDimension() {
+        return world.getWaypointWorldKey();
     }
 
     public String getFullName() {
@@ -110,10 +110,10 @@ public class Waypoint implements Comparable<Waypoint>, Messenger.Formattable {
 
     @Nullable
     public static Waypoint find(String name, WaypointContainer defaultWorld, Iterable<WaypointContainer> worlds) {
-        RegistryKey<DimensionType> dimension = null;
+        RegistryKey<World> dimension = null;
         int slash = name.indexOf('/');
         if (slash >= 0) {
-            dimension = RegistryKey.of(Registry.DIMENSION_TYPE_KEY, new Identifier(name.substring(0, slash)));
+            dimension = RegistryKey.of(Registry.DIMENSION, new Identifier(name.substring(0, slash)));
             if (dimension != null) name = name.substring(slash + 1);
         }
         if (dimension == null) {
@@ -121,7 +121,7 @@ public class Waypoint implements Comparable<Waypoint>, Messenger.Formattable {
             if (waypoints.containsKey(name)) return waypoints.get(name);
         }
         for (WaypointContainer world : worlds) {
-            if (world.getDimensionType() != dimension) continue;
+            if (world.getWaypointWorldKey() != dimension) continue;
             Map<String, Waypoint> waypoints = world.getWaypoints();
             if (waypoints.containsKey(name)) return waypoints.get(name);
         }
@@ -154,8 +154,7 @@ public class Waypoint implements Comparable<Waypoint>, Messenger.Formattable {
     }
 
     public static Path getWaypointFile(WaypointContainer world) {
-        DimensionType dimType = QuickCarpet.minecraft_server.method_29174().getRegistry().get(world.getDimensionType());
-        return QuickCarpet.getConfigFile(Reflection.newWorldSavePath("waypoints" + dimType.getSuffix() + ".json"));
+        return QuickCarpet.getConfigFile(Reflection.newWorldSavePath("waypoints" + world.getWaypointDimensionType().getSuffix() + ".json"));
     }
 
     public static class CollectionAdapter extends TypeAdapter<Collection<Waypoint>> {
@@ -189,7 +188,7 @@ public class Waypoint implements Comparable<Waypoint>, Messenger.Formattable {
                 String name = in.nextName();
                 String creator = null;
                 UUID creatorUuid = null;
-                WaypointContainer world = (WaypointContainer) server.getWorld(DimensionType.OVERWORLD_REGISTRY_KEY);
+                WaypointContainer world = (WaypointContainer) server.getWorld(World.OVERWORLD);
                 Double x = null;
                 Double y = null;
                 Double z = null;
@@ -199,7 +198,7 @@ public class Waypoint implements Comparable<Waypoint>, Messenger.Formattable {
                 while (in.hasNext()) {
                     switch (in.nextName()) {
                         case "dimension": {
-                            world = (WaypointContainer) server.getWorld(RegistryKey.of(Registry.DIMENSION_TYPE_KEY, new Identifier(in.nextString())));
+                            world = (WaypointContainer) server.getWorld(RegistryKey.of(Registry.DIMENSION, new Identifier(in.nextString())));
                             break;
                         }
                         case "x": x = in.nextDouble(); break;
