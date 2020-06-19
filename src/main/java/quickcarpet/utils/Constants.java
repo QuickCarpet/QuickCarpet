@@ -13,6 +13,7 @@ public final class Constants {
         public static final int NO_RERENDER = 4;
         public static final int RERENDER_MAIN_THREAD = 8;
         public static final int NO_OBSERVER_UPDATE = 16;
+        public static final int FLAG_32 = 32;
         public static final int CALL_ON_ADDED_ON_REMOVED = 64;
         public static final int NO_FILL_UPDATE = 1024;
     }

@@ -5,11 +5,10 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.World;
 import quickcarpet.helper.Mobcaps;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.SpawnTracker;
@@ -81,12 +80,12 @@ public class SpawnCommand {
         return 1;
     }
 
-    private static int sendMobcaps(ServerCommandSource source, RegistryKey<World> dimension) {
+    private static int sendMobcaps(ServerCommandSource source, ServerWorld dimension) {
         if (dimension == null) {
-            dimension = source.getWorld().getRegistryKey();
+            dimension = source.getWorld();
         }
         Map<SpawnGroup, Pair<Integer, Integer>> mobcaps = Mobcaps.getMobcaps(dimension);
-        m(source, t("command.spawn.mobcaps.title", dimension.getValue()));
+        m(source, t("command.spawn.mobcaps.title", dimension.getRegistryKey().getValue()));
         for (Map.Entry<SpawnGroup, Pair<Integer, Integer>> e : mobcaps.entrySet()) {
             SpawnGroup category = e.getKey();
             Pair<Integer, Integer> pair = e.getValue();

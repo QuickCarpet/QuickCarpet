@@ -8,7 +8,7 @@ import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandOutput;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.dedicated.ServerCommandOutput;
+import net.minecraft.server.rcon.RconCommandOutput;
 import quickcarpet.QuickCarpet;
 import quickcarpet.mixin.accessor.ServerCommandSourceAccessor;
 
@@ -27,7 +27,7 @@ public class TelemetryCommand {
     private static int telemetry(CommandContext<ServerCommandSource> ctx) {
         ServerCommandSource source = ctx.getSource();
         CommandOutput output = ((ServerCommandSourceAccessor) source).getOutput();
-        boolean isConsole = output instanceof MinecraftServer || output instanceof ServerCommandOutput;
+        boolean isConsole = output instanceof MinecraftServer || output instanceof RconCommandOutput;
         Gson gson = isConsole ? GSON_CONCISE : GSON_PRETTY;
         JsonObject telemetry = QuickCarpet.getInstance().getTelemetryData();
         m(source, s(gson.toJson(telemetry)));

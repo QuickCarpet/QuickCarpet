@@ -143,12 +143,12 @@ public class WaypointCommand {
         return printList(source, waypoints, page, null, creator);
     }
 
-    private static int listDimension(ServerCommandSource source, RegistryKey<World> dimension, int page) throws CommandSyntaxException {
-        Collection<Waypoint> waypoints = ((WaypointContainer) QuickCarpet.minecraft_server.getWorld(dimension)).getWaypoints().values();
+    private static int listDimension(ServerCommandSource source, ServerWorld dimension, int page) throws CommandSyntaxException {
+        Collection<Waypoint> waypoints = ((WaypointContainer) dimension).getWaypoints().values();
         return printList(source, waypoints, page, dimension, null);
     }
 
-    private static int printList(ServerCommandSource source, Collection<Waypoint> waypoints, int page, @Nullable RegistryKey<World> dimension, @Nullable String creator) throws CommandSyntaxException {
+    private static int printList(ServerCommandSource source, Collection<Waypoint> waypoints, int page, @Nullable ServerWorld dimension, @Nullable String creator) throws CommandSyntaxException {
         if (waypoints.isEmpty()) {
             m(source, ts("command.waypoint.list.none", GOLD));
             return 0;
@@ -167,7 +167,7 @@ public class WaypointCommand {
         if (pages > 1) {
             header.append(" ").append(t("command.waypoint.list.page", page, pages));
             String baseCommand = "/waypoint list";
-            if (dimension != null) baseCommand += " in " + dimension;
+            if (dimension != null) baseCommand += " in " + dimension.getRegistryKey().getValue();
             else if (creator != null) baseCommand += " by " + creator;
             if (page > 1) {
                 header.append(" ").append(runCommand(s("[<]", GRAY), baseCommand + " " + (page - 1),

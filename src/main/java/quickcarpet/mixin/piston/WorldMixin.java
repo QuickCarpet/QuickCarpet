@@ -39,7 +39,7 @@ public abstract class WorldMixin implements ExtendedWorld {
     /**
      * @author 2No2Name
      */
-    public boolean setBlockStateWithBlockEntity(BlockPos pos, BlockState state, BlockEntity newBlockEntity, int flags) {
+    public boolean setBlockStateWithBlockEntity(BlockPos pos, BlockState state, BlockEntity newBlockEntity, int flags, int depth) {
         if (World.isHeightInvalid(pos)) return false;
         if (!this.isClient && this.isDebugWorld()) return false;
         WorldChunk worldChunk = this.getWorldChunk(pos);
@@ -78,10 +78,10 @@ public abstract class WorldMixin implements ExtendedWorld {
             }
 
             if ((flags & (NO_OBSERVER_UPDATE | NO_FILL_UPDATE)) == 0) {
-                int int_2 = flags & ~UPDATE_NEIGHBORS;
-                chunkState.prepare((WorldAccess) this, pos, int_2);
-                state.updateNeighbors((WorldAccess) this, pos, int_2);
-                state.prepare((WorldAccess) this, pos, int_2);
+                int maskedFlags = flags & ~(UPDATE_NEIGHBORS | FLAG_32);
+                chunkState.prepare((WorldAccess) this, pos, maskedFlags, depth - 1);
+                state.updateNeighbors((WorldAccess) this, pos, maskedFlags, depth - 1);
+                state.prepare((WorldAccess) this, pos, maskedFlags, depth - 1);
             }
 
             this.onBlockChanged(pos, chunkState, previousState);
