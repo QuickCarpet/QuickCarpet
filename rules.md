@@ -419,3 +419,11 @@ Default: `true`
 Options: `true`, `false`  
 Categories: tnt  
 
+## tntUpdateOnPlace
+Whether TNT should check for redstone power when placed
+
+Type: `boolean`  
+Default: `true`  
+Options: `true`, `false`  
+Categories: tnt  
+

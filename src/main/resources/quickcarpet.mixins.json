@@ -74,6 +74,7 @@
     "tickSpeed.MinecraftServerMixin",
     "tickSpeed.ServerWorldMixin",
     "tnt.ExplosionMixin",
+    "tnt.TntBlockMixin",
     "tnt.TntEntityMixin",
     "waypoints.ServerWorldMixin",
     "waypoints.TeleportCommandMixin"

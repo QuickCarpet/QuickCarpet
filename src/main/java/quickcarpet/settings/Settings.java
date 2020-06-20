@@ -87,6 +87,9 @@ public class Settings {
     @Rule(category = TNT, options = "-1", validator = TNTAngle.class)
     public static double tntHardcodeAngle = -1;
 
+    @Rule(category = TNT)
+    public static boolean tntUpdateOnPlace = true;
+
     public static class TNTAngle implements Validator<Double> {
         @Override
         public Optional<TranslatableText> validate(Double value) {

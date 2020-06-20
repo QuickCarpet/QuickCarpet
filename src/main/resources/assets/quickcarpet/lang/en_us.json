@@ -47,6 +47,7 @@
   "carpet.rule.explosionNoBlockDamage.description": "Explosions won't destroy blocks",
   "carpet.rule.tntPrimeMomentum.description": "Removes random TNT momentum when primed and set to false",
   "carpet.rule.tntHardcodeAngle.description": "Sets the horizontal random angle on TNT for debugging of TNT contraptions",
+  "carpet.rule.tntUpdateOnPlace.description": "Whether TNT should check for redstone power when placed",
   "carpet.rule.silverFishDropGravel.description": "Silverfish drop a gravel item when breaking out of a block",
   "carpet.rule.shulkerSpawningInEndCities.description": "Shulkers will respawn in end cities",
   "carpet.rule.portalCreativeDelay.description": "Portals won't let a creative player go through instantly",

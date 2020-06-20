@@ -45,6 +45,7 @@
   "carpet.rule.explosionNoBlockDamage.description": "Explosionen zerstören keine Blöcke",
   "carpet.rule.tntPrimeMomentum.description": "Entfernt die zufällige Sprungrichtung beim Zünden von TNT falls 'false'",
   "carpet.rule.tntHardcodeAngle.description": "Setzt die Sprungrichtung beim Zünden von TNT auf einen festen Wert. -1 für Zufallswert (Standard)",
+  "carpet.rule.tntUpdateOnPlace.description": "Ob TNT beim Platzieren gezündet werden kann",
   "carpet.rule.silverFishDropGravel.description": "Silverfischchen lassen beim Ausbrechen aus Steinen Kies fallen",
   "carpet.rule.shulkerSpawningInEndCities.description": "Shulkers können in End-Städten spawnen",
   "carpet.rule.portalCreativeDelay.description": "Portale lassen Spieler im Kreativmodus nicht sofort durch",
