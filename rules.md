@@ -374,7 +374,7 @@ Options: `true`, `false`
 Categories: feature, experimental  
 
 ## sleepingThreshold
-carpet.rule.sleepingThreshold.description
+Percentage of sleeping players required to skip the night
 
 Type: `double`  
 Default: `100.0`  

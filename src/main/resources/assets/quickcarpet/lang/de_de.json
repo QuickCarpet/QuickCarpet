@@ -74,7 +74,7 @@
   "carpet.rule.optimizedFluidTicks.description": "Optimiert zufällige Ticks für Flüssigkeiten",
   "carpet.rule.optimizedFluidTicks.extra": "Tests zeigten eine Verbesserung von ca. 2-3mspt in regulären Welten\nBenötigt ein Neuladen der Chunks",
   "carpet.rule.dispensersTillSoil.description": "Werfer mit Hacken können Erde pflügen",
-  "carpet.rule.sleepingThresold.description": "Prozentualer Anteil der Spieler die schlafen müssen um die Nacht zu überspringen",
+  "carpet.rule.sleepingThreshold.description": "Prozentualer Anteil der Spieler die schlafen müssen um die Nacht zu überspringen",
   "carpet.rule.optimizedInventories.description": "Optimiert die Interaction von Trichtern und Spendern mit Kisten",
   "carpet.rule.optimizedInventories.extra": "Tests zeigten eine ca. 5- bis 10-fache Performance Verbesserung",
   "carpet.rule.movableBlockOverrides.description": "Ermöglicht die Anpassung des Kolbenverhaltens. Führt ein neues 'weak sticky' Verhalten ein, das standardmäßig von Redstone Komponenten, Blumentöpfen, etc. genutzt wird.",
