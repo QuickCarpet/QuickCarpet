@@ -50,12 +50,18 @@ public abstract class SettingsManager {
         return getDefaultRuleName(field, rule);
     }
 
+    protected abstract String getTranslationKey(Field field, Rule rule, String key);
+
     public String getDescriptionTranslationKey(Field field, Rule rule) {
-        return "carpet.rule." + getDefaultRuleName(field, rule) + ".description";
+        return getTranslationKey(field, rule, "description");
     }
 
     public String getExtraTranslationKey(Field field, Rule rule) {
-        return "carpet.rule." + getDefaultRuleName(field, rule) + ".extra";
+        return getTranslationKey(field, rule, "extra");
+    }
+
+    public String getDeprecationTranslationKey(Field field, Rule rule) {
+        return getTranslationKey(field, rule, "deprecated");
     }
 
     public ParsedRule getRule(String name) {

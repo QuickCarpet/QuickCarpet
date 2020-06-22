@@ -9,6 +9,7 @@ import quickcarpet.utils.Translations;
 
 import javax.annotation.Nullable;
 import java.io.*;
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -58,6 +59,11 @@ public class CoreSettingsManager extends SettingsManager {
     public void init(MinecraftServer server) {
         super.init(server);
         load();
+    }
+
+    @Override
+    protected String getTranslationKey(Field field, Rule rule, String key) {
+        return "carpet.rule." + getDefaultRuleName(field, rule) + "." + key;
     }
 
     private File getFile() {
@@ -141,6 +147,10 @@ public class CoreSettingsManager extends SettingsManager {
                 for (String extra : Translations.translate(rule.extraInfo, Translations.DEFAULT_LOCALE).asFormattedString().split("\n")) {
                     ps.println(extra + "  ");
                 }
+                ps.println();
+            }
+            if (rule.deprecated != null) {
+                ps.println("Deprecated: " + Translations.translate(rule.deprecated, Translations.DEFAULT_LOCALE).asFormattedString() + "  ");
             }
             ps.println("Type: `" + rule.type.getSimpleName() + "`  ");
             ps.println("Default: `" + rule.defaultAsString + "`  ");

@@ -11,6 +11,7 @@ Categories: feature
 Drop an anvil on packed ice blocks to get blue ice
 
 Value is the number of packed ice blocks required, 0 is disabled  
+
 Type: `int`  
 Default: `0`  
 Categories: feature, experimental  
@@ -19,6 +20,7 @@ Categories: feature, experimental
 Drop an anvil on ice blocks to get packed ice
 
 Value is the number of ice blocks required, 0 is disabled  
+
 Type: `int`  
 Default: `0`  
 Categories: feature, experimental  
@@ -43,6 +45,7 @@ Validator: `OP Level (0-4)`
 Enables /carpetclone command for players with this permission level
 
 This is a replica of the /clone command for fillUpdates and fillLimits  
+
 Type: `int`  
 Default: `2`  
 Categories: commands  
@@ -52,6 +55,7 @@ Validator: `OP Level (0-4)`
 Enables /carpetfill command for players with this permission level
 
 This is a replica of the /fill command for fillUpdates and fillLimits  
+
 Type: `int`  
 Default: `2`  
 Categories: commands  
@@ -61,6 +65,7 @@ Validator: `OP Level (0-4)`
 Enables /carpetsetblock command for players with this permission level
 
 This is a replica of the /setblock command for fillUpdates and fillLimits  
+
 Type: `int`  
 Default: `2`  
 Categories: commands  
@@ -118,6 +123,7 @@ Validator: `OP Level (0-4)`
 Allows the tick rate modifications of /tick for players with this permission level
 
 Values lower then commandTick have no effect  
+
 Type: `int`  
 Default: `2`  
 Categories: commands  
@@ -167,6 +173,7 @@ Categories: feature
 1.8 double retraction from pistons.
 
 Gives pistons the ability to double retract without side effects.  
+
 Type: `boolean`  
 Default: `false`  
 Options: `true`, `false`  
@@ -211,6 +218,7 @@ Players can flip and rotate blocks when holding cactus
 
 Doesn't cause block updates when rotated/flipped  
 Applies to pistons, observers, droppers, repeaters, stairs, glazed terracotta etc.  
+
 Type: `boolean`  
 Default: `false`  
 Options: `true`, `false`  
@@ -223,6 +231,7 @@ Enables /counter command, and actions while placing red and green carpets on woo
 Use /counter <color?> reset to reset the counter, and /counter <color?> to query  
 Counters are global and shared between players, 16 channels available  
 Items counted are destroyed, count up to one stack per tick per hopper  
+
 Type: `boolean`  
 Default: `false`  
 Options: `true`, `false`  
@@ -232,6 +241,7 @@ Categories: commands
 Sets the isDevelopment constant
 
 For example enables the /test command  
+
 Type: `boolean`  
 Default: `false`  
 Options: `true`, `false`  
@@ -265,6 +275,7 @@ Categories: feature, experimental
 Enables normal mapping of the nether
 
 Useful for builds above the nether roof or SkyBlock  
+
 Type: `boolean`  
 Default: `false`  
 Options: `true`, `false`  
@@ -275,6 +286,7 @@ Optimizes random ticks for fluids
 
 Testing showed around 2-3mspt improvement in regular worlds  
 Needs reloading of chunks to be effective  
+
 Type: `boolean`  
 Default: `false`  
 Options: `true`, `false`  
@@ -284,6 +296,8 @@ Categories: optimizations, experimental
 Optimizes hoppers and droppers interacting with chests ("Killer Hopper"s)
 
 Tests showed ca. 5-10x performance improvement in worst-case scenarios  
+
+Deprecated: 2No2Name's mod includes this and much more  
 Type: `boolean`  
 Default: `false`  
 Options: `true`, `false`  
@@ -310,6 +324,7 @@ Categories: survival, fix, experimental
 Portals won't let a creative player go through instantly
 
 Holding obsidian in either hand won't let you through at all  
+
 Type: `boolean`  
 Default: `false`  
 Options: `true`, `false`  
@@ -388,6 +403,7 @@ Size of the spawn chunks
 Like render distance (11 -> 23x23 actively loaded).  
 Be aware that a border of 11 chunks will stay loaded around that, once those chunks are loaded somehow.  
 Higher levels need lots of RAM (up to 7569 chunks loaded with level 32)  
+
 Type: `int`  
 Default: `11`  
 Categories: experimental  
@@ -397,6 +413,7 @@ Validator: `quickcarpet.settings.Settings$SpawnChunkLevel`
 Empty shulker boxes can stack to 64 when dropped on the ground
 
 To move them around between inventories, use shift click to move entire stacks  
+
 Type: `boolean`  
 Default: `false`  
 Options: `true`, `false`  

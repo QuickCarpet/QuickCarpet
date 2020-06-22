@@ -19,11 +19,8 @@ public class ModuleSettingsManager extends SettingsManager {
         return this.prefix + super.getRuleName(field, rule);
     }
 
-    public String getDescriptionTranslationKey(Field field, Rule rule) {
-        return module.getId() + ".rule." + getDefaultRuleName(field, rule) + ".description";
-    }
-
-    public String getExtraTranslationKey(Field field, Rule rule) {
-        return module.getId() + ".rule." + getDefaultRuleName(field, rule) + ".extra";
+    @Override
+    protected String getTranslationKey(Field field, Rule rule, String key) {
+        return module.getId() + ".rule." + getDefaultRuleName(field, rule) + "." + key;
     }
 }

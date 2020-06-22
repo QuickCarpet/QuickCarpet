@@ -31,6 +31,8 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
     public final TranslatableText description;
     @Nullable
     public final TranslatableText extraInfo;
+    @Nullable
+    public final TranslatableText deprecated;
     public final ImmutableList<RuleCategory> categories;
     public final ImmutableList<String> options;
     public final Class<T> type;
@@ -65,6 +67,7 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
         ImmutableList<String> options = typeAdapter.getOptions();
         if (options == null) options = ImmutableList.copyOf(rule.options());
         this.options = options;
+        this.deprecated = rule.deprecated() ? new TranslatableText(manager.getDeprecationTranslationKey(field, rule)) : null;
     }
 
     @SuppressWarnings("unchecked")

@@ -51,5 +51,5 @@ public @interface Rule {
      */
     BugFix[] bug() default {};
 
-    String deprecated() default "";
+    boolean deprecated() default false;
 }

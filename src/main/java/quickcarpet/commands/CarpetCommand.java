@@ -94,6 +94,8 @@ public class CarpetCommand {
 
         if (rule.extraInfo != null) m(player, style(rule.extraInfo, GRAY));
 
+        if (rule.deprecated != null) m(player, ts("command.carpet.rule.deprecated", RED, rule.deprecated));
+
         List<Text> categories = new ArrayList<>();
         categories.add(t("command.carpet.categories"));
         Stream<String> ruleCategories = rule.categories.stream().map(c -> c.lowerCase);
