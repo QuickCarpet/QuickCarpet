@@ -1,6 +1,7 @@
 package quickcarpet.mixin.renewableCoral;
 
 import net.minecraft.block.*;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.util.math.BlockPos;
@@ -28,7 +29,8 @@ public abstract class CoralBlockMixin implements Fertilizable {
         return (double) var1.random.nextFloat() < 0.15D;
     }
 
-    public void grow(World worldIn, Random random, BlockPos pos, BlockState blockUnder) {
+    @Override
+    public void grow(ServerWorld worldIn, Random random, BlockPos pos, BlockState blockUnder) {
         CoralFeature coral;
         int variant = random.nextInt(3);
         if (variant == 0)
