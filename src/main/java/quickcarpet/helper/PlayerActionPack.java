@@ -4,8 +4,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.network.packet.PlayerActionC2SPacket;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
@@ -233,7 +233,7 @@ public class PlayerActionPack {
                         BlockHitResult blockHit = (BlockHitResult) hit;
                         BlockPos pos = blockHit.getBlockPos();
                         Direction side = blockHit.getSide();
-                        if (player.canMine(player.world, pos, player.interactionManager.getGameMode())) return;
+                        if (player.isBlockBreakingRestricted(player.world, pos, player.interactionManager.getGameMode())) return;
                         if (ap.currentBlock != null && player.world.isAir(ap.currentBlock)) {
                             ap.currentBlock = null;
                             return;
@@ -280,7 +280,7 @@ public class PlayerActionPack {
             @Override
             void execute(ServerPlayerEntity player, Action action) {
                 if (action.limit == 1) {
-                    if (player.onGround) player.jump();
+                    if (player.isOnGround()) player.jump(); // onGround
                 } else {
                     player.setJumping(true);
                 }

@@ -71,6 +71,14 @@ Default: `2`
 Categories: commands  
 Validator: `OP Level (0-4)`  
 
+## commandFix
+carpet.rule.commandFix.description
+
+Type: `int`  
+Default: `2`  
+Categories: commands  
+Validator: `OP Level (0-4)`  
+
 ## commandLog
 Enables /log command to monitor events in the game via chat and overlays for players with this permission level
 

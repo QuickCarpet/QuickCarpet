@@ -1,9 +1,8 @@
 package quickcarpet.logging;
 
-import net.minecraft.client.network.packet.TitleS2CPacket;
-import net.minecraft.network.MessageType;
+import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableText;
 import quickcarpet.QuickCarpet;
 import quickcarpet.utils.HUDController;
@@ -16,11 +15,11 @@ public interface LogHandler
 {
 
     LogHandler CHAT = (logger, player, message, commandParams) -> Arrays.stream(message)
-            .forEach(m -> player.sendChatMessage(new TranslatableText("chat.type.announcement", logger.getDisplayName(), m), MessageType.CHAT));
+            .forEach(m -> player.sendMessage(new TranslatableText("chat.type.announcement", logger.getDisplayName(), m), false));
     LogHandler HUD = new LogHandler() {
         @Override
-        public void handle(Logger logger, ServerPlayerEntity player, Text[] message, Supplier<Logger.CommandParameters> commandParams) {
-            for (Text m : message)
+        public void handle(Logger logger, ServerPlayerEntity player, MutableText[] message, Supplier<Logger.CommandParameters> commandParams) {
+            for (MutableText m : message)
                 HUDController.addMessage(player, m);
         }
 
@@ -31,12 +30,7 @@ public interface LogHandler
                 HUDController.clearPlayerHUD(player);
         }
     };
-    LogHandler ACTION_BAR = new LogHandler() {
-        @Override
-        public void handle(Logger logger, ServerPlayerEntity player, Text[] message, Supplier<Logger.CommandParameters> commandParams) {
-            player.networkHandler.sendPacket(new TitleS2CPacket(TitleS2CPacket.Action.ACTIONBAR, Messenger.c((Object[]) message)));
-        }
-    };
+    LogHandler ACTION_BAR = (logger, player, message, commandParams) -> player.networkHandler.sendPacket(new TitleS2CPacket(TitleS2CPacket.Action.ACTIONBAR, Messenger.c((Object[]) message)));
 
     @FunctionalInterface
     interface LogHandlerCreator
@@ -48,7 +42,7 @@ public interface LogHandler
         }
     }
 
-    void handle(Logger logger, ServerPlayerEntity player, Text[] message, Supplier<Logger.CommandParameters> commandParams);
+    void handle(Logger logger, ServerPlayerEntity player, MutableText[] message, Supplier<Logger.CommandParameters> commandParams);
 
     default void onAddPlayer(String playerName) {}
 

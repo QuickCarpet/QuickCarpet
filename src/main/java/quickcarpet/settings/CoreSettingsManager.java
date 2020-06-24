@@ -5,11 +5,18 @@ import quickcarpet.Build;
 import quickcarpet.QuickCarpet;
 import quickcarpet.annotation.BugFix;
 import quickcarpet.module.QuickCarpetModule;
+import quickcarpet.utils.Reflection;
 import quickcarpet.utils.Translations;
 
 import javax.annotation.Nullable;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -66,9 +73,9 @@ public class CoreSettingsManager extends SettingsManager {
         return "carpet.rule." + getDefaultRuleName(field, rule) + "." + key;
     }
 
-    private File getFile() {
+    private Path getFile() {
         if (!initialized) throw new IllegalStateException("Not initialized");
-        return QuickCarpet.getConfigFile("carpet.conf");
+        return QuickCarpet.getConfigFile(Reflection.newWorldSavePath("carpet.conf"));
     }
 
     @Override
@@ -78,7 +85,7 @@ public class CoreSettingsManager extends SettingsManager {
 
     void load() {
         for (ParsedRule<?> rule : allRules) rule.resetToDefault(false);
-        try (BufferedReader reader = new BufferedReader(new FileReader(getFile()))) {
+        try (BufferedReader reader = Files.newBufferedReader(getFile())) {
             for (String line; (line = reader.readLine()) != null;) {
                 line = line.trim();
                 if (line.isEmpty()) continue;
@@ -109,7 +116,7 @@ public class CoreSettingsManager extends SettingsManager {
                     LOG.error("[" + Build.NAME + "]: Unknown line '" + line + "' - ignoring...");
                 }
             }
-        } catch (FileNotFoundException ignored) {
+        } catch (NoSuchFileException ignored) {
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -125,12 +132,12 @@ public class CoreSettingsManager extends SettingsManager {
 
     void save() {
         if (locked) return;
-        try (PrintStream out = new PrintStream(new FileOutputStream(getFile()))) {
+        try (PrintStream out = new PrintStream(Files.newOutputStream(getFile()))) {
             for (ParsedRule<?> rule : getNonDefault()) {
                 if (!rule.hasSavedValue()) continue;
                 out.println(rule.name + " " + rule.getSavedAsString());
             }
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         resendCommandTree();
@@ -142,15 +149,15 @@ public class CoreSettingsManager extends SettingsManager {
         for (Map.Entry<String, ParsedRule<?>> e : new TreeMap<>(rules).entrySet()) {
             ParsedRule<?> rule = e.getValue();
             ps.println("## " + rule.name);
-            ps.println(Translations.translate(rule.description, Translations.DEFAULT_LOCALE).asFormattedString() + "\n");
+            ps.println(Translations.translate(rule.description, Translations.DEFAULT_LOCALE).getString() + "\n");
             if (rule.extraInfo != null) {
-                for (String extra : Translations.translate(rule.extraInfo, Translations.DEFAULT_LOCALE).asFormattedString().split("\n")) {
+                for (String extra : Translations.translate(rule.extraInfo, Translations.DEFAULT_LOCALE).getString().split("\n")) {
                     ps.println(extra + "  ");
                 }
                 ps.println();
             }
             if (rule.deprecated != null) {
-                ps.println("Deprecated: " + Translations.translate(rule.deprecated, Translations.DEFAULT_LOCALE).asFormattedString() + "  ");
+                ps.println("Deprecated: " + Translations.translate(rule.deprecated, Translations.DEFAULT_LOCALE).getString() + "  ");
             }
             ps.println("Type: `" + rule.type.getSimpleName() + "`  ");
             ps.println("Default: `" + rule.defaultAsString + "`  ");

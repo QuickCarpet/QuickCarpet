@@ -4,7 +4,6 @@ import net.minecraft.server.MinecraftServer;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import quickcarpet.annotation.Feature;
 import quickcarpet.utils.CarpetProfiler;
@@ -24,17 +23,12 @@ public class MinecraftServerMixin {
         CarpetProfiler.endTick((MinecraftServer) (Object) this);
     }
 
-    @Inject(method = "tick", at = @At(value = "CONSTANT", args = "stringValue=save"))
+    @Inject(method = "tick", at = @At(value = "CONSTANT", args = "stringValue=Autosave started"))
     private void startAutosave(BooleanSupplier booleanSupplier_1, CallbackInfo ci) {
         CarpetProfiler.startSection(null, CarpetProfiler.SectionType.AUTOSAVE);
     }
 
-    @Inject(
-            method = "tick",
-            slice = @Slice(from = @At(value = "CONSTANT", args = "stringValue=save")),
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/util/profiler/DisableableProfiler;pop()V",
-                    ordinal = 0)
-    )
+    @Inject(method = "tick", at = @At(value = "CONSTANT", args = "stringValue=Autosave finished"))
     private void endAutosave(BooleanSupplier booleanSupplier_1, CallbackInfo ci) {
         CarpetProfiler.endSection(null);
     }

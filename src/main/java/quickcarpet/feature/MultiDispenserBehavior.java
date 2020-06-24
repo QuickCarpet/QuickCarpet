@@ -20,7 +20,7 @@ public class MultiDispenserBehavior extends FallibleItemDispenserBehavior {
             ItemStack stackOut = ((ItemDispenserBehaviorAccessor) behavior).doDispenseSilently(pointer, stackIn);
             if (!(behavior instanceof FallibleItemDispenserBehavior) || ((FallibleItemDispenserBehaviorAccessor) behavior).isSuccessful()) {
                 System.out.printf("success %s\n", behavior);
-                this.success = true;
+                this.setSuccess(true);
                 return stackOut;
             } else {
                 System.out.printf("fail %s\n", behavior);

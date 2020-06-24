@@ -6,20 +6,23 @@ import net.minecraft.tag.FluidTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.*;
+import net.minecraft.world.gen.feature.CoralFeature;
+import net.minecraft.world.gen.feature.Feature;
 import org.spongepowered.asm.mixin.Implements;
 import org.spongepowered.asm.mixin.Interface;
 import org.spongepowered.asm.mixin.Mixin;
-import quickcarpet.annotation.Feature;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.extensions.ExtendedCoralFeature;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
-@Feature("renewableCoral")
+@quickcarpet.annotation.Feature("renewableCoral")
 @Mixin(CoralBlock.class)
 @Implements(@Interface(iface = Fertilizable.class, prefix = "fert$"))
 public abstract class CoralBlockMixin implements Fertilizable {
+
     public boolean isFertilizable(BlockView var1, BlockPos var2, BlockState var3, boolean var4) {
         return Settings.renewableCoral && var3.get(CoralParentBlock.WATERLOGGED) && var1.getFluidState(var2.up()).matches(FluidTags.WATER);
     }
@@ -29,15 +32,9 @@ public abstract class CoralBlockMixin implements Fertilizable {
     }
 
     public void grow(World worldIn, Random random, BlockPos pos, BlockState blockUnder) {
-        CoralFeature coral;
-        int variant = random.nextInt(3);
-        if (variant == 0)
-            coral = new CoralClawFeature(DefaultFeatureConfig::deserialize);
-        else if (variant == 1)
-            coral = new CoralTreeFeature(DefaultFeatureConfig::deserialize);
-        else
-            coral = new CoralMushroomFeature(DefaultFeatureConfig::deserialize);
-
+        // can't be a static final field because of bootstap order (this would load features from blocks)
+        List<CoralFeature> FEATURES = Arrays.asList((CoralFeature) Feature.CORAL_CLAW, (CoralFeature) Feature.CORAL_TREE, (CoralFeature) Feature.CORAL_MUSHROOM);
+        CoralFeature coral = FEATURES.get(random.nextInt(FEATURES.size()));
         MaterialColor color = blockUnder.getTopMaterialColor(worldIn, pos);
         BlockState proper_block = blockUnder;
         for (Block block : BlockTags.CORAL_BLOCKS.values()) {

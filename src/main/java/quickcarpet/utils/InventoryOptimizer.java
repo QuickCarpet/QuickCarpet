@@ -2,7 +2,7 @@ package quickcarpet.utils;
 
 import it.unimi.dsi.fastutil.HashCommon;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.DefaultedList;
+import net.minecraft.util.collection.DefaultedList;
 
 import java.util.Objects;
 

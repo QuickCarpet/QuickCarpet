@@ -10,10 +10,11 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.server.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.Text;
+import net.minecraft.text.MutableText;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.world.World;
 import quickcarpet.QuickCarpet;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.Waypoint;
@@ -91,7 +92,7 @@ public class WaypointCommand {
         ServerCommandSource source = ctx.getSource();
         String name = getString(ctx, "name");
         Vec3d pos = Utils.getOrDefault(ctx, "position", source.getPosition());
-        DimensionType dim = Utils.getOrDefault(ctx, "dimension", source.getWorld().getDimension().getType());
+        RegistryKey<World> dim = Utils.getOrDefault(ctx, "dimension", source.getWorld().getRegistryKey());
         Vec2f rot = Utils.getOrDefault(ctx, "rotation", source.getRotation());
         WaypointContainer world = (WaypointContainer) QuickCarpet.minecraft_server.getWorld(dim);
         Map<String, Waypoint> waypoints = world.getWaypoints();
@@ -142,12 +143,12 @@ public class WaypointCommand {
         return printList(source, waypoints, page, null, creator);
     }
 
-    private static int listDimension(ServerCommandSource source, DimensionType dimensionType, int page) throws CommandSyntaxException {
-        Collection<Waypoint> waypoints = ((WaypointContainer) QuickCarpet.minecraft_server.getWorld(dimensionType)).getWaypoints().values();
-        return printList(source, waypoints, page, dimensionType, null);
+    private static int listDimension(ServerCommandSource source, ServerWorld dimension, int page) throws CommandSyntaxException {
+        Collection<Waypoint> waypoints = ((WaypointContainer) dimension).getWaypoints().values();
+        return printList(source, waypoints, page, dimension, null);
     }
 
-    private static int printList(ServerCommandSource source, Collection<Waypoint> waypoints, int page, @Nullable DimensionType dimensionType, @Nullable String creator) throws CommandSyntaxException {
+    private static int printList(ServerCommandSource source, Collection<Waypoint> waypoints, int page, @Nullable ServerWorld dimension, @Nullable String creator) throws CommandSyntaxException {
         if (waypoints.isEmpty()) {
             m(source, ts("command.waypoint.list.none", GOLD));
             return 0;
@@ -155,9 +156,9 @@ public class WaypointCommand {
         int PAGE_SIZE = 20;
         int pages = (waypoints.size() + PAGE_SIZE - 1) / PAGE_SIZE;
         if (page > pages) throw INVALID_PAGE.create();
-        Text header;
-        if (dimensionType != null) {
-            header = t("command.waypoint.list.header.dimension", s(dimensionType.toString(), DARK_GREEN));
+        MutableText header;
+        if (dimension != null) {
+            header = t("command.waypoint.list.header.dimension", s(dimension.toString(), DARK_GREEN));
         } else if (creator != null) {
             header = t("command.waypoint.list.header.creator", s(creator, DARK_GREEN));
         } else {
@@ -166,7 +167,7 @@ public class WaypointCommand {
         if (pages > 1) {
             header.append(" ").append(t("command.waypoint.list.page", page, pages));
             String baseCommand = "/waypoint list";
-            if (dimensionType != null) baseCommand += " in " + dimensionType;
+            if (dimension != null) baseCommand += " in " + dimension.getRegistryKey().getValue();
             else if (creator != null) baseCommand += " by " + creator;
             if (page > 1) {
                 header.append(" ").append(runCommand(s("[<]", GRAY), baseCommand + " " + (page - 1),
@@ -182,7 +183,7 @@ public class WaypointCommand {
         int from = (page - 1) * PAGE_SIZE, to = Math.min(page * PAGE_SIZE, waypoints.size());
         Waypoint[] pageWaypoints = Arrays.copyOfRange(waypoints.toArray(new Waypoint[0]), from, to);
         for (Waypoint w : pageWaypoints) {
-            if (dimensionType == null) {
+            if (dimension == null) {
                 if (creator == null && w.creator != null) {
                     m(source, t("command.waypoint.list.entry.creator",
                         w, tp("c", w), s(w.creator, DARK_GREEN)));

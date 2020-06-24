@@ -8,7 +8,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Unit;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.dimension.DimensionType;
+import net.minecraft.world.World;
 import quickcarpet.QuickCarpet;
 import quickcarpet.annotation.BugFix;
 import quickcarpet.feature.BreakBlockDispenserBehavior;
@@ -60,6 +60,9 @@ public class Settings {
 
     @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
     public static int commandWaypoint = 0;
+
+    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
+    public static int commandFix = 2;
 
     @CreativeDefault("false")
     @Rule(category = CREATIVE)
@@ -153,10 +156,10 @@ public class Settings {
         public void onChange(ParsedRule<Integer> rule, Integer previous) {
             int newValue = rule.get();
             if (newValue == previous) return;
-            ServerWorld overworld = QuickCarpet.minecraft_server.getWorld(DimensionType.OVERWORLD);
+            ServerWorld overworld = QuickCarpet.minecraft_server.getWorld(World.OVERWORLD);
             if (overworld != null) {
                 ChunkPos centerChunk = new ChunkPos(overworld.getSpawnPos());
-                ServerChunkManager chunkManager = (ServerChunkManager) overworld.getChunkManager();
+                ServerChunkManager chunkManager = overworld.getChunkManager();
                 chunkManager.removeTicket(ChunkTicketType.START, centerChunk, previous, Unit.INSTANCE);
                 chunkManager.addTicket(ChunkTicketType.START, centerChunk, newValue, Unit.INSTANCE);
             }

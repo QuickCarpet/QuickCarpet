@@ -45,7 +45,7 @@ public class PlaceBlockDispenserBehavior  extends ItemDispenserBehavior {
         final Direction ffacing = facing;
 
         if (usePlacementContext(item, block)) {
-            BlockHitResult hitResult = new BlockHitResult(new Vec3d(pos.offset(facing, 2)), facing, pos, false);
+            BlockHitResult hitResult = new BlockHitResult(Vec3d.ofCenter(pos.offset(facing, 2)), facing, pos, false);
             ItemPlacementContext ipc = new ItemPlacementContext(world, null, Hand.MAIN_HAND, itemStack, hitResult) {
                 @Override
                 public Direction getPlayerLookDirection() {
@@ -105,7 +105,7 @@ public class PlaceBlockDispenserBehavior  extends ItemDispenserBehavior {
             state = state.with(ObserverBlock.POWERED, true);
         }
 
-        state = Block.getRenderingState(state, world, pos);
+        state = Block.postProcessState(state, world, pos);
 
         BlockState currentBlockState = world.getBlockState(pos);
         FluidState currentFluidState = world.getFluidState(pos);
@@ -118,7 +118,7 @@ public class PlaceBlockDispenserBehavior  extends ItemDispenserBehavior {
                 blockEntityTag.putInt("x", pos.getX());
                 blockEntityTag.putInt("y", pos.getY());
                 blockEntityTag.putInt("z", pos.getZ());
-                be.fromTag(blockEntityTag);
+                be.fromTag(state, blockEntityTag);
             }
             if (currentFluidState.isStill() && block instanceof FluidFillable) {
                 ((FluidFillable) block).tryFillWithFluid(world, pos, state, currentFluidState);

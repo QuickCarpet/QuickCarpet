@@ -23,7 +23,7 @@ public abstract class InfestedBlockMixin extends Block {
     }
 
     @Inject(method = "onStacksDropped", at = @At(value = "INVOKE", shift = At.Shift.AFTER,
-            target = "Lnet/minecraft/entity/mob/SilverfishEntity;playSpawnEffects()V"))
+            target = "Lnet/minecraft/block/InfestedBlock;spawnSilverfish(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;)V"))
     private void onOnStacksDropped(BlockState blockState_1, World world_1, BlockPos blockPos_1,
                                    ItemStack itemStack_1, CallbackInfo ci) {
         if (silverFishDropGravel) {

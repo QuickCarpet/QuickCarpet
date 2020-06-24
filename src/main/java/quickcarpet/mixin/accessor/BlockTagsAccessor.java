@@ -11,8 +11,7 @@ import quickcarpet.annotation.Feature;
 @Mixin(BlockTags.class)
 public interface BlockTagsAccessor {
     @Invoker("register")
-    @SuppressWarnings("PublicStaticMixinMember")
-    static Tag<Block> register(String id) {
+    static Tag.Identified<Block> register(String id) {
         throw new AssertionError();
     }
 }

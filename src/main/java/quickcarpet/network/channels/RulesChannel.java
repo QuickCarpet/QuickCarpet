@@ -4,10 +4,10 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.network.packet.CustomPayloadC2SPacket;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.PacketByteBuf;
 import quickcarpet.network.PacketSplitter;
 import quickcarpet.network.PluginChannelHandler;
 import quickcarpet.settings.ParsedRule;
@@ -76,10 +76,10 @@ public class RulesChannel implements PluginChannelHandler {
             ruleTag.putString("Type", rule.type.getName());
             ruleTag.putString("DefaultValue", rule.defaultAsString);
             ruleTag.putString("Value", rule.getAsString());
-            ruleTag.putString("Description", Translations.translate(rule.description, player).asFormattedString());
+            ruleTag.putString("Description", Translations.translate(rule.description, player).getString());
             ListTag extraList = new ListTag();
             if (rule.extraInfo != null) {
-                String[] extraInfo = Translations.translate(rule.extraInfo, player).asFormattedString().split("\n");
+                String[] extraInfo = Translations.translate(rule.extraInfo, player).getString().split("\n");
                 for (String extra : extraInfo) extraList.add(StringTag.of(extra));
             }
             ruleTag.put("ExtraInfo", extraList);

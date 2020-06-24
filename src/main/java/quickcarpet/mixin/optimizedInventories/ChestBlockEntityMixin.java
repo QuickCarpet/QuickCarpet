@@ -1,12 +1,13 @@
 package quickcarpet.mixin.optimizedInventories;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.DefaultedList;
 import net.minecraft.util.Tickable;
+import net.minecraft.util.collection.DefaultedList;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -40,7 +41,7 @@ public abstract class ChestBlockEntityMixin extends LootableContainerBlockEntity
     }
 
     @Inject(method = "fromTag", at = @At("RETURN"))
-    private void onDeserialize(CompoundTag tag, CallbackInfo ci) {
+    private void onDeserialize(BlockState state, CompoundTag tag, CallbackInfo ci) {
         reoptimize();
     }
 

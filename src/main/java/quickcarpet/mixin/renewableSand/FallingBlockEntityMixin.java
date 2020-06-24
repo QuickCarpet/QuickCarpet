@@ -31,7 +31,7 @@ public abstract class FallingBlockEntityMixin extends Entity {
             locals = LocalCapture.CAPTURE_FAILHARD,
             cancellable = true)
     private void onTick(CallbackInfo ci, Block block, BlockPos pos) {
-        if (block.matches(BlockTags.ANVIL)) {
+        if (block.isIn(BlockTags.ANVIL)) {
             BlockPos posBelow = new BlockPos(this.getX(), this.getY() - 0.06, this.getZ());
             Block blockBelow = this.world.getBlockState(posBelow).getBlock();
             if (Settings.renewableSand && blockBelow == Blocks.COBBLESTONE) {

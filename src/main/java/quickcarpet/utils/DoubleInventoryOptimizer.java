@@ -13,8 +13,8 @@ public class DoubleInventoryOptimizer extends InventoryOptimizer {
         super(null);
         this.first = first;
         this.second = second;
-        firstSize = first.getInvSize();
-        secondSize = second.getInvSize();
+        firstSize = first.size();
+        secondSize = second.size();
     }
 
     @Override
@@ -38,8 +38,8 @@ public class DoubleInventoryOptimizer extends InventoryOptimizer {
     @Override
     protected ItemStack getSlot(int index) {
         if (index < 0) return ItemStack.EMPTY;
-        if (index < firstSize) return first.getInvStack(index);
-        return second.getInvStack(index - firstSize);
+        if (index < firstSize) return first.getStack(index);
+        return second.getStack(index - firstSize);
     }
 
     @Override

@@ -89,7 +89,7 @@ public abstract class WorldChunkMixin implements ExtendedWorldChunk {
             if (!this.world.isClient) {
                 //this is a movableBlockEntities special case, if condition wasn't there it would remove the blockentity that was carried for some reason
                 if (!(oldBlock instanceof PistonExtensionBlock))
-                    oldBlockState.onBlockRemoved(this.world, pos, newBlockState, callListeners); //this kills it
+                    oldBlockState.onStateReplaced(this.world, pos, newBlockState, callListeners); //this kills it
             } else if (oldBlock != newBlock && oldBlock instanceof BlockEntityProvider) {
                 this.world.removeBlockEntity(pos);
             }

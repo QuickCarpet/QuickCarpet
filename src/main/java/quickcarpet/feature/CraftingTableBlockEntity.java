@@ -1,8 +1,8 @@
 package quickcarpet.feature;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.LockableContainerBlockEntity;
-import net.minecraft.container.Container;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftingInventory;
@@ -11,10 +11,11 @@ import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.recipe.*;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.DefaultedList;
 import net.minecraft.util.ItemScatterer;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.Direction;
 import quickcarpet.mixin.accessor.CraftingInventoryAccessor;
 import quickcarpet.utils.CarpetRegistry;
@@ -52,8 +53,8 @@ public class CraftingTableBlockEntity extends LockableContainerBlockEntity imple
     }
 
     @Override
-    public void fromTag(CompoundTag tag) {
-        super.fromTag(tag);
+    public void fromTag(BlockState state, CompoundTag tag) {
+        super.fromTag(state, tag);
         Inventories.fromTag(tag, inventory);
         this.output = ItemStack.fromTag(tag.getCompound("Output"));
     }
@@ -64,41 +65,41 @@ public class CraftingTableBlockEntity extends LockableContainerBlockEntity imple
     }
 
     @Override
-    protected Container createContainer(int id, PlayerInventory playerInventory) {
+    protected ScreenHandler createScreenHandler(int id, PlayerInventory playerInventory) {
         AutoCraftingTableContainer container = new AutoCraftingTableContainer(id, playerInventory, this);
         this.openContainers.add(container);
         return container;
     }
 
     @Override
-    public int[] getInvAvailableSlots(Direction dir) {
+    public int[] getAvailableSlots(Direction dir) {
         if (dir == Direction.DOWN && (!output.isEmpty() || getCurrentRecipe().isPresent())) return OUTPUT_SLOTS;
         return INPUT_SLOTS;
     }
 
     @Override
-    public boolean canInsertInvStack(int slot, ItemStack stack, @Nullable Direction dir) {
-        return slot > 0 && getInvStack(slot).isEmpty();
+    public boolean canInsert(int slot, ItemStack stack, @Nullable Direction dir) {
+        return slot > 0 && getStack(slot).isEmpty();
     }
 
     @Override
-    public boolean canExtractInvStack(int slot, ItemStack stack, Direction dir) {
+    public boolean canExtract(int slot, ItemStack stack, Direction dir) {
         if (slot == 0) return !output.isEmpty() || getCurrentRecipe().isPresent();
         return true;
     }
 
     @Override
-    public boolean isValidInvStack(int slot, ItemStack stack) {
+    public boolean isValid(int slot, ItemStack stack) {
         return slot != 0;
     }
 
     @Override
-    public int getInvSize() {
+    public int size() {
         return 10;
     }
 
     @Override
-    public boolean isInvEmpty() {
+    public boolean isEmpty() {
         for (ItemStack stack : this.inventory) {
             if (!stack.isEmpty()) return false;
         }
@@ -106,7 +107,7 @@ public class CraftingTableBlockEntity extends LockableContainerBlockEntity imple
     }
 
     @Override
-    public ItemStack getInvStack(int slot) {
+    public ItemStack getStack(int slot) {
         if (slot > 0) return this.inventory.get(slot - 1);
         if (!output.isEmpty()) return output;
         Optional<CraftingRecipe> recipe = getCurrentRecipe();
@@ -114,7 +115,7 @@ public class CraftingTableBlockEntity extends LockableContainerBlockEntity imple
     }
 
     @Override
-    public ItemStack takeInvStack(int slot, int amount) {
+    public ItemStack removeStack(int slot, int amount) {
         if (slot == 0) {
             if (output.isEmpty()) {
                 output = craft();
@@ -125,7 +126,7 @@ public class CraftingTableBlockEntity extends LockableContainerBlockEntity imple
     }
 
     @Override
-    public ItemStack removeInvStack(int slot) {
+    public ItemStack removeStack(int slot) {
         if (slot == 0) {
             ItemStack output = this.output;
             this.output = ItemStack.EMPTY;
@@ -135,7 +136,7 @@ public class CraftingTableBlockEntity extends LockableContainerBlockEntity imple
     }
 
     @Override
-    public void setInvStack(int slot, ItemStack stack) {
+    public void setStack(int slot, ItemStack stack) {
         if (slot == 0) {
             output = stack;
             return;
@@ -150,7 +151,7 @@ public class CraftingTableBlockEntity extends LockableContainerBlockEntity imple
     }
 
     @Override
-    public boolean canPlayerUseInv(PlayerEntity var1) {
+    public boolean canPlayerUse(PlayerEntity var1) {
         return true;
     }
 

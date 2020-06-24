@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Lazy;
@@ -21,7 +22,7 @@ public class Logger<T extends Logger.CommandParameters> implements Comparable<Lo
     private Text unavailable;
 
     private final String name;
-    private final Text displayName;
+    private final MutableText displayName;
     private final String[] options;
     private final String defaultOption;
     final LogHandler defaultHandler;
@@ -29,7 +30,7 @@ public class Logger<T extends Logger.CommandParameters> implements Comparable<Lo
     public Logger(String name, String def, String[] options, LogHandler defaultHandler) {
         this.name = name;
         this.displayName = new LiteralText(name);
-        displayName.getStyle().setColor(Formatting.GOLD);
+        displayName.setStyle(displayName.getStyle().withColor(Formatting.GOLD));
         this.defaultOption = def;
         this.options = options == null ? new String[0] : options;
         this.defaultHandler = defaultHandler;
@@ -64,7 +65,7 @@ public class Logger<T extends Logger.CommandParameters> implements Comparable<Lo
         this.unavailable = null;
     }
 
-    public void setUnavailable(Text reason) {
+    public void setUnavailable(MutableText reason) {
         this.unavailable = reason;
     }
 
@@ -73,7 +74,7 @@ public class Logger<T extends Logger.CommandParameters> implements Comparable<Lo
     }
 
     @Nullable
-    public Text getUnavailabilityReason() {
+    public MutableText getUnavailabilityReason() {
         return isAvailable() ? null : unavailable.copy();
     }
 
@@ -83,7 +84,7 @@ public class Logger<T extends Logger.CommandParameters> implements Comparable<Lo
      */
     @FunctionalInterface
     public interface MessageSupplier {
-        Text[] get(String playerOption, PlayerEntity player);
+        MutableText[] get(String playerOption, PlayerEntity player);
     }
 
     public void log(MessageSupplier message) {
@@ -102,8 +103,8 @@ public class Logger<T extends Logger.CommandParameters> implements Comparable<Lo
      */
     @FunctionalInterface
     public interface PlayerIndependentMessageSupplier extends MessageSupplier {
-        Text[] get(String playerOption);
-        default Text[] get(String playerOption, PlayerEntity player) {
+        MutableText[] get(String playerOption);
+        default MutableText[] get(String playerOption, PlayerEntity player) {
             return get(playerOption);
         }
     }
@@ -113,16 +114,16 @@ public class Logger<T extends Logger.CommandParameters> implements Comparable<Lo
     }
 
     public void log(PlayerIndependentMessageSupplier message, Supplier<T>  commandParams) {
-        Map<String, Text[]> messages = new HashMap<>();
+        Map<String, MutableText[]> messages = new HashMap<>();
         getOnlineSubscribers().forEach(player -> sendMessage(player, messages.computeIfAbsent(getOption(player), message::get), commandParams));
     }
 
-    public void log(Supplier<Text[]> message) {
+    public void log(Supplier<MutableText[]> message) {
         this.log(message, (Supplier<T>) EmptyCommandParameters.SUPPLIER);
     }
 
-    public void log(Supplier<Text[]> message, Supplier<T>  commandParams) {
-        Lazy<Text[]> messages = new Lazy<>(message);
+    public void log(Supplier<MutableText[]> message, Supplier<T>  commandParams) {
+        Lazy<MutableText[]> messages = new Lazy<>(message);
         getOnlineSubscribers().forEach(player -> sendMessage(player, messages.get(), commandParams));
     }
 
@@ -144,7 +145,7 @@ public class Logger<T extends Logger.CommandParameters> implements Comparable<Lo
         return manager.getOnlineSubscribers(this);
     }
 
-    private void sendMessage(ServerPlayerEntity player, Text[] messages, Supplier<T> commandParams) {
+    private void sendMessage(ServerPlayerEntity player, MutableText[] messages, Supplier<T> commandParams) {
         if (messages == null) return;
         //noinspection unchecked
         getHandler(player).handle(this, player, messages, (Supplier) commandParams);

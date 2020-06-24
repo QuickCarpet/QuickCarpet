@@ -10,6 +10,7 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import quickcarpet.QuickCarpet;
 import quickcarpet.logging.*;
@@ -113,13 +114,13 @@ public class LogCommand {
         m(player, t("command.log.availableOptions"));
         for (Logger<?> logger : loggers) {
             boolean subscribed = subs.isSubscribedTo(logger);
-            Text line = s(" - " + logger.getName() + ": ");
+            MutableText line = s(" - " + logger.getName() + ": ");
             String[] options = logger.getOptions();
             if (options.length == 0) {
                 if (subscribed) {
                     line.append(ts("command.log.subscribed", LIME));
                 } else {
-                    Text button = style(c(s("["), t("command.log.action.subscribe"), s("]")), GRAY);
+                    MutableText button = style(c(s("["), t("command.log.action.subscribe"), s("]")), GRAY);
                     runCommand(button, "/log " + logger.getName(), t("command.log.action.subscribeTo", logger.getName()));
                     line.append(button);
                 }
@@ -128,7 +129,7 @@ public class LogCommand {
                     if (subscribed && option.equalsIgnoreCase(subs.getOption(logger))) {
                         line.append(s("[" + option + "]", LIME));
                     } else {
-                        Text button = style(c(s("[" + option + "]")), GRAY);
+                        MutableText button = style(c(s("[" + option + "]")), GRAY);
                         Text hoverText = t("command.log.action.subscribeTo.option", logger.getName(), option);
                         runCommand(button, "/log " + logger.getName() + " " + option, hoverText);
                         line.append(button);

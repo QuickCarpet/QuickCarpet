@@ -9,10 +9,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
-import net.minecraft.world.chunk.ChunkManager;
+import net.minecraft.world.WorldAccess;
 import net.minecraft.world.chunk.WorldChunk;
-import net.minecraft.world.level.LevelGeneratorType;
-import net.minecraft.world.level.LevelProperties;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -26,24 +24,24 @@ import static quickcarpet.utils.Constants.SetBlockState.*;
 @Feature("movableBlockEntities")
 @Mixin(World.class)
 public abstract class WorldMixin implements ExtendedWorld {
-    @Shadow @Final protected LevelProperties properties;
-    @Shadow @Final private Profiler profiler;
     @Shadow @Final public boolean isClient;
 
-    @Shadow public abstract ChunkManager getChunkManager();
     @Shadow public abstract void updateListeners(BlockPos var1, BlockState var2, BlockState var3, int var4);
-    @Shadow public abstract void updateNeighbors(BlockPos blockPos_1, Block block_1);
-    @Shadow public abstract void updateHorizontalAdjacent(BlockPos blockPos_1, Block block_1);
+    @Shadow public abstract void updateComparators(BlockPos blockPos_1, Block block_1);
     @Shadow public abstract void onBlockChanged(BlockPos blockPos_1, BlockState blockState_1, BlockState blockState_2);
     @Shadow public abstract WorldChunk getWorldChunk(BlockPos blockPos_1);
     @Shadow public abstract BlockState getBlockState(BlockPos blockPos_1);
 
+    @Shadow public abstract Profiler getProfiler();
+
+    @Shadow public abstract boolean isDebugWorld();
+
     /**
      * @author 2No2Name
      */
-    public boolean setBlockStateWithBlockEntity(BlockPos pos, BlockState state, BlockEntity newBlockEntity, int flags) {
+    public boolean setBlockStateWithBlockEntity(BlockPos pos, BlockState state, BlockEntity newBlockEntity, int flags, int depth) {
         if (World.isHeightInvalid(pos)) return false;
-        if (!this.isClient && this.properties.getGeneratorType() == LevelGeneratorType.DEBUG_ALL_BLOCK_STATES) return false;
+        if (!this.isClient && this.isDebugWorld()) return false;
         WorldChunk worldChunk = this.getWorldChunk(pos);
         Block block = state.getBlock();
 
@@ -58,9 +56,9 @@ public abstract class WorldMixin implements ExtendedWorld {
         BlockState previousState = this.getBlockState(pos);
 
         if (previousState != chunkState && (previousState.getOpacity((BlockView) this, pos) != chunkState.getOpacity((BlockView) this, pos) || previousState.getLuminance() != chunkState.getLuminance() || previousState.hasSidedTransparency() || chunkState.hasSidedTransparency())) {
-            this.profiler.push("queueCheckLight");
-            this.getChunkManager().getLightingProvider().checkBlock(pos);
-            this.profiler.pop();
+            this.getProfiler().push("queueCheckLight");
+            ((WorldAccess) this).getChunkManager().getLightingProvider().checkBlock(pos);
+            this.getProfiler().pop();
         }
 
         if (previousState == state) {
@@ -73,17 +71,17 @@ public abstract class WorldMixin implements ExtendedWorld {
             }
 
             if (!this.isClient && (flags & 1) != 0) {
-                this.updateNeighbors(pos, chunkState.getBlock());
+                ((World) (Object) this).updateNeighbors(pos, chunkState.getBlock());
                 if (state.hasComparatorOutput()) {
-                    this.updateHorizontalAdjacent(pos, block);
+                    this.updateComparators(pos, block);
                 }
             }
 
             if ((flags & (NO_OBSERVER_UPDATE | NO_FILL_UPDATE)) == 0) {
-                int int_2 = flags & ~UPDATE_NEIGHBORS;
-                chunkState.method_11637((net.minecraft.world.IWorld) this, pos, int_2);
-                state.updateNeighborStates((net.minecraft.world.IWorld) this, pos, int_2);
-                state.method_11637((net.minecraft.world.IWorld) this, pos, int_2);
+                int maskedFlags = flags & ~(UPDATE_NEIGHBORS | FLAG_32);
+                chunkState.prepare((WorldAccess) this, pos, maskedFlags, depth - 1);
+                state.updateNeighbors((WorldAccess) this, pos, maskedFlags, depth - 1);
+                state.prepare((WorldAccess) this, pos, maskedFlags, depth - 1);
             }
 
             this.onBlockChanged(pos, chunkState, previousState);

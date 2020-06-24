@@ -38,8 +38,17 @@ public abstract class ItemEntityMixin extends Entity {
         }
     }
 
-    @Redirect(method = "canMerge", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getMaxCount()I"))
-    private int getItemStackMaxAmount(ItemStack stack) {
+    @Redirect(method = "canMerge()Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getMaxCount()I"))
+    private int getItemStackMaxAmount1(ItemStack stack) {
+        return getMaxCount(stack);
+    }
+
+    @Redirect(method = "canMerge(Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ItemStack;)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getMaxCount()I"))
+    private static int getItemStackMaxAmount2(ItemStack stack) {
+        return getMaxCount(stack);
+    }
+
+    private static int getMaxCount(ItemStack stack) {
         if (Settings.stackableShulkerBoxes && stack.getItem() instanceof BlockItem && ((BlockItem) stack.getItem()).getBlock() instanceof ShulkerBoxBlock)
             return SHULKERBOX_MAX_STACK_AMOUNT;
 

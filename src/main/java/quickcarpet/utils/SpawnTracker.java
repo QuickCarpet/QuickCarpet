@@ -3,8 +3,8 @@ package quickcarpet.utils;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityCategory;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.SpawnGroup;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
@@ -30,8 +30,8 @@ public class SpawnTracker {
     private int tickStopped = -1;
 
     private Object2IntMap<EntityType<?>> successfulSpawns = new Object2IntOpenHashMap<>();
-    private Object2IntMap<EntityCategory> mobcapFull = new Object2IntOpenHashMap<>();
-    private Object2IntMap<EntityCategory> mobcapNotFull = new Object2IntOpenHashMap<>();
+    private Object2IntMap<SpawnGroup> mobcapFull = new Object2IntOpenHashMap<>();
+    private Object2IntMap<SpawnGroup> mobcapNotFull = new Object2IntOpenHashMap<>();
     private Object2IntMap<EntityType<?>> attempts = new Object2IntOpenHashMap<>();
 
     private SpawnTracker(ServerPlayerEntity source, BlockPos min, BlockPos max) {
@@ -41,7 +41,7 @@ public class SpawnTracker {
         } else {
             this.bbox = null;
         }
-        this.dimension = source.getServerWorld().getDimension().getType();
+        this.dimension = source.getServerWorld().getDimension();
     }
 
     public void start() {
@@ -65,10 +65,10 @@ public class SpawnTracker {
             int hours = minutes / 60;
             m(source, ts("command.spawn.tracking.title", DARK_GREEN, formats("%d:%02d:%05.2f", LIGHT_PURPLE, hours, minutes % 60, seconds % 60)));
             double perHour = 72000. / ticksActive;
-            Set<EntityCategory> seenEntityCategories = new TreeSet<>();
+            Set<SpawnGroup> seenEntityCategories = new TreeSet<>();
             seenEntityCategories.addAll(mobcapFull.keySet());
             seenEntityCategories.addAll(mobcapNotFull.keySet());
-            for (EntityCategory category : seenEntityCategories) {
+            for (SpawnGroup category : seenEntityCategories) {
                 int mobcapFullCount = mobcapFull.getOrDefault(category, 0);
                 int mobcapNotFullCount = mobcapNotFull.getOrDefault(category, 0);
                 int totalGlobalAttempts = mobcapFullCount + mobcapNotFullCount;
@@ -77,7 +77,7 @@ public class SpawnTracker {
                     s(category.getName(), WHITE),
                     formats("%.2f", getHeatmapColor(mobcapFullPortion, 1), 100 * mobcapFullPortion)
                 ));
-                attempts.keySet().stream().filter(t -> t.getCategory() == category).sorted(SpawnTracker::sortEntityType).forEach(type -> {
+                attempts.keySet().stream().filter(t -> t.getSpawnGroup() == category).sorted(SpawnTracker::sortEntityType).forEach(type -> {
                     int successful = successfulSpawns.getOrDefault(type, 0);
                     int numAttempts = attempts.getOrDefault(type, 0);
                     double successfulPerHour = successful * perHour;
@@ -120,7 +120,7 @@ public class SpawnTracker {
     }
 
     private static Stream<SpawnTracker> getTrackersAt(Entity entity) {
-        return getTrackersAt(entity.getEntityWorld().getDimension().getType(), entity.getPos());
+        return getTrackersAt(entity.getEntityWorld().getDimension(), entity.getPos());
     }
 
     private static Stream<SpawnTracker> getTrackersAt(DimensionType d, Vec3d pos) {
@@ -157,12 +157,12 @@ public class SpawnTracker {
         increment(successfulSpawns, entity.getType(), 1);
     }
 
-    public static void registerMobcapStatus(DimensionType dim, EntityCategory category, boolean full) {
+    public static void registerMobcapStatus(DimensionType dim, SpawnGroup category, boolean full) {
         if (!isAnyActive()) return;
         getTrackersAt(dim).forEach(t -> t.registerMobcapStatus(category, full));
     }
 
-    private void registerMobcapStatus(EntityCategory category, boolean full) {
+    private void registerMobcapStatus(SpawnGroup category, boolean full) {
         if (full) increment(mobcapFull, category, 1);
         else increment(mobcapNotFull, category, 1);
     }
@@ -178,8 +178,8 @@ public class SpawnTracker {
 
     private static int sortEntityType(EntityType<?> a, EntityType<?> b) {
         if (a == b) return 0;
-        EntityCategory categoryA = a.getCategory();
-        EntityCategory categoryB = b.getCategory();
+        SpawnGroup categoryA = a.getSpawnGroup();
+        SpawnGroup categoryB = b.getSpawnGroup();
         if (categoryA == categoryB) {
             String idA = EntityType.getId(a).toString();
             String idB = EntityType.getId(b).toString();

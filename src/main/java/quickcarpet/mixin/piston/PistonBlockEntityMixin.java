@@ -100,19 +100,19 @@ public abstract class PistonBlockEntityMixin extends BlockEntity implements Exte
             if (this.source)
                 blockState_2 = Blocks.AIR.getDefaultState();
             else
-                blockState_2 = Block.getRenderingState(this.pushedBlock, this.world, this.pos);
+                blockState_2 = Block.postProcessState(this.pushedBlock, this.world, this.pos);
             ((ExtendedWorld) (this.world)).setBlockStateWithBlockEntity(this.pos, blockState_2, this.carriedBlockEntity, 3);
             this.world.breakBlock(this.pos, false);
         }
     }
 
     @Inject(method = "fromTag", at = @At(value = "TAIL"))
-    private void onFromTag(CompoundTag compoundTag_1, CallbackInfo ci) {
+    private void onFromTag(BlockState state, CompoundTag compoundTag_1, CallbackInfo ci) {
         if (Settings.movableBlockEntities && compoundTag_1.contains("carriedTileEntity", 10)) {
             if (this.pushedBlock.getBlock() instanceof BlockEntityProvider)
                 this.carriedBlockEntity = ((BlockEntityProvider) (this.pushedBlock.getBlock())).createBlockEntity(this.world);
             if (carriedBlockEntity != null) //Can actually be null, as BlockPistonMoving.createNewTileEntity(...) returns null
-                this.carriedBlockEntity.fromTag(compoundTag_1.getCompound("carriedTileEntity"));
+                this.carriedBlockEntity.fromTag(this.pushedBlock, compoundTag_1.getCompound("carriedTileEntity"));
         }
         this.actualProgress = Math.max(0f, lastProgress - 0.5f);
     }
