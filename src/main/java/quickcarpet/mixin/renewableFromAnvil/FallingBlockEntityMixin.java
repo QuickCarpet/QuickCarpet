@@ -1,4 +1,4 @@
-package quickcarpet.mixin.renewableSand;
+package quickcarpet.mixin.renewableFromAnvil;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -34,10 +34,15 @@ public abstract class FallingBlockEntityMixin extends Entity {
         if (block.isIn(BlockTags.ANVIL)) {
             BlockPos posBelow = new BlockPos(this.getX(), this.getY() - 0.06, this.getZ());
             Block blockBelow = this.world.getBlockState(posBelow).getBlock();
-            if (Settings.renewableSand && blockBelow == Blocks.COBBLESTONE) {
-                world.breakBlock(posBelow, false);
-                world.setBlockState(posBelow, Blocks.SAND.getDefaultState(), 3);
-            } else if (Settings.anvilledPackedIce > 0 && blockBelow == Blocks.ICE) {
+            if (blockBelow == Blocks.COBBLESTONE) {
+                if (Settings.renewableSand == Settings.RenewableGravelOrSandOption.ANVIL) {
+                    world.breakBlock(posBelow, false);
+                    world.setBlockState(posBelow, Blocks.SAND.getDefaultState(), 3);
+                } else if (Settings.renewableGravel == Settings.RenewableGravelOrSandOption.ANVIL) {
+                    world.breakBlock(posBelow, false);
+                    world.setBlockState(posBelow, Blocks.GRAVEL.getDefaultState(), 3);
+                }
+            } else if (blockBelow == Blocks.ICE && Settings.anvilledPackedIce > 0) {
                 if (++iceCount < Settings.anvilledPackedIce) {
                     world.breakBlock(posBelow, false);
                     onGround = false;
@@ -46,7 +51,7 @@ public abstract class FallingBlockEntityMixin extends Entity {
                     world.breakBlock(posBelow, false);
                     world.setBlockState(posBelow, Blocks.PACKED_ICE.getDefaultState(), 3);
                 }
-            } else if (Settings.anvilledBlueIce > 0 && blockBelow == Blocks.PACKED_ICE) {
+            } else if (blockBelow == Blocks.PACKED_ICE && Settings.anvilledBlueIce > 0) {
                 if (++packedIceCount < Settings.anvilledBlueIce) {
                     world.breakBlock(posBelow, false);
                     onGround = false;

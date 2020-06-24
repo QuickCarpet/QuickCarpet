@@ -72,7 +72,7 @@ Categories: commands
 Validator: `OP Level (0-4)`  
 
 ## commandFix
-carpet.rule.commandFix.description
+Enables /fix command to fix chunk data
 
 Type: `int`  
 Default: `2`  
@@ -159,10 +159,10 @@ Dispensers can place most blocks
 Type: `Option`  
 Default: `false`  
 Options: `false`, `whitelist`, `blacklist`, `all`  
-Categories: experimental, feature  
+Categories: feature  
 
 ## dispensersShearVines
-carpet.rule.dispensersShearVines.description
+Dispensers can shear vines
 
 Type: `boolean`  
 Default: `false`  
@@ -213,14 +213,6 @@ Default: `true`
 Options: `true`, `false`  
 Categories: creative  
 
-## fireChargeConvertsToNetherrack
-Fire charges from dispensers convert cobblestone to netherrack
-
-Type: `boolean`  
-Default: `false`  
-Options: `true`, `false`  
-Categories: feature, experimental  
-
 ## flippinCactus
 Players can flip and rotate blocks when holding cactus
 
@@ -254,14 +246,6 @@ Type: `boolean`
 Default: `false`  
 Options: `true`, `false`  
 Categories: experimental  
-
-## mobInFireConvertsSandToSoulsand
-If a living entity dies on sand with fire on top the sand will convert into soul sand
-
-Type: `boolean`  
-Default: `false`  
-Options: `true`, `false`  
-Categories: feature, experimental  
 
 ## movableBlockEntities
 Pistons can push block entities, like hoppers, chests etc.
@@ -362,7 +346,15 @@ Coral structures will grow with bonemeal from coral plants
 Type: `boolean`  
 Default: `false`  
 Options: `true`, `false`  
-Categories: feature  
+Categories: feature, renewable  
+
+## renewableGravel
+Cobblestone crushed by falling anvils makes gravel, or silverfish drop a gravel item when breaking out of a block
+
+Type: `RenewableGravelOrSandOption`  
+Default: `none`  
+Options: `none`, `anvil`, `silverfish`  
+Categories: feature, renewable  
 
 ## renewableLava
 Obsidian surrounded by 6 lava sources has a chance of converting to lava
@@ -370,15 +362,31 @@ Obsidian surrounded by 6 lava sources has a chance of converting to lava
 Type: `boolean`  
 Default: `false`  
 Options: `true`, `false`  
-Categories: experimental, feature  
+Categories: feature, renewable  
 
-## renewableSand
-Cobblestone crushed by falling anvils makes sand
+## renewableNetherrack
+Fire charges from dispensers convert cobblestone to netherrack
 
 Type: `boolean`  
 Default: `false`  
 Options: `true`, `false`  
-Categories: feature, experimental  
+Categories: feature, renewable  
+
+## renewableSand
+Cobblestone crushed by falling anvils makes sand, or silverfish drop a sand item when breaking out of a block
+
+Type: `RenewableGravelOrSandOption`  
+Default: `none`  
+Options: `none`, `anvil`, `silverfish`  
+Categories: feature, renewable  
+
+## renewableSoulSand
+If a living entity dies on sand with fire on top the sand will convert into soul sand
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: feature, renewable  
 
 ## shulkerSpawningInEndCities
 Shulkers will respawn in end cities
@@ -386,15 +394,7 @@ Shulkers will respawn in end cities
 Type: `boolean`  
 Default: `false`  
 Options: `true`, `false`  
-Categories: feature, experimental  
-
-## silverFishDropGravel
-Silverfish drop a gravel item when breaking out of a block
-
-Type: `boolean`  
-Default: `false`  
-Options: `true`, `false`  
-Categories: feature, experimental  
+Categories: feature, renewable  
 
 ## sleepingThreshold
 Percentage of sleeping players required to skip the night

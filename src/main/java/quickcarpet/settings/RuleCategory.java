@@ -2,11 +2,11 @@ package quickcarpet.settings;
 
 import java.util.Locale;
 
-public enum RuleCategory implements ChangeListener {
-    TNT, FIX, SURVIVAL, CREATIVE, EXPERIMENTAL, OPTIMIZATIONS, FEATURE,
+public enum RuleCategory implements ChangeListener<Object> {
+    TNT, FIX, SURVIVAL, CREATIVE, EXPERIMENTAL, OPTIMIZATIONS, FEATURE, RENEWABLE,
     COMMANDS {
         @Override
-        public void onChange(ParsedRule rule, Object previous) {
+        public void onChange(ParsedRule<Object> rule, Object previous) {
             rule.manager.resendCommandTree();
         }
     };
@@ -17,6 +17,7 @@ public enum RuleCategory implements ChangeListener {
         this.lowerCase = this.name().toLowerCase(Locale.ROOT);
     }
 
-    public void onChange(ParsedRule rule, Object previous) {
+    @Override
+    public void onChange(ParsedRule<Object> rule, Object previous) {
     }
 }

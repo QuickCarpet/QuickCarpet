@@ -44,7 +44,7 @@ public abstract class DispenserBlockMixin extends BlockWithEntity {
         if (quickcarpet.settings.Settings.dispensersTillSoil && item instanceof HoeItem) {
             return CarpetRegistry.DISPENSERS_TILL_SOIL_BEHAVIOR;
         }
-        if (quickcarpet.settings.Settings.fireChargeConvertsToNetherrack && item == Items.FIRE_CHARGE) {
+        if (quickcarpet.settings.Settings.renewableNetherrack && item == Items.FIRE_CHARGE) {
             if (fireChargeBehavior == null) {
                 fireChargeBehavior = new MultiDispenserBehavior(new FireChargeConvertsToNetherrackBehavior(), (ItemDispenserBehavior) BEHAVIORS.get(item));
             }

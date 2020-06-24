@@ -26,7 +26,7 @@ public abstract class LivingEntityMixin extends Entity {
 
     @Inject(method = "onDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/damage/DamageSource;getAttacker()Lnet/minecraft/entity/Entity;", shift = At.Shift.BEFORE))
     private void convertSandToSoulsand(DamageSource source, CallbackInfo ci) {
-        if (!Settings.mobInFireConvertsSandToSoulsand) return;
+        if (!Settings.renewableSoulSand) return;
 
         BlockPos pos = new BlockPos(this.getX(), this.getY(), this.getZ());
         BlockState statePos = this.world.getBlockState(pos);

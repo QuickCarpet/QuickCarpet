@@ -105,7 +105,7 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
         try {
             this.field.set(null, value);
             this.onChange.onChange(this, previousValue);
-            this.categories.forEach(c -> c.onChange(this, previousValue));
+            this.categories.forEach(c -> c.onChange((ParsedRule<Object>) this, previousValue));
             if (sync) RulesChannel.instance.sendRuleUpdate(Collections.singleton(this));
         } catch (IllegalAccessException e) {
             throw new IllegalStateException(e);

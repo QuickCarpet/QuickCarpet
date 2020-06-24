@@ -1,6 +1,7 @@
 package quickcarpet.settings;
 
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.Pair;
 import quickcarpet.Build;
 import quickcarpet.QuickCarpet;
 import quickcarpet.annotation.BugFix;
@@ -21,13 +22,21 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class CoreSettingsManager extends SettingsManager {
-    private Map<QuickCarpetModule, ModuleSettingsManager> moduleSettings = new HashMap<>();
-    private List<ParsedRule<?>> allRules = new ArrayList<>();
-    private Map<String, ParsedRule<?>> rulesByName = new HashMap<>();
+    private final Map<QuickCarpetModule, ModuleSettingsManager> moduleSettings = new HashMap<>();
+    private final List<ParsedRule<?>> allRules = new ArrayList<>();
+    private final Map<String, ParsedRule<?>> rulesByName = new HashMap<>();
+    private final List<RuleUpgrader> allRuleUpgraders = new ArrayList<>();
+    private final Map<QuickCarpetModule, RuleUpgrader> moduleRuleUpgraders = new HashMap<>();
+    @Nullable
+    private RuleUpgrader coreRuleUpgrader;
     public boolean locked;
 
-    protected CoreSettingsManager(Class<?> settingsClass) {
+    protected CoreSettingsManager(Class<?> settingsClass, @Nullable RuleUpgrader upgrader) {
         super(settingsClass);
+        if (upgrader != null) {
+            this.coreRuleUpgrader = upgrader;
+            this.allRuleUpgraders.add(upgrader);
+        }
     }
 
     @Nullable
@@ -41,11 +50,10 @@ public class CoreSettingsManager extends SettingsManager {
         rulesByName.putAll(this.rules);
         allRules.addAll(this.rules.values());
         for (QuickCarpetModule m : QuickCarpet.getInstance().modules) {
-            Class<?> sc = m.getSettingsClass();
-            if (sc == null) continue;
-            LOG.info("Parsing settings for module " + m.getId() + " from " + sc);
             try {
+                Class<?> sc = m.getSettingsClass();
                 ModuleSettingsManager manager = new ModuleSettingsManager(m, sc);
+                LOG.info("Parsing settings for module " + m.getId() + " from " + sc);
                 manager.parse();
                 moduleSettings.put(m, manager);
                 rulesByName.putAll(manager.rules);
@@ -56,6 +64,9 @@ public class CoreSettingsManager extends SettingsManager {
                         rulesByName.put(rule.shortName, rule);
                     }
                 }
+                RuleUpgrader upgrader = m.getRuleUpgrader();
+                moduleRuleUpgraders.put(m, upgrader);
+                if (upgrader != null) allRuleUpgraders.add(upgrader);
             } catch (Exception e) {
                 LOG.error("Could not initialize settings for module " + m.getId() + " " + m.getVersion(), e);
             }
@@ -97,18 +108,35 @@ public class CoreSettingsManager extends SettingsManager {
                 }
                 String[] kv = line.split("\\s+", 2);
                 if (kv.length == 2) {
-                    ParsedRule rule = rulesByName.get(kv[0]);
+                    Pair<String, String> pair = new Pair<>(kv[0], kv[1]);
+                    ParsedRule<?> rule = rulesByName.get(kv[0]);
+                    if (rule == null) {
+                        for (RuleUpgrader upgrader : allRuleUpgraders) {
+                            Pair<String, String> upgraded = upgrader.upgrade(pair.getLeft(), pair.getRight());
+                            if (upgraded != null) {
+                                ParsedRule<?> upgradedRule = rulesByName.get(upgraded.getLeft());
+                                if (upgradedRule != null) {
+                                    rule = upgradedRule;
+                                    pair = upgraded;
+                                    break;
+                                }
+                            }
+                        }
+                    }
                     if (rule == null) {
                         LOG.error("[" + Build.NAME + "]: Setting " + kv[0] + " is not a valid - ignoring...");
                         continue;
                     }
                     try {
-                        String value = convertRuleDefaultIfNeeded(rule, kv[1]);
-                        if (!value.equals(kv[1])) {
-                            LOG.info("[" + Build.NAME + "]: converted " + rule.name + " from " + kv[1] + " to " + value);
+                        String value = pair.getRight();
+                        QuickCarpetModule module = rule.getModule();
+                        RuleUpgrader upgrader = module == null ? coreRuleUpgrader : moduleRuleUpgraders.get(module);
+                        if (upgrader != null) value = upgrader.upgradeValue(rule, value);
+                        if (!value.equals(kv[1]) || !pair.getLeft().equals(kv[0])) {
+                            LOG.info("[" + Build.NAME + "]: converted "   + kv[0] + "=" + kv[1] + " to " + rule.name + "=" + value);
                         }
                         rule.load(value);
-                        LOG.info("[" + Build.NAME + "]: loaded setting " + rule.name + " as " + rule.getAsString() + " from carpet.conf");
+                        LOG.info("[" + Build.NAME + "]: loaded setting " + rule.name + "=" + rule.getAsString() + " from carpet.conf");
                     } catch (IllegalArgumentException e) {
                         LOG.error("[" + Build.NAME + "]: The value " + kv[1] + " for " + rule.name + " is not valid - ignoring...");
                     }
@@ -120,14 +148,6 @@ public class CoreSettingsManager extends SettingsManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    private static String convertRuleDefaultIfNeeded(ParsedRule<?> rule, String value) {
-        if (rule.categories.contains(RuleCategory.COMMANDS) && rule.type == int.class) {
-            if ("true".equals(value)) return "0";
-            if ("false".equals(value)) return "4";
-        }
-        return value;
     }
 
     void save() {

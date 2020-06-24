@@ -6,6 +6,7 @@ import net.minecraft.server.world.ChunkTicketType;
 import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Pair;
 import net.minecraft.util.Unit;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
@@ -23,7 +24,74 @@ import java.util.Optional;
 import static quickcarpet.settings.RuleCategory.*;
 
 public class Settings {
-    public static final CoreSettingsManager MANAGER = new CoreSettingsManager(Settings.class);
+    public static final CoreSettingsManager MANAGER = new CoreSettingsManager(Settings.class, new RuleUpgrader() {
+        @Override
+        public Pair<String, String> upgrade(String key, String value) {
+            switch (key) {
+                case "silverFishDropGravel": return new Pair<>("renewableGravel", "true".equals(value) ? "silverfish" : "none");
+                case "mobInFireConvertsSandToSoulsand": return new Pair<>("renewableSoulSand", value);
+                case "fireChargeConvertsToNetherrack": return new Pair<>("renewableNetherrack", value);
+            }
+            return null;
+        }
+
+        @Override
+        public String upgradeValue(ParsedRule<?> rule, String value) {
+            if (rule.categories.contains(RuleCategory.COMMANDS) && rule.type == int.class) {
+                if ("true".equals(value)) return "0";
+                if ("false".equals(value)) return "4";
+            }
+            switch (rule.shortName) {
+                case "renewableSand": {
+                    if ("true".equals(value)) return "anvil";
+                    if ("false".equals(value)) return "none";
+                }
+            }
+            return value;
+        }
+    });
+
+    @Rule(category = FEATURE)
+    public static boolean accurateBlockPlacement = true;
+
+    @Rule(category = {FEATURE, EXPERIMENTAL})
+    public static int anvilledBlueIce = 0;
+
+    @Rule(category = {FEATURE, EXPERIMENTAL})
+    public static int anvilledPackedIce = 0;
+
+    @Rule(category = {FEATURE, EXPERIMENTAL})
+    public static boolean autoCraftingTable = false;
+
+    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
+    public static int commandCameramode = 2;
+
+    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
+    public static int commandCarpetClone = 2;
+
+    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
+    public static int commandCarpetFill = 2;
+
+    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
+    public static int commandCarpetSetBlock = 2;
+
+    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
+    public static int commandFix = 2;
+
+    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
+    public static int commandLog = 0;
+
+    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
+    public static int commandMeasure = 0;
+
+    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
+    public static int commandPing = 0;
+
+    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
+    public static int commandPlayer = 0;
+
+    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
+    public static int commandSpawn = 0;
 
     @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
     public static int commandTick = 0;
@@ -32,41 +100,25 @@ public class Settings {
     public static int commandTickManipulate = 2;
 
     @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
-    public static int commandPing = 0;
-
-    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
-    public static int commandCarpetFill = 2;
-
-    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
-    public static int commandCarpetClone = 2;
-
-    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
-    public static int commandCarpetSetBlock = 2;
-
-    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
-    public static int commandPlayer = 0;
-
-    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
-    public static int commandLog = 0;
-
-    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
-    public static int commandSpawn = 0;
-
-    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
-    public static int commandCameramode = 2;
-
-    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
-    public static int commandMeasure = 0;
-
-    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
     public static int commandWaypoint = 0;
 
-    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
-    public static int commandFix = 2;
+    @Rule(category = {FEATURE, EXPERIMENTAL})
+    public static BreakBlockDispenserBehavior.Option dispensersBreakBlocks = BreakBlockDispenserBehavior.Option.FALSE;
 
-    @CreativeDefault("false")
-    @Rule(category = CREATIVE)
-    public static boolean fillUpdates = true;
+    @Rule(category = FEATURE)
+    public static PlaceBlockDispenserBehavior.Option dispensersPlaceBlocks = PlaceBlockDispenserBehavior.Option.FALSE;
+
+    @Rule(category = FEATURE)
+    public static boolean dispensersShearVines = false;
+
+    @Rule(category = FEATURE)
+    public static boolean dispensersTillSoil = false;
+
+    @Rule(category = EXPERIMENTAL, bug = @BugFix("MC-88959"))
+    public static boolean doubleRetraction = false;
+
+    @Rule(category = TNT)
+    public static boolean explosionNoBlockDamage = false;
 
     @CreativeDefault("500000")
     @Rule(
@@ -76,47 +128,30 @@ public class Settings {
     )
     public static int fillLimit = 32768;
 
+    @CreativeDefault("false")
+    @Rule(category = CREATIVE)
+    public static boolean fillUpdates = true;
+
+    @CreativeDefault
+    @SurvivalDefault
+    @Rule(category = {CREATIVE, SURVIVAL})
+    public static boolean flippinCactus = false;
+
     @CreativeDefault
     @SurvivalDefault
     @Rule(category = COMMANDS)
     public static boolean hopperCounters = false;
 
-    @Rule(category = TNT)
-    public static boolean explosionNoBlockDamage = false;
+    @Rule(category = EXPERIMENTAL, onChange = IsDevelopmentListener.class)
+    public static boolean isDevelopment = false;
 
-    @Rule(category = TNT)
-    public static boolean tntPrimeMomentum = true;
-
-    @Rule(category = TNT, options = "-1", validator = TNTAngle.class)
-    public static double tntHardcodeAngle = -1;
-
-    @Rule(category = TNT)
-    public static boolean tntUpdateOnPlace = true;
-
-    public static class TNTAngle implements Validator<Double> {
+    public static class IsDevelopmentListener implements ChangeListener<Boolean> {
         @Override
-        public Optional<TranslatableText> validate(Double value) {
-            if (value == -1) return Optional.empty();
-            if (value >= 0 && value < 360) return Optional.empty();
-            return Optional.of(Messenger.t("carpet.validator.tntAngle"));
+        public void onChange(ParsedRule<Boolean> rule, Boolean previous) {
+            SharedConstants.isDevelopment = isDevelopment;
+            MANAGER.resendCommandTree();
         }
     }
-
-    @Rule(category = {FEATURE, EXPERIMENTAL})
-    public static boolean silverFishDropGravel = false;
-
-    @Rule(category = {FEATURE, EXPERIMENTAL})
-    public static boolean shulkerSpawningInEndCities = false;
-
-    @CreativeDefault
-    @Rule(category = CREATIVE)
-    public static boolean portalCreativeDelay = false;
-
-    @Rule(category = {FEATURE, EXPERIMENTAL})
-    public static boolean fireChargeConvertsToNetherrack = false;
-
-    @Rule(category = {FEATURE, EXPERIMENTAL})
-    public static boolean autoCraftingTable = false;
 
     @Rule(category = {FEATURE, EXPERIMENTAL})
     public static boolean movableBlockEntities = false;
@@ -124,20 +159,24 @@ public class Settings {
     @Rule(category = {FEATURE,EXPERIMENTAL})
     public static boolean movableBlockOverrides = false;
 
-    @Rule(category = SURVIVAL)
-    public static boolean stackableShulkerBoxes = false;
+    @Rule(category = FEATURE)
+    public static boolean netherMaps = false;
+
+    @Rule(category = {OPTIMIZATIONS, EXPERIMENTAL})
+    public static boolean optimizedFluidTicks = false;
+
+    @Rule(category = {OPTIMIZATIONS, EXPERIMENTAL}, deprecated = true)
+    public static boolean optimizedInventories = false;
 
     @Rule(category = {OPTIMIZATIONS, EXPERIMENTAL}, bug = @BugFix(value = "MC-151802", fixVersion = "1.14.3-pre1 (partial)"))
     public static boolean optimizedSpawning = false;
 
-    @Rule(category = {FEATURE, EXPERIMENTAL})
-    public static boolean mobInFireConvertsSandToSoulsand = false;
+    @Rule(category = {SURVIVAL, FIX, EXPERIMENTAL})
+    public static boolean phantomsRespectMobcap = false;
 
-    @Rule(category = {FEATURE, EXPERIMENTAL})
-    public static boolean renewableSand = false;
-
-    @Rule(category = {EXPERIMENTAL, FEATURE})
-    public static PlaceBlockDispenserBehavior.Option dispensersPlaceBlocks = PlaceBlockDispenserBehavior.Option.FALSE;
+    @CreativeDefault
+    @Rule(category = CREATIVE)
+    public static boolean portalCreativeDelay = false;
 
     @Rule(category = CREATIVE, options = {"10", "12", "14", "100"}, validator = Validator.NonNegative.class)
     public static int pushLimit = 12;
@@ -145,11 +184,39 @@ public class Settings {
     @Rule(category = CREATIVE, options = {"9", "15", "30"}, validator = Validator.Positive.class)
     public static int railPowerLimit = 9;
 
-    @Rule(category = EXPERIMENTAL, bug = @BugFix("MC-88959"))
-    public static boolean doubleRetraction = false;
+    @Rule(category = {FEATURE, RENEWABLE})
+    public static boolean renewableCoral = false;
 
-    @Rule(category = EXPERIMENTAL, onChange = SpawnChunkLevel.class, validator = SpawnChunkLevel.class)
-    public static int spawnChunkLevel = 11;
+    public enum RenewableGravelOrSandOption {
+        NONE, ANVIL, SILVERFISH
+    }
+
+    @Rule(category = {FEATURE, RENEWABLE})
+    public static RenewableGravelOrSandOption renewableGravel = RenewableGravelOrSandOption.NONE;
+
+    @Rule(category = {FEATURE, RENEWABLE})
+    public static boolean renewableLava = false;
+
+    @Rule(category = {FEATURE, RENEWABLE})
+    public static boolean renewableNetherrack = false;
+
+    @Rule(category = {FEATURE, RENEWABLE})
+    public static RenewableGravelOrSandOption renewableSand = RenewableGravelOrSandOption.NONE;
+
+    @Rule(category = {FEATURE, RENEWABLE})
+    public static boolean renewableSoulSand = false;
+
+    @Rule(category = {FEATURE, RENEWABLE})
+    public static boolean shulkerSpawningInEndCities = false;
+
+    public static class SleepingThreshold extends Validator.Range<Double> {
+        public SleepingThreshold() {
+            super(0.0, 100.0);
+        }
+    }
+
+    @Rule(category = {FEATURE, SURVIVAL}, options = {"0", "50", "100"}, validator = SleepingThreshold.class)
+    public static double sleepingThreshold = 100;
 
     public static class SpawnChunkLevel implements ChangeListener<Integer>, Validator<Integer> {
         @Override
@@ -172,66 +239,29 @@ public class Settings {
         }
     }
 
-    @Rule(category = {EXPERIMENTAL, FEATURE})
-    public static boolean renewableLava = false;
+    @Rule(category = EXPERIMENTAL, onChange = SpawnChunkLevel.class, validator = SpawnChunkLevel.class)
+    public static int spawnChunkLevel = 11;
 
-    @CreativeDefault
-    @SurvivalDefault
-    @Rule(category = {CREATIVE, SURVIVAL})
-    public static boolean flippinCactus = false;
+    @Rule(category = SURVIVAL)
+    public static boolean stackableShulkerBoxes = false;
 
-    @Rule(category = {SURVIVAL, FIX, EXPERIMENTAL})
-    public static boolean phantomsRespectMobcap = false;
-    
-    @Rule(category = FEATURE)
-    public static boolean renewableCoral = false;
-    
-    @Rule(category = FEATURE)
-    public static boolean dispensersTillSoil = false;
-
-    @Rule(category = {OPTIMIZATIONS, EXPERIMENTAL})
-    public static boolean optimizedFluidTicks = false;
-
-    @Rule(category = {FEATURE, SURVIVAL}, options = {"0", "50", "100"}, validator = SleepingThreshold.class)
-    public static double sleepingThreshold = 100;
-
-    @Rule(category = {OPTIMIZATIONS, EXPERIMENTAL}, deprecated = true)
-    public static boolean optimizedInventories = false;
-
-    public static class SleepingThreshold extends Validator.Range<Double> {
-        public SleepingThreshold() {
-            super(0.0, 100.0);
-        }
-    }
-
-    @Rule(category = FEATURE)
-    public static boolean accurateBlockPlacement = true;
-
-    @Rule(category = {FEATURE, EXPERIMENTAL})
-    public static BreakBlockDispenserBehavior.Option dispensersBreakBlocks = BreakBlockDispenserBehavior.Option.FALSE;
-
-    @Rule(category = FEATURE)
-    public static boolean dispensersShearVines = false;
-
-    @Rule(category = FEATURE)
-    public static boolean netherMaps = false;
-
-    @Rule(category = EXPERIMENTAL, onChange = IsDevelopmentListener.class)
-    public static boolean isDevelopment = false;
-
-    public static class IsDevelopmentListener implements ChangeListener<Boolean> {
+    public static class TNTAngle implements Validator<Double> {
         @Override
-        public void onChange(ParsedRule<Boolean> rule, Boolean previous) {
-            SharedConstants.isDevelopment = isDevelopment;
-            MANAGER.resendCommandTree();
+        public Optional<TranslatableText> validate(Double value) {
+            if (value == -1) return Optional.empty();
+            if (value >= 0 && value < 360) return Optional.empty();
+            return Optional.of(Messenger.t("carpet.validator.tntAngle"));
         }
     }
 
-    @Rule(category = {FEATURE, EXPERIMENTAL})
-    public static int anvilledPackedIce = 0;
+    @Rule(category = TNT, options = "-1", validator = TNTAngle.class)
+    public static double tntHardcodeAngle = -1;
 
-    @Rule(category = {FEATURE, EXPERIMENTAL})
-    public static int anvilledBlueIce = 0;
+    @Rule(category = TNT)
+    public static boolean tntPrimeMomentum = true;
+
+    @Rule(category = TNT)
+    public static boolean tntUpdateOnPlace = true;
 
     public static void main(String[] args) throws IOException {
         Bootstrap.initialize();
