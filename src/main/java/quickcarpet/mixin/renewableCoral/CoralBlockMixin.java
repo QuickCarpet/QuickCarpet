@@ -24,7 +24,7 @@ import java.util.Random;
 public abstract class CoralBlockMixin implements Fertilizable {
 
     public boolean isFertilizable(BlockView var1, BlockPos var2, BlockState var3, boolean var4) {
-        return Settings.renewableCoral && var3.get(CoralParentBlock.WATERLOGGED) && var1.getFluidState(var2.up()).matches(FluidTags.WATER);
+        return Settings.renewableCoral && var3.get(CoralParentBlock.WATERLOGGED) && var1.getFluidState(var2.up()).isIn(FluidTags.WATER);
     }
 
     public boolean canGrow(World var1, Random var2, BlockPos var3, BlockState var4) {

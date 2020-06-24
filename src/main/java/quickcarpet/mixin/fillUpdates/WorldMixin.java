@@ -12,7 +12,7 @@ import static quickcarpet.utils.Constants.SetBlockState.NO_OBSERVER_UPDATE;
 @Feature("fillUpdates")
 @Mixin(World.class)
 public class WorldMixin {
-    @ModifyConstant(method = "method_30092",
+    @ModifyConstant(method = "setBlockState",
             constant = @Constant(intValue = NO_OBSERVER_UPDATE))
     private int addFillUpdatesInt(int original) {
         return NO_OBSERVER_UPDATE | NO_FILL_UPDATE;
