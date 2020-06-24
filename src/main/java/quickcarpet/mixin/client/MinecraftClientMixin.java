@@ -1,6 +1,7 @@
 package quickcarpet.mixin.client;
 
 import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.RunArgs;
 import org.spongepowered.asm.mixin.Mixin;
@@ -12,6 +13,7 @@ import quickcarpet.annotation.Feature;
 
 @Feature("core")
 @Mixin(MinecraftClient.class)
+@Environment(EnvType.CLIENT)
 public abstract class MinecraftClientMixin {
     @Inject(method = "<init>", at = @At("RETURN"))
     private void onInit(RunArgs args, CallbackInfo ci) {

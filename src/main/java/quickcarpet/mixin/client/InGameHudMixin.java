@@ -1,5 +1,7 @@
 package quickcarpet.mixin.client;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.gui.hud.PlayerListHud;
@@ -12,6 +14,7 @@ import quickcarpet.annotation.Feature;
 import quickcarpet.mixin.accessor.PlayerListHudAccessor;
 
 @Feature("logger.hud")
+@Environment(EnvType.CLIENT)
 @Mixin(InGameHud.class)
 public abstract class InGameHudMixin {
     @Shadow @Final private PlayerListHud playerListHud;

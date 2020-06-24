@@ -7,7 +7,6 @@ import com.google.gson.JsonObject;
 import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.server.MinecraftServer;
@@ -44,7 +43,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-public final class QuickCarpet implements ModInitializer, ModuleHost, ServerEventListener, TelemetryProvider {
+public final class QuickCarpet implements ModuleHost, ServerEventListener, TelemetryProvider {
     private static final Logger LOG = LogManager.getLogger();
     public static final PubSubManager PUBSUB = new PubSubManager();
 
@@ -68,12 +67,17 @@ public final class QuickCarpet implements ModInitializer, ModuleHost, ServerEven
     // Fabric on dedicated server will call getInstance at return of DedicatedServer::<init>(...)
     // new CommandManager(...) is before that so QuickCarpet is created from that
     // Client will call getInstance at head of MinecraftClient::init()
-    public QuickCarpet() {
+    private QuickCarpet() {
         instance = this;
     }
 
     public static QuickCarpet getInstance() {
         return instance;
+    }
+
+    @Environment(EnvType.CLIENT)
+    public static void initClient() {
+        instance.client = new QuickCarpetClient();
     }
 
     @Override
@@ -127,9 +131,6 @@ public final class QuickCarpet implements ModInitializer, ModuleHost, ServerEven
         for (QuickCarpetModule m : modules) {
             m.onGameStarted();
             LOG.info(Build.NAME + " module " + m.getId() + " version " + m.getVersion() + " initialized");
-        }
-        if (env == EnvType.CLIENT) {
-            this.client = new QuickCarpetClient();
         }
     }
 
@@ -259,11 +260,6 @@ public final class QuickCarpet implements ModInitializer, ModuleHost, ServerEven
     public void onWorldUnloaded(ServerWorld world) {
         Collection<Runnable> callbacks = worldUnloadCallbacks.removeAll(world);
         for (Runnable r : callbacks) r.run();
-    }
-
-    @Override
-    public void onInitialize() {
-
     }
 
     @Override

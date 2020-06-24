@@ -6,10 +6,13 @@ import fi.dy.masa.malilib.event.InputEventHandler;
 import fi.dy.masa.malilib.gui.GuiBase;
 import fi.dy.masa.malilib.hotkeys.KeyAction;
 import fi.dy.masa.malilib.interfaces.IInitializationHandler;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import quickcarpet.Build;
 
 import java.util.function.Consumer;
 
+@Environment(EnvType.CLIENT)
 public class ClientInit implements IInitializationHandler {
     @Override
     public void registerModHandlers() {

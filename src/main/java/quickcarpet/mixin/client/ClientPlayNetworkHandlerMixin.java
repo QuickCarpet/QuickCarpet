@@ -1,5 +1,7 @@
 package quickcarpet.mixin.client;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
@@ -15,6 +17,7 @@ import quickcarpet.annotation.Feature;
 import quickcarpet.client.ClientPluginChannelManager;
 
 @Feature("core")
+@Environment(EnvType.CLIENT)
 @Mixin(ClientPlayNetworkHandler.class)
 public abstract class ClientPlayNetworkHandlerMixin implements ClientPlayPacketListener {
     @Inject(method = "onGameJoin", at = @At("RETURN"))

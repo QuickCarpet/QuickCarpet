@@ -1,6 +1,9 @@
 package quickcarpet;
 
 import fi.dy.masa.malilib.event.InitializationHandler;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import quickcarpet.client.ClientInit;
 import quickcarpet.client.ClientPluginChannelManager;
@@ -10,6 +13,7 @@ import quickcarpet.helper.TickSpeed;
 import quickcarpet.settings.ParsedRule;
 import quickcarpet.settings.Settings;
 
+@Environment(EnvType.CLIENT)
 public class QuickCarpetClient {
     private final MinecraftClient minecraftClient;
     private final ClientRulesChannel rulesChannel;
@@ -23,7 +27,11 @@ public class QuickCarpetClient {
         ClientPluginChannelManager.INSTANCE.register(pubSubListener = new ClientPubSubListener());
         try {
             new MaLiLibInitializer().run();
-        } catch (LinkageError ignored) {}
+        } catch (LinkageError e) {
+            if (FabricLoader.getInstance().isModLoaded("malilib")) {
+                e.printStackTrace();
+            }
+        }
     }
 
     // separate class to avoid loading malilib classes outside the try-catch

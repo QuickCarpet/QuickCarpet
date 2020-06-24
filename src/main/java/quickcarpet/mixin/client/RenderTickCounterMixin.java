@@ -1,5 +1,7 @@
 package quickcarpet.mixin.client;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.render.RenderTickCounter;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -12,6 +14,7 @@ import quickcarpet.client.ClientSetting;
 
 @Feature("tickSpeed")
 @Mixin(RenderTickCounter.class)
+@Environment(EnvType.CLIENT)
 public class RenderTickCounterMixin {
     @Shadow  @Final private float tickTime;
 

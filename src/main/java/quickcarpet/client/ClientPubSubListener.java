@@ -1,6 +1,8 @@
 package quickcarpet.client;
 
 import io.netty.buffer.Unpooled;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.PacketByteBuf;
@@ -20,6 +22,7 @@ import java.util.function.Consumer;
 
 import static quickcarpet.pubsub.PubSubMessenger.*;
 
+@Environment(EnvType.CLIENT)
 public class ClientPubSubListener implements ClientPluginChannelHandler {
     private Logger LOG = LogManager.getLogger();
     private QuickCarpetClient client = QuickCarpet.getInstance().client;
