@@ -28,6 +28,7 @@ public class Mobcaps {
         Object2IntMap<SpawnGroup> mobs = spawnInfo.getGroupToCount();
         EnumMap<SpawnGroup, Pair<Integer, Integer>> mobcaps = new EnumMap<>(SpawnGroup.class);
         for (SpawnGroup category : SpawnGroup.values()) {
+            if (category == SpawnGroup.MISC) continue;
             int cur = mobs.getOrDefault(category, 0);
             int max = chunks * category.getCapacity() / (17 * 17);
             mobcaps.put(category, new Pair<>(cur, max));
@@ -52,6 +53,7 @@ public class Mobcaps {
             for (World world : QuickCarpet.minecraft_server.getWorlds()) {
                 RegistryKey<DimensionType> dimKey = world.getDimensionRegistryKey();
                 for (SpawnGroup category : SpawnGroup.values()) {
+                    if (category == SpawnGroup.MISC) continue;
                     entries.add(new LogParameter<>(
                             dimKey.getValue().toString() + "." + category.getName() + ".present",
                             () -> getMobcaps((ServerWorld) world).get(category).getLeft()));

@@ -178,7 +178,7 @@ public class CarpetProfiler
 
     private static Measurement getMeasurement(World world) {
         if (world == null) return MEASUREMENTS.get(null);
-        return MEASUREMENTS.get(world.getDimension());
+        return MEASUREMENTS.get(world.getRegistryKey());
     }
 
     public static void startSection(World world, SectionType section) {
@@ -257,7 +257,7 @@ public class CarpetProfiler
             }
         }
         for (ServerWorld world : QuickCarpet.minecraft_server.getWorlds()) {
-            Measurement measurement = MEASUREMENTS.get(world.getDimension());
+            Measurement measurement = MEASUREMENTS.get(world.getRegistryKey());
             List<MutableText> messages = new ArrayList<>();
             for (SectionType section : SectionType.PER_DIMENSION) {
                 long nanos = measurement.sections.getLong(section);

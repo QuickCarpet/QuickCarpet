@@ -167,6 +167,7 @@ public class Messenger {
             case CREATURE: return DARK_GREEN;
             case AMBIENT: return DARK_GRAY;
             case WATER_CREATURE: return BLUE;
+            case WATER_AMBIENT: return DARK_AQUA;
         }
         return WHITE;
     }
