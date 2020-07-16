@@ -154,6 +154,10 @@ public final class QuickCarpet implements ModuleHost, ServerEventListener, Telem
     }
 
     public void setCommandDispatcher(CommandDispatcher<ServerCommandSource> dispatcher) {
+        if (this.dispatcher != null) {
+            // reload
+            registerCommands(dispatcher);
+        }
         this.dispatcher = dispatcher;
     }
 
