@@ -262,6 +262,9 @@ public class Settings {
 
     @Rule(category = TNT)
     public static boolean tntUpdateOnPlace = true;
+    
+    @Rule(category = FEATURE)
+    public static boolean renewableAncientDebris = false;
 
     public static void main(String[] args) throws IOException {
         Bootstrap.initialize();

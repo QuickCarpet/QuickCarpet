@@ -78,7 +78,8 @@
     "tnt.TntBlockMixin",
     "tnt.TntEntityMixin",
     "waypoints.ServerWorldMixin",
-    "waypoints.TeleportCommandMixin"
+    "waypoints.TeleportCommandMixin",
+    "renewableAncientDebris.WitherEntityMixin"
   ],
   "client": [
     "accessor.PlayerListHudAccessor",
