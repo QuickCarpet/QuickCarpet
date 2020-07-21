@@ -1,5 +1,7 @@
 package quickcarpet.utils;
 
+import quickcarpet.settings.Settings;
+
 public final class Constants {
     private Constants() {}
 
@@ -16,5 +18,10 @@ public final class Constants {
         public static final int FLAG_32 = 32;
         public static final int CALL_ON_ADDED_ON_REMOVED = 64;
         public static final int NO_FILL_UPDATE = 1024;
+
+        public static int modifyFlags(int flags) {
+            if (Settings.fillUpdates) return flags;
+            return (flags & ~UPDATE_NEIGHBORS) | NO_FILL_UPDATE;
+        }
     }
 }
