@@ -17,6 +17,7 @@
     "accessor.ServerCommandSourceAccessor",
     "accessor.ServerNetworkIoAccessor",
     "autoCraftingTable.CraftingTableBlockMixin",
+    "betterStatistics.ScoreboardCommandMixin",
     "blockPlacement.BlockItemMixin",
     "blockPlacement.ServerPlayInteractionManagerMixin",
     "core.AbstractBlockMixin",

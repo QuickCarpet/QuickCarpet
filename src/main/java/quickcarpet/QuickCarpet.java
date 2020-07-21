@@ -258,6 +258,7 @@ public final class QuickCarpet implements ModuleHost, ServerEventListener, Telem
     public void onWorldsUnloaded(MinecraftServer server) {
         for (ServerWorld world : server.getWorlds()) onWorldUnloaded(world);
         for (QuickCarpetModule m : modules) m.onWorldsUnloaded(server);
+        StatHelper.clearCache();
     }
 
     @Override

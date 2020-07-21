@@ -33,6 +33,14 @@ Default: `false`
 Options: `true`, `false`  
 Categories: feature, experimental  
 
+## betterStatistics
+Scoreboards initialize to the statistic values
+
+Type: `boolean`  
+Default: `true`  
+Options: `true`, `false`  
+Categories: feature, experimental  
+
 ## commandCameramode
 Enables /c and /s commands to quickly switch between camera and survival modes for players with this permission level
 

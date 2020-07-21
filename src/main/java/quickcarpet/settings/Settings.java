@@ -63,6 +63,9 @@ public class Settings {
     @Rule(category = {FEATURE, EXPERIMENTAL})
     public static boolean autoCraftingTable = false;
 
+    @Rule(category = {FEATURE, EXPERIMENTAL})
+    public static boolean betterStatistics = true;
+
     @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
     public static int commandCameramode = 2;
 
