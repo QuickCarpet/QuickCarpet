@@ -31,6 +31,7 @@
   "carpet.rule.anvilledPackedIce.description": "Drop an anvil on ice blocks to get packed ice",
   "carpet.rule.anvilledPackedIce.extra": "Value is the number of ice blocks required, 0 is disabled",
   "carpet.rule.autoCraftingTable.description": "Automatic crafting table",
+  "carpet.rule.betterChunkLoading.description": "Makes things load chunks again",
   "carpet.rule.betterStatistics.description": "Scoreboards initialize to the statistic values",
   "carpet.rule.commandCameramode.description": "Enables /c and /s commands to quickly switch between camera and survival modes for players with this permission level",
   "carpet.rule.commandCarpetClone.description": "Enables /carpetclone command for players with this permission level",

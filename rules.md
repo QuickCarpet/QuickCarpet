@@ -33,6 +33,14 @@ Default: `false`
 Options: `true`, `false`  
 Categories: feature, experimental  
 
+## betterChunkLoading
+Makes things load chunks again
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: feature, experimental  
+
 ## betterStatistics
 Scoreboards initialize to the statistic values
 

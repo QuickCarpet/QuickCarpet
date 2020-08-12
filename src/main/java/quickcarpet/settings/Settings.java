@@ -64,6 +64,9 @@ public class Settings {
     public static boolean autoCraftingTable = false;
 
     @Rule(category = {FEATURE, EXPERIMENTAL})
+    public static boolean betterChunkLoading = false;
+
+    @Rule(category = {FEATURE, EXPERIMENTAL})
     public static boolean betterStatistics = true;
 
     @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
