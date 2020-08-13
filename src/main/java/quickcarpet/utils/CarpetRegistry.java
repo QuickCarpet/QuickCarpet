@@ -5,19 +5,20 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.dispenser.DispenserBehavior;
+import net.minecraft.block.dispenser.ItemDispenserBehavior;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.item.*;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import quickcarpet.feature.BreakBlockDispenserBehavior;
-import quickcarpet.feature.CraftingTableBlockEntity;
-import quickcarpet.feature.PlaceBlockDispenserBehavior;
-import quickcarpet.feature.TillSoilDispenserBehavior;
+import quickcarpet.feature.*;
 import quickcarpet.mixin.accessor.BlockTagsAccessor;
+import quickcarpet.settings.Settings;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
 public class CarpetRegistry {
@@ -34,6 +35,7 @@ public class CarpetRegistry {
     public static final DispenserBehavior PLACE_BLOCK_DISPENSER_BEHAVIOR = new PlaceBlockDispenserBehavior();
     public static final DispenserBehavior BREAK_BLOCK_DISPENSER_BEHAVIOR = new BreakBlockDispenserBehavior();
     public static final DispenserBehavior DISPENSERS_TILL_SOIL_BEHAVIOR = new TillSoilDispenserBehavior();
+    public static final DispenserBehavior DISPENSERS_STRIP_LOGS_BEHAVIOR = new StripLogsDispenserBehavior();
 
     //Additional Movable Blocks
     public static final Tag<Block> PISTON_OVERRIDE_MOVABLE = BlockTagsAccessor.register("carpet:piston_movable");
@@ -53,5 +55,35 @@ public class CarpetRegistry {
 
     public static boolean isIgnoredForSync(Identifier key) {
         return key.getNamespace().equals("carpet");
+    }
+
+
+    private static MultiDispenserBehavior fireChargeBehavior;
+    private static MultiDispenserBehavior shearsBehavior;
+
+    public static DispenserBehavior getDispenserBehavior(Item item, Map<Item, DispenserBehavior> behaviors) {
+        if (item == Items.GUNPOWDER) return CarpetRegistry.BREAK_BLOCK_DISPENSER_BEHAVIOR;
+        if (Settings.dispensersPlaceBlocks != PlaceBlockDispenserBehavior.Option.FALSE && !behaviors.containsKey(item) && item instanceof BlockItem) {
+            if (PlaceBlockDispenserBehavior.canPlace(((BlockItem) item).getBlock())) return CarpetRegistry.PLACE_BLOCK_DISPENSER_BEHAVIOR;
+        }
+        if (Settings.dispensersTillSoil && item instanceof HoeItem) {
+            return CarpetRegistry.DISPENSERS_TILL_SOIL_BEHAVIOR;
+        }
+        if (Settings.dispensersStripLogs && item instanceof AxeItem) {
+            return CarpetRegistry.DISPENSERS_STRIP_LOGS_BEHAVIOR;
+        }
+        if (Settings.renewableNetherrack && item == Items.FIRE_CHARGE) {
+            if (fireChargeBehavior == null) {
+                fireChargeBehavior = new MultiDispenserBehavior(new FireChargeConvertsToNetherrackBehavior(), (ItemDispenserBehavior) behaviors.get(item));
+            }
+            return fireChargeBehavior;
+        }
+        if (Settings.dispensersShearVines && item == Items.SHEARS) {
+            if (shearsBehavior == null) {
+                shearsBehavior = new MultiDispenserBehavior((ItemDispenserBehavior) behaviors.get(item), new ShearVinesBehavior());
+            }
+            return shearsBehavior;
+        }
+        return behaviors.get(item);
     }
 }

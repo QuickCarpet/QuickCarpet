@@ -3,6 +3,7 @@
   "package": "quickcarpet.mixin",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "accessor.AxeItemAccessor",
     "accessor.BlockTagsAccessor",
     "accessor.ClientSettingsC2SPacketAccessor",
     "accessor.CraftingInventoryAccessor",

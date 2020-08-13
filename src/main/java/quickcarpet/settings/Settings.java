@@ -118,6 +118,9 @@ public class Settings {
     public static boolean dispensersShearVines = false;
 
     @Rule(category = FEATURE)
+    public static boolean dispensersStripLogs = false;
+
+    @Rule(category = FEATURE)
     public static boolean dispensersTillSoil = false;
 
     @Rule(category = EXPERIMENTAL, bug = @BugFix("MC-88959"))

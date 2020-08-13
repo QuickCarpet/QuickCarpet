@@ -185,6 +185,14 @@ Default: `false`
 Options: `true`, `false`  
 Categories: feature  
 
+## dispensersStripLogs
+Dispensers with axes can strip logs and wood
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: feature  
+
 ## dispensersTillSoil
 Dispensers with hoes can till soil
 

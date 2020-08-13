@@ -53,6 +53,7 @@
   "carpet.rule.dispensersBreakBlocks.description": "Gives dispensers the ability to break blocks using gunpowder",
   "carpet.rule.dispensersPlaceBlocks.description": "Dispensers can place most blocks",
   "carpet.rule.dispensersShearVines.description": "Dispensers can shear vines",
+  "carpet.rule.dispensersStripLogs.description": "Dispensers with axes can strip logs and wood",
   "carpet.rule.dispensersTillSoil.description": "Dispensers with hoes can till soil",
   "carpet.rule.doubleRetraction.description": "1.8 double retraction from pistons.",
   "carpet.rule.doubleRetraction.extra": "Gives pistons the ability to double retract without side effects.",

@@ -47,6 +47,7 @@
   "carpet.rule.dispensersBreakBlocks.description": "Gibt Werfern die Möglichkeit mit Schwarzpulver Blöcke zu zerstören",
   "carpet.rule.dispensersPlaceBlocks.description": "Werfer können Blöcke platzieren",
   "carpet.rule.dispensersShearVines.description": "Werfer können Scheren auf Ranken anwenden",
+  "carpet.rule.dispensersStripLogs.description": "Werfer mit Äxten können Stämme und Holz entrinden",
   "carpet.rule.dispensersTillSoil.description": "Werfer mit Hacken können Erde pflügen",
   "carpet.rule.doubleRetraction.description": "Doppeltes Zurückziehen von Kolben wie in 1.8",
   "carpet.rule.doubleRetraction.extra": "Gibt Kolben die Möglichkeit einen im selben Moment deaktivierten Kolben zurückzuziehen",
