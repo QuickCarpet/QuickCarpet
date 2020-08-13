@@ -19,7 +19,7 @@ public abstract class ServerChunkManagerMixin {
 
     @Redirect(method = "shouldTickBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerChunkManager;isFutureReady(JLjava/util/function/Function;)Z"))
     private boolean tickAllBlocks(ServerChunkManager serverChunkManager, long pos, Function<ChunkHolder, CompletableFuture<Either<WorldChunk, ChunkHolder.Unloaded>>> futureFunction) {
-        if (Settings.betterChunkLoading) return isFutureReady(pos, ChunkHolder::getBorderFuture);
+        if (Settings.betterChunkLoading) return isFutureReady(pos, ChunkHolder::getAccessibleFuture);
         return isFutureReady(pos, futureFunction);
     }
 }

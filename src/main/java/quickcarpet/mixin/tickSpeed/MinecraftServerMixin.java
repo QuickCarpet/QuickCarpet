@@ -41,7 +41,7 @@ public abstract class MinecraftServerMixin {
     @Shadow protected abstract void endMonitor(@Nullable TickDurationMonitor arg);
 
     // Cancel a while statement
-    @Redirect(method = "method_29741", at = @At(value = "FIELD", target = "Lnet/minecraft/server/MinecraftServer;running:Z"))
+    @Redirect(method = "runServer", at = @At(value = "FIELD", target = "Lnet/minecraft/server/MinecraftServer;running:Z"))
     private boolean cancelRunLoop(MinecraftServer server) {
         return false;
     }
@@ -49,7 +49,7 @@ public abstract class MinecraftServerMixin {
     // Replaced the above cancelled while statement with this one
     // could possibly just inject that mspt selection at the beginning of the loop, but then adding all mspt's to
     // replace 50L will be a hassle
-    @Inject(method = "method_29741", at = @At(value = "INVOKE", shift = At.Shift.AFTER,
+    @Inject(method = "runServer", at = @At(value = "INVOKE", shift = At.Shift.AFTER,
             target = "Lnet/minecraft/server/MinecraftServer;setFavicon(Lnet/minecraft/server/ServerMetadata;)V"))
     private void modifiedRunLoop(CallbackInfo ci) {
         TickSpeed tickSpeed = QuickCarpet.getInstance().tickSpeed;

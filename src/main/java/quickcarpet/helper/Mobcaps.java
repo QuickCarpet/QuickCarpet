@@ -8,7 +8,6 @@ import net.minecraft.util.Pair;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.SpawnHelper;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 import quickcarpet.QuickCarpet;
 import quickcarpet.logging.Logger;
 import quickcarpet.logging.loghelpers.LogParameter;
@@ -51,7 +50,7 @@ public class Mobcaps {
         public Set<Entry<String, Integer>> entrySet() {
             LinkedHashSet<Entry<String, Integer>> entries = new LinkedHashSet<>();
             for (World world : QuickCarpet.minecraft_server.getWorlds()) {
-                RegistryKey<DimensionType> dimKey = world.getDimensionRegistryKey();
+                RegistryKey<World> dimKey = world.getRegistryKey();
                 for (SpawnGroup category : SpawnGroup.values()) {
                     if (category == SpawnGroup.MISC) continue;
                     entries.add(new LogParameter<>(

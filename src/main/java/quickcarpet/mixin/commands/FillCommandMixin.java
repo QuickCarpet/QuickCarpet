@@ -1,7 +1,7 @@
 package quickcarpet.mixin.commands;
 
 import net.minecraft.block.Block;
-import net.minecraft.command.arguments.BlockStateArgument;
+import net.minecraft.command.argument.BlockStateArgument;
 import net.minecraft.server.command.FillCommand;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
@@ -15,7 +15,7 @@ import quickcarpet.utils.Constants;
 
 @Mixin(FillCommand.class)
 public class FillCommandMixin {
-    @Redirect(method = "execute", at = @At(value = "INVOKE", target = "Lnet/minecraft/command/arguments/BlockStateArgument;setBlockState(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/BlockPos;I)Z"))
+    @Redirect(method = "execute", at = @At(value = "INVOKE", target = "Lnet/minecraft/command/argument/BlockStateArgument;setBlockState(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/BlockPos;I)Z"))
     private static boolean fillUpdates(BlockStateArgument blockStateArgument, ServerWorld serverWorld, BlockPos blockPos, int flags) {
         return blockStateArgument.setBlockState(serverWorld, blockPos, Constants.SetBlockState.modifyFlags(flags));
     }

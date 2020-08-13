@@ -14,7 +14,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPointer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
+import net.minecraft.util.math.Vec3d;
 import quickcarpet.settings.Settings;
 
 public class BreakBlockDispenserBehavior extends ItemDispenserBehavior {
@@ -48,7 +48,7 @@ public class BreakBlockDispenserBehavior extends ItemDispenserBehavior {
     }
 
     private boolean breakBlock(BlockPointer blockPointer, boolean silkTouch) {
-        ServerWorld world = (ServerWorld) blockPointer.getWorld();
+        ServerWorld world = blockPointer.getWorld();
         Direction facing = blockPointer.getBlockState().get(DispenserBlock.FACING);
         BlockPos target = blockPointer.getBlockPos().offset(facing);
         BlockState state = world.getBlockState(target);
@@ -67,9 +67,9 @@ public class BreakBlockDispenserBehavior extends ItemDispenserBehavior {
         FALSE, NORMAL, SILK_TOUCH
     }
 
-    public static void breakBlock(World world, BlockPos pos, BlockState blockState, ItemStack tool) {
-        LootContext.Builder builder = new LootContext.Builder((ServerWorld) world).random(world.random);
-        builder.parameter(LootContextParameters.POSITION, pos).parameter(LootContextParameters.TOOL, tool);
+    public static void breakBlock(ServerWorld world, BlockPos pos, BlockState blockState, ItemStack tool) {
+        LootContext.Builder builder = new LootContext.Builder(world).random(world.random);
+        builder.parameter(LootContextParameters.ORIGIN, Vec3d.of(pos)).parameter(LootContextParameters.TOOL, tool);
         blockState.getDroppedStacks(builder).forEach(drop -> {
             Block.dropStack(world, pos, drop);
         });

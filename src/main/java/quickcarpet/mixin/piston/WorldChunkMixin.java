@@ -83,7 +83,7 @@ public abstract class WorldChunkMixin implements ExtendedWorldChunk {
             this.heightmaps.get(Heightmap.Type.WORLD_SURFACE).trackUpdate(x, y, z, newBlockState);
             boolean sectionIsEmpty = chunkSection.isEmpty();
             if (sectionWasEmpty != sectionIsEmpty) {
-                this.world.getChunkManager().getLightingProvider().updateSectionStatus(pos, sectionIsEmpty);
+                this.world.getChunkManager().getLightingProvider().setSectionStatus(pos, sectionIsEmpty);
             }
 
             if (!this.world.isClient) {

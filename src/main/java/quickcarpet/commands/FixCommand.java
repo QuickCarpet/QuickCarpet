@@ -3,7 +3,7 @@ package quickcarpet.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.command.arguments.BlockPosArgumentType;
+import net.minecraft.command.argument.BlockPosArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerLightingProvider;
 import net.minecraft.server.world.ServerWorld;
@@ -15,8 +15,8 @@ import quickcarpet.settings.Settings;
 
 import java.util.EnumSet;
 
-import static net.minecraft.command.arguments.ColumnPosArgumentType.columnPos;
-import static net.minecraft.command.arguments.ColumnPosArgumentType.getColumnPos;
+import static net.minecraft.command.argument.ColumnPosArgumentType.columnPos;
+import static net.minecraft.command.argument.ColumnPosArgumentType.getColumnPos;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 

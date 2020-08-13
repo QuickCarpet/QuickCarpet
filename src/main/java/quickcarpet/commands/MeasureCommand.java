@@ -2,7 +2,7 @@ package quickcarpet.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import net.minecraft.command.arguments.PosArgument;
+import net.minecraft.command.argument.PosArgument;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
@@ -13,8 +13,8 @@ import java.util.Locale;
 import java.util.function.ToDoubleBiFunction;
 import java.util.function.ToDoubleFunction;
 
-import static net.minecraft.command.arguments.Vec3ArgumentType.getPosArgument;
-import static net.minecraft.command.arguments.Vec3ArgumentType.vec3;
+import static net.minecraft.command.argument.Vec3ArgumentType.getPosArgument;
+import static net.minecraft.command.argument.Vec3ArgumentType.vec3;
 import static net.minecraft.server.command.CommandManager.argument;
 import static quickcarpet.utils.Messenger.*;
 

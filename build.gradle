@@ -42,7 +42,7 @@ dependencies {
 	modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	// Using the full api here to fix malilib's modmenu using an old version
-	modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	// modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	modCompile "net.fabricmc.fabric-api:fabric-resource-loader-v0:${project.fabric_resource_loader_v0_version}"
 	include "net.fabricmc.fabric-api:fabric-resource-loader-v0:${project.fabric_resource_loader_v0_version}"
@@ -54,7 +54,9 @@ dependencies {
 	// javax.annotation.Nullable/Nonnull
 	compileOnly "com.google.code.findbugs:jsr305:3.0.1"
 
-	modImplementation "fi.dy.masa.malilib:malilib-fabric-${malilib_mc_version}:${project.malilib_version}"
+	modImplementation("fi.dy.masa.malilib:malilib-fabric-${malilib_mc_version}:${project.malilib_version}") {
+		exclude module: "modmenu"
+	}
 }
 
 static def gitCommit() {

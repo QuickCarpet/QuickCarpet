@@ -38,7 +38,7 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
         FakeClientConnection connection = new FakeClientConnection(NetworkSide.SERVERBOUND);
         ((ServerNetworkIoAccessor) server.getNetworkIo()).getConnections().add(connection);
         server.getPlayerManager().onPlayerConnect(connection, instance);
-        if (instance.world.getDimensionRegistryKey() != dimension.getDimensionRegistryKey()) {
+        if (!instance.world.getRegistryKey().equals(dimension.getRegistryKey())) {
             ServerWorld old_world = (ServerWorld) instance.world;
             old_world.removePlayer(instance);
             instance.removed = false;

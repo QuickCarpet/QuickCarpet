@@ -25,8 +25,8 @@ import java.util.Collections;
 
 import static com.mojang.brigadier.arguments.StringArgumentType.getString;
 import static com.mojang.brigadier.arguments.StringArgumentType.greedyString;
-import static net.minecraft.command.arguments.EntityArgumentType.entities;
-import static net.minecraft.command.arguments.EntityArgumentType.getEntities;
+import static net.minecraft.command.argument.EntityArgumentType.entities;
+import static net.minecraft.command.argument.EntityArgumentType.getEntities;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 import static quickcarpet.utils.Messenger.*;

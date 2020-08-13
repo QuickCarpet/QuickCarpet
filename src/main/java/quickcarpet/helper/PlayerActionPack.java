@@ -118,7 +118,7 @@ public class PlayerActionPack {
 
     public PlayerActionPack mount() {
         if (player.getVehicle() != null) return this;
-        List<Entity> entities = player.world.getEntities(player, player.getBoundingBox().expand(3, 1, 3), other -> !(other instanceof PlayerEntity));
+        List<Entity> entities = player.world.getOtherEntities(player, player.getBoundingBox().expand(3, 1, 3), other -> !(other instanceof PlayerEntity));
         if (entities.isEmpty()) return this;
         Entity closest = null;
         double closestDistance = Double.POSITIVE_INFINITY;

@@ -19,6 +19,7 @@ public class BlocksMixin {
         throw new AssertionError();
     }
 
+    @SuppressWarnings("UnresolvedMixinReference")
     @Redirect(method = "<clinit>",
         slice = @Slice(from = @At(value = "CONSTANT", args = "stringValue=obsidian")),
         at = @At(value = "INVOKE",

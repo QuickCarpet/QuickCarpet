@@ -5,15 +5,15 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.dispenser.FallibleItemDispenserBehavior;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPointer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.World;
 
 public class ShearVinesBehavior extends FallibleItemDispenserBehavior {
     @Override
     protected ItemStack dispenseSilently(BlockPointer pointer, ItemStack stack) {
-        World world = pointer.getWorld();
+        ServerWorld world = pointer.getWorld();
         Direction direction = pointer.getBlockState().get(DispenserBlock.FACING);
         BlockPos target = pointer.getBlockPos().offset(direction);
         BlockState targetState = world.getBlockState(target);

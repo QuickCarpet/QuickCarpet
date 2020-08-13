@@ -70,7 +70,7 @@ public class Translations {
         Style style = text.getStyle();
         HoverEvent hover = style.getHoverEvent();
         if (hover != null && hover.getAction() == HoverEvent.Action.SHOW_TEXT) {
-            style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, translate((MutableText) hover.getValue(HoverEvent.Action.SHOW_TEXT), locale)));
+            style.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, translate((MutableText) hover.getValue(HoverEvent.Action.SHOW_TEXT), locale)));
         }
         translated.setStyle(style);
         for (Text sibling : text.getSiblings()) {

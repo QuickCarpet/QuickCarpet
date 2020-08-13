@@ -16,7 +16,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 import net.minecraft.util.WorldSavePath;
-import net.minecraft.util.registry.RegistryTracker;
+import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.world.level.ServerWorldProperties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -50,7 +50,7 @@ public final class QuickCarpet implements ModuleHost, ServerEventListener, Telem
     private static QuickCarpet instance = new QuickCarpet();
 
     public static MinecraftServer minecraft_server;
-    public RegistryTracker.Modifiable dimensionTracker;
+    public DynamicRegistryManager dynamicRegistryManager;
     public TickSpeed tickSpeed;
 
     @Environment(EnvType.CLIENT)

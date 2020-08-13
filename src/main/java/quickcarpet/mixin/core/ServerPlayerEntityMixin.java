@@ -17,8 +17,8 @@ import quickcarpet.utils.extensions.PlayerWithLanguage;
 public abstract class ServerPlayerEntityMixin extends PlayerEntity implements PlayerWithLanguage {
     private String language = "en_US";
 
-    public ServerPlayerEntityMixin(World world, BlockPos blockPos, GameProfile gameProfile) {
-        super(world, blockPos, gameProfile);
+    public ServerPlayerEntityMixin(World world, BlockPos pos, float yaw, GameProfile profile) {
+        super(world, pos, yaw, profile);
     }
 
     @Inject(method = "setClientSettings", at = @At("HEAD"))

@@ -131,7 +131,7 @@ public class Messenger {
     public static <T extends MutableText> T suggestCommand(T text, String command, Text hoverText) {
         Style style = text.getStyle()
                 .withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, command))
-                .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
+                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
         text.setStyle(style);
         return text;
     }
@@ -144,13 +144,13 @@ public class Messenger {
     public static <T extends MutableText> T runCommand(T text, String command, Text hoverText) {
         Style style = text.getStyle()
             .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command))
-            .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
+            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
         text.setStyle(style);
         return text;
     }
 
     public static <T extends Text> T hoverText(T text, Text hoverText) {
-        text.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
+        text.getStyle().withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
         return text;
     }
 
@@ -200,7 +200,7 @@ public class Messenger {
         }
         if (desc.charAt(0) == '^') {
             if (previous != null) {
-                previous.setStyle(previous.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, c(message.substring(1)))));
+                previous.setStyle(previous.getStyle().withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, c(message.substring(1)))));
             }
             return previous;
         }

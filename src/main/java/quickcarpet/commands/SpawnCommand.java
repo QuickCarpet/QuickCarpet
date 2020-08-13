@@ -15,10 +15,10 @@ import quickcarpet.utils.SpawnTracker;
 
 import java.util.Map;
 
-import static net.minecraft.command.arguments.BlockPosArgumentType.blockPos;
-import static net.minecraft.command.arguments.BlockPosArgumentType.getBlockPos;
-import static net.minecraft.command.arguments.DimensionArgumentType.dimension;
-import static net.minecraft.command.arguments.DimensionArgumentType.getDimensionArgument;
+import static net.minecraft.command.argument.BlockPosArgumentType.blockPos;
+import static net.minecraft.command.argument.BlockPosArgumentType.getBlockPos;
+import static net.minecraft.command.argument.DimensionArgumentType.dimension;
+import static net.minecraft.command.argument.DimensionArgumentType.getDimensionArgument;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 import static quickcarpet.utils.Messenger.*;
