@@ -213,6 +213,9 @@ public class Settings {
     public static boolean renewableSoulSand = false;
 
     @Rule(category = {FEATURE, RENEWABLE})
+    public static boolean renewableSponges = false;
+
+    @Rule(category = {FEATURE, RENEWABLE})
     public static boolean shulkerSpawningInEndCities = false;
 
     public static class SleepingThreshold extends Validator.Range<Double> {

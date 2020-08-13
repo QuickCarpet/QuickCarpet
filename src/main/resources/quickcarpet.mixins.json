@@ -70,6 +70,7 @@
     "renewableFromSilverfish.InfestedBlockMixin",
     "renewableLava.BlocksMixin",
     "renewableSoulSand.LivingEntityMixin",
+    "renewableSponges.GuardianEntityMixin",
     "sleepingThreshold.ServerWorldMixin",
     "spawnChunkLevel.ServerWorldMixin",
     "spawning.EndCityFeatureMixin",

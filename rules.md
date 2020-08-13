@@ -404,6 +404,14 @@ Default: `false`
 Options: `true`, `false`  
 Categories: feature, renewable  
 
+## renewableSponges
+carpet.rule.renewableSponges.description
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: feature, renewable  
+
 ## shulkerSpawningInEndCities
 Shulkers will respawn in end cities
 
