@@ -11,7 +11,6 @@ import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
 import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import quickcarpet.QuickCarpet;
 import quickcarpet.QuickCarpetClient;
 import quickcarpet.network.ClientPluginChannelHandler;
 import quickcarpet.network.PacketSplitter;
@@ -25,7 +24,7 @@ import static quickcarpet.pubsub.PubSubMessenger.*;
 @Environment(EnvType.CLIENT)
 public class ClientPubSubListener implements ClientPluginChannelHandler {
     private Logger LOG = LogManager.getLogger();
-    private QuickCarpetClient client = QuickCarpet.getInstance().client;
+    private final QuickCarpetClient client = QuickCarpetClient.getInstance();
 
     @Override
     public Identifier[] getChannels() {

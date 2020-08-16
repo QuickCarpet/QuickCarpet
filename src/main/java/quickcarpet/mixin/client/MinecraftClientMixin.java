@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import quickcarpet.QuickCarpet;
+import quickcarpet.QuickCarpetClient;
 import quickcarpet.annotation.Feature;
 
 @Feature("core")
@@ -22,6 +23,6 @@ public abstract class MinecraftClientMixin {
 
     @Inject(method = "tick", at = @At("HEAD"))
     private void onTick(CallbackInfo ci) {
-        QuickCarpet.getInstance().client.tick();
+        QuickCarpetClient.getInstance().tick();
     }
 }

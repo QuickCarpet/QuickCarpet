@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-import quickcarpet.QuickCarpet;
+import quickcarpet.QuickCarpetClient;
 import quickcarpet.annotation.Feature;
 import quickcarpet.client.ClientPluginChannelManager;
 
@@ -22,12 +22,12 @@ import quickcarpet.client.ClientPluginChannelManager;
 public abstract class ClientPlayNetworkHandlerMixin implements ClientPlayPacketListener {
     @Inject(method = "onGameJoin", at = @At("RETURN"))
     private void onJoinServer(CallbackInfo ci) {
-        QuickCarpet.getInstance().client.onJoinServer();
+        QuickCarpetClient.getInstance().onJoinServer();
     }
 
     @Inject(method = "clearWorld", at = @At("HEAD"))
     private void onLeaveServer(CallbackInfo ci) {
-        QuickCarpet.getInstance().client.onLeaveServer();
+        QuickCarpetClient.getInstance().onLeaveServer();
     }
 
     @Inject(method = "onCustomPayload", at = @At(value = "CONSTANT", args = "stringValue=Unknown custom packed identifier: {}"), cancellable = true, locals = LocalCapture.CAPTURE_FAILSOFT, require = 0)

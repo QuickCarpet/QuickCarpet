@@ -6,7 +6,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.server.MinecraftServer;
@@ -53,8 +52,6 @@ public final class QuickCarpet implements ModuleHost, ServerEventListener, Telem
     public DynamicRegistryManager dynamicRegistryManager;
     public TickSpeed tickSpeed;
 
-    @Environment(EnvType.CLIENT)
-    public QuickCarpetClient client;
     public PluginChannelManager pluginChannels;
     public final Set<QuickCarpetModule> modules = new TreeSet<>();
     private final PubSubMessenger pubSubMessenger = new PubSubMessenger(PUBSUB);
@@ -73,11 +70,6 @@ public final class QuickCarpet implements ModuleHost, ServerEventListener, Telem
 
     public static QuickCarpet getInstance() {
         return instance;
-    }
-
-    @Environment(EnvType.CLIENT)
-    public static void initClient() {
-        instance.client = new QuickCarpetClient();
     }
 
     @Override

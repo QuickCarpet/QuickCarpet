@@ -20,7 +20,7 @@
       "quickcarpet.QuickCarpet::getInstance"
     ],
     "client": [
-      "quickcarpet.QuickCarpet::initClient"
+      "quickcarpet.QuickCarpetClient::getInstance"
     ]
   },
   "mixins": [
