@@ -8,7 +8,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import quickcarpet.QuickCarpet;
 import quickcarpet.settings.Settings;
 
-@Mixin(ChunkTicketManager.class)
+// Inject after Lithium
+@Mixin(value = ChunkTicketManager.class, priority = 1100)
 public class ChunkTicketManagerMixin {
     @Inject(method = "purge", at = @At(value = "FIELD", target = "Lnet/minecraft/server/world/ChunkTicketManager;ticketsByPosition:Lit/unimi/dsi/fastutil/longs/Long2ObjectOpenHashMap;"), cancellable = true)
     private void purgeOnAutosave(CallbackInfo ci) {
