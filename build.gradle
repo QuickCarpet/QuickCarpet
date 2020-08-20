@@ -14,18 +14,23 @@ repositories {
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
+def malilib_mc_version = project.hasProperty('malilib_mc_version') ? project.malilib_mc_version : project.minecraft_version
+
 def buildDate = new Date()
-if (project.mod_version.endsWith('-dev')) {
+def branch = gitBranch()
+def ci = System.getenv("CI") != null
+def isDev = project.mod_version.endsWith('-dev')
+
+if (isDev && !ci) {
 	def df = new SimpleDateFormat(".yyyyMMdd.HHmmss")
 	df.setTimeZone(TimeZone.getTimeZone("UTC"))
 	project.mod_version += df.format(buildDate)
 }
-
-def malilib_mc_version = project.hasProperty('malilib_mc_version') ? project.malilib_mc_version : project.minecraft_version
-
-def branch = gitBranch()
-if (branch != "master") {
-	project.mod_version += "+" + branch;
+if (branch != "master" && branch != "HEAD") {
+	project.mod_version += "+" + branch.replaceAll("[+-]", '_')
+}
+if (isDev && ci) {
+	project.mod_version += "+" + gitCommit().substring(0, 7)
 }
 
 archivesBaseName = project.name
