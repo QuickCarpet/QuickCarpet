@@ -132,7 +132,6 @@ public class Settings {
     @Rule(category = TNT)
     public static boolean explosionNoBlockDamage = false;
 
-    @CreativeDefault("500000")
     @Rule(
             options = {"32768", "250000", "1000000"},
             validator = Validator.Positive.class,
@@ -140,17 +139,12 @@ public class Settings {
     )
     public static int fillLimit = 32768;
 
-    @CreativeDefault("false")
     @Rule(category = CREATIVE)
     public static boolean fillUpdates = true;
 
-    @CreativeDefault
-    @SurvivalDefault
     @Rule(category = {CREATIVE, SURVIVAL})
     public static boolean flippinCactus = false;
 
-    @CreativeDefault
-    @SurvivalDefault
     @Rule(category = COMMANDS)
     public static boolean hopperCounters = false;
 
@@ -186,7 +180,6 @@ public class Settings {
     @Rule(category = {SURVIVAL, FIX, EXPERIMENTAL})
     public static boolean phantomsRespectMobcap = false;
 
-    @CreativeDefault
     @Rule(category = CREATIVE)
     public static boolean portalCreativeDelay = false;
 
