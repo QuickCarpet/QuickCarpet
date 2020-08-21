@@ -87,7 +87,7 @@
   "carpet.rule.renewableNetherrack.description": "Fire charges from dispensers convert cobblestone to netherrack",
   "carpet.rule.renewableSand.description": "Cobblestone crushed by falling anvils makes sand, or silverfish drop a sand item when breaking out of a block",
   "carpet.rule.renewableSoulSand.description": "If a living entity dies on sand with fire on top the sand will convert into soul sand",
-  "carpet.rule.renewableSponges": "Guardians struck by lightning turn into Elder Guardians",
+  "carpet.rule.renewableSponges.description": "Guardians struck by lightning turn into Elder Guardians",
   "carpet.rule.shulkerSpawningInEndCities.description": "Shulkers will respawn in end cities",
   "carpet.rule.sleepingThreshold.description": "Percentage of sleeping players required to skip the night",
   "carpet.rule.spawnChunkLevel.description": "Size of the spawn chunks",

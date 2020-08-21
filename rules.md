@@ -7,6 +7,14 @@ Default: `true`
 Options: `true`, `false`  
 Categories: feature  
 
+## antiCheat
+carpet.rule.antiCheat.description
+
+Type: `boolean`  
+Default: `true`  
+Options: `true`, `false`  
+Categories: fix  
+
 ## anvilledBlueIce
 Drop an anvil on packed ice blocks to get blue ice
 
@@ -413,7 +421,7 @@ Options: `true`, `false`
 Categories: feature, renewable  
 
 ## renewableSponges
-carpet.rule.renewableSponges.description
+Guardians struck by lightning turn into Elder Guardians
 
 Type: `boolean`  
 Default: `false`  
