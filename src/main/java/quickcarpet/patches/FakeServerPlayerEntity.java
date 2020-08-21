@@ -109,6 +109,7 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
     @Override
     public void kill() {
         this.server.send(new ServerTask(this.server.getTicks(), () -> {
+            ((ActionPackOwner) this).getActionPack().stop();
             this.networkHandler.onDisconnected(Messenger.s("Killed"));
         }));
     }

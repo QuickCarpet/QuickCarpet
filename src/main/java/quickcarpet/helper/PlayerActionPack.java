@@ -186,10 +186,8 @@ public class PlayerActionPack {
                             Direction side = blockHit.getSide();
                             if (pos.getY() < player.server.getWorldHeight() - (side == Direction.UP ? 1 : 0) && world.canPlayerModifyAt(player, pos)) {
                                 ActionResult result = player.interactionManager.interactBlock(player, world, player.getStackInHand(hand), hand, blockHit);
-                                if (result == ActionResult.SUCCESS) {
-                                    player.swingHand(hand);
-                                    return;
-                                }
+                                if (result.shouldSwingHand()) player.swingHand(hand);
+                                if (result != ActionResult.PASS) return;
                             }
                             break;
                         }
@@ -198,16 +196,23 @@ public class PlayerActionPack {
                             EntityHitResult entityHit = (EntityHitResult) hit;
                             Entity entity = entityHit.getEntity();
                             Vec3d relativeHitPos = entityHit.getPos().subtract(entity.getPos());
-                            if (entity.interactAt(player, relativeHitPos, hand) == ActionResult.SUCCESS) return;
-                            if (player.interact(entity, hand) == ActionResult.SUCCESS) return;
+                            ActionResult result = entity.interactAt(player, relativeHitPos, hand);
+                            if (result.shouldSwingHand()) player.swingHand(hand);
+                            if (result != ActionResult.PASS) return;
+                            result = player.interact(entity, hand);
+                            if (result.shouldSwingHand()) player.swingHand(hand);
+                            if (result != ActionResult.PASS) return;
                             break;
                         }
                     }
+                    ActionResult result = player.interactionManager.interactItem(player, player.getServerWorld(), player.getStackInHand(hand), hand);
+                    if (result.shouldSwingHand()) player.swingHand(hand);
+                    if (result != ActionResult.PASS) return;
                 }
             }
 
             @Override
-            void inactiveTick(ServerPlayerEntity player, Action action) {
+            void stop(ServerPlayerEntity player, Action action) {
                 player.stopUsingItem();
             }
         },
@@ -258,6 +263,7 @@ public class PlayerActionPack {
                             ap.curBlockDamageMP += state.calcBlockBreakingDelta(player, player.world, pos);
                             if (ap.curBlockDamageMP >= 1) {
                                 player.interactionManager.processBlockBreakingAction(pos, PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK, side, player.server.getWorldHeight());
+                                ap.curBlockDamageMP = 0;
                             }
                             player.world.setBlockBreakingInfo(-1, pos, (int) (ap.curBlockDamageMP * 10));
                         }
@@ -269,7 +275,7 @@ public class PlayerActionPack {
             }
 
             @Override
-            void inactiveTick(ServerPlayerEntity player, Action action) {
+            void stop(ServerPlayerEntity player, Action action) {
                 PlayerActionPack ap = ((ActionPackOwner) player).getActionPack();
                 if (ap.currentBlock == null) return;
                 player.world.setBlockBreakingInfo(-1, ap.currentBlock, -1);
