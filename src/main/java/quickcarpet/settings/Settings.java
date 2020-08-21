@@ -271,8 +271,11 @@ public class Settings {
     @Rule(category = TNT)
     public static boolean tntUpdateOnPlace = true;
 
-    @Rule(category = {SURVIVAL, EXPERIMENTAL}, validator = Validator.NonNegative.class)
+    @Rule(category = {SURVIVAL, EXPERIMENTAL}, options = {"0", "2"}, validator = Validator.NonNegative.class)
     public static int xpCoolDown = 2;
+
+    @Rule(category = {SURVIVAL, EXPERIMENTAL})
+    public static boolean xpMerging = false;
 
     public static void main(String[] args) throws IOException {
         Bootstrap.initialize();

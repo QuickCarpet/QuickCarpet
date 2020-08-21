@@ -497,6 +497,15 @@ Delay before players can absorb the next Experience Orb
 
 Type: `int`  
 Default: `2`  
+Options: `0`, `2`  
 Categories: survival, experimental  
 Validator: `>= 0`  
+
+## xpMerging
+Experience Orbs can merge like items
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: survival, experimental  
 
