@@ -492,3 +492,11 @@ Default: `true`
 Options: `true`, `false`  
 Categories: tnt  
 
+## xpCoolDown
+Delay before players can absorb the next Experience Orb
+
+Type: `int`  
+Default: `2`  
+Categories: survival, experimental  
+Validator: `>= 0`  
+

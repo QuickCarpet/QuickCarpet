@@ -271,6 +271,9 @@ public class Settings {
     @Rule(category = TNT)
     public static boolean tntUpdateOnPlace = true;
 
+    @Rule(category = {SURVIVAL, EXPERIMENTAL}, validator = Validator.NonNegative.class)
+    public static int xpCoolDown = 2;
+
     public static void main(String[] args) throws IOException {
         Bootstrap.initialize();
         Translations.init();
