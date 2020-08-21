@@ -25,6 +25,7 @@
   "carpet.rule.value.default": "Standardwert",
   "carpet.rule.value.modified": "Geänderter Wert",
   "carpet.rule.accurateBlockPlacement.description": "Gibt Mods die Möglichkeit die Rotation von platzierten Blöcken zu kontrollieren",
+  "carpet.rule.antiCheat.description": "Verhindert Rubber-Banding bei zu schnellen Bewegungen",
   "carpet.rule.autoCraftingTable.description": "Automatische Werkbank",
   "carpet.rule.betterChunkLoading.description": "Lässt Dinge wieder Chunks laden",
   "carpet.rule.betterStatistics.description": "Anzeigetafel werden mit den Statistikwerten initialisiert",

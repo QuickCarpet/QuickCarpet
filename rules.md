@@ -8,7 +8,7 @@ Options: `true`, `false`
 Categories: feature  
 
 ## antiCheat
-carpet.rule.antiCheat.description
+Prevents players from rubberbanding when moving too fast
 
 Type: `boolean`  
 Default: `true`  

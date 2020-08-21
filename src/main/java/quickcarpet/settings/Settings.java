@@ -54,6 +54,9 @@ public class Settings {
     @Rule(category = FEATURE)
     public static boolean accurateBlockPlacement = true;
 
+    @Rule(category = FIX)
+    public static boolean antiCheat = true;
+
     @Rule(category = {FEATURE, EXPERIMENTAL})
     public static int anvilledBlueIce = 0;
 
