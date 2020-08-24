@@ -253,6 +253,9 @@ public class Settings {
     @Rule(category = SURVIVAL)
     public static boolean stackableShulkerBoxes = false;
 
+    @Rule(category = {FEATURE, CREATIVE})
+    public static boolean terracottaRepeaters = false;
+
     public static class TNTAngle implements Validator<Double> {
         @Override
         public Optional<TranslatableText> validate(Double value) {

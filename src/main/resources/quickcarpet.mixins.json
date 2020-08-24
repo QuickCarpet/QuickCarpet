@@ -82,6 +82,8 @@
     "spawning.SpawnRestrictionMixin",
     "spawning.WorldMixin",
     "stackableShulkerBoxes.ItemEntityMixin",
+    "terracottaRepeaters.AbstractRedstoneGateBlockMixin",
+    "terracottaRepeaters.RepeaterBlockMixin",
     "tickSpeed.MinecraftServerMixin",
     "tickSpeed.ServerWorldMixin",
     "tnt.ExplosionMixin",

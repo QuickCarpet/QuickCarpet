@@ -467,6 +467,14 @@ Default: `false`
 Options: `true`, `false`  
 Categories: survival  
 
+## terracottaRepeaters
+Multiplies the repeater delay by the legacy block data (1-15) of terracotta below or 100 (data value 0: white) instead of the default 2gt
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: feature, creative  
+
 ## tntHardcodeAngle
 Sets the horizontal random angle on TNT for debugging of TNT contraptions
 
