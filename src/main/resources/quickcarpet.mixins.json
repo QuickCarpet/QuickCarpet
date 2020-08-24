@@ -31,6 +31,7 @@
     "core.AbstractBlockMixin",
     "core.ArgumentTypesMixin",
     "core.CommandManagerMixin",
+    "core.DefaultLanguageMixin",
     "core.MinecraftDedicatedServerMixin",
     "core.MinecraftServerMixin",
     "core.ServerPlayerEntityMixin",

@@ -139,6 +139,10 @@ public class Translations {
         }
     }
 
+    public static String get(String key) {
+        return DEFAULT.get(key);
+    }
+
     public static boolean hasTranslation(String key) {
         return DEFAULT.containsKey(key);
     }
