@@ -100,13 +100,8 @@ public class PluginChannelManager {
     }
 
     public void onPlayerDisconnect(ServerPlayerEntity player) {
-        for (Identifier channel : tracker.getChannels(player)) {
-            PluginChannelHandler handler = channelHandlers.get(channel);
-            if (handler == null) {
-                LOG.warn("Player was registered to channel {} without a handler", channel);
-                continue;
-            }
-            handler.unregister(channel, player);
+        for (Map.Entry<Identifier, PluginChannelHandler> handler : channelHandlers.entrySet()) {
+            handler.getValue().unregister(handler.getKey(), player);
         }
         tracker.unregisterAll(player);
     }
