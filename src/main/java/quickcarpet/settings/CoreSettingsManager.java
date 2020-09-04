@@ -4,6 +4,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Pair;
 import quickcarpet.Build;
 import quickcarpet.QuickCarpet;
+import quickcarpet.QuickCarpetServer;
 import quickcarpet.annotation.BugFix;
 import quickcarpet.module.QuickCarpetModule;
 import quickcarpet.utils.Reflection;
@@ -86,7 +87,7 @@ public class CoreSettingsManager extends SettingsManager {
 
     private Path getFile() {
         if (!initialized) throw new IllegalStateException("Not initialized");
-        return QuickCarpet.getConfigFile(Reflection.newWorldSavePath("carpet.conf"));
+        return QuickCarpetServer.getConfigFile(Reflection.newWorldSavePath("carpet.conf"));
     }
 
     @Override

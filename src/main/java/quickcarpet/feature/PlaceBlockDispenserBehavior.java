@@ -28,7 +28,7 @@ import quickcarpet.utils.CarpetRegistry;
 
 import java.util.Collection;
 
-public class PlaceBlockDispenserBehavior  extends ItemDispenserBehavior {
+public class PlaceBlockDispenserBehavior extends ItemDispenserBehavior {
     @Override
     public ItemStack dispenseSilently(BlockPointer blockPointer, ItemStack itemStack) {
         Item item = itemStack.getItem();
@@ -62,7 +62,8 @@ public class PlaceBlockDispenserBehavior  extends ItemDispenserBehavior {
                     return new Direction[] {getPlayerLookDirection(), Direction.UP, Direction.DOWN, Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
                 }
             };
-            if (((BlockItem) item).place(ipc) == ActionResult.SUCCESS) {
+            ActionResult result = ((BlockItem) item).place(ipc);
+            if (result.isAccepted()) {
                 return itemStack;
             } else {
                 return super.dispenseSilently(blockPointer, itemStack);

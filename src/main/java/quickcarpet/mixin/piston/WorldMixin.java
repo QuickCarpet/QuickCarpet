@@ -15,7 +15,6 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import quickcarpet.annotation.Feature;
-import quickcarpet.utils.Reflection;
 import quickcarpet.utils.extensions.ExtendedWorld;
 import quickcarpet.utils.extensions.ExtendedWorldChunk;
 
@@ -31,10 +30,9 @@ public abstract class WorldMixin implements ExtendedWorld {
     @Shadow public abstract void onBlockChanged(BlockPos blockPos_1, BlockState blockState_1, BlockState blockState_2);
     @Shadow public abstract WorldChunk getWorldChunk(BlockPos blockPos_1);
     @Shadow public abstract BlockState getBlockState(BlockPos blockPos_1);
-
     @Shadow public abstract Profiler getProfiler();
-
     @Shadow public abstract boolean isDebugWorld();
+    @Shadow public abstract void scheduleBlockRerenderIfNeeded(BlockPos pos, BlockState old, BlockState updated);
 
     /**
      * @author 2No2Name
@@ -55,7 +53,7 @@ public abstract class WorldMixin implements ExtendedWorld {
         if (chunkState == null) return false;
         BlockState previousState = this.getBlockState(pos);
 
-        if (previousState != chunkState && (previousState.getOpacity((BlockView) this, pos) != chunkState.getOpacity((BlockView) this, pos) || previousState.getLuminance() != chunkState.getLuminance() || previousState.hasSidedTransparency() || chunkState.hasSidedTransparency())) {
+        if ((flags & CHECK_LIGHT) != 0 && previousState != chunkState && (previousState.getOpacity((BlockView) this, pos) != chunkState.getOpacity((BlockView) this, pos) || previousState.getLuminance() != chunkState.getLuminance() || previousState.hasSidedTransparency() || chunkState.hasSidedTransparency())) {
             this.getProfiler().push("queueCheckLight");
             ((WorldAccess) this).getChunkManager().getLightingProvider().checkBlock(pos);
             this.getProfiler().pop();
@@ -63,21 +61,21 @@ public abstract class WorldMixin implements ExtendedWorld {
 
         if (previousState == state) {
             if (chunkState != previousState) {
-                Reflection.scheduleBlockRender((World) (Object) this, pos, chunkState, previousState);
+                this.scheduleBlockRerenderIfNeeded(pos, chunkState, previousState);
             }
 
             if ((flags & SEND_TO_CLIENT) != 0 && (!this.isClient || (flags & NO_RERENDER) == 0) && (this.isClient || worldChunk.getLevelType() != null && worldChunk.getLevelType().isAfter(ChunkHolder.LevelType.TICKING))) {
                 this.updateListeners(pos, chunkState, state, flags);
             }
 
-            if (!this.isClient && (flags & 1) != 0) {
+            if ((flags & UPDATE_NEIGHBORS) != 0) {
                 ((World) (Object) this).updateNeighbors(pos, chunkState.getBlock());
-                if (state.hasComparatorOutput()) {
+                if (!this.isClient && state.hasComparatorOutput()) {
                     this.updateComparators(pos, block);
                 }
             }
 
-            if ((flags & (NO_OBSERVER_UPDATE | NO_FILL_UPDATE)) == 0) {
+            if ((flags & (NO_OBSERVER_UPDATE | NO_FILL_UPDATE)) == 0 && depth > 0) {
                 int maskedFlags = flags & ~(UPDATE_NEIGHBORS | FLAG_32);
                 chunkState.prepare((WorldAccess) this, pos, maskedFlags, depth - 1);
                 state.updateNeighbors((WorldAccess) this, pos, maskedFlags, depth - 1);

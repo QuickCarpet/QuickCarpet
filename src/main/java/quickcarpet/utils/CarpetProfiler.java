@@ -14,7 +14,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
-import quickcarpet.QuickCarpet;
+import quickcarpet.QuickCarpetServer;
+import quickcarpet.helper.TickSpeed;
 import quickcarpet.logging.Logger;
 import quickcarpet.logging.Loggers;
 
@@ -73,7 +74,7 @@ public class CarpetProfiler
         }
 
         public MutableText format(double amount, double avgTime) {
-            float msptGoal = QuickCarpet.getInstance().tickSpeed.msptGoal;
+            float msptGoal = TickSpeed.getServerTickSpeed().msptGoal;
             if (customFormat) {
                 return t(translationKey + ".format", getName(),
                     formats("%.3f", getHeatmapColor(amount, msptGoal), amount),
@@ -161,12 +162,12 @@ public class CarpetProfiler
         }
     }
 
-    public static void startTickReport(ReportType type, int ticks) {
+    public static void startTickReport(MinecraftServer server, ReportType type, int ticks) {
         //maybe add so it only spams the sending player, but honestly - all may want to see it
         totalTickTime = 0;
         reportType = type;
         MEASUREMENTS.put(null, new Measurement(null));
-        for (ServerWorld world : QuickCarpet.minecraft_server.getWorlds()) {
+        for (ServerWorld world : server.getWorlds()) {
             MEASUREMENTS.put(world.getRegistryKey(), new Measurement(world.getRegistryKey()));
         }
 
@@ -256,7 +257,7 @@ public class CarpetProfiler
                 broadcast(server, section.format(amount, avgTime));
             }
         }
-        for (ServerWorld world : QuickCarpet.minecraft_server.getWorlds()) {
+        for (ServerWorld world : QuickCarpetServer.getMinecraftServer().getWorlds()) {
             Measurement measurement = MEASUREMENTS.get(world.getRegistryKey());
             List<MutableText> messages = new ArrayList<>();
             for (SectionType section : SectionType.PER_DIMENSION) {
@@ -290,7 +291,7 @@ public class CarpetProfiler
     private static void finalizeTickEntitiesReport(MinecraftServer server) {
         double divider = 1e-6 / ticksTotal;
         double avgTickTime = divider * totalTickTime;
-        float msptGoal = QuickCarpet.getInstance().tickSpeed.msptGoal;
+        float msptGoal = TickSpeed.getServerTickSpeed().msptGoal;
         broadcast(server, t("carpet.profiler.title", formats("%.3f", getHeatmapColor(avgTickTime, msptGoal), avgTickTime)));
         Object2LongMap<Pair<Measurement, Object>> counts = new Object2LongOpenHashMap<>();
         Object2LongMap<Pair<Measurement, Object>> times = new Object2LongOpenHashMap<>();

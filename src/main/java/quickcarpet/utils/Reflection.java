@@ -3,7 +3,6 @@ package quickcarpet.utils;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.MappingResolver;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.Entity;
@@ -15,9 +14,7 @@ import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Lazy;
 import net.minecraft.util.WorldSavePath;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.village.TradeOffers;
-import net.minecraft.world.World;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -176,41 +173,6 @@ public class Reflection {
             f.set(target, value);
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    private static class ScheduleBlockRenderHandler {
-        private static final MethodHandle scheduleBlockRender;
-        private static final boolean newScheduleBlockRender;
-
-        static {
-            scheduleBlockRender = getScheduleBlockRender();
-            newScheduleBlockRender = scheduleBlockRender.type().parameterCount() == 4;
-        }
-
-        private static MethodHandle getScheduleBlockRender() {
-            try {
-                return getMappedMethod(World.class, "method_16109", void.class, BlockPos.class);
-            } catch (ReflectiveOperationException e) {
-                try {
-                    return getMappedMethod(World.class, "method_16109", void.class, BlockPos.class, BlockState.class, BlockState.class);
-                } catch (ReflectiveOperationException ex) {
-                    ex.addSuppressed(e);
-                    throw new IllegalStateException(ex);
-                }
-            }
-        }
-    }
-
-    public static void scheduleBlockRender(World world, BlockPos pos, BlockState stateFrom, BlockState stateTo) {
-        try {
-            if (ScheduleBlockRenderHandler.newScheduleBlockRender) {
-                ScheduleBlockRenderHandler.scheduleBlockRender.invokeExact(world, pos, stateFrom, stateTo);
-            } else {
-                ScheduleBlockRenderHandler.scheduleBlockRender.invokeExact(world, pos);
-            }
-        } catch (Throwable t) {
-            throw new RuntimeException(t);
         }
     }
 

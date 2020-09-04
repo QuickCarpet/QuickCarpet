@@ -2,10 +2,8 @@ package quickcarpet.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import net.minecraft.server.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
-import quickcarpet.QuickCarpet;
 import quickcarpet.helper.TickSpeed;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.CarpetProfiler;
@@ -61,25 +59,25 @@ public class TickCommand {
     }
 
     private static int setTps(ServerCommandSource source, float tps) {
-        QuickCarpet.getInstance().tickSpeed.setTickRateGoal(tps);
+        TickSpeed.getServerTickSpeed().setTickRateGoal(tps);
         sendCurrentTPS(source);
         return (int) tps;
     }
 
     private static int sendCurrentTPS(ServerCommandSource source) {
-        float tickRateGoal = QuickCarpet.getInstance().tickSpeed.tickRateGoal;
+        float tickRateGoal = TickSpeed.getServerTickSpeed().tickRateGoal;
         m(source, t("command.tick.current", formats("%.1f", BOLD, tickRateGoal)));
         return (int) tickRateGoal;
     }
 
     private static int setWarp(ServerCommandSource source, int advance, String tailCommand) {
-        Text message = QuickCarpet.getInstance().tickSpeed.setTickWarp(source, advance, tailCommand);
+        Text message = TickSpeed.getServerTickSpeed().setTickWarp(source, advance, tailCommand);
         if (message != null) m(source, message);
         return advance;
     }
 
     private static int displayStatus(ServerCommandSource source) {
-        TickSpeed tickSpeed = QuickCarpet.getInstance().tickSpeed;
+        TickSpeed tickSpeed = TickSpeed.getServerTickSpeed();
         long warpTotal = tickSpeed.getWarpTimeTotal();
         if (warpTotal == 0) {
             m(source, ts("command.tick.warp.status.inactive", YELLOW));
@@ -97,12 +95,12 @@ public class TickCommand {
     }
 
     private static int step(int ticks) {
-        QuickCarpet.getInstance().tickSpeed.setStep(ticks);
+        TickSpeed.getServerTickSpeed().setStep(ticks);
         return 1;
     }
 
     private static int toggleFreeze(ServerCommandSource source) {
-        TickSpeed tickSpeed = QuickCarpet.getInstance().tickSpeed;
+        TickSpeed tickSpeed = TickSpeed.getServerTickSpeed();
         tickSpeed.setPaused(!tickSpeed.isPaused());
         if (tickSpeed.isPaused()) {
             m(source, ts("command.tick.freeze", GRAY + "" + ITALIC));
@@ -112,18 +110,18 @@ public class TickCommand {
         return 1;
     }
 
-    private static int healthReport(CommandSource source, int ticks) {
-        CarpetProfiler.startTickReport(CarpetProfiler.ReportType.HEALTH, ticks);
+    private static int healthReport(ServerCommandSource source, int ticks) {
+        CarpetProfiler.startTickReport(source.getMinecraftServer(), CarpetProfiler.ReportType.HEALTH, ticks);
         return 1;
     }
 
-    private static int healthEntities(CommandSource source, int ticks) {
-        CarpetProfiler.startTickReport(CarpetProfiler.ReportType.ENTITIES, ticks);
+    private static int healthEntities(ServerCommandSource source, int ticks) {
+        CarpetProfiler.startTickReport(source.getMinecraftServer(), CarpetProfiler.ReportType.ENTITIES, ticks);
         return 1;
     }
 
     private static int measureCurrent(ServerCommandSource source) {
-        printMSPTStats(source, TickSpeed.getMSPTStats());
+        printMSPTStats(source, TickSpeed.getMSPTStats(source.getMinecraftServer()));
         return 1;
     }
 

@@ -5,13 +5,14 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.PlayerListHeaderS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Pair;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
-import quickcarpet.QuickCarpet;
+import quickcarpet.QuickCarpetServer;
 import quickcarpet.helper.HopperCounter;
 import quickcarpet.helper.Mobcaps;
 import quickcarpet.helper.TickSpeed;
@@ -34,7 +35,7 @@ public class HUDController {
 
     static {
         registerLogger(Loggers.TPS, logger -> {
-            TickSpeed tickSpeed = QuickCarpet.getInstance().tickSpeed;
+            TickSpeed tickSpeed = TickSpeed.getServerTickSpeed();
             double MSPT = tickSpeed.getCurrentMSPT();
             double TPS = tickSpeed.calculateTPS(MSPT);
             char color = Messenger.getHeatmapColor(MSPT, tickSpeed.msptGoal);
@@ -46,7 +47,8 @@ public class HUDController {
 
         registerLogger(Loggers.MOBCAPS, logger -> {
             logger.log((option, player) -> {
-                World world = player.world;
+                ServerWorld world = (ServerWorld) player.world;
+                MinecraftServer server = world.getServer();
                 RegistryKey<World> dim = world.getRegistryKey();
                 switch (option) {
                     case "overworld":
@@ -60,7 +62,7 @@ public class HUDController {
                         break;
                 }
                 List<Text> components = new ArrayList<>();
-                Map<SpawnGroup, Pair<Integer, Integer>> mobcaps = Mobcaps.getMobcaps(dim);
+                Map<SpawnGroup, Pair<Integer, Integer>> mobcaps = Mobcaps.getMobcaps(server.getWorld(dim));
                 for (Map.Entry<SpawnGroup, Pair<Integer, Integer>> e : mobcaps.entrySet()) {
                     Pair<Integer, Integer> pair = e.getValue();
                     int actual = pair.getLeft();
@@ -78,7 +80,7 @@ public class HUDController {
 
         registerLogger(Loggers.COUNTER, logger -> logger.log(color -> {
             HopperCounter counter = HopperCounter.getCounter(color);
-            List<MutableText> res = counter == null ? Collections.emptyList() : counter.format(QuickCarpet.minecraft_server, false, true);
+            List<MutableText> res = counter == null ? Collections.emptyList() : counter.format(QuickCarpetServer.getMinecraftServer(), false, true);
             return new MutableText[]{Messenger.c(res.toArray(new Object[0]))};
         }, () -> HopperCounter.LogCommandParameters.INSTANCE));
 

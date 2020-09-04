@@ -4,7 +4,7 @@ import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableText;
-import quickcarpet.QuickCarpet;
+import quickcarpet.QuickCarpetServer;
 import quickcarpet.utils.HUDController;
 import quickcarpet.utils.Messenger;
 
@@ -25,7 +25,7 @@ public interface LogHandler
 
         @Override
         public void onRemovePlayer(String playerName) {
-            ServerPlayerEntity player = QuickCarpet.minecraft_server.getPlayerManager().getPlayer(playerName);
+            ServerPlayerEntity player = QuickCarpetServer.getMinecraftServer().getPlayerManager().getPlayer(playerName);
             if (player != null)
                 HUDController.clearPlayerHUD(player);
         }

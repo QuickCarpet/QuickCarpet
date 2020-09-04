@@ -17,7 +17,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
-import quickcarpet.QuickCarpet;
+import quickcarpet.QuickCarpetServer;
 import quickcarpet.patches.FakeServerPlayerEntity;
 import quickcarpet.utils.extensions.WaypointContainer;
 
@@ -154,7 +154,7 @@ public class Waypoint implements Comparable<Waypoint>, Messenger.Formattable {
     }
 
     public static Path getWaypointFile(WaypointContainer world) {
-        return QuickCarpet.getConfigFile(Reflection.newWorldSavePath("waypoints" + world.getWaypointDimensionType().getSuffix() + ".json"));
+        return QuickCarpetServer.getConfigFile(Reflection.newWorldSavePath("waypoints" + world.getWaypointDimensionType().getSuffix() + ".json"));
     }
 
     public static class CollectionAdapter extends TypeAdapter<Collection<Waypoint>> {
@@ -181,7 +181,7 @@ public class Waypoint implements Comparable<Waypoint>, Messenger.Formattable {
 
         @Override
         public Collection<Waypoint> read(JsonReader in) throws IOException {
-            MinecraftServer server = QuickCarpet.minecraft_server;
+            MinecraftServer server = QuickCarpetServer.getMinecraftServer();
             List<Waypoint> waypoints = new ArrayList<>();
             in.beginObject();
             while (in.hasNext()) {

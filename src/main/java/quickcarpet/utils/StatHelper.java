@@ -15,7 +15,7 @@ import net.minecraft.stat.StatHandler;
 import net.minecraft.util.UserCache;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import quickcarpet.QuickCarpet;
+import quickcarpet.QuickCarpetServer;
 
 import javax.annotation.Nullable;
 import java.io.File;
@@ -34,7 +34,7 @@ public class StatHelper {
 
     public static File[] getStatFiles() {
         try {
-            return Files.list(QuickCarpet.getConfigFile(Reflection.newWorldSavePath("stats")))
+            return Files.list(QuickCarpetServer.getConfigFile(Reflection.newWorldSavePath("stats")))
                     .filter(p -> p.getFileName().toString().endsWith(".json"))
                     .map(Path::toFile)
                     .toArray(File[]::new);

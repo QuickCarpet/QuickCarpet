@@ -1,9 +1,6 @@
 package quickcarpet.helper;
 
 import com.google.gson.JsonObject;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -11,6 +8,8 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.MathHelper;
 import quickcarpet.QuickCarpet;
+import quickcarpet.QuickCarpetServer;
+import quickcarpet.TelemetryProvider;
 import quickcarpet.commands.TickCommand;
 import quickcarpet.logging.Logger;
 import quickcarpet.logging.loghelpers.LogParameter;
@@ -22,8 +21,9 @@ import java.util.*;
 
 import static quickcarpet.utils.Messenger.*;
 
-public class TickSpeed implements quickcarpet.TelemetryProvider {
+public class TickSpeed implements TelemetryProvider {
     public final boolean isClient;
+    private final MinecraftServer server;
     public float tickRateGoal = 20;
     public float msptGoal = 50;
     private long warpTimeRemaining = 0;
@@ -36,17 +36,22 @@ public class TickSpeed implements quickcarpet.TelemetryProvider {
 
     public final LogCommandParameters LOG_COMMAND_PARAMETERS = new LogCommandParameters();
 
-    private static PubSubInfoProvider<Float> TICK_RATE_GOAL_PUBSUB_PROVIDER = new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "carpet.tick-rate.tps-goal", 0, () -> QuickCarpet.getInstance().tickSpeed.tickRateGoal);
-    private static PubSubInfoProvider<Integer> TICK_STEP_PUBSUB_PROVIDER = new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "carpet.tick-rate.step", 0, () -> QuickCarpet.getInstance().tickSpeed.stepAmount);
-    private static PubSubInfoProvider<Boolean> PAUSED_PUBSUB_PROVIDER = new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "carpet.tick-rate.paused", 0, () -> QuickCarpet.getInstance().tickSpeed.paused);
+    private static PubSubInfoProvider<Float> TICK_RATE_GOAL_PUBSUB_PROVIDER = new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "carpet.tick-rate.tps-goal", 0, () -> getServerTickSpeed().tickRateGoal);
+    private static PubSubInfoProvider<Integer> TICK_STEP_PUBSUB_PROVIDER = new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "carpet.tick-rate.step", 0, () -> getServerTickSpeed().stepAmount);
+    private static PubSubInfoProvider<Boolean> PAUSED_PUBSUB_PROVIDER = new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "carpet.tick-rate.paused", 0, () -> getServerTickSpeed().paused);
 
     static {
-        new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "minecraft.performance.mspt", 20, () -> QuickCarpet.getInstance().tickSpeed.getCurrentMSPT());
-        new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "minecraft.performance.tps", 20, () -> QuickCarpet.getInstance().tickSpeed.getTPS());
+        new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "minecraft.performance.mspt", 20, () -> getServerTickSpeed().getCurrentMSPT());
+        new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "minecraft.performance.tps", 20, () -> getServerTickSpeed().getTPS());
     }
 
-    public TickSpeed(boolean isClient) {
-        this.isClient = isClient;
+    public TickSpeed(@Nullable MinecraftServer server) {
+        this.isClient = server != null;
+        this.server = server;
+    }
+
+    public static TickSpeed getServerTickSpeed() {
+        return QuickCarpetServer.getInstance().tickSpeed;
     }
 
     public void setTickRateGoal(float rate) {
@@ -109,18 +114,19 @@ public class TickSpeed implements quickcarpet.TelemetryProvider {
     }
 
     private void finishTickWarp() {
-        long completed_ticks = tickWarpScheduledTicks - warpTimeRemaining;
-        double milis_to_complete = System.nanoTime() - tickWarpStartTime;
-        if (milis_to_complete == 0.0) {
-            milis_to_complete = 1.0;
+        long completedTicks = tickWarpScheduledTicks - warpTimeRemaining;
+        double timeRunning = System.nanoTime() - tickWarpStartTime;
+        if (timeRunning == 0.0) {
+            timeRunning = 1.0;
         }
-        milis_to_complete /= 1000000.0;
-        int tps = (int) (1000.0D * completed_ticks / milis_to_complete);
-        double mspt = (1.0 * milis_to_complete) / completed_ticks;
+        timeRunning /= 1000000.0;
+        int tps = (int) (1000.0D * completedTicks / timeRunning);
+        double mspt = (1.0 * timeRunning) / completedTicks;
         tickWarpScheduledTicks = 0;
         tickWarpStartTime = 0;
+        MinecraftServer server = tickWarpSender.getMinecraftServer();
         if (tickWarpCallback != null) {
-            CommandManager cmdManager = tickWarpSender.getMinecraftServer().getCommandManager();
+            CommandManager cmdManager = server.getCommandManager();
             try {
                 int j = cmdManager.execute(tickWarpSender, tickWarpCallback);
 
@@ -141,7 +147,7 @@ public class TickSpeed implements quickcarpet.TelemetryProvider {
             m(tickWarpSender, message);
             tickWarpSender = null;
         } else {
-            Messenger.broadcast(QuickCarpet.minecraft_server, message);
+            Messenger.broadcast(server, message);
         }
         warpTimeRemaining = 0;
 
@@ -169,31 +175,25 @@ public class TickSpeed implements quickcarpet.TelemetryProvider {
         return paused;
     }
 
-    public void tick(MinecraftServer server) {
-        int ticks = server.getTicks();
-        if (ticks > 100 && ticks % 100 == 0) { // ignore spike at server start
-            updateLoadAvg();
+    public void tick() {
+        if (server != null) {
+            int ticks = server.getTicks();
+            if (ticks > 100 && ticks % 100 == 0) { // ignore spike at server start
+                updateLoadAvg();
+            }
+            Measurement.tickAll();
         }
-        Measurement.tickAll();
         if (stepAmount > 0) {
             stepAmount--;
             if (stepAmount == 0) {
-                TICK_STEP_PUBSUB_PROVIDER.publish();
+                if (!isClient) TICK_STEP_PUBSUB_PROVIDER.publish();
                 setPaused(true);
             }
         }
     }
 
-    @Environment(EnvType.CLIENT)
-    public void tick(MinecraftClient client) {
-        if (stepAmount > 0) {
-            stepAmount--;
-            if (stepAmount == 0) paused = true;
-        }
-    }
-
     public double getCurrentMSPT() {
-        return MathHelper.average(QuickCarpet.minecraft_server.lastTickLengths) * 1.0E-6D;
+        return server == null ? 0 : MathHelper.average(server.lastTickLengths) * 1.0E-6D;
     }
 
     public static boolean resetLoadAvg = true;
@@ -218,8 +218,8 @@ public class TickSpeed implements quickcarpet.TelemetryProvider {
         loadAvg15min = loadAvg1min * exp15min + currentLoad * (1 - exp15min);
     }
 
-    public static MSPTStatistics getMSPTStats() {
-        return new MSPTStatistics(QuickCarpet.minecraft_server.lastTickLengths);
+    public static MSPTStatistics getMSPTStats(MinecraftServer server) {
+        return new MSPTStatistics(server.lastTickLengths);
     }
 
     public static class MSPTStatistics {
@@ -276,12 +276,14 @@ public class TickSpeed implements quickcarpet.TelemetryProvider {
     private static class Measurement {
         private static Map<ServerCommandSource, Measurement> measurements = new HashMap<>();
         public final ServerCommandSource source;
+        private final MinecraftServer server;
         public final int length;
         public final long[] tickLengths;
         private int ticksRecorded;
 
         private Measurement(ServerCommandSource source, int length) {
             this.source = source;
+            this.server = source.getMinecraftServer();
             this.length = length;
             this.tickLengths = new long[length];
             measurements.put(source, this);
@@ -293,8 +295,8 @@ public class TickSpeed implements quickcarpet.TelemetryProvider {
                 measurements.remove(source);
                 return;
             }
-            int previous = (QuickCarpet.minecraft_server.getTicks() - 1) % 100;
-            tickLengths[ticksRecorded++] = QuickCarpet.minecraft_server.lastTickLengths[previous];
+            int previous = (server.getTicks() - 1) % 100;
+            tickLengths[ticksRecorded++] = server.lastTickLengths[previous];
         }
 
         private static void tickAll() {

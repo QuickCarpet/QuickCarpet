@@ -8,7 +8,7 @@ import net.minecraft.util.Pair;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.SpawnHelper;
 import net.minecraft.world.World;
-import quickcarpet.QuickCarpet;
+import quickcarpet.QuickCarpetServer;
 import quickcarpet.logging.Logger;
 import quickcarpet.logging.loghelpers.LogParameter;
 import quickcarpet.mixin.accessor.ServerChunkManagerAccessor;
@@ -16,10 +16,6 @@ import quickcarpet.mixin.accessor.ServerChunkManagerAccessor;
 import java.util.*;
 
 public class Mobcaps {
-    public static Map<SpawnGroup, Pair<Integer, Integer>> getMobcaps(RegistryKey<World> dimension) {
-        return getMobcaps(QuickCarpet.minecraft_server.getWorld(dimension));
-    }
-
     public static Map<SpawnGroup, Pair<Integer, Integer>> getMobcaps(ServerWorld world) {
         int chunks = ((ServerChunkManagerAccessor) world.getChunkManager()).getTicketManager().getSpawningChunkCount();
         SpawnHelper.Info spawnInfo = world.getChunkManager().getSpawnInfo();
@@ -49,7 +45,7 @@ public class Mobcaps {
         @Override
         public Set<Entry<String, Integer>> entrySet() {
             LinkedHashSet<Entry<String, Integer>> entries = new LinkedHashSet<>();
-            for (World world : QuickCarpet.minecraft_server.getWorlds()) {
+            for (World world : QuickCarpetServer.getMinecraftServer().getWorlds()) {
                 RegistryKey<World> dimKey = world.getRegistryKey();
                 for (SpawnGroup category : SpawnGroup.values()) {
                     if (category == SpawnGroup.MISC) continue;

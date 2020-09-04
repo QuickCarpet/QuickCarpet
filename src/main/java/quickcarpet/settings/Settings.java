@@ -2,6 +2,7 @@ package quickcarpet.settings;
 
 import net.minecraft.Bootstrap;
 import net.minecraft.SharedConstants;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ChunkTicketType;
 import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
@@ -10,7 +11,7 @@ import net.minecraft.util.Pair;
 import net.minecraft.util.Unit;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
-import quickcarpet.QuickCarpet;
+import quickcarpet.QuickCarpetServer;
 import quickcarpet.annotation.BugFix;
 import quickcarpet.feature.BreakBlockDispenserBehavior;
 import quickcarpet.feature.PlaceBlockDispenserBehavior;
@@ -230,8 +231,9 @@ public class Settings {
         @Override
         public void onChange(ParsedRule<Integer> rule, Integer previous) {
             int newValue = rule.get();
-            if (newValue == previous) return;
-            ServerWorld overworld = QuickCarpet.minecraft_server.getWorld(World.OVERWORLD);
+            MinecraftServer server = QuickCarpetServer.getNullableMinecraftServer();
+            if (newValue == previous || server == null) return;
+            ServerWorld overworld = server.getWorld(World.OVERWORLD);
             if (overworld != null) {
                 ChunkPos centerChunk = new ChunkPos(overworld.getSpawnPos());
                 ServerChunkManager chunkManager = overworld.getChunkManager();

@@ -15,7 +15,6 @@ import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
-import quickcarpet.QuickCarpet;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.Waypoint;
 import quickcarpet.utils.extensions.WaypointContainer;
@@ -94,7 +93,7 @@ public class WaypointCommand {
         Vec3d pos = Utils.getOrDefault(ctx, "position", source.getPosition());
         RegistryKey<World> dim = Utils.getOrDefault(ctx, "dimension", source.getWorld().getRegistryKey());
         Vec2f rot = Utils.getOrDefault(ctx, "rotation", source.getRotation());
-        WaypointContainer world = (WaypointContainer) QuickCarpet.minecraft_server.getWorld(dim);
+        WaypointContainer world = (WaypointContainer) source.getMinecraftServer().getWorld(dim);
         Map<String, Waypoint> waypoints = world.getWaypoints();
         if (waypoints.containsKey(name)) {
             m(source, ts("command.waypoint.error.exists", RED, name));
@@ -127,7 +126,7 @@ public class WaypointCommand {
 
     private static int listAll(ServerCommandSource source, int page) throws CommandSyntaxException {
         ArrayList<Waypoint> waypoints = new ArrayList<>();
-        for (ServerWorld world : QuickCarpet.minecraft_server.getWorlds()) {
+        for (ServerWorld world : source.getMinecraftServer().getWorlds()) {
             waypoints.addAll(((WaypointContainer) world).getWaypoints().values());
         }
         return printList(source, waypoints, page, null, null);
@@ -135,7 +134,7 @@ public class WaypointCommand {
 
     private static int listCreator(ServerCommandSource source, String creator, int page) throws CommandSyntaxException {
         ArrayList<Waypoint> waypoints = new ArrayList<>();
-        for (ServerWorld world : QuickCarpet.minecraft_server.getWorlds()) {
+        for (ServerWorld world : source.getMinecraftServer().getWorlds()) {
             for (Waypoint w : ((WaypointContainer) world).getWaypoints().values()) {
                 if (creator.equalsIgnoreCase(w.creator)) waypoints.add(w);
             }

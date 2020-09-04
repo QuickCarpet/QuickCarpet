@@ -2,7 +2,6 @@ package quickcarpet;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.api.EnvType;
@@ -14,29 +13,20 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
-import net.minecraft.util.WorldSavePath;
-import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.world.level.ServerWorldProperties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import quickcarpet.commands.*;
 import quickcarpet.helper.Mobcaps;
-import quickcarpet.helper.TickSpeed;
-import quickcarpet.logging.LoggerManager;
 import quickcarpet.module.ModuleHost;
 import quickcarpet.module.QuickCarpetModule;
-import quickcarpet.network.PluginChannelManager;
-import quickcarpet.network.channels.RulesChannel;
-import quickcarpet.network.channels.StructureChannel;
 import quickcarpet.pubsub.PubSubManager;
-import quickcarpet.pubsub.PubSubMessenger;
 import quickcarpet.pubsub.PubSubNode;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.*;
 import quickcarpet.utils.extensions.WaypointContainer;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -48,18 +38,11 @@ public final class QuickCarpet implements ModuleHost, ServerEventListener, Telem
 
     private static QuickCarpet instance = new QuickCarpet();
 
-    public static MinecraftServer minecraft_server;
-    public DynamicRegistryManager dynamicRegistryManager;
-    public TickSpeed tickSpeed;
-
-    public PluginChannelManager pluginChannels;
     public final Set<QuickCarpetModule> modules = new TreeSet<>();
-    private final PubSubMessenger pubSubMessenger = new PubSubMessenger(PUBSUB);
+    private QuickCarpetServer server;
     private CommandDispatcher<ServerCommandSource> dispatcher;
-    public LoggerManager loggers;
-
     @SuppressWarnings("UnstableApiUsage")
-    private Multimap<ServerWorld, Runnable> worldUnloadCallbacks = MultimapBuilder.hashKeys().arrayListValues().build();
+    private final Multimap<ServerWorld, Runnable> worldUnloadCallbacks = MultimapBuilder.hashKeys().arrayListValues().build();
 
     // Fabric on dedicated server will call getInstance at return of DedicatedServer::<init>(...)
     // new CommandManager(...) is before that so QuickCarpet is created from that
@@ -74,13 +57,7 @@ public final class QuickCarpet implements ModuleHost, ServerEventListener, Telem
 
     @Override
     public void onServerInit(MinecraftServer server) {
-        minecraft_server = server;
-        tickSpeed = new TickSpeed(false);
-        loggers = new LoggerManager();
-        pluginChannels = new PluginChannelManager(server);
-        pluginChannels.register(pubSubMessenger);
-        pluginChannels.register(new StructureChannel());
-        pluginChannels.register(new RulesChannel());
+        this.server = QuickCarpetServer.init(server);
         for (QuickCarpetModule m : modules) m.onServerInit(server);
     }
 
@@ -93,14 +70,7 @@ public final class QuickCarpet implements ModuleHost, ServerEventListener, Telem
 
     @Override
     public void tick(MinecraftServer server) {
-        try {
-            tickSpeed.tick(server);
-            HUDController.update(server);
-            PUBSUB.update(server.getTicks());
-            StructureChannel.instance.tick();
-        } catch (RuntimeException e) {
-            LOG.error("Exception ticking " + Build.NAME, e);
-        }
+        this.server.tick(server);
         for (QuickCarpetModule m : modules) {
             try {
                 m.tick(server);
@@ -166,12 +136,7 @@ public final class QuickCarpet implements ModuleHost, ServerEventListener, Telem
 
     @Override
     public void onPlayerConnect(ServerPlayerEntity player) {
-        try {
-            loggers.onPlayerConnect(player);
-            pluginChannels.onPlayerConnect(player);
-        } catch (RuntimeException e) {
-            LOG.error("Exception during onPlayerConnect for " + player.getEntityName(), e);
-        }
+        server.onPlayerConnect(player);
         for (QuickCarpetModule m : modules) {
             try {
                 m.onPlayerConnect(player);
@@ -183,12 +148,7 @@ public final class QuickCarpet implements ModuleHost, ServerEventListener, Telem
 
     @Override
     public void onPlayerDisconnect(ServerPlayerEntity player) {
-        try {
-            loggers.onPlayerDisconnect(player);
-            pluginChannels.onPlayerDisconnect(player);
-        } catch (RuntimeException e) {
-            LOG.error("Exception during onPlayerDisconnect for " + player.getEntityName(), e);
-        }
+        server.onPlayerDisconnect(player);
         for (QuickCarpetModule m : modules) {
             try {
                 m.onPlayerDisconnect(player);
@@ -251,6 +211,8 @@ public final class QuickCarpet implements ModuleHost, ServerEventListener, Telem
         for (ServerWorld world : server.getWorlds()) onWorldUnloaded(world);
         for (QuickCarpetModule m : modules) m.onWorldsUnloaded(server);
         StatHelper.clearCache();
+        this.server = null;
+        QuickCarpetServer.shutdown();
     }
 
     @Override
@@ -270,36 +232,8 @@ public final class QuickCarpet implements ModuleHost, ServerEventListener, Telem
         return Build.VERSION.contains("dev") || FabricLoader.getInstance().isDevelopmentEnvironment();
     }
 
-    public static Path getConfigFile(WorldSavePath name) {
-        return minecraft_server.getSavePath(name);
-    }
-
     @Override
     public JsonObject getTelemetryData() {
-        JsonObject obj = new JsonObject();
-        JsonObject server = new JsonObject();
-        server.addProperty("players", minecraft_server.getCurrentPlayerCount());
-        server.addProperty("maxPlayers", minecraft_server.getMaxPlayerCount());
-        obj.add("server", server);
-        JsonArray worlds = new JsonArray();
-        for (ServerWorld world : minecraft_server.getWorlds()) {
-            JsonObject worldObj = new JsonObject();
-            worldObj.addProperty("name", ((ServerWorldProperties) world.getLevelProperties()).getLevelName());
-            worldObj.addProperty("dimension", world.getRegistryKey().getValue().toString());
-            worldObj.addProperty("loadedChunks", world.getChunkManager().getLoadedChunkCount());
-            Map<SpawnGroup, Pair<Integer, Integer>> mobcaps = Mobcaps.getMobcaps(world);
-            JsonObject mobcapsObj = new JsonObject();
-            for (Map.Entry<SpawnGroup, Pair<Integer, Integer>> mobcap : mobcaps.entrySet()) {
-                JsonObject mobcapObj = new JsonObject();
-                mobcapObj.addProperty("current", mobcap.getValue().getLeft());
-                mobcapObj.addProperty("max", mobcap.getValue().getRight());
-                mobcapsObj.add(mobcap.getKey().getName(), mobcapObj);
-            }
-            worldObj.add("mobcaps", mobcapsObj);
-            worlds.add(worldObj);
-        }
-        obj.add("worlds", worlds);
-        obj.add("tickSpeed", tickSpeed.getTelemetryData());
-        return obj;
+        return server.getTelemetryData();
     }
 }

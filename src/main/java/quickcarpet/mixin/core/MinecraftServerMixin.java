@@ -36,7 +36,6 @@ public abstract class MinecraftServerMixin {
     @Feature("core")
     @Inject(method = "<init>", at = @At(value = "RETURN"))
     private void onMinecraftServerCTOR(Thread thread, DynamicRegistryManager.Impl impl, LevelStorage.Session session, SaveProperties saveProperties, ResourcePackManager resourcePackManager, Proxy proxy, DataFixer dataFixer, ServerResourceManager serverResourceManager, MinecraftSessionService minecraftSessionService, GameProfileRepository gameProfileRepository, UserCache userCache, WorldGenerationProgressListenerFactory worldGenerationProgressListenerFactory, CallbackInfo ci) {
-        QuickCarpet.getInstance().dynamicRegistryManager = impl;
         QuickCarpet.getInstance().onServerInit((MinecraftServer) (Object) this);
     }
 

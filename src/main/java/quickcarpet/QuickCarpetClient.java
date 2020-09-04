@@ -19,7 +19,7 @@ public class QuickCarpetClient {
     private final MinecraftClient minecraftClient;
     private final ClientRulesChannel rulesChannel;
     private final ClientPubSubListener pubSubListener;
-    public TickSpeed tickSpeed = new TickSpeed(true);
+    public TickSpeed tickSpeed = new TickSpeed(null);
 
     public QuickCarpetClient() {
         instance = this;
@@ -54,7 +54,7 @@ public class QuickCarpetClient {
     }
 
     public void onJoinServer() {
-        tickSpeed = new TickSpeed(true);
+        tickSpeed = new TickSpeed(null);
         ClientPluginChannelManager.INSTANCE.sendRegisterPacket(minecraftClient.getNetworkHandler());
         pubSubListener.subscribe(
             "minecraft.performance.tps",
@@ -68,10 +68,10 @@ public class QuickCarpetClient {
     }
 
     public void onLeaveServer() {
-        tickSpeed = new TickSpeed(true);
+        tickSpeed = new TickSpeed(null);
     }
 
     public void tick() {
-        tickSpeed.tick(MinecraftClient.getInstance());
+        tickSpeed.tick();
     }
 }

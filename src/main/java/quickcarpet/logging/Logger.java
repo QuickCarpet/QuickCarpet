@@ -8,7 +8,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Lazy;
-import quickcarpet.QuickCarpet;
+import quickcarpet.QuickCarpetServer;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -128,7 +128,8 @@ public class Logger<T extends Logger.CommandParameters> implements Comparable<Lo
     }
 
     private static LoggerManager getManager() {
-        return QuickCarpet.getInstance().loggers;
+        QuickCarpetServer server = QuickCarpetServer.getNullableInstance();
+        return server == null ? null : server.loggers;
     }
 
     private String getOption(ServerPlayerEntity player) {

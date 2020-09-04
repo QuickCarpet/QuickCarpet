@@ -3,18 +3,23 @@ package quickcarpet.logging;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.apache.commons.lang3.tuple.Pair;
-import quickcarpet.QuickCarpet;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
 public class LoggerManager {
+    private final MinecraftServer server;
     private Map<String, PlayerSubscriptions> playerSubscriptions = new HashMap<>();
     private Multimap<Logger, String> subscribedOfflinePlayers = MultimapBuilder.hashKeys().hashSetValues().build();
     private Multimap<Logger, String> subscribedOnlinePlayers = MultimapBuilder.hashKeys().hashSetValues().build();
+
+    public LoggerManager(MinecraftServer server) {
+        this.server = server;
+    }
 
     public static final class PlayerSubscriptions {
         final String playerName;
@@ -102,7 +107,7 @@ public class LoggerManager {
     }
 
     public Stream<ServerPlayerEntity> getOnlineSubscribers(Logger logger) {
-        return subscribedOnlinePlayers.get(logger).stream().map(LoggerManager::playerFromName);
+        return subscribedOnlinePlayers.get(logger).stream().map(this::playerFromName);
     }
 
     public boolean hasOnlineSubscribers(Logger logger) {
@@ -134,7 +139,7 @@ public class LoggerManager {
     /**
      * Gets the {@code PlayerEntity} instance for a player given their UUID. Returns null if they are offline.
      */
-    private static ServerPlayerEntity playerFromName(String name) {
-        return QuickCarpet.minecraft_server.getPlayerManager().getPlayer(name);
+    private ServerPlayerEntity playerFromName(String name) {
+        return server.getPlayerManager().getPlayer(name);
     }
 }

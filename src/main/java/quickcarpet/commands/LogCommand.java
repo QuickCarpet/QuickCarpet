@@ -12,7 +12,7 @@ import net.minecraft.server.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import quickcarpet.QuickCarpet;
+import quickcarpet.QuickCarpetServer;
 import quickcarpet.logging.*;
 import quickcarpet.settings.Settings;
 
@@ -107,7 +107,7 @@ public class LogCommand {
             m(source, ts("command.log.playerOnly", RED));
             return 0;
         }
-        LoggerManager.PlayerSubscriptions subs = QuickCarpet.getInstance().loggers.getPlayerSubscriptions(source.getName());
+        LoggerManager.PlayerSubscriptions subs = getLoggers().getPlayerSubscriptions(source.getName());
         List<Logger<?>> loggers = new ArrayList<>(Loggers.values());
         Collections.sort(loggers);
         m(player, s("_____________________"));
@@ -162,7 +162,7 @@ public class LogCommand {
     private static int unsubFromAll(ServerCommandSource source, String playerName) {
         if (areArgumentsInvalid(source, playerName, null)) return 0;
         for (String loggerName : Loggers.getLoggerNames()) {
-            QuickCarpet.getInstance().loggers.unsubscribePlayer(playerName, loggerName);
+            getLoggers().unsubscribePlayer(playerName, loggerName);
         }
         m(source, ts("command.log.unsubscribed.all", GRAY + "" + ITALIC));
         return 1;
@@ -170,14 +170,14 @@ public class LogCommand {
 
     private static int unsubFromLogger(ServerCommandSource source, String playerName, String loggerName) {
         if (areArgumentsInvalid(source, playerName, loggerName)) return 0;
-        QuickCarpet.getInstance().loggers.unsubscribePlayer(playerName, loggerName);
+        getLoggers().unsubscribePlayer(playerName, loggerName);
         m(source, ts("command.log.unsubscribed", GRAY + "" + ITALIC, loggerName));
         return 1;
     }
 
     private static int toggleSubscription(ServerCommandSource source, String playerName, String loggerName) {
         if (areArgumentsInvalid(source, playerName, loggerName)) return 0;
-        boolean subscribed = QuickCarpet.getInstance().loggers.togglePlayerSubscription(playerName, loggerName, null);
+        boolean subscribed = getLoggers().togglePlayerSubscription(playerName, loggerName, null);
         if (subscribed) {
             if (playerName.equalsIgnoreCase(source.getName())) {
                 m(source, ts("command.log.subscribedTo", GRAY + "" + ITALIC, loggerName));
@@ -196,7 +196,7 @@ public class LogCommand {
 
     private static int subscribePlayer(ServerCommandSource source, String playerName, String loggerName, String option, LogHandler handler) {
         if (areArgumentsInvalid(source, playerName, loggerName)) return 0;
-        QuickCarpet.getInstance().loggers.subscribePlayer(playerName, loggerName, option, handler);
+        getLoggers().subscribePlayer(playerName, loggerName, option, handler);
         if (option != null) {
             if (playerName.equalsIgnoreCase(source.getName())) {
                 m(source, ts("command.log.subscribedTo.option", GRAY + "" + ITALIC, loggerName, option));
@@ -211,5 +211,9 @@ public class LogCommand {
             }
         }
         return 1;
+    }
+
+    private static LoggerManager getLoggers() {
+        return QuickCarpetServer.getInstance().loggers;
     }
 }
