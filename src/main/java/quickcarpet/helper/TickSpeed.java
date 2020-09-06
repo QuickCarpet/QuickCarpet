@@ -124,7 +124,7 @@ public class TickSpeed implements TelemetryProvider {
         double mspt = (1.0 * timeRunning) / completedTicks;
         tickWarpScheduledTicks = 0;
         tickWarpStartTime = 0;
-        MinecraftServer server = tickWarpSender.getMinecraftServer();
+        MinecraftServer server = QuickCarpetServer.getMinecraftServer();
         if (tickWarpCallback != null) {
             CommandManager cmdManager = server.getCommandManager();
             try {
