@@ -12,7 +12,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import quickcarpet.QuickCarpetServer;
 import quickcarpet.annotation.Feature;
 import quickcarpet.helper.TickSpeed;
 
@@ -52,7 +51,7 @@ public abstract class MinecraftServerMixin {
     @Inject(method = "runServer", at = @At(value = "INVOKE", shift = At.Shift.AFTER,
             target = "Lnet/minecraft/server/MinecraftServer;setFavicon(Lnet/minecraft/server/ServerMetadata;)V"))
     private void modifiedRunLoop(CallbackInfo ci) {
-        TickSpeed tickSpeed = QuickCarpetServer.getInstance().tickSpeed;
+        TickSpeed tickSpeed = TickSpeed.getServerTickSpeed();
         float partialTimeReference = 0;
         while (this.running) {
             //long long_1 = SystemUtil.getMeasuringTimeMs() - this.timeReference;

@@ -46,7 +46,7 @@ public class TickSpeed implements TelemetryProvider {
     }
 
     public TickSpeed(@Nullable MinecraftServer server) {
-        this.isClient = server != null;
+        this.isClient = server == null;
         this.server = server;
     }
 
