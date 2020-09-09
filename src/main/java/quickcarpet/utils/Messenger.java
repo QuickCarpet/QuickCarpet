@@ -1,22 +1,33 @@
 package quickcarpet.utils;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.state.State;
+import net.minecraft.state.property.BooleanProperty;
+import net.minecraft.state.property.DirectionProperty;
+import net.minecraft.state.property.IntProperty;
+import net.minecraft.state.property.Property;
 import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.MatchesPattern;
 import javax.annotation.Nonnull;
 import java.util.Collection;
+import java.util.function.Function;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 
@@ -47,6 +58,10 @@ public class Messenger {
     public static final char DARK_GREEN = 'e';
     public static final char DARK_BLUE = 'v';
     public static final char BLACK = 'k';
+
+    public static final Formatter<Number> NUMBER = value -> s(value.toString());
+    public static final Formatter<Number> FLOAT = value -> dbl(value.doubleValue());
+    public static final Formatter<Boolean> BOOLEAN = value -> s(Boolean.toString(value), value ? LIME : RED);
 
     /*
      messsage: "desc me ssa ge"
@@ -161,6 +176,45 @@ public class Messenger {
         return DARK_GREEN;
     }
 
+    public static MutableText format(BlockState state) {
+        return format(Registry.BLOCK, BlockState::getBlock, state);
+    }
+
+    public static MutableText format(FluidState state) {
+        return format(Registry.FLUID, FluidState::getFluid, state);
+    }
+
+    private static <O, S extends State<O, S>> MutableText format(Registry<O> ownerRegistry, Function<S, O> ownerGetter, S state) {
+        MutableText text = s(ownerRegistry.getId(ownerGetter.apply(state)).toString());
+        Collection<Property<?>> properties = state.getProperties();
+        if (properties.isEmpty()) return text;
+        text.append("[");
+        boolean first = true;
+        for (Property<?> prop : properties) {
+            if (!first) text.append(", ");
+            first = false;
+            text.append(format(state, prop));
+        }
+        return text.append("]");
+    }
+
+    public static <T extends Comparable<T>> MutableText format(State<?, ?> state, Property<T> prop) {
+        return format(prop, state.get(prop));
+    }
+
+    public static <T extends Comparable<T>> MutableText format(Property<T> prop, T value) {
+        MutableText name = s(prop.getName() + "=");
+        MutableText valueText = s(prop.name(value));
+        if (prop instanceof DirectionProperty) style(valueText, GOLD);
+        else if (prop instanceof BooleanProperty) style(valueText, (Boolean) value ? LIME : RED);
+        else if (prop instanceof IntProperty) style(valueText, LIME);
+        return name.append(valueText);
+    }
+
+    public static MutableText format(Direction side) {
+        return new TranslatableText("side." + side.asString());
+    }
+
     public static char creatureTypeColor(SpawnGroup type) {
         switch (type) {
             case MONSTER: return DARK_RED;
@@ -232,9 +286,12 @@ public class Messenger {
         return getCoordsTextComponent(desc, (float) x, (float) y, (float) z, true);
     }
 
-    /// to be continued
-    public static MutableText dbl(String style, double value) {
+    public static MutableText dbl(double value) {
         return hoverText(format("%.1f", value), s(String.valueOf(value)));
+    }
+
+    public static MutableText dbl(String style, double value) {
+        return hoverText(style(format("%.1f", value), style), s(String.valueOf(value)));
     }
 
     public static MutableText dbls(String style, double... doubles) {
@@ -394,7 +451,37 @@ public class Messenger {
         }
     }
 
+    public static MutableText join(Text joiner, Text... elements) {
+        if (elements.length == 0) return s("");
+        MutableText text = elements[0].copy();
+        for (int i = 1; i < elements.length; i++) {
+            text.append(joiner.copy());
+            text.append(elements[i].copy());
+        }
+        return text;
+    }
+
+    public static MutableText join(Text joiner, Collection<? extends Text> elements) {
+        return join(joiner, elements.toArray(new Text[0]));
+    }
+
+    public static Collector<Text, MutableText, MutableText> joining(Text joiner) {
+        MutableText empty = s("");
+        return Collector.of(() -> empty,
+            (a, b) -> {
+                if (!a.getSiblings().isEmpty()) a.append(joiner.copy());
+                a.append(b);
+            },
+            (a, b) -> a.getSiblings().isEmpty() ? b : a.append(joiner.copy()).append(b.copy()),
+            Function.identity()
+        );
+    }
+
     public interface Formattable {
         MutableText format();
+    }
+
+    public interface Formatter<T> {
+        MutableText format(T value);
     }
 }

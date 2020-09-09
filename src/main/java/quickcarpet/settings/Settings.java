@@ -74,6 +74,9 @@ public class Settings {
     public static boolean betterStatistics = true;
 
     @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
+    public static int commandBlockInfo = 0;
+
+    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
     public static int commandCameramode = 2;
 
     @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
@@ -87,6 +90,9 @@ public class Settings {
 
     @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
     public static int commandFix = 2;
+
+    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
+    public static int commandFluidInfo = 0;
 
     @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
     public static int commandLog = 0;

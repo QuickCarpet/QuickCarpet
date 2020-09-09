@@ -4,6 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.*;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.RegistryKey;
+import quickcarpet.mixin.accessor.RegistryKeyAccessor;
 import quickcarpet.module.QuickCarpetModule;
 import quickcarpet.utils.extensions.PlayerWithLanguage;
 
@@ -145,5 +148,16 @@ public class Translations {
 
     public static boolean hasTranslation(String key) {
         return DEFAULT.containsKey(key);
+    }
+
+    public static TranslatableText translate(RegistryKey<?> key) {
+        Identifier reg = ((RegistryKeyAccessor) key).getRegistry();
+        Identifier value = key.getValue();
+        String translationKey = ("minecraft".equals(reg.getNamespace())
+                ? reg.getPath()
+                : reg.getNamespace() + "." + reg.getPath())
+                + "." + value.getNamespace()
+                + "." + value.getPath();
+        return new TranslatableText(translationKey);
     }
 }

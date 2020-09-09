@@ -57,6 +57,14 @@ Default: `true`
 Options: `true`, `false`  
 Categories: feature, experimental  
 
+## commandBlockInfo
+Enables /blockinfo command to get info about blocks
+
+Type: `int`  
+Default: `0`  
+Categories: commands  
+Validator: `OP Level (0-4)`  
+
 ## commandCameramode
 Enables /c and /s commands to quickly switch between camera and survival modes for players with this permission level
 
@@ -100,6 +108,14 @@ Enables /fix command to fix chunk data
 
 Type: `int`  
 Default: `2`  
+Categories: commands  
+Validator: `OP Level (0-4)`  
+
+## commandFluidInfo
+Enables /fluidinfo command to get info about fluids
+
+Type: `int`  
+Default: `0`  
 Categories: commands  
 Validator: `OP Level (0-4)`  
 
