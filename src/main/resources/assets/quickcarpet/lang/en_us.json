@@ -50,6 +50,7 @@
   "carpet.rule.commandMeasure.description": "Enables /measure command for measuring distances for players with this permission level",
   "carpet.rule.commandPing.description": "Enables /ping for players to get their ping for players with this permission level",
   "carpet.rule.commandPlayer.description": "Enables /player command to control/spawn players for players with this permission level",
+  "carpet.rule.commandScoreboardPublic.description": "Enables certain /scoreboard commands for all players",
   "carpet.rule.commandSpawn.description": "Enables /spawn command for spawn tracking for players with this permission level",
   "carpet.rule.commandTick.description": "Enables /tick command to analyze game speed for players with this permission level",
   "carpet.rule.commandTickManipulate.description": "Allows the tick rate modifications of /tick for players with this permission level",

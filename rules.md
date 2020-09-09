@@ -160,6 +160,14 @@ Default: `0`
 Categories: commands  
 Validator: `OP Level (0-4)`  
 
+## commandScoreboardPublic
+Enables certain /scoreboard commands for all players
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: commands  
+
 ## commandSpawn
 Enables /spawn command for spawn tracking for players with this permission level
 

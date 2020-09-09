@@ -109,6 +109,9 @@ public class Settings {
     @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
     public static int commandPlayer = 0;
 
+    @Rule(category = COMMANDS)
+    public static boolean commandScoreboardPublic = false;
+
     @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
     public static int commandSpawn = 0;
 
