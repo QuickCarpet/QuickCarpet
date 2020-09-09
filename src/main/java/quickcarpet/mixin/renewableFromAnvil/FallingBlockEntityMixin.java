@@ -23,6 +23,7 @@ public abstract class FallingBlockEntityMixin extends Entity {
         super(entityType_1, world_1);
     }
 
+    private int frostedIceCount;
     private int iceCount;
     private int packedIceCount;
 
@@ -41,6 +42,15 @@ public abstract class FallingBlockEntityMixin extends Entity {
                 } else if (Settings.renewableGravel == Settings.RenewableGravelOrSandOption.ANVIL) {
                     world.breakBlock(posBelow, false);
                     world.setBlockState(posBelow, Blocks.GRAVEL.getDefaultState(), 3);
+                }
+            } else if (blockBelow == Blocks.FROSTED_ICE && Settings.anvilledIce > 0) {
+                if (++frostedIceCount < Settings.anvilledIce) {
+                    world.breakBlock(posBelow, false);
+                    onGround = false;
+                    ci.cancel();
+                } else {
+                    world.breakBlock(posBelow, false);
+                    world.setBlockState(posBelow, Blocks.ICE.getDefaultState(), 3);
                 }
             } else if (blockBelow == Blocks.ICE && Settings.anvilledPackedIce > 0) {
                 if (++iceCount < Settings.anvilledPackedIce) {

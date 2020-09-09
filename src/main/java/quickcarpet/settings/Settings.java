@@ -62,6 +62,9 @@ public class Settings {
     public static int anvilledBlueIce = 0;
 
     @Rule(category = {FEATURE, EXPERIMENTAL})
+    public static int anvilledIce = 0;
+
+    @Rule(category = {FEATURE, EXPERIMENTAL})
     public static int anvilledPackedIce = 0;
 
     @Rule(category = {FEATURE, EXPERIMENTAL})

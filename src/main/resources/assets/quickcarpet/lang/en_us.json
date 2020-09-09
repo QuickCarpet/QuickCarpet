@@ -29,6 +29,8 @@
   "carpet.rule.antiCheat.description": "Prevents players from rubberbanding when moving too fast",
   "carpet.rule.anvilledBlueIce.description": "Drop an anvil on packed ice blocks to get blue ice",
   "carpet.rule.anvilledBlueIce.extra": "Value is the number of packed ice blocks required, 0 is disabled",
+  "carpet.rule.anvilledIce.description": "Drop an anvil on frosted ice blocks to get ice",
+  "carpet.rule.anvilledIce.extra": "Value is the number of forsted ice blocks required, 0 is disabled",
   "carpet.rule.anvilledPackedIce.description": "Drop an anvil on ice blocks to get packed ice",
   "carpet.rule.anvilledPackedIce.extra": "Value is the number of ice blocks required, 0 is disabled",
   "carpet.rule.autoCraftingTable.description": "Automatic crafting table",

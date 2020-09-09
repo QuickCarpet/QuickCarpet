@@ -24,6 +24,15 @@ Type: `int`
 Default: `0`  
 Categories: feature, experimental  
 
+## anvilledIce
+Drop an anvil on frosted ice blocks to get ice
+
+Value is the number of forsted ice blocks required, 0 is disabled  
+
+Type: `int`  
+Default: `0`  
+Categories: feature, experimental  
+
 ## anvilledPackedIce
 Drop an anvil on ice blocks to get packed ice
 
