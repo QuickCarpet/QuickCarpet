@@ -24,11 +24,11 @@ public class CameraModeCommand {
 
         LiteralArgumentBuilder<ServerCommandSource> survival = literal("s").
                 requires(s -> s.hasPermissionLevel(Settings.commandCameramode)).
-                executes((c) -> survivalMode(
+                executes((c) -> serverMode(
                         c.getSource(),
                         c.getSource().getPlayer())).
                 then(argument("player", EntityArgumentType.player()).
-                        executes( (c) -> survivalMode(c.getSource(), EntityArgumentType.getPlayer(c, "player"))));
+                        executes( (c) -> serverMode(c.getSource(), EntityArgumentType.getPlayer(c, "player"))));
 
         dispatcher.register(camera);
         dispatcher.register(survival);
@@ -50,9 +50,11 @@ public class CameraModeCommand {
         return 1;
     }
 
-    private static int survivalMode(ServerCommandSource source, PlayerEntity target) {
+    private static int serverMode(ServerCommandSource source, PlayerEntity target) {
         if (!(hasPermission(source, target))) return 0;
-        target.setGameMode(GameMode.SURVIVAL);
+        GameMode mode = source.getMinecraftServer().getDefaultGameMode();
+        if (mode == GameMode.SPECTATOR) mode = GameMode.SURVIVAL;
+        target.setGameMode(mode);
         target.removeStatusEffect(StatusEffects.NIGHT_VISION);
         target.removeStatusEffect(StatusEffects.CONDUIT_POWER);
         return 1;
