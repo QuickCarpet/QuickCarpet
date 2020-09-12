@@ -13,10 +13,12 @@ import net.minecraft.command.argument.Vec3ArgumentType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
+import net.minecraft.server.ServerTask;
 import net.minecraft.server.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
@@ -31,6 +33,7 @@ import quickcarpet.utils.extensions.ActionPackOwner;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 import static com.mojang.brigadier.arguments.IntegerArgumentType.getInteger;
@@ -149,25 +152,30 @@ public class PlayerCommand {
         return true;
     }
 
-    private static boolean cantSpawn(CommandContext<ServerCommandSource> context) {
+    private static CompletableFuture<GameProfile> getSpawnableProfile(CommandContext<ServerCommandSource> context) {
         String playerName = getString(context, "player");
         MinecraftServer server = context.getSource().getMinecraftServer();
         PlayerManager manager = server.getPlayerManager();
         PlayerEntity player = manager.getPlayer(playerName);
         if (player != null) {
             m(context.getSource(), ts("command.player.alreadyOnline", RED, s(playerName, BOLD)));
-            return true;
+            return CompletableFuture.completedFuture(null);
         }
-        GameProfile profile = server.getUserCache().findByName(playerName);
-        if (manager.getUserBanList().contains(profile)) {
-            m(context.getSource(), ts("command.player.banned", RED, s(playerName, BOLD)));
-            return true;
-        }
-        if (manager.isWhitelistEnabled() && profile != null && manager.isWhitelisted(profile) && !context.getSource().hasPermissionLevel(2)) {
-            m(context.getSource(), "command.player.whitelisted", RED);
-            return true;
-        }
-        return false;
+        return CompletableFuture.supplyAsync(() -> server.getUserCache().findByName(playerName), Util.getIoWorkerExecutor()).thenApply(profile -> {
+            if (profile == null) {
+                m(context.getSource(), ts("command.player.doesNotExist", RED, s(playerName, BOLD)));
+                return null;
+            }
+            if (manager.getUserBanList().contains(profile)) {
+                m(context.getSource(), ts("command.player.banned", RED, s(playerName, BOLD)));
+                return null;
+            }
+            if (manager.isWhitelistEnabled() && manager.isWhitelisted(profile) && !context.getSource().hasPermissionLevel(2)) {
+                m(context.getSource(), "command.player.whitelisted", RED);
+                return null;
+            }
+            return profile;
+        });
     }
 
     private static int kill(CommandContext<ServerCommandSource> context) {
@@ -194,7 +202,6 @@ public class PlayerCommand {
     }
 
     private static int spawn(CommandContext<ServerCommandSource> context, GameMode gameMode) throws CommandSyntaxException {
-        if (cantSpawn(context)) return 0;
         ServerCommandSource source = context.getSource();
         Vec3d pos = tryGetArg(
                 () -> Vec3ArgumentType.getVec3(context, "position"),
@@ -204,19 +211,19 @@ public class PlayerCommand {
                 source::getRotation);
         ServerWorld dim = tryGetArg(
                 () -> DimensionArgumentType.getDimensionArgument(context, "dimension"),
-                () -> source.getWorld());
+                source::getWorld);
         GameMode mode = GameMode.CREATIVE;
         try {
             ServerPlayerEntity player = context.getSource().getPlayer();
             mode = player.interactionManager.getGameMode();
         } catch (CommandSyntaxException ignored) {}
         if (gameMode != GameMode.NOT_SET) mode = gameMode;
-        String playerName = getString(context, "player");
-        MinecraftServer server = source.getMinecraftServer();
-        PlayerEntity player = FakeServerPlayerEntity.createFake(playerName, server, pos.x, pos.y, pos.z, facing.y, facing.x, dim, mode);
-        if (player == null) {
-            m(context.getSource(), ts("command.player.doesNotExist", RED, s(playerName, BOLD)));
-        }
+        GameMode finalMode = mode;
+        getSpawnableProfile(context).thenAccept(profile -> {
+            if (profile == null) return;
+            MinecraftServer server = source.getMinecraftServer();
+            server.send(new ServerTask(server.getTicks(), () -> FakeServerPlayerEntity.createFake(profile, server, pos.x, pos.y, pos.z, facing.y, facing.x, dim, finalMode)));
+        });
         return 1;
     }
 

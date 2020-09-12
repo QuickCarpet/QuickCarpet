@@ -25,16 +25,12 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
     private double startingX, startingY, startingZ;
     private float startingYaw, startingPitch;
 
-    public static FakeServerPlayerEntity createFake(String username, MinecraftServer server, double x, double y, double z, double yaw, double pitch, ServerWorld dimension, GameMode gamemode) {
+    public static FakeServerPlayerEntity createFake(GameProfile profile, MinecraftServer server, double x, double y, double z, double yaw, double pitch, ServerWorld dimension, GameMode gamemode) {
         ServerPlayerInteractionManager interactionManagerIn = new ServerPlayerInteractionManager(dimension);
-        GameProfile gameprofile = server.getUserCache().findByName(username);
-        if (gameprofile == null) {
-            return null;
+        if (profile.getProperties().containsKey("textures")) {
+            profile = SkullBlockEntity.loadProperties(profile);
         }
-        if (gameprofile.getProperties().containsKey("textures")) {
-            gameprofile = SkullBlockEntity.loadProperties(gameprofile);
-        }
-        FakeServerPlayerEntity instance = new FakeServerPlayerEntity(server, dimension, gameprofile, interactionManagerIn, x, y, z, (float) yaw, (float) pitch);
+        FakeServerPlayerEntity instance = new FakeServerPlayerEntity(server, dimension, profile, interactionManagerIn, x, y, z, (float) yaw, (float) pitch);
         FakeClientConnection connection = new FakeClientConnection(NetworkSide.SERVERBOUND);
         ((ServerNetworkIoAccessor) server.getNetworkIo()).getConnections().add(connection);
         server.getPlayerManager().onPlayerConnect(connection, instance);
