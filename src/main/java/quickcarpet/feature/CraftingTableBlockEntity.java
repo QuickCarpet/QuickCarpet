@@ -25,18 +25,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@SuppressWarnings("OptionalAssignedToNull")
 public class CraftingTableBlockEntity extends LockableContainerBlockEntity implements SidedInventory, RecipeUnlocker, RecipeInputProvider {
     private static final int[] OUTPUT_SLOTS = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     private static final int[] INPUT_SLOTS = {1, 2, 3, 4, 5, 6, 7, 8, 9};
     public DefaultedList<ItemStack> inventory;
     public ItemStack output = ItemStack.EMPTY;
-    private List<AutoCraftingTableContainer> openContainers = new ArrayList<>();
+    private final List<AutoCraftingTableContainer> openContainers = new ArrayList<>();
+    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
+    private Optional<CraftingRecipe> cachedRecipe;
 
     public CraftingTableBlockEntity() {
         this(CarpetRegistry.CRAFTING_TABLE_BLOCK_ENTITY_TYPE);
     }
 
-    private CraftingInventory craftingInventory = new CraftingInventory(null, 3, 3);
+    private final CraftingInventory craftingInventory = new CraftingInventory(null, 3, 3);
 
     private CraftingTableBlockEntity(BlockEntityType<?> type) {
         super(type);
@@ -147,6 +150,7 @@ public class CraftingTableBlockEntity extends LockableContainerBlockEntity imple
     @Override
     public void markDirty() {
         super.markDirty();
+        cachedRecipe = null;
         for (AutoCraftingTableContainer c : openContainers) c.onContentChanged(this);
     }
 
@@ -180,7 +184,8 @@ public class CraftingTableBlockEntity extends LockableContainerBlockEntity imple
 
     private Optional<CraftingRecipe> getCurrentRecipe() {
         if (this.world == null) return Optional.empty();
-        return this.world.getRecipeManager().getFirstMatch(RecipeType.CRAFTING, craftingInventory, world);
+        if (cachedRecipe != null) return cachedRecipe;
+        return cachedRecipe = this.world.getRecipeManager().getFirstMatch(RecipeType.CRAFTING, craftingInventory, world);
     }
 
     private ItemStack craft() {
