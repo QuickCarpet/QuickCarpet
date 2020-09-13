@@ -22,11 +22,11 @@ import static net.minecraft.server.command.CommandManager.literal;
 
 public class FixCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        LiteralArgumentBuilder<ServerCommandSource> distance = literal("fix")
+        LiteralArgumentBuilder<ServerCommandSource> fix = literal("fix")
             .requires(s -> s.hasPermissionLevel(Settings.commandFix))
             .then(literal("chunk")).then(argument("pos", columnPos())
                 .executes(c -> fixChunk(c.getSource(), getColumnPos(c, "pos"))));
-        dispatcher.register(distance);
+        dispatcher.register(fix);
     }
 
     private static int fixChunk(ServerCommandSource source, ColumnPos pos) throws CommandSyntaxException {

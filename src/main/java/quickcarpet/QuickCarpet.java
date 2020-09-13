@@ -114,6 +114,7 @@ public final class QuickCarpet implements ModuleHost, ServerEventListener, Telem
         TelemetryCommand.register(dispatcher);
         BlockInfoCommand.register(dispatcher);
         FluidInfoCommand.register(dispatcher);
+        FixCommand.register(dispatcher);
         for (QuickCarpetModule m : modules) m.registerCommands(dispatcher);
     }
 
