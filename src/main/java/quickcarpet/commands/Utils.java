@@ -32,6 +32,10 @@ import static net.minecraft.server.command.CommandManager.literal;
 import static quickcarpet.utils.Messenger.*;
 
 public class Utils {
+    interface ArgumentGetter<T> {
+        T get(CommandContext<ServerCommandSource> context, String name) throws CommandSyntaxException;
+    }
+
     static <T> T getOrNull(CommandContext<ServerCommandSource> context, String argument, Class<T> type) {
         try {
             return context.getArgument(argument, type);
@@ -40,9 +44,22 @@ public class Utils {
             throw e;
         }
     }
+    static <T> T getOrNull(CommandContext<ServerCommandSource> context, String argument, ArgumentGetter<T> getter) throws CommandSyntaxException {
+        try {
+            return getter.get(context, argument);
+        } catch (IllegalArgumentException e) {
+            if (e.getMessage().startsWith("No such argument")) return null;
+            throw e;
+        }
+    }
 
     static <T> T getOrDefault(CommandContext<ServerCommandSource> context, String argument, T defaultValue) {
         T value = getOrNull(context, argument, (Class<T>) defaultValue.getClass());
+        return value == null ? defaultValue : value;
+    }
+
+    static <T> T getOrDefault(CommandContext<ServerCommandSource> context, String argument, ArgumentGetter<T> getter, T defaultValue) throws CommandSyntaxException {
+        T value = getOrNull(context, argument, getter);
         return value == null ? defaultValue : value;
     }
 

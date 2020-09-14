@@ -7,14 +7,14 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import net.minecraft.command.argument.DefaultPosArgument;
+import net.minecraft.command.argument.DimensionArgumentType;
 import net.minecraft.server.command.CommandSource;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.MutableText;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.world.World;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.Waypoint;
 import quickcarpet.utils.extensions.WaypointContainer;
@@ -90,10 +90,10 @@ public class WaypointCommand {
     private static int add(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
         ServerCommandSource source = ctx.getSource();
         String name = getString(ctx, "name");
-        Vec3d pos = Utils.getOrDefault(ctx, "position", source.getPosition());
-        RegistryKey<World> dim = Utils.getOrDefault(ctx, "dimension", source.getWorld().getRegistryKey());
-        Vec2f rot = Utils.getOrDefault(ctx, "rotation", source.getRotation());
-        WaypointContainer world = (WaypointContainer) source.getMinecraftServer().getWorld(dim);
+        Vec3d pos = Utils.getOrDefault(ctx, "position", DefaultPosArgument.zero()).toAbsolutePos(source);
+        ServerWorld dim = Utils.getOrDefault(ctx, "dimension", DimensionArgumentType::getDimensionArgument, source.getWorld());
+        Vec2f rot = Utils.getOrDefault(ctx, "rotation", DefaultPosArgument.zero()).toAbsoluteRotation(source);
+        WaypointContainer world = (WaypointContainer) dim;
         Map<String, Waypoint> waypoints = world.getWaypoints();
         if (waypoints.containsKey(name)) {
             m(source, ts("command.waypoint.error.exists", RED, name));

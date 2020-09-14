@@ -91,7 +91,7 @@ public class Waypoint implements Comparable<Waypoint>, Messenger.Formattable {
 
     @Override
     public MutableText format() {
-        return s(getDimension().toString()).append(s("/", GRAY)).append(s(name, YELLOW));
+        return s(getDimension().getValue().toString()).append(s("/", GRAY)).append(s(name, YELLOW));
     }
 
     public boolean canManipulate(ServerCommandSource source) {
