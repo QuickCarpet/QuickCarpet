@@ -289,5 +289,7 @@
   "quickcarpet.fluid_info_provider.quickcarpet.amount": "Amount",
   "quickcarpet.fluid_info_provider.quickcarpet.flow_speed": "Flow Speed",
   "quickcarpet.fluid_info_provider.quickcarpet.flow_yaw": "Flow Direction (Yaw)",
-  "quickcarpet.fluid_info_provider.quickcarpet.blast_resistance": "Blast Resistance"
+  "quickcarpet.fluid_info_provider.quickcarpet.blast_resistance": "Blast Resistance",
+  "command.fix.fixing": "Fixing chunk [%s, %s]...",
+  "command.fix.fixed": "Fixed chunk [%s, %s]"
 }
