@@ -64,7 +64,7 @@ public abstract class ItemEntityMixin extends Entity {
         }
 
         ItemStack otherStack = other.getStack();
-        if (selfStack.getItem() == otherStack.getItem() && !NBTHelper.hasShulkerBoxItems(selfStack) && selfStack.hasTag() == otherStack.hasTag() && selfStack.getCount() + otherStack.getCount() <= SHULKERBOX_MAX_STACK_AMOUNT) {
+        if (selfStack.getItem() == otherStack.getItem() && !NBTHelper.hasShulkerBoxItems(selfStack) && selfStack.hasTag() == otherStack.hasTag() && selfStack.getCount() >= otherStack.getCount()) {
             int amount = Math.min(otherStack.getCount(), SHULKERBOX_MAX_STACK_AMOUNT - selfStack.getCount());
 
             selfStack.increment(amount);
