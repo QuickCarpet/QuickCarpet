@@ -9,6 +9,7 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.PistonBlockEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -17,6 +18,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import quickcarpet.QuickCarpetServer;
 import quickcarpet.annotation.Feature;
 import quickcarpet.client.ClientSetting;
 import quickcarpet.settings.Settings;
@@ -130,7 +132,8 @@ public abstract class PistonBlockEntityMixin extends BlockEntity implements Exte
     private void smoothPistons(float partialTicks, CallbackInfoReturnable<Float> cir) {
         float val;
         if (this.world != null && this.world.isClient && ClientSetting.SMOOTH_PISTONS.get()) {
-            val = (this.progress * 2.0F + partialTicks) * 0.33333334F;
+            val = MathHelper.lerp(partialTicks, this.lastProgress, this.progress) * (2 / 3f);
+            System.out.println(QuickCarpetServer.getMinecraftServer().getTicks() + ", " + lastProgress + ", " + progress + ", " + partialTicks + " -> " + val + ", " + MathHelper.lerp(partialTicks, lastProgress, progress));
             cir.setReturnValue(val);
         }
     }

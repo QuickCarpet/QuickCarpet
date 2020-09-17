@@ -12,6 +12,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.*;
 import net.minecraft.tag.BlockTags;
+import net.minecraft.tag.ItemTags;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -86,8 +87,14 @@ public class CarpetRegistry {
 
     public static DispenserBehavior getDispenserBehavior(Item item, Map<Item, DispenserBehavior> behaviors) {
         if (item == Items.GUNPOWDER) return CarpetRegistry.BREAK_BLOCK_DISPENSER_BEHAVIOR;
-        if (Settings.dispensersPlaceBlocks != PlaceBlockDispenserBehavior.Option.FALSE && !behaviors.containsKey(item) && item instanceof BlockItem) {
-            if (PlaceBlockDispenserBehavior.canPlace(((BlockItem) item).getBlock())) return CarpetRegistry.PLACE_BLOCK_DISPENSER_BEHAVIOR;
+        boolean carpet = item.isIn(ItemTags.CARPETS);
+        if (Settings.dispensersPlaceBlocks != PlaceBlockDispenserBehavior.Option.FALSE && (!behaviors.containsKey(item) || carpet) && item instanceof BlockItem) {
+            if (PlaceBlockDispenserBehavior.canPlace(((BlockItem) item).getBlock())) {
+                if (carpet) {
+                    return new MultiDispenserBehavior(CarpetRegistry.PLACE_BLOCK_DISPENSER_BEHAVIOR, behaviors.get(item));
+                }
+                return CarpetRegistry.PLACE_BLOCK_DISPENSER_BEHAVIOR;
+            }
         }
         if (Settings.dispensersTillSoil && item instanceof HoeItem) {
             return CarpetRegistry.DISPENSERS_TILL_SOIL_BEHAVIOR;

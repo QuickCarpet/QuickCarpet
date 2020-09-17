@@ -1,7 +1,7 @@
 package quickcarpet.feature;
 
 import net.minecraft.block.*;
-import net.minecraft.block.dispenser.ItemDispenserBehavior;
+import net.minecraft.block.dispenser.FallibleItemDispenserBehavior;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.enums.BlockHalf;
 import net.minecraft.block.enums.SlabType;
@@ -28,12 +28,13 @@ import quickcarpet.utils.CarpetRegistry;
 
 import java.util.Collection;
 
-public class PlaceBlockDispenserBehavior extends ItemDispenserBehavior {
+public class PlaceBlockDispenserBehavior extends FallibleItemDispenserBehavior {
     @Override
     public ItemStack dispenseSilently(BlockPointer blockPointer, ItemStack itemStack) {
+        setSuccess(false);
         Item item = itemStack.getItem();
         if (Settings.dispensersPlaceBlocks == Option.FALSE || !(item instanceof BlockItem)) {
-            return super.dispenseSilently(blockPointer, itemStack);
+            return itemStack;
         }
         Block block = ((BlockItem) item).getBlock();
 
@@ -63,17 +64,14 @@ public class PlaceBlockDispenserBehavior extends ItemDispenserBehavior {
                 }
             };
             ActionResult result = ((BlockItem) item).place(ipc);
-            if (result.isAccepted()) {
-                return itemStack;
-            } else {
-                return super.dispenseSilently(blockPointer, itemStack);
-            }
+            setSuccess(result.isAccepted());
+            return itemStack;
         }
 
         pos = pos.offset(facing);
 
         BlockState state = block.getDefaultState();
-        if (state == null) return super.dispenseSilently(blockPointer, itemStack);
+        if (state == null) return itemStack;
         Collection<Property<?>> properties = state.getProperties();
 
         if (block instanceof StairsBlock) {
@@ -128,11 +126,12 @@ public class PlaceBlockDispenserBehavior extends ItemDispenserBehavior {
             world.playSound(null, pos, soundType.getPlaceSound(), SoundCategory.BLOCKS, (soundType.getVolume() + 1.0F / 2.0F), soundType.getPitch() * 0.8F);
             if (!world.isAir(pos)) {
                 itemStack.decrement(1);
+                setSuccess(true);
                 return itemStack;
             }
         }
 
-        return super.dispenseSilently(blockPointer, itemStack);
+        return itemStack;
     }
 
     public enum Option {
