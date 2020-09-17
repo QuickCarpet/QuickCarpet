@@ -24,7 +24,9 @@ public final class PubSubManager {
      */
     @Nullable
     public PubSubNode getNode(String name) {
-        return knownNodes.get(name);
+        synchronized (knownNodes) {
+            return knownNodes.get(name);
+        }
     }
 
     /**
@@ -36,15 +38,19 @@ public final class PubSubManager {
      * @see PubSubNode#getOrCreateChildNode(Collection)
      */
     public PubSubNode getOrCreateNode(String name) {
-        return knownNodes.computeIfAbsent(name, name1 -> {
-            String[] path = name1.split("\\.");
-            return addKnownNode(ROOT.getOrCreateChildNode(path));
-        });
+        synchronized (knownNodes) {
+            return knownNodes.computeIfAbsent(name, name1 -> {
+                String[] path = name1.split("\\.");
+                return addKnownNode(ROOT.getOrCreateChildNode(path));
+            });
+        }
     }
 
     public PubSubNode addKnownNode(PubSubNode node) {
-        for (PubSubNode n = node; n != ROOT; n = n.parent) {
-            knownNodes.put(n.fullName, n);
+        synchronized (knownNodes) {
+            for (PubSubNode n = node; n != ROOT; n = n.parent) {
+                knownNodes.put(n.fullName, n);
+            }
         }
         return node;
     }
