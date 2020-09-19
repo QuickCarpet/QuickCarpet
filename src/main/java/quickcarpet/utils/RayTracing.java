@@ -6,7 +6,7 @@ import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.RayTraceContext;
+import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 
 import java.util.Optional;
@@ -26,7 +26,7 @@ public class RayTracing {
     public static BlockHitResult rayTraceBlocks(Entity source, float partialTicks, double reach, boolean fluids) {
         Vec3d pos = source.getCameraPosVec(partialTicks);
         Vec3d reachEnd = getEndOfReach(pos, source.getRotationVec(partialTicks), reach);
-        return source.world.rayTrace(new RayTraceContext(pos, reachEnd, RayTraceContext.ShapeType.OUTLINE, fluids ? RayTraceContext.FluidHandling.ANY : RayTraceContext.FluidHandling.NONE, source));
+        return source.world.raycast(new RaycastContext(pos, reachEnd, RaycastContext.ShapeType.OUTLINE, fluids ? RaycastContext.FluidHandling.ANY : RaycastContext.FluidHandling.NONE, source));
     }
 
     public static EntityHitResult rayTraceEntities(Entity source, float partialTicks, double reach, double maxSqDist) {
@@ -43,7 +43,7 @@ public class RayTracing {
         Vec3d targetHitPos = null;
         for (Entity current : world.getOtherEntities(source, box, predicate)) {
             Box currentBox = current.getBoundingBox().expand(current.getTargetingMargin());
-            Optional<Vec3d> currentHit = currentBox.rayTrace(start, end);
+            Optional<Vec3d> currentHit = currentBox.raycast(start, end);
             if (currentBox.contains(start)) {
                 if (targetDistance >= 0) {
                     target = current;

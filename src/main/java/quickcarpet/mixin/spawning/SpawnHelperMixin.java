@@ -63,10 +63,10 @@ public class SpawnHelperMixin {
     @Feature("optimizedSpawning")
     @Redirect(
             method = "canSpawn(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/SpawnGroup;Lnet/minecraft/world/gen/StructureAccessor;Lnet/minecraft/world/gen/chunk/ChunkGenerator;Lnet/minecraft/world/biome/SpawnSettings$SpawnEntry;Lnet/minecraft/util/math/BlockPos$Mutable;D)Z",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;doesNotCollide(Lnet/minecraft/util/math/Box;)Z")
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;isSpaceEmpty(Lnet/minecraft/util/math/Box;)Z")
     )
     private static boolean doesNotCollide(ServerWorld world, Box bbox) {
-        if (!Settings.optimizedSpawning) return world.doesNotCollide(bbox);
+        if (!Settings.optimizedSpawning) return world.isSpaceEmpty(bbox);
         BlockPos.Mutable blockpos = new BlockPos.Mutable();
         int minX = MathHelper.floor(bbox.minX);
         int minY = MathHelper.floor(bbox.minY);
@@ -79,7 +79,7 @@ public class SpawnHelperMixin {
                 for (int y = minY; y <= maxY; y++) {
                     blockpos.set(x, y, z);
                     if (world.getBlockState(blockpos).getCollisionShape(world, blockpos) != VoxelShapes.empty())
-                        return world.doesNotCollide(bbox);
+                        return world.isSpaceEmpty(bbox);
                 }
             }
         }
