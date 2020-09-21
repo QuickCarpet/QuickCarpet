@@ -66,6 +66,14 @@ Default: `true`
 Options: `true`, `false`  
 Categories: feature, experimental  
 
+## blockEntityFix
+Fixes a crash when activating droppers or dispensers with invalid block entities
+
+Type: `boolean`  
+Default: `true`  
+Options: `true`, `false`  
+Categories: fix  
+
 ## commandBlockInfo
 Enables /blockinfo command to get info about blocks
 
@@ -477,6 +485,14 @@ Default: `100.0`
 Options: `0`, `50`, `100`  
 Categories: feature, survival  
 Validator: `Range [0.0,100.0]`  
+
+## sparkingLighter
+Adds back the ability to create fire in mid-air using Flint and Steel or Fire Charges
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: survival, fix  
 
 ## spawnChunkLevel
 Size of the spawn chunks

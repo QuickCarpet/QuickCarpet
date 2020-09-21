@@ -264,6 +264,9 @@ public class Settings {
         }
     }
 
+    @Rule(category = {SURVIVAL, FIX})
+    public static boolean sparkingLighter = false;
+
     @Rule(category = EXPERIMENTAL, onChange = SpawnChunkLevel.class, validator = SpawnChunkLevel.class)
     public static int spawnChunkLevel = 11;
 

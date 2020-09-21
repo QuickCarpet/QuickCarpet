@@ -97,6 +97,7 @@
   "carpet.rule.renewableSponges.description": "Guardians struck by lightning turn into Elder Guardians",
   "carpet.rule.shulkerSpawningInEndCities.description": "Shulkers will respawn in end cities",
   "carpet.rule.sleepingThreshold.description": "Percentage of sleeping players required to skip the night",
+  "carpet.rule.sparkingLighter.description": "Adds back the ability to create fire in mid-air using Flint and Steel or Fire Charges",
   "carpet.rule.spawnChunkLevel.description": "Size of the spawn chunks",
   "carpet.rule.spawnChunkLevel.extra": "Like render distance (11 -> 23x23 actively loaded).\nBe aware that a border of 11 chunks will stay loaded around that, once those chunks are loaded somehow.\nHigher levels need lots of RAM (up to 7569 chunks loaded with level 32)",
   "carpet.rule.stackableShulkerBoxes.description": "Empty shulker boxes can stack to 64 when dropped on the ground",
