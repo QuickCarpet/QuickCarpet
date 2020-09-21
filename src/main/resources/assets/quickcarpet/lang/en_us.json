@@ -36,6 +36,7 @@
   "carpet.rule.autoCraftingTable.description": "Automatic crafting table",
   "carpet.rule.betterChunkLoading.description": "Makes things load chunks again",
   "carpet.rule.betterStatistics.description": "Scoreboards initialize to the statistic values",
+  "carpet.rule.blockEntityFix.description": "Fixes a crash when activating droppers or dispensers with invalid block entities",
   "carpet.rule.commandBlockInfo.description": "Enables /blockinfo command to get info about blocks",
   "carpet.rule.commandCameramode.description": "Enables /c and /s commands to quickly switch between camera and survival modes for players with this permission level",
   "carpet.rule.commandCarpetClone.description": "Enables /carpetclone command for players with this permission level",

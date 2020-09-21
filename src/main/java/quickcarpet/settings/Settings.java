@@ -76,6 +76,9 @@ public class Settings {
     @Rule(category = {FEATURE, EXPERIMENTAL})
     public static boolean betterStatistics = true;
 
+    @Rule(category = FIX)
+    public static boolean blockEntityFix = true;
+
     @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
     public static int commandBlockInfo = 0;
 
