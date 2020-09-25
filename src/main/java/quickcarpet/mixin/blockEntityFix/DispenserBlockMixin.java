@@ -1,6 +1,7 @@
 package quickcarpet.mixin.blockEntityFix;
 
 import net.minecraft.block.DispenserBlock;
+import net.minecraft.block.DropperBlock;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.DispenserBlockEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -14,7 +15,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import quickcarpet.settings.Settings;
 
-@Mixin(DispenserBlock.class)
+@Mixin({
+    DispenserBlock.class,
+    DropperBlock.class
+})
 public class DispenserBlockMixin {
     @Redirect(method = "dispense", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/BlockPointerImpl;getBlockEntity()Lnet/minecraft/block/entity/BlockEntity;"))
     private BlockEntity fixBlockEntityType(BlockPointerImpl blockPointer) {
