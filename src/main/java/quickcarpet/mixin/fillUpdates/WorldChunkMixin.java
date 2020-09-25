@@ -35,7 +35,13 @@ public abstract class WorldChunkMixin implements ExtendedWorldChunkFillUpdates {
     }
 
     @Redirect(method = "setBlockState", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;onStateReplaced(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Z)V"))
-    private void onReplaced(BlockState blockState, World world, BlockPos pos, BlockState state, boolean moved) {
-        if (fillUpdates) blockState.onStateReplaced(world, pos, state, moved);
+    private void onReplaced(BlockState oldState, World world, BlockPos pos, BlockState newState, boolean moved) {
+        if (fillUpdates) {
+            oldState.onStateReplaced(world, pos, newState, moved);
+        } else {
+            if (oldState.getBlock().hasBlockEntity() && !oldState.isOf(newState.getBlock())) {
+                world.removeBlockEntity(pos);
+            }
+        }
     }
 }
