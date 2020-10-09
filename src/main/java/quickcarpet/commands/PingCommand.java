@@ -14,9 +14,10 @@ public class PingCommand {
         LiteralArgumentBuilder<ServerCommandSource> ping = literal("ping")
             .requires(s -> s.hasPermissionLevel(Settings.commandPing))
             .executes(c -> {
-                ServerPlayerEntity player = c.getSource().getPlayer();
+                ServerCommandSource source = c.getSource();
+                ServerPlayerEntity player = source.getPlayer();
                 int pingMs = player.pingMilliseconds;
-                m(player, t("command.ping.result", s(Integer.toString(pingMs), getHeatmapColor(pingMs, 250))));
+                m(source, t("command.ping.result", s(Integer.toString(pingMs), getHeatmapColor(pingMs, 250))));
                 return 1;
             });
         dispatcher.register(ping);

@@ -26,7 +26,7 @@ public class CommandLogHandler implements LogHandler {
         }
         if (command.contains("$$")) command = command.replace("$$", params.keySet().toString());
         if (command.contains("$text")) {
-            Text joined = Messenger.c((Object[]) message);
+            Text joined = Messenger.c(message);
             String json = Text.Serializer.toJson(joined);
             command = command.replace("$text", json);
         }

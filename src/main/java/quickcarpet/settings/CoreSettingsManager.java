@@ -72,7 +72,7 @@ public class CoreSettingsManager extends SettingsManager {
                 LOG.error("Could not initialize settings for module " + m.getId() + " " + m.getVersion(), e);
             }
         }
-        Collections.sort(allRules);
+        Collections.sort((List<ParsedRule>) (List) allRules);
     }
 
     public void init(MinecraftServer server) {

@@ -5,7 +5,8 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
@@ -21,8 +22,8 @@ import java.util.stream.Stream;
 import static quickcarpet.utils.Messenger.*;
 
 public class SpawnTracker {
-    private static final Map<ServerPlayerEntity, SpawnTracker> TRACKERS = new WeakHashMap<>();
-    private final ServerPlayerEntity source;
+    private static final Map<ServerCommandSource, SpawnTracker> TRACKERS = new WeakHashMap<>();
+    private final ServerCommandSource source;
     private final Box bbox;
     private final DimensionType dimension;
     private boolean active;
@@ -34,36 +35,36 @@ public class SpawnTracker {
     private Object2IntMap<SpawnGroup> mobcapNotFull = new Object2IntOpenHashMap<>();
     private Object2IntMap<EntityType<?>> attempts = new Object2IntOpenHashMap<>();
 
-    private SpawnTracker(ServerPlayerEntity source, BlockPos min, BlockPos max) {
+    private SpawnTracker(ServerCommandSource source, BlockPos min, BlockPos max) {
         this.source = source;
         if (min != null && max != null) {
             this.bbox = new Box(min, max).stretch(1, 1, 1);
         } else {
             this.bbox = null;
         }
-        this.dimension = source.getServerWorld().getDimension();
+        this.dimension = source.getWorld().getDimension();
     }
 
     public void start() {
         this.active = true;
-        this.tickStarted = source.getServer().getTicks();
+        this.tickStarted = source.getMinecraftServer().getTicks();
     }
 
     public void stop() {
         this.active = false;
-        this.tickStopped = source.getServer().getTicks();
+        this.tickStopped = source.getMinecraftServer().getTicks();
         TRACKERS.remove(source);
     }
 
     public void sendReport() {
         try {
             if (this.tickStarted < 0) return;
-            int tickTo = this.tickStopped >= 0 ? this.tickStopped : this.source.getServer().getTicks();
+            int tickTo = this.tickStopped >= 0 ? this.tickStopped : this.source.getMinecraftServer().getTicks();
             int ticksActive = tickTo - this.tickStarted;
             double seconds = ticksActive / 20.;
             int minutes = (int) seconds / 60;
             int hours = minutes / 60;
-            m(source, ts("command.spawn.tracking.title", DARK_GREEN, formats("%d:%02d:%05.2f", LIGHT_PURPLE, hours, minutes % 60, seconds % 60)));
+            m(source, ts("command.spawn.tracking.title", Formatting.DARK_GREEN, formats("%d:%02d:%05.2f", Formatting.LIGHT_PURPLE, hours, minutes % 60, seconds % 60)));
             double perHour = 72000. / ticksActive;
             Set<SpawnGroup> seenEntityCategories = new TreeSet<>();
             seenEntityCategories.addAll(mobcapFull.keySet());
@@ -73,8 +74,8 @@ public class SpawnTracker {
                 int mobcapNotFullCount = mobcapNotFull.getOrDefault(category, 0);
                 int totalGlobalAttempts = mobcapFullCount + mobcapNotFullCount;
                 double mobcapFullPortion = (double) mobcapFullCount / totalGlobalAttempts;
-                m(source, ts("command.spawn.tracking.category", GRAY,
-                    s(category.getName(), WHITE),
+                m(source, ts("command.spawn.tracking.category", Formatting.GRAY,
+                    s(category.getName(), Formatting.WHITE),
                     formats("%.2f", getHeatmapColor(mobcapFullPortion, 1), 100 * mobcapFullPortion)
                 ));
                 attempts.keySet().stream().filter(t -> t.getSpawnGroup() == category).sorted(SpawnTracker::sortEntityType).forEach(type -> {
@@ -82,12 +83,12 @@ public class SpawnTracker {
                     int numAttempts = attempts.getOrDefault(type, 0);
                     double successfulPerHour = successful * perHour;
                     double successfulPortion = (double) successful / numAttempts;
-                    m(source, ts("command.spawn.tracking.mob", GRAY,
-                        s(EntityType.getId(type).toString(), WHITE),
-                        s(Integer.toString(successful), DARK_GREEN),
+                    m(source, ts("command.spawn.tracking.mob", Formatting.GRAY,
+                        s(EntityType.getId(type).toString(), Formatting.WHITE),
+                        s(Integer.toString(successful), Formatting.DARK_GREEN),
                         c(
-                            s(Integer.toString((int) successfulPerHour), DARK_GREEN),
-                            s(String.format("%.2f", successfulPerHour % 1).replace("0.", "."), DARK_AQUA)
+                            s(Integer.toString((int) successfulPerHour), Formatting.DARK_GREEN),
+                            s(String.format("%.2f", successfulPerHour % 1).replace("0.", "."), Formatting.DARK_AQUA)
                         ),
                         formats("%.2f", getHeatmapColor(1 - successfulPortion, 1), 100 * successfulPortion)
                     ));
@@ -99,11 +100,11 @@ public class SpawnTracker {
     }
 
     @Nullable
-    public static SpawnTracker getTracker(ServerPlayerEntity source) {
+    public static SpawnTracker getTracker(ServerCommandSource source) {
         return TRACKERS.get(source);
     }
 
-    public static SpawnTracker getOrCreateTracker(ServerPlayerEntity source, BlockPos min, BlockPos max) {
+    public static SpawnTracker getOrCreateTracker(ServerCommandSource source, BlockPos min, BlockPos max) {
         return TRACKERS.computeIfAbsent(source, s -> new SpawnTracker(source, min, max));
     }
 

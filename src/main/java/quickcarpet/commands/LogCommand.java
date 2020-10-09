@@ -4,14 +4,15 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import quickcarpet.QuickCarpetServer;
 import quickcarpet.logging.*;
 import quickcarpet.settings.Settings;
@@ -100,43 +101,40 @@ public class LogCommand {
     }
 
     private static int listLogs(ServerCommandSource source) {
-        PlayerEntity player;
-        try {
-            player = source.getPlayer();
-        } catch (CommandSyntaxException e) {
-            m(source, ts("command.log.playerOnly", RED));
+        if (!(source.getEntity() instanceof ServerPlayerEntity)) {
+            m(source, ts("command.log.playerOnly", Formatting.RED));
             return 0;
         }
         LoggerManager.PlayerSubscriptions subs = getLoggers().getPlayerSubscriptions(source.getName());
         List<Logger<?>> loggers = new ArrayList<>(Loggers.values());
         Collections.sort(loggers);
-        m(player, s("_____________________"));
-        m(player, t("command.log.availableOptions"));
+        m(source, s("_____________________"));
+        m(source, t("command.log.availableOptions"));
         for (Logger<?> logger : loggers) {
             boolean subscribed = subs.isSubscribedTo(logger);
             MutableText line = s(" - " + logger.getName() + ": ");
             String[] options = logger.getOptions();
             if (options.length == 0) {
                 if (subscribed) {
-                    line.append(ts("command.log.subscribed", LIME));
+                    line.append(ts("command.log.subscribed", Formatting.GREEN));
                 } else {
-                    MutableText button = style(c(s("["), t("command.log.action.subscribe"), s("]")), GRAY);
+                    MutableText button = style(c(s("["), t("command.log.action.subscribe"), s("]")), Formatting.GRAY);
                     runCommand(button, "/log " + logger.getName(), t("command.log.action.subscribeTo", logger.getName()));
                     line.append(button);
                 }
             } else {
                 for (String option : logger.getOptions()) {
                     if (subscribed && option.equalsIgnoreCase(subs.getOption(logger))) {
-                        line.append(s("[" + option + "]", LIME));
+                        line.append(s("[" + option + "]", Formatting.AQUA));
                     } else {
-                        MutableText button = style(c(s("[" + option + "]")), GRAY);
+                        MutableText button = s("[" + option + "]", Formatting.GRAY);
                         Text hoverText = t("command.log.action.subscribeTo.option", logger.getName(), option);
                         runCommand(button, "/log " + logger.getName() + " " + option, hoverText);
                         line.append(button);
                     }
                 }
             }
-            m(player, line);
+            m(source, line);
         }
         return 1;
     }
@@ -144,15 +142,15 @@ public class LogCommand {
     private static boolean areArgumentsInvalid(ServerCommandSource source, String playerName, String loggerName) {
         PlayerEntity player = source.getMinecraftServer().getPlayerManager().getPlayer(playerName);
         if (player == null) {
-            m(source, ts("command.log.noPlayerSpecified", RED));
+            m(source, ts("command.log.noPlayerSpecified", Formatting.RED));
             return true;
         }
         if (loggerName != null && Loggers.getLogger(loggerName) == null) {
             Logger logger = Loggers.getLogger(loggerName, true);
             if (logger != null) {
-                m(source, ts("command.log.unavailable", RED, style(logger.getUnavailabilityReason(), "db")));
+                m(source, ts("command.log.unavailable", Formatting.RED, style(logger.getUnavailabilityReason(), Formatting.GOLD, Formatting.BOLD)));
             } else {
-                m(source, ts("command.log.unknown", RED, s(loggerName, BOLD)));
+                m(source, ts("command.log.unknown", Formatting.RED, s(loggerName, Formatting.BOLD)));
             }
             return true;
         }
@@ -164,14 +162,14 @@ public class LogCommand {
         for (String loggerName : Loggers.getLoggerNames()) {
             getLoggers().unsubscribePlayer(playerName, loggerName);
         }
-        m(source, ts("command.log.unsubscribed.all", GRAY + "" + ITALIC));
+        m(source, ts("command.log.unsubscribed.all", GRAY_ITALIC));
         return 1;
     }
 
     private static int unsubFromLogger(ServerCommandSource source, String playerName, String loggerName) {
         if (areArgumentsInvalid(source, playerName, loggerName)) return 0;
         getLoggers().unsubscribePlayer(playerName, loggerName);
-        m(source, ts("command.log.unsubscribed", GRAY + "" + ITALIC, loggerName));
+        m(source, ts("command.log.unsubscribed", GRAY_ITALIC, loggerName));
         return 1;
     }
 
@@ -180,15 +178,15 @@ public class LogCommand {
         boolean subscribed = getLoggers().togglePlayerSubscription(playerName, loggerName, null);
         if (subscribed) {
             if (playerName.equalsIgnoreCase(source.getName())) {
-                m(source, ts("command.log.subscribedTo", GRAY + "" + ITALIC, loggerName));
+                m(source, ts("command.log.subscribedTo", GRAY_ITALIC, loggerName));
             } else {
-                m(source, ts("command.log.subscribedTo.player", GRAY + "" + ITALIC, playerName, loggerName));
+                m(source, ts("command.log.subscribedTo.player", GRAY_ITALIC, playerName, loggerName));
             }
         } else {
             if (playerName.equalsIgnoreCase(source.getName())) {
-                m(source, ts("command.log.unsubscribed", GRAY + "" + ITALIC, loggerName));
+                m(source, ts("command.log.unsubscribed", GRAY_ITALIC, loggerName));
             } else {
-                m(source, ts("command.log.unsubscribed.player", GRAY + "" + ITALIC, playerName, loggerName));
+                m(source, ts("command.log.unsubscribed.player", GRAY_ITALIC, playerName, loggerName));
             }
         }
         return 1;
@@ -199,15 +197,15 @@ public class LogCommand {
         getLoggers().subscribePlayer(playerName, loggerName, option, handler);
         if (option != null) {
             if (playerName.equalsIgnoreCase(source.getName())) {
-                m(source, ts("command.log.subscribedTo.option", GRAY + "" + ITALIC, loggerName, option));
+                m(source, ts("command.log.subscribedTo.option", GRAY_ITALIC, loggerName, option));
             } else {
-                m(source, ts("command.log.subscribedTo.option.player", GRAY + "" + ITALIC, playerName, loggerName, option));
+                m(source, ts("command.log.subscribedTo.option.player", GRAY_ITALIC, playerName, loggerName, option));
             }
         } else {
             if (playerName.equalsIgnoreCase(source.getName())) {
-                m(source, ts("command.log.subscribedTo", GRAY + "" + ITALIC, loggerName));
+                m(source, ts("command.log.subscribedTo", GRAY_ITALIC, loggerName));
             } else {
-                m(source, ts("command.log.subscribedTo.player", GRAY + "" + ITALIC, playerName, loggerName));
+                m(source, ts("command.log.subscribedTo.player", GRAY_ITALIC, playerName, loggerName));
             }
         }
         return 1;

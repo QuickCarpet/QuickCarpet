@@ -8,6 +8,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.command.TeleportCommand;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
@@ -68,7 +69,7 @@ public abstract class TeleportCommandMixin {
         String name = getString(ctx, "waypoint");
         Waypoint destination = WaypointCommand.getWaypoint(source, name);
         if (destination == null) {
-            m(source, ts("command.waypoint.error.exists", RED, name));
+            m(source, ts("command.waypoint.error.exists", Formatting.RED, name));
             return -1;
         }
         ServerWorld world = source.getMinecraftServer().getWorld(destination.getDimension());

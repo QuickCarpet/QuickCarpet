@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 
 import static java.lang.reflect.Modifier.*;
 
-public final class ParsedRule<T> implements Comparable<ParsedRule> {
+public final class ParsedRule<T> implements Comparable<ParsedRule<T>> {
     public final Rule rule;
     public final Field field;
 
@@ -36,7 +36,7 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
     public final ImmutableList<RuleCategory> categories;
     public final ImmutableList<String> options;
     public final Class<T> type;
-    private final TypeAdapter<T> typeAdapter;
+    private final TypeAdapter<T, ?> typeAdapter;
     public final Validator<T> validator;
     public final ChangeListener<T> onChange;
     public final T defaultValue;
@@ -59,8 +59,8 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
         String extraKey = manager.getExtraTranslationKey(field, rule);
         this.extraInfo = Translations.hasTranslation(extraKey) ? new TranslatableText(extraKey) : null;
         this.categories = ImmutableList.copyOf(rule.category());
-        this.validator = Reflection.callPrivateConstructor(rule.validator());
-        this.onChange = Reflection.callPrivateConstructor(rule.onChange());
+        this.validator = Reflection.callPrivateConstructor((Class<Validator<T>>) rule.validator());
+        this.onChange = Reflection.callPrivateConstructor((Class<ChangeListener<T>>) rule.onChange());
         this.typeAdapter = getTypeAdapter(this.type);
         this.defaultValue = get();
         this.defaultAsString = typeAdapter.toString(this.defaultValue);
@@ -71,16 +71,16 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
     }
 
     @SuppressWarnings("unchecked")
-    private static <T> TypeAdapter<T> getTypeAdapter(Class<T> type) {
-        if (type == String.class) return (TypeAdapter<T>) TypeAdapter.STRING;
-        if (type == boolean.class) return (TypeAdapter<T>) TypeAdapter.BOOLEAN;
-        if (type == int.class) return (TypeAdapter<T>) TypeAdapter.INTEGER;
-        if (type == double.class) return (TypeAdapter<T>) TypeAdapter.DOUBLE;
+    private static <T> TypeAdapter<T, ?> getTypeAdapter(Class<T> type) {
+        if (type == String.class) return (TypeAdapter<T, ?>) TypeAdapter.STRING;
+        if (type == boolean.class) return (TypeAdapter<T, ?>) TypeAdapter.BOOLEAN;
+        if (type == int.class) return (TypeAdapter<T, ?>) TypeAdapter.INTEGER;
+        if (type == double.class) return (TypeAdapter<T, ?>) TypeAdapter.DOUBLE;
         if (type.isEnum()) return new TypeAdapter.EnumTypeAdapter(type);
         throw new IllegalStateException("Unknown type " + type.getSimpleName());
     }
 
-    public ArgumentType<T> getArgumentType() {
+    public ArgumentType<?> getArgumentType() {
         return typeAdapter.getArgumentType();
     }
 
@@ -112,6 +112,7 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public T get() {
         try {
             return (T) this.field.get(null);
@@ -168,7 +169,7 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
 
     @Override
     public boolean equals(Object obj) {
-        return obj.getClass() == ParsedRule.class && ((ParsedRule) obj).name.equals(this.name);
+        return obj.getClass() == ParsedRule.class && ((ParsedRule<?>) obj).name.equals(this.name);
     }
 
     @Override
@@ -177,7 +178,7 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
     }
 
     @Override
-    public int compareTo(ParsedRule o) {
+    public int compareTo(ParsedRule<T> o) {
         return this.name.compareTo(o.name);
     }
 
@@ -186,9 +187,9 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
         return this.name + ": " + getAsString();
     }
 
-    public interface TypeAdapter<T> {
+    public interface TypeAdapter<T, A> {
         T parse(String s);
-        ArgumentType<T> getArgumentType();
+        ArgumentType<A> getArgumentType();
 
         default T getArgument(CommandContext<ServerCommandSource> context, String argument, Class<T> type) throws CommandSyntaxException {
             return context.getArgument(argument, type);
@@ -202,7 +203,7 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
             return String.valueOf(value);
         }
 
-        class Simple<T> implements TypeAdapter<T> {
+        class Simple<T> implements TypeAdapter<T, T> {
             private final Function<String, T> parser;
             private final Supplier<ArgumentType<T>> argumentType;
 
@@ -222,7 +223,7 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
             }
         }
 
-        class EnumTypeAdapter<T extends Enum<T>> implements TypeAdapter<Enum<T>> {
+        class EnumTypeAdapter<T extends Enum<T>> implements TypeAdapter<Enum<T>, String> {
             public final Class<T> enumClass;
 
             public EnumTypeAdapter(Class<T> enumClass) {
@@ -240,9 +241,8 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
             }
 
             @Override
-            @SuppressWarnings("unchecked")
-            public ArgumentType<Enum<T>> getArgumentType() {
-                return (ArgumentType) StringArgumentType.string();
+            public ArgumentType<String> getArgumentType() {
+                return StringArgumentType.string();
             }
 
             @Override
@@ -260,15 +260,15 @@ public final class ParsedRule<T> implements Comparable<ParsedRule> {
             }
         }
 
-        TypeAdapter<String> STRING = new Simple<>(s -> s, StringArgumentType::greedyString);
-        TypeAdapter<Boolean> BOOLEAN = new Simple<Boolean>(Boolean::parseBoolean, BoolArgumentType::bool) {
+        TypeAdapter.Simple<String> STRING = new Simple<>(s -> s, StringArgumentType::greedyString);
+        TypeAdapter.Simple<Boolean> BOOLEAN = new Simple<Boolean>(Boolean::parseBoolean, BoolArgumentType::bool) {
             @Override
             public ImmutableList<String> getOptions() {
                 return ImmutableList.of("true", "false");
             }
         };
-        TypeAdapter<Integer> INTEGER = new Simple<>(Integer::parseInt, IntegerArgumentType::integer);
-        TypeAdapter<Double> DOUBLE = new Simple<>(Double::parseDouble, DoubleArgumentType::doubleArg);
+        TypeAdapter.Simple<Integer> INTEGER = new Simple<>(Integer::parseInt, IntegerArgumentType::integer);
+        TypeAdapter.Simple<Double> DOUBLE = new Simple<>(Double::parseDouble, DoubleArgumentType::doubleArg);
     }
 
     public static class ValueException extends IllegalArgumentException {

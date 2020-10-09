@@ -3,12 +3,11 @@ package quickcarpet.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.SharedConstants;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandSource;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
@@ -59,13 +58,13 @@ public class CarpetCommand {
 
         LiteralArgumentBuilder<ServerCommandSource> removeDefault = literal("removeDefault").requires(s -> !Settings.MANAGER.locked);
         LiteralArgumentBuilder<ServerCommandSource> setDefault = literal("setDefault").requires(s -> !Settings.MANAGER.locked);
-        for (ParsedRule rule : Settings.MANAGER.getRules()) {
+        for (ParsedRule<?> rule : Settings.MANAGER.getRules()) {
             carpet.then(literal(rule.name)
                 .executes(c -> displayRuleMenu(c.getSource(), rule))
                 .then(argument("value", rule.getArgumentType())
                     .suggests((c, b) -> CommandSource.suggestMatching(rule.options, b))
                     .requires(s -> !Settings.MANAGER.locked)
-                    .executes(c -> setRule((ServerCommandSource) c.getSource(), rule, rule.getArgument(c)))
+                    .executes(c -> setRule(c.getSource(), (ParsedRule) rule, rule.getArgument(c)))
                 )
             );
             removeDefault.then(literal(rule.name)
@@ -73,7 +72,7 @@ public class CarpetCommand {
                     .executes(c -> removeDefault(c.getSource(), rule)));
             setDefault.then(literal(rule.name).then(argument("value", rule.getArgumentType())
                 .suggests((c, b) -> CommandSource.suggestMatching(rule.options, b))
-                .executes(c -> setDefault((ServerCommandSource) c.getSource(), rule, rule.getArgument(c)))
+                .executes(c -> setDefault(c.getSource(), (ParsedRule) rule, rule.getArgument(c)))
             ));
         }
         carpet.then(removeDefault);
@@ -82,21 +81,18 @@ public class CarpetCommand {
     }
 
     private static int displayRuleMenu(ServerCommandSource source, ParsedRule<?> rule) {
-        PlayerEntity player;
-        try {
-            player = source.getPlayer();
-        } catch (CommandSyntaxException e) {
-            m(source, t("command.carpet.rule.value", rule.name, s(rule.getAsString(), BOLD)));
+        if (!(source.getEntity() instanceof ServerPlayerEntity)) {
+            m(source, t("command.carpet.rule.value", rule.name, s(rule.getAsString(), Formatting.BOLD)));
             return 1;
         }
 
-        m(player, "");
-        m(player, runCommand(s(rule.name, BOLD), "/carpet" + rule.name, ts("command.carpet.refresh", GRAY)));
-        m(player, rule.description);
+        m(source, "");
+        m(source, runCommand(s(rule.name, Formatting.BOLD), "/carpet" + rule.name, ts("command.carpet.refresh", Formatting.GRAY)));
+        m(source, rule.description);
 
-        if (rule.extraInfo != null) m(player, style(rule.extraInfo, GRAY));
+        if (rule.extraInfo != null) m(source, style(rule.extraInfo, Formatting.GRAY));
 
-        if (rule.deprecated != null) m(player, ts("command.carpet.rule.deprecated", RED, rule.deprecated));
+        if (rule.deprecated != null) m(source, ts("command.carpet.rule.deprecated", Formatting.RED, rule.deprecated));
 
         List<Text> categories = new ArrayList<>();
         categories.add(t("command.carpet.categories"));
@@ -105,51 +101,50 @@ public class CarpetCommand {
             ruleCategories = Stream.concat(Stream.of(rule.getModule().getId()), ruleCategories);
         }
         ruleCategories.forEach(name -> {
-            categories.add(runCommand(s("[" + name + "]", CYAN), "/carpet list " + name, t("command.carpet.list", name)));
+            categories.add(runCommand(s("[" + name + "]", Formatting.AQUA), "/carpet list " + name, t("command.carpet.list", name)));
             categories.add(s(", "));
         });
         categories.remove(categories.size()-1);
-        m(player, categories.toArray(new Object[0]));
+        m(source, categories.toArray(new Object[0]));
 
-        Text valueText = s(rule.getAsString(), rule.getBoolValue() ? "lb" : "nb");
+        Text valueText = s(rule.getAsString(), rule.getBoolValue() ? Formatting.GREEN : Formatting.DARK_RED, Formatting.BOLD);
         Text status = t(rule.isDefault() ? "carpet.rule.value.default" : "carpet.rule.value.modified");
-        m(player, t("carpet.rule.currentValue", valueText, status));
+        m(source, t("carpet.rule.currentValue", valueText, status));
         MutableText options = t("command.carpet.options");
-        options.append(s("[", YELLOW));
+        options.append(s("[", Formatting.YELLOW));
         boolean first = true;
         for (String o: rule.options) {
             if (first) first = false;
             else options.append(" ");
             options.append(makeSetRuleButton(rule, o, false));
         }
-        options.append(s("]", YELLOW));
-        m(player, options);
+        options.append(s("]", Formatting.YELLOW));
+        m(source, options);
         return 1;
     }
 
     private static Text makeSetRuleButton(ParsedRule<?> rule, String option, boolean brackets) {
-        String color = "";
-        if (option.equals(rule.defaultAsString) && !brackets) color += UNDERLINE;
-        color += option.equals(rule.getAsString()) ? "bl" : "y";
-        MutableText baseText = s((brackets ? "[" : "") + option + (brackets ? "]" : ""), color);
+        MutableText baseText = s((brackets ? "[" : "") + option + (brackets ? "]" : ""));
+        if (option.equals(rule.defaultAsString) && !brackets) baseText = baseText.formatted(Formatting.UNDERLINE);
+        baseText = option.equals(rule.getAsString()) ? baseText.formatted(Formatting.BOLD, Formatting.GREEN) : baseText.formatted(Formatting.YELLOW);
         if (Settings.MANAGER.locked) {
-            return hoverText(baseText, ts("carpet.locked", GRAY));
+            return hoverText(baseText, ts("carpet.locked", Formatting.GRAY));
         }
-        return suggestCommand(baseText, "/carpet " + rule.name + " " + option, ts("command.carpet.switch", GRAY, option));
+        return suggestCommand(baseText, "/carpet " + rule.name + " " + option, ts("command.carpet.switch", Formatting.GRAY, option));
     }
 
     private static <T> int setRule(ServerCommandSource source, ParsedRule<T> rule, T newValue) {
         try {
             rule.set(newValue, true);
             MutableText changePermanently = c(s("["), t("command.carpet.changePermanently"), s("]"));
-            style(changePermanently, CYAN);
+            style(changePermanently, Formatting.AQUA);
             hoverText(changePermanently, t("command.carpet.changePermanently.hover"));
             suggestCommand(changePermanently, "/carpet setDefault " + rule.name + " " + rule.getAsString());
             m(source, s(rule.toString() + " "), changePermanently);
         } catch (ParsedRule.ValueException e) {
-            throw new CommandException(ts("command.carpet.rule.invalidValue", RED, e.message));
+            throw new CommandException(ts("command.carpet.rule.invalidValue", Formatting.RED, e.message));
         } catch (IllegalArgumentException e) {
-            throw new CommandException(ts("command.carpet.rule.invalidValue", RED, e.getMessage()));
+            throw new CommandException(ts("command.carpet.rule.invalidValue", Formatting.RED, e.getMessage()));
         }
         return 1;
     }
@@ -158,23 +153,23 @@ public class CarpetCommand {
         try {
             rule.set(defaultValue, true);
             rule.save();
-            m(source, ts("command.carpet.setDefault.success", "gi", rule.name, defaultValue));
+            m(source, ts("command.carpet.setDefault.success", GRAY_ITALIC, rule.name, defaultValue));
         } catch (ParsedRule.ValueException e) {
-            throw new CommandException(ts("command.carpet.rule.invalidValue", RED, e.message));
+            throw new CommandException(ts("command.carpet.rule.invalidValue", Formatting.RED, e.message));
         }
         return 1;
     }
 
-    private static int removeDefault(ServerCommandSource source, ParsedRule rule) {
+    private static int removeDefault(ServerCommandSource source, ParsedRule<?> rule) {
         rule.resetToDefault(true);
         rule.save();
-        m(source, ts("command.carpet.removeDefault.success", "gi", rule.name, rule.getAsString()));
+        m(source, ts("command.carpet.removeDefault.success", GRAY_ITALIC, rule.name, rule.getAsString()));
         return 1;
     }
 
     private static Text displayInteractiveSetting(ParsedRule<?> rule) {
         MutableText text = s("- " + rule.name);
-        runCommand(text, "/carpet " + rule.name, style(rule.description.copy(), YELLOW));
+        runCommand(text, "/carpet " + rule.name, style(rule.description.copy(), Formatting.YELLOW));
         boolean first = true;
         for (String option : rule.options) {
             if (first) {
@@ -187,16 +182,15 @@ public class CarpetCommand {
     }
 
     private static int listSettings(ServerCommandSource source, Text title, Iterable<ParsedRule<?>> rules) {
-        try {
-            PlayerEntity player = source.getPlayer();
+        if (source.getEntity() instanceof ServerPlayerEntity) {
             title.getStyle().withFormatting(Formatting.BOLD);
-            m(player, title);
-            for (ParsedRule rule : rules) {
-                m(player,displayInteractiveSetting(rule));
-            }
-        } catch (CommandSyntaxException e) {
             m(source, title);
-            for (ParsedRule rule : rules) {
+            for (ParsedRule<?> rule : rules) {
+                m(source, displayInteractiveSetting(rule));
+            }
+        } else {
+            m(source, title);
+            for (ParsedRule<?> rule : rules) {
                 m(source, s("- " + rule.toString()));
             }
         }
@@ -211,35 +205,34 @@ public class CarpetCommand {
         if (QuickCarpet.isDevelopment()) {
             version += " " + Build.BRANCH + "-" + Build.COMMIT.substring(0, 7) + " (" + Build.BUILD_TIMESTAMP + ")";
         }
-        m(source, ts("command.carpet.version", DARK_GREEN, Build.NAME, version));
+        m(source, ts("command.carpet.version", Formatting.DARK_GREEN, Build.NAME, version));
         if (!Build.MINECRAFT_VERSION.equals(SharedConstants.getGameVersion().getId())) {
-            m(source, ts("command.carpet.version.builtFor", YELLOW, Build.MINECRAFT_VERSION));
+            m(source, ts("command.carpet.version.builtFor", Formatting.YELLOW, Build.MINECRAFT_VERSION));
         }
         if (!Build.WORKING_DIR_CLEAN) {
-            m(source, ts("command.carpet.version.uncommitted", RED));
+            m(source, ts("command.carpet.version.uncommitted", Formatting.RED));
         }
         m(source, s(""));
         Collection<QuickCarpetModule> modules = QuickCarpet.getInstance().modules;
         if (!modules.isEmpty()) {
-            m(source, ts("command.carpet.modules", BOLD));
+            m(source, ts("command.carpet.modules", Formatting.BOLD));
             for (QuickCarpetModule m : modules) {
-                MutableText button = s("[" + m.getId() + "]", CYAN);
-                runCommand(button, "/carpet list " + m.getId(), ts("command.carpet.modules.list", GRAY));
+                MutableText button = s("[" + m.getId() + "]", Formatting.AQUA);
+                runCommand(button, "/carpet list " + m.getId(), ts("command.carpet.modules.list", Formatting.GRAY));
                 m(source, button, s(" " + m.getName() + " " + m.getVersion()));
             }
         }
         m(source, s(""));
-        try {
-            PlayerEntity player = source.getPlayer();
-            MutableText categories = ts("command.carpet.browseCategories", BOLD);
+        if (source.getEntity() instanceof ServerPlayerEntity) {
+            MutableText categories = ts("command.carpet.browseCategories", Formatting.BOLD);
             boolean first = true;
             for (String name : RULE_CATEGORIES) {
                 if (first)  first = false;
                 else categories.append(" ");
-                categories.append(runCommand(s("[" + name + "]", CYAN), "/carpet list " + name, ts("command.carpet.list", GRAY, name)));
+                categories.append(runCommand(s("[" + name + "]", Formatting.AQUA), "/carpet list " + name, ts("command.carpet.list", Formatting.GRAY, name)));
             }
-            m(player, categories);
-        } catch (CommandSyntaxException ignored) {}
+            m(source, categories);
+        }
         return 1;
     }
 }

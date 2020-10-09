@@ -4,6 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import quickcarpet.helper.TickSpeed;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.CarpetProfiler;
@@ -66,7 +67,7 @@ public class TickCommand {
 
     private static int sendCurrentTPS(ServerCommandSource source) {
         float tickRateGoal = TickSpeed.getServerTickSpeed().tickRateGoal;
-        m(source, t("command.tick.current", formats("%.1f", BOLD, tickRateGoal)));
+        m(source, t("command.tick.current", formats("%.1f", Formatting.BOLD, tickRateGoal)));
         return (int) tickRateGoal;
     }
 
@@ -80,13 +81,13 @@ public class TickCommand {
         TickSpeed tickSpeed = TickSpeed.getServerTickSpeed();
         long warpTotal = tickSpeed.getWarpTimeTotal();
         if (warpTotal == 0) {
-            m(source, ts("command.tick.warp.status.inactive", YELLOW));
+            m(source, ts("command.tick.warp.status.inactive", Formatting.YELLOW));
             return 0;
         }
         long warpRemaining = tickSpeed.getWarpTimeRemaining();
         long warpDone = warpTotal - warpRemaining;
         double percentDone = Math.round(warpDone * 1000.0 / warpTotal) / 10.0;
-        m(source, ts("command.tick.warp.status.active", DARK_GREEN, warpDone, warpTotal, percentDone));
+        m(source, ts("command.tick.warp.status.active", Formatting.DARK_GREEN, warpDone, warpTotal, percentDone));
         ServerCommandSource sender = tickSpeed.getTickWarpSender();
         if (sender != null) m(source, t("command.tick.warp.status.startedBy", sender.getDisplayName()));
         String callback = tickSpeed.getTickWarpCallback();
@@ -103,9 +104,9 @@ public class TickCommand {
         TickSpeed tickSpeed = TickSpeed.getServerTickSpeed();
         tickSpeed.setPaused(!tickSpeed.isPaused());
         if (tickSpeed.isPaused()) {
-            m(source, ts("command.tick.freeze", GRAY + "" + ITALIC));
+            m(source, ts("command.tick.freeze", GRAY_ITALIC));
         } else {
-            m(source, ts("command.tick.unfreeze", GRAY + "" + ITALIC));
+            m(source, ts("command.tick.unfreeze", GRAY_ITALIC));
         }
         return 1;
     }
@@ -131,24 +132,24 @@ public class TickCommand {
     }
 
     public static void printMSPTStats(ServerCommandSource source, TickSpeed.MSPTStatistics stats) {
-        m(source, ts("command.tick.stats", DARK_GREEN, s(Integer.toString(stats.count), CYAN)), s(":", GRAY));
-        m(source, t("command.tick.stats.loadavg"), s(": ", GRAY),
-            formats("%.3f", CYAN, TickSpeed.getExponential1MinuteMSPT()), s(", ", GRAY),
-            formats("%.3f", CYAN, TickSpeed.getExponential5MinuteMSPT()), s(", ", GRAY),
-            formats("%.3f", CYAN, TickSpeed.getExponential15MinuteMSPT())
+        m(source, ts("command.tick.stats", Formatting.DARK_GREEN, s(Integer.toString(stats.count), Formatting.AQUA)), s(":", Formatting.GRAY));
+        m(source, t("command.tick.stats.loadavg"), s(": ", Formatting.GRAY),
+            formats("%.3f", Formatting.AQUA, TickSpeed.getExponential1MinuteMSPT()), s(", ", Formatting.GRAY),
+            formats("%.3f", Formatting.AQUA, TickSpeed.getExponential5MinuteMSPT()), s(", ", Formatting.GRAY),
+            formats("%.3f", Formatting.AQUA, TickSpeed.getExponential15MinuteMSPT())
         );
-        m(source, t("command.tick.stats.minavgmax"), s(": ", GRAY),
-            formats("%.3f", CYAN, stats.min), s(", ", GRAY),
-            formats("%.3f±%.3f", CYAN, stats.mean, stats.stdDev), s(", ", GRAY),
-            formats("%.3f", CYAN, stats.max)
+        m(source, t("command.tick.stats.minavgmax"), s(": ", Formatting.GRAY),
+            formats("%.3f", Formatting.AQUA, stats.min), s(", ", Formatting.GRAY),
+            formats("%.3f±%.3f", Formatting.AQUA, stats.mean, stats.stdDev), s(", ", Formatting.GRAY),
+            formats("%.3f", Formatting.AQUA, stats.max)
         );
-        m(source, t("command.tick.stats.lagticks"), s(": ", GRAY),
-            formats("%.1f%%", CYAN, stats.lagPercentage)
+        m(source, t("command.tick.stats.lagticks"), s(": ", Formatting.GRAY),
+            formats("%.1f%%", Formatting.AQUA, stats.lagPercentage)
         );
-        m(source, t("command.tick.stats.percentiles"), s(": ", GRAY),
-            formats("%.3f", CYAN, stats.percentile90), s(", ", GRAY),
-            formats("%.3f", CYAN, stats.percentile95), s(", ", GRAY),
-            formats("%.3f", CYAN, stats.percentile99)
+        m(source, t("command.tick.stats.percentiles"), s(": ", Formatting.GRAY),
+            formats("%.3f", Formatting.AQUA, stats.percentile90), s(", ", Formatting.GRAY),
+            formats("%.3f", Formatting.AQUA, stats.percentile95), s(", ", Formatting.GRAY),
+            formats("%.3f", Formatting.AQUA, stats.percentile99)
         );
     }
 }

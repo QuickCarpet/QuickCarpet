@@ -10,6 +10,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.MutableText;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 import net.minecraft.util.registry.RegistryKey;
@@ -285,7 +286,7 @@ public class CarpetProfiler
         Identifier dim = key.getLeft().dimension.getValue();
         Object e = key.getRight();
         Identifier ent = e instanceof EntityType ? EntityType.getId((EntityType) e) : BlockEntityType.getId((BlockEntityType) e);
-        return t("carpet.profiler.entity.line", ent, dim, formats("%.3f", msptGoal == 0 ? WHITE : getHeatmapColor(value, msptGoal), value));
+        return t("carpet.profiler.entity.line", ent, dim, formats("%.3f", msptGoal == 0 ? Formatting.WHITE : getHeatmapColor(value, msptGoal), value));
     }
 
     private static void finalizeTickEntitiesReport(MinecraftServer server) {
@@ -364,14 +365,14 @@ public class CarpetProfiler
         Loggers.GC.log(() -> {
             long usedBefore = gcInfo.getMemoryUsageBeforeGc().values().stream().mapToLong(MemoryUsage::getUsed).sum();
             long usedAfter = gcInfo.getMemoryUsageAfterGc().values().stream().mapToLong(MemoryUsage::getUsed).sum();
-            return new MutableText[]{Messenger.c(
-                    "l " + info.getGcName(),
-                    "y  " + info.getGcAction(),
-                    "w  caused by ", "c " + info.getGcCause(),
-                    "w : ", "c " + info.getGcInfo().getDuration() + "ms",
-                    "w , ", "c " + usedBefore / (1024 * 1024) + "MB",
-                    "w  -> ", "c " + usedAfter / (1024 * 1024) + "MB")
-            };
+            return new MutableText[] {c(
+                s(info.getGcName(), Formatting.GREEN), s(" "),
+                s(info.getGcAction(), Formatting.YELLOW),
+                s(" caused by "), s(info.getGcCause(), Formatting.AQUA),
+                s(": "), s(info.getGcInfo().getDuration() + "ms", Formatting.AQUA),
+                s(", "), s(usedBefore / (1024 * 1024) + "MB", Formatting.AQUA),
+                s(" -> "), s(usedAfter / (1024 * 1024) + "MB", Formatting.AQUA)
+            )};
         }, () -> new GCCommandParameters(info));
         if (inTick) {
             if (!isActive(ReportType.HEALTH)) return;

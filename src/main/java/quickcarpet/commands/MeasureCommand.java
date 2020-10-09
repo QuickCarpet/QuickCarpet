@@ -6,6 +6,7 @@ import net.minecraft.command.argument.PosArgument;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Vec3d;
 import quickcarpet.settings.Settings;
 
@@ -38,13 +39,13 @@ public class MeasureCommand {
     }
 
     private static int measure(ServerCommandSource source, Vec3d from, Vec3d to) {
-        m(source, t("command.measure.title", tp("b", from), tp("b", to)));
+        m(source, t("command.measure.title", tp(from, Formatting.BOLD), tp(to, Formatting.BOLD)));
         Vec3d fromCentered = new Vec3d(((int) from.x) + 0.5, (int) from.y, ((int) from.z) + 0.5);
         Vec3d toCentered = new Vec3d(((int) to.x) + 0.5, (int) to.y, ((int) to.z) + 0.5);
         for (Type type : Type.values()) {
             m(source, t("command.measure.line", type.text(),
-                dbl("c", type.distance.applyAsDouble(from, to)),
-                dbl("c", type.distance.applyAsDouble(fromCentered, toCentered))));
+                dbl(type.distance.applyAsDouble(from, to), Formatting.AQUA),
+                dbl(type.distance.applyAsDouble(fromCentered, toCentered), Formatting.AQUA)));
         }
         return 1;
     }

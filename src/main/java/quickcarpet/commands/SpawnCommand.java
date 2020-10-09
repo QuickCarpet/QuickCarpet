@@ -7,6 +7,7 @@ import net.minecraft.entity.SpawnGroup;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockPos;
 import quickcarpet.helper.Mobcaps;
@@ -48,9 +49,9 @@ public class SpawnCommand {
     }
 
     private static int sendTrackingReport(ServerCommandSource source) throws CommandSyntaxException {
-        SpawnTracker tracker = SpawnTracker.getTracker(source.getPlayer());
+        SpawnTracker tracker = SpawnTracker.getTracker(source);
         if (tracker == null) {
-            m(source, ts("command.spawn.tracking.inactive", GOLD));
+            m(source, ts("command.spawn.tracking.inactive", Formatting.GOLD));
             return 1;
         }
         tracker.sendReport();
@@ -58,24 +59,24 @@ public class SpawnCommand {
     }
 
     private static int startTracking(ServerCommandSource source, BlockPos min, BlockPos max) throws CommandSyntaxException {
-        SpawnTracker tracker = SpawnTracker.getOrCreateTracker(source.getPlayer(), min, max);
+        SpawnTracker tracker = SpawnTracker.getOrCreateTracker(source, min, max);
         if (tracker.isActive()) {
-            m(source, ts("command.spawn.tracking.active", GOLD));
+            m(source, ts("command.spawn.tracking.active", Formatting.GOLD));
             return 1;
         }
         tracker.start();
-        m(source, ts("command.spawn.tracking.started", DARK_GREEN));
+        m(source, ts("command.spawn.tracking.started", Formatting.DARK_GREEN));
         return 1;
     }
 
     private static int stopTracking(ServerCommandSource source) throws CommandSyntaxException {
-        SpawnTracker tracker = SpawnTracker.getTracker(source.getPlayer());
+        SpawnTracker tracker = SpawnTracker.getTracker(source);
         if (tracker == null) {
-            m(source, ts("command.spawn.tracking.active", GOLD));
+            m(source, ts("command.spawn.tracking.active", Formatting.GOLD));
             return 1;
         }
         tracker.stop();
-        m(source, ts("command.spawn.tracking.stopped", DARK_GREEN));
+        m(source, ts("command.spawn.tracking.stopped", Formatting.DARK_GREEN));
         tracker.sendReport();
         return 1;
     }
@@ -91,8 +92,8 @@ public class SpawnCommand {
             Pair<Integer, Integer> pair = e.getValue();
             int cur = pair.getLeft();
             int max = pair.getRight();
-            char color = cur >= max ? RED : (cur * 10 >= max * 8 ? YELLOW : LIME);
-            Text capText = cur + max == 0 ? s("-/-", DARK_GREEN) : formats("%d/%d", color, cur, max);
+            Formatting color = cur >= max ? Formatting.RED : (cur * 10 >= max * 8 ? Formatting.YELLOW : Formatting.GREEN);
+            Text capText = cur + max == 0 ? s("-/-", Formatting.DARK_GREEN) : formats("%d/%d", color, cur, max);
             m(source, t("command.spawn.mobcaps.line", category, capText));
         }
         return 1;

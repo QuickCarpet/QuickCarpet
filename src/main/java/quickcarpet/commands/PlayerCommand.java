@@ -18,6 +18,7 @@ import net.minecraft.server.ServerTask;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec2f;
@@ -125,7 +126,7 @@ public class PlayerCommand {
     private static boolean cantManipulate(CommandContext<ServerCommandSource> context) {
         PlayerEntity player = getPlayer(context);
         if (player == null) {
-            m(context.getSource(), ts("command.player.onlyExisting", RED));
+            m(context.getSource(), ts("command.player.onlyExisting", Formatting.RED));
             return true;
         }
         PlayerEntity sendingPlayer;
@@ -137,7 +138,7 @@ public class PlayerCommand {
 
         if (!context.getSource().getMinecraftServer().getPlayerManager().isOperator(sendingPlayer.getGameProfile())) {
             if (sendingPlayer != player && !(player instanceof FakeServerPlayerEntity)) {
-                m(context.getSource(), ts("command.player.notOperator", RED));
+                m(context.getSource(), ts("command.player.notOperator", Formatting.RED));
                 return true;
             }
         }
@@ -148,7 +149,7 @@ public class PlayerCommand {
         if (cantManipulate(context)) return true;
         PlayerEntity player = getPlayer(context);
         if (player instanceof FakeServerPlayerEntity) return false;
-        m(context.getSource(), ts("command.player.notFake", RED));
+        m(context.getSource(), ts("command.player.notFake", Formatting.RED));
         return true;
     }
 
@@ -158,20 +159,20 @@ public class PlayerCommand {
         PlayerManager manager = server.getPlayerManager();
         PlayerEntity player = manager.getPlayer(playerName);
         if (player != null) {
-            m(context.getSource(), ts("command.player.alreadyOnline", RED, s(playerName, BOLD)));
+            m(context.getSource(), ts("command.player.alreadyOnline", Formatting.RED, s(playerName, Formatting.BOLD)));
             return CompletableFuture.completedFuture(null);
         }
         return CompletableFuture.supplyAsync(() -> server.getUserCache().findByName(playerName), Util.getIoWorkerExecutor()).thenApply(profile -> {
             if (profile == null) {
-                m(context.getSource(), ts("command.player.doesNotExist", RED, s(playerName, BOLD)));
+                m(context.getSource(), ts("command.player.doesNotExist", Formatting.RED, s(playerName, Formatting.BOLD)));
                 return null;
             }
             if (manager.getUserBanList().contains(profile)) {
-                m(context.getSource(), ts("command.player.banned", RED, s(playerName, BOLD)));
+                m(context.getSource(), ts("command.player.banned", Formatting.RED, s(playerName, Formatting.BOLD)));
                 return null;
             }
             if (manager.isWhitelistEnabled() && manager.isWhitelisted(profile) && !context.getSource().hasPermissionLevel(2)) {
-                m(context.getSource(), "command.player.whitelisted", RED);
+                m(context.getSource(), ts("command.player.whitelisted", Formatting.RED));
                 return null;
             }
             return profile;
@@ -253,7 +254,7 @@ public class PlayerCommand {
         if (cantManipulate(context)) return 0;
         ServerPlayerEntity player = getPlayer(context);
         if (player instanceof FakeServerPlayerEntity) {
-            m(context.getSource(), ts("command.player.shadowFake", RED));
+            m(context.getSource(), ts("command.player.shadowFake", Formatting.RED));
             return 0;
         }
         FakeServerPlayerEntity.createShadow(player.server, player);

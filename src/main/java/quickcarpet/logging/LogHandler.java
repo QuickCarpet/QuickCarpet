@@ -30,7 +30,7 @@ public interface LogHandler
                 HUDController.clearPlayerHUD(player);
         }
     };
-    LogHandler ACTION_BAR = (logger, player, message, commandParams) -> player.networkHandler.sendPacket(new TitleS2CPacket(TitleS2CPacket.Action.ACTIONBAR, Messenger.c((Object[]) message)));
+    LogHandler ACTION_BAR = (logger, player, message, commandParams) -> player.networkHandler.sendPacket(new TitleS2CPacket(TitleS2CPacket.Action.ACTIONBAR, Messenger.c(message)));
 
     @FunctionalInterface
     interface LogHandlerCreator

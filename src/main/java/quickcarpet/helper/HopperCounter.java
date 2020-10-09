@@ -10,6 +10,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.DyeColor;
+import net.minecraft.util.Formatting;
 import quickcarpet.QuickCarpet;
 import quickcarpet.logging.Logger;
 import quickcarpet.pubsub.PubSubInfoProvider;
@@ -74,11 +75,11 @@ public class HopperCounter
             if (counter.getTotalItems() == 0) continue;
             List<MutableText> temp = counter.format(server, realtime, false);
             if (!text.isEmpty()) text.add(s(""));
-            text.add(c(style(counter.getColorText(), DARK_GREEN), s(":", GRAY)));
+            text.add(c(style(counter.getColorText(), Formatting.DARK_GREEN), s(":", Formatting.GRAY)));
             text.addAll(temp);
         }
         if (text.isEmpty()) {
-            text.add(ts("counter.none", GOLD));
+            text.add(ts("counter.none", Formatting.GOLD));
         }
         return text;
     }
@@ -90,22 +91,22 @@ public class HopperCounter
     public List<MutableText> format(MinecraftServer server, boolean realTime, boolean brief) {
         if (counter.isEmpty()) {
             if (brief) {
-                return Collections.singletonList(ts("counter.format", DARK_GREEN, getColorText(), "-", "-", "-"));
+                return Collections.singletonList(ts("counter.format", Formatting.DARK_GREEN, getColorText(), "-", "-", "-"));
             }
-            return Collections.singletonList(ts("counter.none.color", DARK_GREEN, getColorText()));
+            return Collections.singletonList(ts("counter.none.color", Formatting.DARK_GREEN, getColorText()));
         }
         long total = getTotalItems();
         long ticks = Math.max(realTime ? (System.currentTimeMillis() - startMillis) / 50 : server.getTicks() - startTick, 1);
         if (total == 0) {
             if (brief) {
-                return Collections.singletonList(ts("counter.format", CYAN, getColorText(), 0, 0, String.format("%.1f", ticks / 1200.0)));
+                return Collections.singletonList(ts("counter.format", Formatting.AQUA, getColorText(), 0, 0, String.format("%.1f", ticks / 1200.0)));
             }
             MutableText line = t("counter.none.color.timed", getColorText(), String.format("%.1f", ticks / 1200.0), realTime ? c(s(" - "), t("counter.realTime")) : s(""));
             line.append(" ");
-            line.append(runCommand(s("[X]", "nb"), "/counter " + color.getName() + " reset", ts("counter.action.reset", GRAY)));
+            line.append(runCommand(s("[X]", Formatting.DARK_RED, Formatting.BOLD), "/counter " + color.getName() + " reset", ts("counter.action.reset", Formatting.GRAY)));
         }
         if (brief) {
-            return Collections.singletonList(ts("counter.format", CYAN, getColorText(), total, total * 72000 / ticks, String.format("%.1f", ticks / 1200.0)));
+            return Collections.singletonList(ts("counter.format", Formatting.AQUA, getColorText(), total, total * 72000 / ticks, String.format("%.1f", ticks / 1200.0)));
         }
         return counter.object2LongEntrySet().stream().map(e -> {
             Text itemName = t(e.getKey().getTranslationKey());

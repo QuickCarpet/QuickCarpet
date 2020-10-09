@@ -18,7 +18,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import quickcarpet.QuickCarpetServer;
 import quickcarpet.annotation.Feature;
 import quickcarpet.client.ClientSetting;
 import quickcarpet.settings.Settings;
@@ -133,7 +132,6 @@ public abstract class PistonBlockEntityMixin extends BlockEntity implements Exte
         float val;
         if (this.world != null && this.world.isClient && ClientSetting.SMOOTH_PISTONS.get()) {
             val = MathHelper.lerp(partialTicks, this.lastProgress, this.progress) * (2 / 3f);
-            System.out.println(QuickCarpetServer.getMinecraftServer().getTicks() + ", " + lastProgress + ", " + progress + ", " + partialTicks + " -> " + val + ", " + MathHelper.lerp(partialTicks, lastProgress, progress));
             cir.setReturnValue(val);
         }
     }

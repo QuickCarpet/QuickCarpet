@@ -11,6 +11,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
@@ -31,7 +32,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
-import static quickcarpet.utils.Messenger.*;
+import static quickcarpet.utils.Messenger.c;
+import static quickcarpet.utils.Messenger.s;
 
 public class Waypoint implements Comparable<Waypoint>, Messenger.Formattable {
     private static final Gson GSON = new GsonBuilder().registerTypeAdapter(CollectionAdapter.type, new CollectionAdapter()).setPrettyPrinting().create();
@@ -91,7 +93,7 @@ public class Waypoint implements Comparable<Waypoint>, Messenger.Formattable {
 
     @Override
     public MutableText format() {
-        return s(getDimension().getValue().toString()).append(s("/", GRAY)).append(s(name, YELLOW));
+        return c(s(getDimension().getValue().toString()), s("/", Formatting. GRAY), s(name, Formatting.YELLOW));
     }
 
     public boolean canManipulate(ServerCommandSource source) {
