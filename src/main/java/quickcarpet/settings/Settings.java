@@ -158,6 +158,9 @@ public class Settings {
     @Rule(category = CREATIVE)
     public static boolean fillUpdates = true;
 
+    @Rule(category = CREATIVE)
+    public static boolean fillUpdatesPostProcessing = true;
+
     @Rule(category = {CREATIVE, SURVIVAL})
     public static boolean flippinCactus = false;
 

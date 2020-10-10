@@ -18,6 +18,7 @@
     "accessor.ServerChunkManagerAccessor",
     "accessor.ServerCommandSourceAccessor",
     "accessor.ServerNetworkIoAccessor",
+    "accessor.UpgradeDataAccessor",
     "antiCheat.ServerPlayNetworkHandlerMixin",
     "autoCraftingTable.CraftingTableBlockMixin",
     "betterChunkLoading.ChunkTicketManagerMixin",

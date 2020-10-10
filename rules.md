@@ -286,6 +286,14 @@ Default: `true`
 Options: `true`, `false`  
 Categories: creative  
 
+## fillUpdatesPostProcessing
+Whether fillUpdates=false post-processes the block state (like when upgrading a world)
+
+Type: `boolean`  
+Default: `true`  
+Options: `true`, `false`  
+Categories: creative  
+
 ## flippinCactus
 Players can flip and rotate blocks when holding cactus
 
@@ -329,7 +337,7 @@ Options: `true`, `false`
 Categories: feature, experimental  
 
 ## movableBlockOverrides
-Override how pistons interact with any block. Adds weak stickyness behavior used by default for redstone components, flowerpots, etc.
+Override how pistons interact with any block. Adds weak stickiness behavior used by default for redstone components, flowerpots, etc.
 
 Type: `boolean`  
 Default: `false`  
