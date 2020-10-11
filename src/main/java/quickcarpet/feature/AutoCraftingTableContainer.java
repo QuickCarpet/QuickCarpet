@@ -60,6 +60,11 @@ public class AutoCraftingTableContainer extends CraftingScreenHandler {
         return super.transferSlot(player, slot);
     }
 
+    @Override
+    public boolean canUse(PlayerEntity player) {
+        return this.blockEntity.canPlayerUse(player);
+    }
+
     public void close(PlayerEntity player) {
         PlayerInventory playerInventory = player.inventory;
         if (!playerInventory.getCursorStack().isEmpty()) {

@@ -151,8 +151,10 @@ public class PistonBlockMixin extends FacingBlock {
            int int_3, BlockPos blockPos_4) {
         BlockEntity blockEntityPiston = PistonExtensionBlock.createBlockEntityPiston((BlockState) list_2.get(int_3),
                 direction_1, boolean_1, false);
-        if (quickcarpet.settings.Settings.movableBlockEntities)
+        if (quickcarpet.settings.Settings.movableBlockEntities) {
+            blockEntityPiston.setPos(blockPos_4);
             ((ExtendedPistonBlockEntity) blockEntityPiston).setCarriedBlockEntity(list1_BlockEntities.get().get(int_3));
+        }
         world_1.setBlockEntity(blockPos_4, blockEntityPiston);
     }
 
