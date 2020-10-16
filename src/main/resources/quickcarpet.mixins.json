@@ -43,6 +43,8 @@
     "core.TestCommandMixin",
     "core.ThreadedAnvilChunkStorageMixin",
     "dispenser.DispenserBlockMixin",
+    "drownedNavigationFix.MobEntityMixin",
+    "drownedNavigationFix.ServerWorldMixin",
     "fabricApi.RegistrySyncManagerMixin",
     "fillUpdates.BlockStateArgumentMixin",
     "fillUpdates.StructureMixin",

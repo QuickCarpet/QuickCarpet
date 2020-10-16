@@ -120,6 +120,14 @@ Default: `2`
 Categories: commands  
 Validator: `OP Level (0-4)`  
 
+## commandDataTracker
+carpet.rule.commandDataTracker.description
+
+Type: `int`  
+Default: `2`  
+Categories: commands  
+Validator: `OP Level (0-4)`  
+
 ## commandFix
 Enables /fix command to fix chunk data
 
