@@ -120,14 +120,6 @@ Default: `2`
 Categories: commands  
 Validator: `OP Level (0-4)`  
 
-## commandDataTracker
-carpet.rule.commandDataTracker.description
-
-Type: `int`  
-Default: `2`  
-Categories: commands  
-Validator: `OP Level (0-4)`  
-
 ## commandFix
 Enables /fix command to fix chunk data
 
@@ -268,6 +260,14 @@ Default: `false`
 Options: `true`, `false`  
 Categories: experimental  
 Fixes: [MC-88959](https://bugs.mojang.com/browse/MC-88959)  
+
+## dustOnPistons
+Makes redstone dust not pop off pistons
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: experimental  
 
 ## explosionNoBlockDamage
 Explosions won't destroy blocks

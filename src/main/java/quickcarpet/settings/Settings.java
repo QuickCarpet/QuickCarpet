@@ -145,6 +145,9 @@ public class Settings {
     @Rule(category = EXPERIMENTAL, bug = @BugFix("MC-88959"))
     public static boolean doubleRetraction = false;
 
+    @Rule(category = EXPERIMENTAL)
+    public static boolean dustOnPistons = false;
+
     @Rule(category = TNT)
     public static boolean explosionNoBlockDamage = false;
 

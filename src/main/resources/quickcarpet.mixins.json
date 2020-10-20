@@ -74,6 +74,7 @@
     "profiler.SpawnHelperMixin",
     "profiler.WorldMixin",
     "railPowerLimit.PoweredRailBlockMixin",
+    "redstone.RedstoneWireBlockMixin",
     "renewableCoral.CoralBlockMixin",
     "renewableCoral.CoralFeatureMixin",
     "renewableFromAnvil.FallingBlockEntityMixin",
