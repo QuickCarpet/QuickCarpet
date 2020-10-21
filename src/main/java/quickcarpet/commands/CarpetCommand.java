@@ -56,22 +56,22 @@ public class CarpetCommand {
                                         new TranslatableText("command.carpet.title.search", Build.NAME, getString(c, "search")),
                                         Settings.MANAGER.getRulesMatching(getString(c, "search"))))));
 
-        LiteralArgumentBuilder<ServerCommandSource> removeDefault = literal("removeDefault").requires(s -> !Settings.MANAGER.locked);
-        LiteralArgumentBuilder<ServerCommandSource> setDefault = literal("setDefault").requires(s -> !Settings.MANAGER.locked);
+        LiteralArgumentBuilder<ServerCommandSource> removeDefault = literal("removeDefault").requires(s -> !Settings.MANAGER.isLocked());
+        LiteralArgumentBuilder<ServerCommandSource> setDefault = literal("setDefault").requires(s -> !Settings.MANAGER.isLocked());
         for (ParsedRule<?> rule : Settings.MANAGER.getRules()) {
-            carpet.then(literal(rule.name)
+            carpet.then(literal(rule.getName())
                 .executes(c -> displayRuleMenu(c.getSource(), rule))
                 .then(argument("value", rule.getArgumentType())
-                    .suggests((c, b) -> CommandSource.suggestMatching(rule.options, b))
-                    .requires(s -> !Settings.MANAGER.locked)
+                    .suggests((c, b) -> CommandSource.suggestMatching(rule.getOptions(), b))
+                    .requires(s -> !Settings.MANAGER.isLocked())
                     .executes(c -> setRule(c.getSource(), (ParsedRule) rule, rule.getArgument(c)))
                 )
             );
-            removeDefault.then(literal(rule.name)
+            removeDefault.then(literal(rule.getName())
                     .requires(s -> rule.hasSavedValue())
                     .executes(c -> removeDefault(c.getSource(), rule)));
-            setDefault.then(literal(rule.name).then(argument("value", rule.getArgumentType())
-                .suggests((c, b) -> CommandSource.suggestMatching(rule.options, b))
+            setDefault.then(literal(rule.getName()).then(argument("value", rule.getArgumentType())
+                .suggests((c, b) -> CommandSource.suggestMatching(rule.getOptions(), b))
                 .executes(c -> setDefault(c.getSource(), (ParsedRule) rule, rule.getArgument(c)))
             ));
         }
@@ -82,21 +82,21 @@ public class CarpetCommand {
 
     private static int displayRuleMenu(ServerCommandSource source, ParsedRule<?> rule) {
         if (!(source.getEntity() instanceof ServerPlayerEntity)) {
-            m(source, t("command.carpet.rule.value", rule.name, s(rule.getAsString(), Formatting.BOLD)));
+            m(source, t("command.carpet.rule.value", rule.getName(), s(rule.getAsString(), Formatting.BOLD)));
             return 1;
         }
 
         m(source, "");
-        m(source, runCommand(s(rule.name, Formatting.BOLD), "/carpet" + rule.name, ts("command.carpet.refresh", Formatting.GRAY)));
-        m(source, rule.description);
+        m(source, runCommand(s(rule.getName(), Formatting.BOLD), "/carpet" + rule.getName(), ts("command.carpet.refresh", Formatting.GRAY)));
+        m(source, rule.getDescription());
 
-        if (rule.extraInfo != null) m(source, style(rule.extraInfo, Formatting.GRAY));
+        if (rule.getExtraInfo() != null) m(source, style(rule.getExtraInfo(), Formatting.GRAY));
 
-        if (rule.deprecated != null) m(source, ts("command.carpet.rule.deprecated", Formatting.RED, rule.deprecated));
+        if (rule.getDeprecated() != null) m(source, ts("command.carpet.rule.deprecated", Formatting.RED, rule.getDeprecated()));
 
         List<Text> categories = new ArrayList<>();
         categories.add(t("command.carpet.categories"));
-        Stream<String> ruleCategories = rule.categories.stream().map(c -> c.lowerCase);
+        Stream<String> ruleCategories = rule.getCategories().stream().map(c -> c.lowerCase);
         if (rule.getModule() != null) {
             ruleCategories = Stream.concat(Stream.of(rule.getModule().getId()), ruleCategories);
         }
@@ -113,7 +113,7 @@ public class CarpetCommand {
         MutableText options = t("command.carpet.options");
         options.append(s("[", Formatting.YELLOW));
         boolean first = true;
-        for (String o: rule.options) {
+        for (String o: rule.getOptions()) {
             if (first) first = false;
             else options.append(" ");
             options.append(makeSetRuleButton(rule, o, false));
@@ -125,12 +125,12 @@ public class CarpetCommand {
 
     private static Text makeSetRuleButton(ParsedRule<?> rule, String option, boolean brackets) {
         MutableText baseText = s((brackets ? "[" : "") + option + (brackets ? "]" : ""));
-        if (option.equals(rule.defaultAsString) && !brackets) baseText = baseText.formatted(Formatting.UNDERLINE);
+        if (option.equals(rule.getDefaultAsString()) && !brackets) baseText = baseText.formatted(Formatting.UNDERLINE);
         baseText = option.equals(rule.getAsString()) ? baseText.formatted(Formatting.BOLD, Formatting.GREEN) : baseText.formatted(Formatting.YELLOW);
-        if (Settings.MANAGER.locked) {
+        if (Settings.MANAGER.isLocked()) {
             return hoverText(baseText, ts("carpet.locked", Formatting.GRAY));
         }
-        return suggestCommand(baseText, "/carpet " + rule.name + " " + option, ts("command.carpet.switch", Formatting.GRAY, option));
+        return suggestCommand(baseText, "/carpet " + rule.getName() + " " + option, ts("command.carpet.switch", Formatting.GRAY, option));
     }
 
     private static <T> int setRule(ServerCommandSource source, ParsedRule<T> rule, T newValue) {
@@ -139,7 +139,7 @@ public class CarpetCommand {
             MutableText changePermanently = c(s("["), t("command.carpet.changePermanently"), s("]"));
             style(changePermanently, Formatting.AQUA);
             hoverText(changePermanently, t("command.carpet.changePermanently.hover"));
-            suggestCommand(changePermanently, "/carpet setDefault " + rule.name + " " + rule.getAsString());
+            suggestCommand(changePermanently, "/carpet setDefault " + rule.getName() + " " + rule.getAsString());
             m(source, s(rule.toString() + " "), changePermanently);
         } catch (ParsedRule.ValueException e) {
             throw new CommandException(ts("command.carpet.rule.invalidValue", Formatting.RED, e.message));
@@ -153,7 +153,7 @@ public class CarpetCommand {
         try {
             rule.set(defaultValue, true);
             rule.save();
-            m(source, ts("command.carpet.setDefault.success", GRAY_ITALIC, rule.name, defaultValue));
+            m(source, ts("command.carpet.setDefault.success", GRAY_ITALIC, rule.getName(), defaultValue));
         } catch (ParsedRule.ValueException e) {
             throw new CommandException(ts("command.carpet.rule.invalidValue", Formatting.RED, e.message));
         }
@@ -163,15 +163,15 @@ public class CarpetCommand {
     private static int removeDefault(ServerCommandSource source, ParsedRule<?> rule) {
         rule.resetToDefault(true);
         rule.save();
-        m(source, ts("command.carpet.removeDefault.success", GRAY_ITALIC, rule.name, rule.getAsString()));
+        m(source, ts("command.carpet.removeDefault.success", GRAY_ITALIC, rule.getName(), rule.getAsString()));
         return 1;
     }
 
     private static Text displayInteractiveSetting(ParsedRule<?> rule) {
-        MutableText text = s("- " + rule.name);
-        runCommand(text, "/carpet " + rule.name, style(rule.description.copy(), Formatting.YELLOW));
+        MutableText text = s("- " + rule.getName());
+        runCommand(text, "/carpet " + rule.getName(), style(rule.getDescription().copy(), Formatting.YELLOW));
         boolean first = true;
-        for (String option : rule.options) {
+        for (String option : rule.getOptions()) {
             if (first) {
                 text.append(" ");
                 first = false;

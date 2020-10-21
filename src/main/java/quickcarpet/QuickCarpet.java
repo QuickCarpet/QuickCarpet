@@ -239,4 +239,9 @@ public final class QuickCarpet implements ModuleHost, ServerEventListener, Telem
     public JsonObject getTelemetryData() {
         return server.getTelemetryData();
     }
+
+    @Override
+    public String getVersion() {
+        return Build.VERSION;
+    }
 }

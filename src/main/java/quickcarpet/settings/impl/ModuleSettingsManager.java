@@ -1,10 +1,11 @@
-package quickcarpet.settings;
+package quickcarpet.settings.impl;
 
 import quickcarpet.module.QuickCarpetModule;
+import quickcarpet.settings.Rule;
 
 import java.lang.reflect.Field;
 
-public class ModuleSettingsManager extends SettingsManager {
+class ModuleSettingsManager extends SettingsManager implements quickcarpet.settings.ModuleSettingsManager {
     public final QuickCarpetModule module;
     public final String prefix;
 

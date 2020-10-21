@@ -7,13 +7,11 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
-import quickcarpet.settings.RuleUpgrader;
 
 public interface ServerEventListener {
     default Class<?> getSettingsClass() {
         return null;
     }
-    default RuleUpgrader getRuleUpgrader() { return null; }
     default void onServerInit(MinecraftServer server) {}
     default void onServerLoaded(MinecraftServer server) {}
     default void tick(MinecraftServer server) {}

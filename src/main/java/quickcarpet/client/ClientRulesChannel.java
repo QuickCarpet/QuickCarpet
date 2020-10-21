@@ -35,7 +35,7 @@ public class ClientRulesChannel implements ClientPluginChannelHandler {
                 CompoundTag ruleTag = (CompoundTag) tag;
                 String id = ruleTag.getString("Id");
                 try {
-                    ParsedRule rule = Settings.MANAGER.getRule(id);
+                    ParsedRule<?> rule = Settings.MANAGER.getRule(id);
                     rule.set(ruleTag.getString("Value"), false);
                 } catch (IllegalArgumentException ignored) {}
             }

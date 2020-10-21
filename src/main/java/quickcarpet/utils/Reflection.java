@@ -176,6 +176,12 @@ public class Reflection {
         }
     }
 
+    public static Class<?> getCallingClass(int frames) throws ClassNotFoundException {
+        //noinspection ThrowableNotThrown
+        StackTraceElement[] elements = new Error().getStackTrace();
+        return Class.forName(elements[frames + 1].getClassName());
+    }
+
     private static class TeleportHandler {
         private static final String INT_LOOK_TARGET = "net.minecraft.class_3143$class_3144";
         private static final MethodHandle teleport;

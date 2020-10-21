@@ -9,6 +9,7 @@ import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import quickcarpet.settings.Settings;
 import quickcarpet.utils.CarpetRegistry;
 
 @Mixin(RepeaterBlock.class)
@@ -18,7 +19,7 @@ public abstract class RepeaterBlockMixin extends AbstractRedstoneGateBlockMixin 
     @Override
     protected int getDelay(BlockState state, World world, BlockPos pos) {
         int delay = 2;
-        if (quickcarpet.settings.Settings.terracottaRepeaters) {
+        if (Settings.terracottaRepeaters) {
             BlockState stateBelow = world.getBlockState(pos.down());
             Block blockBelow = stateBelow.getBlock();
             delay = CarpetRegistry.TERRACOTTA_BLOCKS.getOrDefault(blockBelow, delay);

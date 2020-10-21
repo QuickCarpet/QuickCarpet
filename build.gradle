@@ -5,64 +5,152 @@ plugins {
 	id 'maven-publish'
 }
 
-repositories {
-    maven {
-        url 'https://masa.dy.fi/maven'
-    }
-}
-
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
-
-def malilib_mc_version = project.hasProperty('malilib_mc_version') ? project.malilib_mc_version : project.minecraft_version
-
-def buildDate = new Date()
-def branch = gitBranch()
-def ci = System.getenv("CI") != null
-def isDev = project.mod_version.endsWith('-dev')
-
-if (isDev && !ci) {
-	def df = new SimpleDateFormat(".yyyyMMdd.HHmmss")
-	df.setTimeZone(TimeZone.getTimeZone("UTC"))
-	project.mod_version += df.format(buildDate)
-}
-if (branch != "master" && branch != "HEAD") {
-	project.mod_version += "+" + branch.replaceAll("[+-]", '_')
-}
-if (isDev && ci) {
-	project.mod_version += "+" + gitCommit().substring(0, 7)
-}
-
-archivesBaseName = project.name
-version = project.mod_version
-group = project.maven_group
-
 minecraft {
 }
 
+
+allprojects {
+	apply plugin: 'fabric-loom'
+
+	sourceCompatibility = JavaVersion.VERSION_1_8
+	targetCompatibility = JavaVersion.VERSION_1_8
+
+	def buildDate = new Date()
+	def branch = gitBranch()
+	def ci = System.getenv("CI") != null
+	def isDev = project.mod_version.endsWith('-dev')
+
+	if (isDev && !ci) {
+		def df = new SimpleDateFormat(".yyyyMMdd.HHmmss")
+		df.setTimeZone(TimeZone.getTimeZone("UTC"))
+		project.mod_version += df.format(buildDate)
+	}
+	if (branch != "master" && branch != "HEAD") {
+		project.mod_version += "+" + branch.replaceAll("[+-]", '_')
+	}
+	if (isDev && ci) {
+		project.mod_version += "+" + gitCommit().substring(0, 7)
+	}
+
+	archivesBaseName = project.name
+	version = project.mod_version
+	group = project.maven_group
+
+	dependencies {
+		//to change the versions see the gradle.properties file
+		minecraft "com.mojang:minecraft:${project.minecraft_version}"
+		mappings "net.fabricmc:yarn:${project.yarn_mappings}"
+		modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
+
+		// javax.annotation.Nullable/Nonnull
+		compileOnly "com.google.code.findbugs:jsr305:3.0.1"
+	}
+// build.dependsOn dumpRules
+
+// configure the maven publication
+	publishing {
+		publications {
+			mavenJava(MavenPublication) {
+				// add all the jars that should be included when publishing to maven
+				artifact(jar.archivePath) {
+					builtBy remapJar
+				}
+				artifact(sourcesJar) {
+					builtBy remapSourcesJar
+				}
+			}
+		}
+
+		// select the repositories you want to publish to
+		repositories {
+			// uncomment to publish to the local maven
+			mavenLocal()
+		}
+	}
+
+	jar {
+		from "${rootDir}/LICENSE.md"
+	}
+
+
+	tasks.withType(JavaCompile) {
+		options.encoding = "UTF-8"
+	}
+
+	task generateJava(type: Copy) {
+		def df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+		df.setTimeZone(TimeZone.getTimeZone("UTC"))
+		def templateContext = [
+				version: project.version,
+				timestamp: df.format(buildDate),
+				branch: gitBranch(),
+				commit: gitCommit(),
+				working_dir_clean: gitStatus(),
+				minecraft_version: project.minecraft_version,
+				yarn_mappings: project.yarn_mappings
+		]
+		inputs.properties templateContext // for gradle up-to-date check
+		from 'src/template/java'
+		into "$buildDir/generated/java"
+		expand templateContext
+	}
+
+	sourceSets.main.java.srcDir "$buildDir/generated/java"
+	compileJava.dependsOn generateJava
+
+	processResources {
+		def properties =[
+			version: project.version,
+			api_version: project.api_version,
+			malilib_version: project.malilib_version
+		]
+		inputs.properties properties
+
+		from(sourceSets.main.resources.srcDirs) {
+			include "fabric.mod.json"
+			expand properties
+		}
+
+		from(sourceSets.main.resources.srcDirs) {
+			exclude "fabric.mod.json"
+		}
+	}
+}
+
+def malilib_mc_version = project.hasProperty('malilib_mc_version') ? project.malilib_mc_version : project.minecraft_version
+
+repositories {
+	maven {
+		url 'https://masa.dy.fi/maven'
+	}
+}
+
 dependencies {
-	//to change the versions see the gradle.properties file
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}"
-	modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
+	implementation project(":quickcarpet-api")
 
-	// Using the full api here to fix malilib's modmenu using an old version
-	// modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	def useModMenu = true
+	if (useModMenu) {
+		modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+		modImplementation "io.github.prospector:modmenu:${project.modmenu_version}"
+	} else {
+		modImplementation "net.fabricmc.fabric-api:fabric-resource-loader-v0:${project.fabric_resource_loader_v0_version}"
+		modImplementation "net.fabricmc.fabric-api:fabric-api-base:${project.fabric_api_base_version}"
+		modImplementation "net.fabricmc.fabric-api:fabric-networking-v0:${project.fabric_networking_v0_version}"
+		modImplementation "net.fabricmc.fabric-api:fabric-registry-sync-v0:${project.fabric_registry_sync_v0_version}"
+	}
 
-	modCompile "net.fabricmc.fabric-api:fabric-resource-loader-v0:${project.fabric_resource_loader_v0_version}"
+	// JiJ fabric-resource-loader and quickcarpet-api
 	include "net.fabricmc.fabric-api:fabric-resource-loader-v0:${project.fabric_resource_loader_v0_version}"
-
-	modCompile "net.fabricmc.fabric-api:fabric-api-base:${project.fabric_api_base_version}"
-	modCompile "net.fabricmc.fabric-api:fabric-networking-v0:${project.fabric_networking_v0_version}"
-	modCompile "net.fabricmc.fabric-api:fabric-registry-sync-v0:${project.fabric_registry_sync_v0_version}"
-
-	// javax.annotation.Nullable/Nonnull
-	compileOnly "com.google.code.findbugs:jsr305:3.0.1"
+	afterEvaluate {
+		include project(":quickcarpet-api")
+	}
 
 	modImplementation("fi.dy.masa.malilib:malilib-fabric-${malilib_mc_version}:${project.malilib_version}") {
 		exclude module: "modmenu"
 	}
 }
+
+remapJar.dependsOn(project(":quickcarpet-api").tasks.remapJar)
 
 static def gitCommit() {
 	def commit = ""
@@ -90,65 +178,12 @@ static def gitStatus() {
 	exitCode == 0
 }
 
-task generateJava(type: Copy) {
-	def df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
-	df.setTimeZone(TimeZone.getTimeZone("UTC"))
-	def templateContext = [
-			version: project.version,
-			timestamp: df.format(buildDate),
-			branch: gitBranch(),
-			commit: gitCommit(),
-			working_dir_clean: gitStatus(),
-			minecraft_version: project.minecraft_version,
-			yarn_mappings: project.yarn_mappings
-	]
-	inputs.properties templateContext // for gradle up-to-date check
-	from 'src/template/java'
-	into "$buildDir/generated/java"
-	expand templateContext
-}
-
-sourceSets.main.java.srcDir "$buildDir/generated/java"
-compileJava.dependsOn generateJava
-
-processResources {
-	def properties =[
-		version: project.version,
-		malilib_version: project.malilib_version
-	]
-	inputs.properties properties
-
-	// replace stuff in fabric.mod.json, nothing else
-	from(sourceSets.main.resources.srcDirs) {
-		include "fabric.mod.json"
-
-		// add mod metadata
-		expand properties
-	}
-
-	// copy everything else, thats not the mcmod.info
-	from(sourceSets.main.resources.srcDirs) {
-		exclude "fabric.mod.json"
-	}
-}
-
-// ensure that the encoding is set to UTF-8, no matter what the system default is
-// this fixes some edge cases with special characters not displaying correctly
-// see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
-tasks.withType(JavaCompile) {
-	options.encoding = "UTF-8"
-}
-
 // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
 // if it is present.
 // If you remove this task, sources will not be generated.
 task sourcesJar(type: Jar, dependsOn: classes) {
 	classifier = "sources"
 	from sourceSets.main.allSource
-}
-
-jar {
-	from "LICENSE"
 }
 
 task dumpRules(type: JavaExec, dependsOn: jar) {
@@ -161,27 +196,5 @@ task dumpRules(type: JavaExec, dependsOn: jar) {
 			from "run/rules.md"
 			into "."
 		}
-	}
-}
-// build.dependsOn dumpRules
-
-// configure the maven publication
-publishing {
-	publications {
-		mavenJava(MavenPublication) {
-			// add all the jars that should be included when publishing to maven
-			artifact(jar.archivePath) {
-				builtBy remapJar
-			}
-			artifact(sourcesJar) {
-				builtBy remapSourcesJar
-			}
-		}
-	}
-
-	// select the repositories you want to publish to
-	repositories {
-		// uncomment to publish to the local maven
-		mavenLocal()
 	}
 }

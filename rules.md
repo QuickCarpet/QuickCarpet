@@ -520,7 +520,7 @@ Higher levels need lots of RAM (up to 7569 chunks loaded with level 32)
 Type: `int`  
 Default: `11`  
 Categories: experimental  
-Validator: `quickcarpet.settings.Settings$SpawnChunkLevel`  
+Validator: `Settings$SpawnChunkLevel`  
 
 ## stackableShulkerBoxes
 Empty shulker boxes can stack to 64 when dropped on the ground
@@ -547,7 +547,7 @@ Type: `double`
 Default: `-1.0`  
 Options: `-1`  
 Categories: tnt  
-Validator: `quickcarpet.settings.Settings$TNTAngle`  
+Validator: `Settings$TNTAngle`  
 
 ## tntPrimeMomentum
 Removes random TNT momentum when primed and set to false

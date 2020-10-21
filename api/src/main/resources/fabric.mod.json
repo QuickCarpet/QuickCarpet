@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "quickcarpet-api",
+  "version": "${api_version}",
+  "name": "QuickCarpet API",
+  "description": "API for QuickCarpet modules",
+  "authors": [
+    "skyrising"
+  ],
+  "contact": {
+    "homepage": "https://discord.gg/scicraft",
+    "sources": "https://github.com/DeadlyMC/QuickCarpet114",
+    "issues": "https://github.com/DeadlyMC/QuickCarpet114/issues"
+  },
+  "license": "MIT",
+  "environment": "*",
+  "custom": {
+    "modmenu:api": true,
+    "modmenu:parent": "quickcarpet"
+  }
+}

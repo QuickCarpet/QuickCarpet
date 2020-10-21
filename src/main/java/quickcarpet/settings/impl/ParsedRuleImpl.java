@@ -1,4 +1,4 @@
-package quickcarpet.settings;
+package quickcarpet.settings.impl;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.brigadier.arguments.*;
@@ -8,44 +8,42 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.TranslatableText;
 import quickcarpet.module.QuickCarpetModule;
 import quickcarpet.network.channels.RulesChannel;
+import quickcarpet.settings.*;
 import quickcarpet.utils.Reflection;
 import quickcarpet.utils.Translations;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static java.lang.reflect.Modifier.*;
 
-public final class ParsedRule<T> implements Comparable<ParsedRule<T>> {
-    public final Rule rule;
-    public final Field field;
+final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T> {
+    private final Rule rule;
+    private final Field field;
 
-    public final String shortName;
-    public final String name;
-    public final TranslatableText description;
+    private final String shortName;
+    private final String name;
+    private final TranslatableText description;
     @Nullable
-    public final TranslatableText extraInfo;
+    private final TranslatableText extraInfo;
     @Nullable
-    public final TranslatableText deprecated;
-    public final ImmutableList<RuleCategory> categories;
-    public final ImmutableList<String> options;
-    public final Class<T> type;
+    private final TranslatableText deprecated;
+    private final ImmutableList<RuleCategory> categories;
+    private final ImmutableList<String> options;
+    private final Class<T> type;
     private final TypeAdapter<T, ?> typeAdapter;
-    public final Validator<T> validator;
-    public final ChangeListener<T> onChange;
-    public final T defaultValue;
-    public final String defaultAsString;
-    final SettingsManager manager;
+    private final Validator<T> validator;
+    private final ChangeListener<T> onChange;
+    private final T defaultValue;
+    private final String defaultAsString;
+    private final quickcarpet.settings.SettingsManager manager;
     private T saved;
     private String savedAsString;
 
-    ParsedRule(SettingsManager manager, Field field, Rule rule) {
+    ParsedRuleImpl(SettingsManager manager, Field field, Rule rule) {
         if (((field.getModifiers() & (PUBLIC | STATIC | FINAL)) != (PUBLIC | STATIC))) {
             throw new IllegalArgumentException(field + " is not public static");
         }
@@ -70,6 +68,78 @@ public final class ParsedRule<T> implements Comparable<ParsedRule<T>> {
         this.deprecated = rule.deprecated() ? new TranslatableText(manager.getDeprecationTranslationKey(field, rule)) : null;
     }
 
+    @Override
+    public Rule getRule() {
+        return rule;
+    }
+
+    @Override
+    public Field getField() {
+        return field;
+    }
+
+    @Override
+    public String getShortName() {
+        return shortName;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public TranslatableText getDescription() {
+        return description;
+    }
+
+    @Nullable
+    @Override
+    public TranslatableText getExtraInfo() {
+        return extraInfo;
+    }
+
+    @Nullable
+    @Override
+    public TranslatableText getDeprecated() {
+        return deprecated;
+    }
+
+    @Override
+    public List<RuleCategory> getCategories() {
+        return categories;
+    }
+
+    @Override
+    public List<String> getOptions() {
+        return options;
+    }
+
+    @Override
+    public Class<T> getType() {
+        return type;
+    }
+
+    @Override
+    public Validator<T> getValidator() {
+        return validator;
+    }
+
+    @Override
+    public ChangeListener<T> getChangeListener() {
+        return onChange;
+    }
+
+    @Override
+    public T getDefaultValue() {
+        return defaultValue;
+    }
+
+    @Override
+    public String getDefaultAsString() {
+        return defaultAsString;
+    }
+
     @SuppressWarnings("unchecked")
     private static <T> TypeAdapter<T, ?> getTypeAdapter(Class<T> type) {
         if (type == String.class) return (TypeAdapter<T, ?>) TypeAdapter.STRING;
@@ -80,38 +150,49 @@ public final class ParsedRule<T> implements Comparable<ParsedRule<T>> {
         throw new IllegalStateException("Unknown type " + type.getSimpleName());
     }
 
+    @Override
     public ArgumentType<?> getArgumentType() {
         return typeAdapter.getArgumentType();
     }
 
+    @Override
     public T getArgument(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         return typeAdapter.getArgument(context, "value", type);
     }
 
+    @Override
     @Nullable
     public QuickCarpetModule getModule() {
         if (!(manager instanceof ModuleSettingsManager)) return null;
         return ((ModuleSettingsManager) manager).module;
     }
 
+    @Override
+    public quickcarpet.settings.SettingsManager getManager() {
+        return manager;
+    }
+
+    @Override
     public void set(String value, boolean sync) {
         set(typeAdapter.parse(value), sync);
     }
 
+    @Override
     public void set(T value, boolean sync) {
         T previousValue = this.get();
         Optional<TranslatableText> error = this.validator.validate(value);
-        if (error.isPresent()) throw new ValueException(error.get());
+        if (error.isPresent()) throw new ParsedRule.ValueException(error.get());
         try {
             this.field.set(null, value);
             this.onChange.onChange(this, previousValue);
-            this.categories.forEach(c -> c.onChange((ParsedRule<Object>) this, previousValue));
+            this.categories.forEach(c -> c.onChange((ParsedRuleImpl<Object>) this, previousValue));
             if (sync) RulesChannel.instance.sendRuleUpdate(Collections.singleton(this));
         } catch (IllegalAccessException e) {
             throw new IllegalStateException(e);
         }
     }
 
+    @Override
     @SuppressWarnings("unchecked")
     public T get() {
         try {
@@ -121,27 +202,32 @@ public final class ParsedRule<T> implements Comparable<ParsedRule<T>> {
         }
     }
 
+    @Override
     public String getAsString() {
         return typeAdapter.toString(get());
     }
 
+    @Override
     public boolean getBoolValue() {
         if (type == boolean.class) return (Boolean) get();
         if (type.isAssignableFrom(Number.class)) return ((Number) get()).doubleValue() > 0;
         return false;
     }
 
+    @Override
     public boolean isDefault() {
         return defaultValue.equals(get());
     }
 
+    @Override
     public void resetToDefault(boolean sync) {
         set(defaultValue, sync);
     }
 
+    @Override
     public void save() {
         rememberSaved();
-        Settings.MANAGER.save();
+        ((CoreSettingsManager) Settings.MANAGER).save();
     }
 
     void load(String value) {
@@ -154,14 +240,17 @@ public final class ParsedRule<T> implements Comparable<ParsedRule<T>> {
         this.savedAsString = typeAdapter.toString(this.saved);
     }
 
-    T getSaved() {
+    @Override
+    public T getSaved() {
         return saved;
     }
 
-    String getSavedAsString() {
+    @Override
+    public String getSavedAsString() {
         return savedAsString;
     }
 
+    @Override
     public boolean hasSavedValue() {
         if (saved == null) return false;
         return !defaultValue.equals(saved);
@@ -169,7 +258,7 @@ public final class ParsedRule<T> implements Comparable<ParsedRule<T>> {
 
     @Override
     public boolean equals(Object obj) {
-        return obj.getClass() == ParsedRule.class && ((ParsedRule<?>) obj).name.equals(this.name);
+        return obj instanceof ParsedRule && ((ParsedRule<?>) obj).getName().equals(this.name);
     }
 
     @Override
@@ -179,7 +268,7 @@ public final class ParsedRule<T> implements Comparable<ParsedRule<T>> {
 
     @Override
     public int compareTo(ParsedRule<T> o) {
-        return this.name.compareTo(o.name);
+        return this.name.compareTo(o.getName());
     }
 
     @Override
@@ -271,16 +360,4 @@ public final class ParsedRule<T> implements Comparable<ParsedRule<T>> {
         TypeAdapter.Simple<Double> DOUBLE = new Simple<>(Double::parseDouble, DoubleArgumentType::doubleArg);
     }
 
-    public static class ValueException extends IllegalArgumentException {
-        public final TranslatableText message;
-
-        ValueException(TranslatableText message) {
-            this.message = message;
-        }
-
-        @Override
-        public String getMessage() {
-            return message.getString();
-        }
-    }
 }

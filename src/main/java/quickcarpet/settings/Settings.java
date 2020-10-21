@@ -25,7 +25,7 @@ import java.util.Optional;
 import static quickcarpet.settings.RuleCategory.*;
 
 public class Settings {
-    public static final CoreSettingsManager MANAGER = new CoreSettingsManager(Settings.class, new RuleUpgrader() {
+    public static final RuleUpgrader RULE_UPGRADER = new RuleUpgrader() {
         @Override
         public Pair<String, String> upgrade(String key, String value) {
             switch (key) {
@@ -38,11 +38,11 @@ public class Settings {
 
         @Override
         public String upgradeValue(ParsedRule<?> rule, String value) {
-            if (rule.categories.contains(RuleCategory.COMMANDS) && rule.type == int.class) {
+            if (rule.getCategories().contains(COMMANDS) && rule.getType() == int.class) {
                 if ("true".equals(value)) return "0";
                 if ("false".equals(value)) return "4";
             }
-            switch (rule.shortName) {
+            switch (rule.getShortName()) {
                 case "renewableSand": {
                     if ("true".equals(value)) return "anvil";
                     if ("false".equals(value)) return "none";
@@ -50,7 +50,8 @@ public class Settings {
             }
             return value;
         }
-    });
+    };
+    public static final CoreSettingsManager MANAGER = new quickcarpet.settings.impl.CoreSettingsManager();
 
     @Rule(category = FEATURE)
     public static boolean accurateBlockPlacement = true;
@@ -184,7 +185,7 @@ public class Settings {
     @Rule(category = {FEATURE, EXPERIMENTAL})
     public static boolean movableBlockEntities = false;
 
-    @Rule(category = {FEATURE,EXPERIMENTAL})
+    @Rule(category = {FEATURE, EXPERIMENTAL})
     public static boolean movableBlockOverrides = false;
 
     @Rule(category = FEATURE)

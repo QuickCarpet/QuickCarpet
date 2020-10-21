@@ -7,7 +7,7 @@ public enum RuleCategory implements ChangeListener<Object> {
     COMMANDS {
         @Override
         public void onChange(ParsedRule<Object> rule, Object previous) {
-            rule.manager.resendCommandTree();
+            rule.getManager().resendCommandTree();
         }
     };
 

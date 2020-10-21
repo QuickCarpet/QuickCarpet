@@ -72,14 +72,14 @@ public class RulesChannel implements PluginChannelHandler {
         ListTag rulesList = new ListTag();
         for (ParsedRule<?> rule : rules) {
             CompoundTag ruleTag = new CompoundTag();
-            ruleTag.putString("Id", rule.name);
-            ruleTag.putString("Type", rule.type.getName());
-            ruleTag.putString("DefaultValue", rule.defaultAsString);
+            ruleTag.putString("Id", rule.getName());
+            ruleTag.putString("Type", rule.getType().getName());
+            ruleTag.putString("DefaultValue", rule.getDefaultAsString());
             ruleTag.putString("Value", rule.getAsString());
-            ruleTag.putString("Description", Translations.translate(rule.description, player).getString());
+            ruleTag.putString("Description", Translations.translate(rule.getDescription(), player).getString());
             ListTag extraList = new ListTag();
-            if (rule.extraInfo != null) {
-                String[] extraInfo = Translations.translate(rule.extraInfo, player).getString().split("\n");
+            if (rule.getExtraInfo() != null) {
+                String[] extraInfo = Translations.translate(rule.getExtraInfo(), player).getString().split("\n");
                 for (String extra : extraInfo) extraList.add(StringTag.of(extra));
             }
             ruleTag.put("ExtraInfo", extraList);

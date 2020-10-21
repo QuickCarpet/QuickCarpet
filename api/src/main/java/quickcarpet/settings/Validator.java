@@ -1,12 +1,10 @@
 package quickcarpet.settings;
 
+import net.minecraft.text.LiteralText;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 
 import java.util.Optional;
-
-import static quickcarpet.utils.Messenger.s;
-import static quickcarpet.utils.Messenger.t;
 
 public interface Validator<T> {
     /**
@@ -31,7 +29,7 @@ public interface Validator<T> {
         @Override
         public Optional<TranslatableText> validate(T value) {
             if(value.doubleValue() > 0) return Optional.empty();
-            return Optional.of(t("carpet.validator.positive"));
+            return Optional.of(new TranslatableText("carpet.validator.positive"));
         }
 
         @Override
@@ -44,7 +42,7 @@ public interface Validator<T> {
         @Override
         public Optional<TranslatableText> validate(T value) {
             if(value.doubleValue() >= 0) return Optional.empty();
-            return Optional.of(t("carpet.validator.nonNegative"));
+            return Optional.of(new TranslatableText("carpet.validator.nonNegative"));
         }
 
         @Override
@@ -57,7 +55,7 @@ public interface Validator<T> {
         @Override
         public Optional<TranslatableText> validate(T value) {
             if(value.doubleValue() < 0) return Optional.empty();
-            return Optional.of(t("carpet.validator.negative"));
+            return Optional.of(new TranslatableText("carpet.validator.negative"));
         }
 
         @Override
@@ -70,7 +68,7 @@ public interface Validator<T> {
         @Override
         public Optional<TranslatableText> validate(Integer value) {
             if (value >= 0 && value <= 4) return Optional.empty();
-            return Optional.of(t("carpet.validator.range", s("0", Formatting.AQUA), s("4"), Formatting.AQUA));
+            return Optional.of(new TranslatableText("carpet.validator.range", new LiteralText("0").formatted(Formatting.AQUA), new LiteralText("4").formatted(Formatting.AQUA)));
         }
 
         @Override
@@ -106,7 +104,7 @@ public interface Validator<T> {
             int minCompare = value.compareTo(min);
             int maxCompare = value.compareTo(max);
             if ((0 < minCompare && maxCompare < 0) || (minCompare == 0 && minIncluded) || (maxCompare == 0) && maxIncluded) return Optional.empty();
-            return Optional.of(t("carpet.validator.range", s(this.min.toString(), Formatting.AQUA), s(this.max.toString(), Formatting.AQUA)));
+            return Optional.of(new TranslatableText("carpet.validator.range", new LiteralText(this.min.toString()).formatted(Formatting.AQUA), new LiteralText(this.max.toString()).formatted(Formatting.AQUA)));
         }
     }
 }

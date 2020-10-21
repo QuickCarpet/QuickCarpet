@@ -10,3 +10,6 @@ pluginManagement {
 }
 
 rootProject.name = 'quickcarpet'
+
+include 'quickcarpet-api'
+project(':quickcarpet-api').projectDir = file('api')
