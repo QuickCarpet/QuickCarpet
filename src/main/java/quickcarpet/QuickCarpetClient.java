@@ -5,16 +5,17 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
+import quickcarpet.api.QuickCarpetClientAPI;
+import quickcarpet.api.settings.ParsedRule;
 import quickcarpet.client.ClientInit;
 import quickcarpet.client.ClientPluginChannelManager;
 import quickcarpet.client.ClientPubSubListener;
 import quickcarpet.client.ClientRulesChannel;
 import quickcarpet.helper.TickSpeed;
-import quickcarpet.settings.ParsedRule;
 import quickcarpet.settings.Settings;
 
 @Environment(EnvType.CLIENT)
-public class QuickCarpetClient {
+public class QuickCarpetClient implements QuickCarpetClientAPI {
     private static QuickCarpetClient instance = new QuickCarpetClient();
     private final MinecraftClient minecraftClient;
     private final ClientRulesChannel rulesChannel;
@@ -33,6 +34,11 @@ public class QuickCarpetClient {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public quickcarpet.api.network.client.ClientPluginChannelManager getPluginChannelManager() {
+        return ClientPluginChannelManager.INSTANCE;
     }
 
     public static QuickCarpetClient getInstance() {

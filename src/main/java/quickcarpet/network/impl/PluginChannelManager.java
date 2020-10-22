@@ -1,4 +1,4 @@
-package quickcarpet.network;
+package quickcarpet.network.impl;
 
 import com.google.common.base.Charsets;
 import io.netty.buffer.ByteBuf;
@@ -10,28 +10,25 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import quickcarpet.api.network.server.ServerPluginChannelHandler;
+import quickcarpet.api.network.server.ServerPluginChannelManager;
 import quickcarpet.mixin.accessor.CustomPayloadC2SPacketAccessor;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class PluginChannelManager {
-    public static final Identifier REGISTER = new Identifier("minecraft:register");
-    public static final Identifier UNREGISTER = new Identifier("minecraft:unregister");
-    public static final Logger LOG = LogManager.getLogger();
-
+public class PluginChannelManager implements ServerPluginChannelManager {
     private final MinecraftServer server;
     public final PluginChannelTracker tracker;
-    private Map<Identifier, PluginChannelHandler> channelHandlers = new HashMap<>();
+    private Map<Identifier, ServerPluginChannelHandler> channelHandlers = new HashMap<>();
 
     public PluginChannelManager(MinecraftServer server) {
         this.server = server;
         this.tracker = new PluginChannelTracker(server);
     }
 
-    public void register(PluginChannelHandler handler) {
+    @Override
+    public void register(ServerPluginChannelHandler handler) {
         Identifier[] channels = handler.getChannels();
         for (Identifier channel : channels) {
             channelHandlers.put(channel, handler);
@@ -43,7 +40,8 @@ public class PluginChannelManager {
         }
     }
 
-    public void unregister(PluginChannelHandler handler) {
+    @Override
+    public void unregister(ServerPluginChannelHandler handler) {
         Identifier[] channels = handler.getChannels();
         for (Identifier channel : channels) {
             for (ServerPlayerEntity player : tracker.getPlayers(channel)) {
@@ -55,6 +53,7 @@ public class PluginChannelManager {
         sendChannelUpdate(server.getPlayerManager().getPlayerList(), UNREGISTER, Arrays.asList(channels));
     }
 
+    @Override
     public void process(ServerPlayerEntity player, CustomPayloadC2SPacket packet) {
         CustomPayloadC2SPacketAccessor packetAccessor = (CustomPayloadC2SPacketAccessor) packet;
         Identifier channel = packetAccessor.getChannel();
@@ -69,7 +68,7 @@ public class PluginChannelManager {
                 return;
             }
         }
-        PluginChannelHandler handler = channelHandlers.get(channel);
+        ServerPluginChannelHandler handler = channelHandlers.get(channel);
         if (handler != null) {
             handler.onCustomPayload(packet, player);
         }
@@ -78,7 +77,7 @@ public class PluginChannelManager {
     private void processRegister(ServerPlayerEntity player, PacketByteBuf payload) {
         List<Identifier> channels = getChannels(payload);
         for (Identifier channel : channels) {
-            PluginChannelHandler handler = channelHandlers.get(channel);
+            ServerPluginChannelHandler handler = channelHandlers.get(channel);
             if (handler != null && handler.register(channel, player)) {
                 tracker.register(player, channel);
             }
@@ -89,18 +88,20 @@ public class PluginChannelManager {
         List<Identifier> channels = getChannels(payload);
         for (Identifier channel : channels) {
             if (!tracker.isRegistered(player, channel)) continue;
-            PluginChannelHandler handler = channelHandlers.get(channel);
+            ServerPluginChannelHandler handler = channelHandlers.get(channel);
             if (handler != null) handler.unregister(channel, player);
             tracker.unregister(player, channel);
         }
     }
 
+    @Override
     public void onPlayerConnect(ServerPlayerEntity player) {
         sendChannelUpdate(Collections.singleton(player), REGISTER, channelHandlers.keySet());
     }
 
+    @Override
     public void onPlayerDisconnect(ServerPlayerEntity player) {
-        for (Map.Entry<Identifier, PluginChannelHandler> handler : channelHandlers.entrySet()) {
+        for (Map.Entry<Identifier, ServerPluginChannelHandler> handler : channelHandlers.entrySet()) {
             handler.getValue().unregister(handler.getKey(), player);
         }
         tracker.unregisterAll(player);

@@ -8,9 +8,9 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
-import quickcarpet.network.PacketSplitter;
-import quickcarpet.network.PluginChannelHandler;
-import quickcarpet.settings.ParsedRule;
+import quickcarpet.api.network.server.ServerPluginChannelHandler;
+import quickcarpet.api.settings.ParsedRule;
+import quickcarpet.network.impl.PacketSplitter;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.Translations;
 
@@ -18,7 +18,7 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public class RulesChannel implements PluginChannelHandler {
+public class RulesChannel implements ServerPluginChannelHandler {
     public static final Identifier CHANNEL = new Identifier("carpet:rules");
     public static final int VERSION = 1;
 

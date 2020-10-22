@@ -7,7 +7,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import quickcarpet.annotation.Feature;
+import quickcarpet.api.annotation.Feature;
 import quickcarpet.utils.extensions.ExtendedWorld;
 import quickcarpet.utils.extensions.SpawnEntityCache;
 

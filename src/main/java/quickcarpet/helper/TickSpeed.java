@@ -10,7 +10,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.MathHelper;
 import quickcarpet.QuickCarpet;
 import quickcarpet.QuickCarpetServer;
-import quickcarpet.TelemetryProvider;
+import quickcarpet.api.TelemetryProvider;
 import quickcarpet.commands.TickCommand;
 import quickcarpet.logging.Logger;
 import quickcarpet.logging.loghelpers.LogParameter;

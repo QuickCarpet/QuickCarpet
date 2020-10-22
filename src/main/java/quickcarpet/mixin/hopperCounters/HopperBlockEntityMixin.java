@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import quickcarpet.annotation.Feature;
+import quickcarpet.api.annotation.Feature;
 import quickcarpet.helper.HopperCounter;
 import quickcarpet.helper.WoolTool;
 import quickcarpet.settings.Settings;

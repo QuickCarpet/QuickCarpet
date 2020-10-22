@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import quickcarpet.QuickCarpetClient;
-import quickcarpet.annotation.Feature;
+import quickcarpet.api.annotation.Feature;
 import quickcarpet.client.ClientPluginChannelManager;
 
 @Feature("core")

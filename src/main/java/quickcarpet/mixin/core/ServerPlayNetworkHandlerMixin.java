@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import quickcarpet.QuickCarpet;
 import quickcarpet.QuickCarpetServer;
-import quickcarpet.annotation.Feature;
+import quickcarpet.api.annotation.Feature;
 
 @Feature("core")
 @Mixin(ServerPlayNetworkHandler.class)
@@ -27,7 +27,7 @@ public class ServerPlayNetworkHandlerMixin {
 
     @Inject(method = "onCustomPayload", at = @At("HEAD"))
     private void processCustomPacket(CustomPayloadC2SPacket packet, CallbackInfo ci) {
-        QuickCarpetServer.getInstance().pluginChannels.process(this.player, packet);
+        QuickCarpetServer.getInstance().getPluginChannelManager().process(this.player, packet);
     }
 
     @Inject(method = "onDisconnected", at = @At("HEAD"))

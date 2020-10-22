@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.Slice;
-import quickcarpet.annotation.Feature;
+import quickcarpet.api.annotation.Feature;
 import quickcarpet.feature.ObsidianBlock;
 
 @Feature("renewableLava")

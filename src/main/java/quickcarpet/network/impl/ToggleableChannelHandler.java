@@ -1,19 +1,21 @@
-package quickcarpet.network;
+package quickcarpet.network.impl;
 
 import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
+import quickcarpet.api.network.server.ServerPluginChannelHandler;
+import quickcarpet.api.network.server.ServerPluginChannelManager;
 
-public class ToggleableChannelHandler implements PluginChannelHandler {
-    private final PluginChannelManager channelManager;
-    public final PluginChannelHandler baseHandler;
+public class ToggleableChannelHandler implements ServerPluginChannelHandler {
+    private final ServerPluginChannelManager channelManager;
+    public final ServerPluginChannelHandler baseHandler;
     private boolean enabled;
 
-    public ToggleableChannelHandler(PluginChannelManager channelManager, PluginChannelHandler baseHandler) {
+    public ToggleableChannelHandler(ServerPluginChannelManager channelManager, ServerPluginChannelHandler baseHandler) {
         this(channelManager, baseHandler, true);
     }
 
-    public ToggleableChannelHandler(PluginChannelManager channelManager, PluginChannelHandler baseHandler, boolean enabled) {
+    public ToggleableChannelHandler(ServerPluginChannelManager channelManager, ServerPluginChannelHandler baseHandler, boolean enabled) {
         this.channelManager = channelManager;
         this.baseHandler = baseHandler;
         this.enabled = enabled;

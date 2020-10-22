@@ -1,6 +1,6 @@
-package quickcarpet.module;
+package quickcarpet.api.module;
 
-import quickcarpet.ServerEventListener;
+import quickcarpet.api.ServerEventListener;
 
 import javax.annotation.Nonnull;
 

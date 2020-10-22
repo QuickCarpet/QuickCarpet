@@ -12,8 +12,8 @@ import net.minecraft.util.Identifier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import quickcarpet.QuickCarpetClient;
-import quickcarpet.network.ClientPluginChannelHandler;
-import quickcarpet.network.PacketSplitter;
+import quickcarpet.api.network.client.ClientPluginChannelHandler;
+import quickcarpet.network.impl.PacketSplitter;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

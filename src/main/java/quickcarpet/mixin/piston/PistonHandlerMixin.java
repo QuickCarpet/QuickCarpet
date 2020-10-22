@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-import quickcarpet.annotation.Feature;
+import quickcarpet.api.annotation.Feature;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.PistonBehaviors;
 

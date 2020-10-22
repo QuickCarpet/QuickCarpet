@@ -1,4 +1,4 @@
-package quickcarpet.annotation;
+package quickcarpet.api.annotation;
 
 import java.lang.annotation.*;
 

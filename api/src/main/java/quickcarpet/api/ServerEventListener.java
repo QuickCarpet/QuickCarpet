@@ -1,4 +1,4 @@
-package quickcarpet;
+package quickcarpet.api;
 
 import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.api.EnvType;

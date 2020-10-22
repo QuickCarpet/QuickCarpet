@@ -7,11 +7,11 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
 import net.minecraft.util.Identifier;
+import quickcarpet.api.network.client.ClientPluginChannelHandler;
+import quickcarpet.api.settings.ParsedRule;
 import quickcarpet.helper.NBTHelper;
-import quickcarpet.network.ClientPluginChannelHandler;
-import quickcarpet.network.PacketSplitter;
 import quickcarpet.network.channels.RulesChannel;
-import quickcarpet.settings.ParsedRule;
+import quickcarpet.network.impl.PacketSplitter;
 import quickcarpet.settings.Settings;
 
 public class ClientRulesChannel implements ClientPluginChannelHandler {

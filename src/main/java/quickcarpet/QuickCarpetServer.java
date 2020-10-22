@@ -9,12 +9,16 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Pair;
 import net.minecraft.util.WorldSavePath;
 import net.minecraft.world.level.ServerWorldProperties;
+import quickcarpet.api.QuickCarpetServerAPI;
+import quickcarpet.api.ServerEventListener;
+import quickcarpet.api.TelemetryProvider;
+import quickcarpet.api.network.server.ServerPluginChannelManager;
 import quickcarpet.helper.Mobcaps;
 import quickcarpet.helper.TickSpeed;
 import quickcarpet.logging.LoggerManager;
-import quickcarpet.network.PluginChannelManager;
 import quickcarpet.network.channels.RulesChannel;
 import quickcarpet.network.channels.StructureChannel;
+import quickcarpet.network.impl.PluginChannelManager;
 import quickcarpet.pubsub.PubSubMessenger;
 import quickcarpet.utils.HUDController;
 
@@ -22,12 +26,12 @@ import javax.annotation.Nullable;
 import java.nio.file.Path;
 import java.util.Map;
 
-import static quickcarpet.network.PluginChannelManager.LOG;
+import static quickcarpet.api.network.server.ServerPluginChannelManager.LOG;
 
-public class QuickCarpetServer implements ServerEventListener, TelemetryProvider {
+public class QuickCarpetServer implements QuickCarpetServerAPI, ServerEventListener, TelemetryProvider {
     private static QuickCarpetServer instance;
     public final MinecraftServer server;
-    public PluginChannelManager pluginChannels;
+    public ServerPluginChannelManager pluginChannels;
     private final PubSubMessenger pubSubMessenger = new PubSubMessenger(QuickCarpet.PUBSUB);
     public LoggerManager loggers;
     public TickSpeed tickSpeed;
@@ -71,6 +75,11 @@ public class QuickCarpetServer implements ServerEventListener, TelemetryProvider
 
     public static Path getConfigFile(WorldSavePath name) {
         return getMinecraftServer().getSavePath(name);
+    }
+
+    @Override
+    public ServerPluginChannelManager getPluginChannelManager() {
+        return pluginChannels;
     }
 
     @Override

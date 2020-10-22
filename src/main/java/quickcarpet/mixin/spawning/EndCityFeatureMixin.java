@@ -8,7 +8,7 @@ import net.minecraft.world.gen.feature.DefaultFeatureConfig;
 import net.minecraft.world.gen.feature.EndCityFeature;
 import net.minecraft.world.gen.feature.StructureFeature;
 import org.spongepowered.asm.mixin.Mixin;
-import quickcarpet.annotation.Feature;
+import quickcarpet.api.annotation.Feature;
 
 import java.util.List;
 

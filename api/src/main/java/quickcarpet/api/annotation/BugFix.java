@@ -1,4 +1,4 @@
-package quickcarpet.annotation;
+package quickcarpet.api.annotation;
 
 public @interface BugFix {
     String value();

@@ -6,8 +6,8 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.*;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.RegistryKey;
+import quickcarpet.api.module.QuickCarpetModule;
 import quickcarpet.mixin.accessor.RegistryKeyAccessor;
-import quickcarpet.module.QuickCarpetModule;
 import quickcarpet.utils.extensions.PlayerWithLanguage;
 
 import java.io.IOException;

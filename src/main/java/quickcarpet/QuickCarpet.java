@@ -16,10 +16,12 @@ import net.minecraft.util.Pair;
 import net.minecraft.world.level.ServerWorldProperties;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import quickcarpet.api.QuickCarpetAPI;
+import quickcarpet.api.ServerEventListener;
+import quickcarpet.api.TelemetryProvider;
+import quickcarpet.api.module.QuickCarpetModule;
 import quickcarpet.commands.*;
 import quickcarpet.helper.Mobcaps;
-import quickcarpet.module.ModuleHost;
-import quickcarpet.module.QuickCarpetModule;
 import quickcarpet.pubsub.PubSubManager;
 import quickcarpet.pubsub.PubSubNode;
 import quickcarpet.settings.Settings;
@@ -32,7 +34,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-public final class QuickCarpet implements ModuleHost, ServerEventListener, TelemetryProvider {
+public final class QuickCarpet implements QuickCarpetAPI, ServerEventListener, TelemetryProvider {
     private static final Logger LOG = LogManager.getLogger();
     public static final PubSubManager PUBSUB = new PubSubManager();
 
@@ -82,6 +84,7 @@ public final class QuickCarpet implements ModuleHost, ServerEventListener, Telem
 
     @Override
     public void onGameStarted(EnvType env) {
+        QuickCarpetAPI.getInstance();
         CarpetRegistry.init();
         CarpetProfiler.init();
         try {

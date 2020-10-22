@@ -1,4 +1,4 @@
-package quickcarpet.network;
+package quickcarpet.network.impl;
 
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.EnvType;

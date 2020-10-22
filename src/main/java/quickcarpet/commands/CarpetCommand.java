@@ -14,9 +14,9 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import quickcarpet.Build;
 import quickcarpet.QuickCarpet;
-import quickcarpet.module.QuickCarpetModule;
-import quickcarpet.settings.ParsedRule;
-import quickcarpet.settings.RuleCategory;
+import quickcarpet.api.module.QuickCarpetModule;
+import quickcarpet.api.settings.ParsedRule;
+import quickcarpet.api.settings.RuleCategory;
 import quickcarpet.settings.Settings;
 
 import java.util.*;

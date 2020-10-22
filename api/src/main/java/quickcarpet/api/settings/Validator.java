@@ -1,4 +1,4 @@
-package quickcarpet.settings;
+package quickcarpet.api.settings;
 
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.TranslatableText;

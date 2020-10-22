@@ -9,13 +9,13 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
-import quickcarpet.network.PacketSplitter;
-import quickcarpet.network.PluginChannelHandler;
+import quickcarpet.api.network.server.ServerPluginChannelHandler;
+import quickcarpet.network.impl.PacketSplitter;
 
 import java.io.IOException;
 import java.util.*;
 
-public class PubSubMessenger implements PluginChannelHandler {
+public class PubSubMessenger implements ServerPluginChannelHandler {
     public static final Identifier CHANNEL_NAME = new Identifier("carpet:pubsub");
     // reserve id 0 for now
     public static final int PACKET_C2S_SUBSCRIBE = 1;

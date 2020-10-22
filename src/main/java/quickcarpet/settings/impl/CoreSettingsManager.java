@@ -5,9 +5,10 @@ import net.minecraft.util.Pair;
 import quickcarpet.Build;
 import quickcarpet.QuickCarpet;
 import quickcarpet.QuickCarpetServer;
-import quickcarpet.annotation.BugFix;
-import quickcarpet.module.QuickCarpetModule;
-import quickcarpet.settings.*;
+import quickcarpet.api.annotation.BugFix;
+import quickcarpet.api.module.QuickCarpetModule;
+import quickcarpet.api.settings.*;
+import quickcarpet.settings.Settings;
 import quickcarpet.utils.Reflection;
 import quickcarpet.utils.Translations;
 
@@ -23,7 +24,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class CoreSettingsManager extends SettingsManager implements quickcarpet.settings.CoreSettingsManager {
+public class CoreSettingsManager extends SettingsManager implements quickcarpet.api.settings.CoreSettingsManager {
     private final Map<QuickCarpetModule, ModuleSettingsManager> moduleSettings = new HashMap<>();
     private final List<ParsedRule<?>> allRules = new ArrayList<>();
     private final Map<String, ParsedRule<?>> rulesByName = new HashMap<>();

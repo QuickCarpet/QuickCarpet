@@ -1,4 +1,4 @@
-package quickcarpet;
+package quickcarpet.api;
 
 import com.google.gson.JsonObject;
 

@@ -19,8 +19,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import quickcarpet.QuickCarpet;
-import quickcarpet.annotation.BugFix;
-import quickcarpet.annotation.Feature;
+import quickcarpet.api.annotation.BugFix;
+import quickcarpet.api.annotation.Feature;
 import quickcarpet.utils.Translations;
 
 @Mixin(CommandManager.class)

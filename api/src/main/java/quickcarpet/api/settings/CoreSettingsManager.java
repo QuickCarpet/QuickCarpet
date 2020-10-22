@@ -1,6 +1,6 @@
-package quickcarpet.settings;
+package quickcarpet.api.settings;
 
-import quickcarpet.module.QuickCarpetModule;
+import quickcarpet.api.module.QuickCarpetModule;
 
 import java.io.OutputStream;
 

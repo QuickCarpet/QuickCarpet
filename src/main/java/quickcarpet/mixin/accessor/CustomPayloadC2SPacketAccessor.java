@@ -5,7 +5,7 @@ import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
-import quickcarpet.annotation.Feature;
+import quickcarpet.api.annotation.Feature;
 
 @Feature("logger.hud")
 @Mixin(CustomPayloadC2SPacket.class)

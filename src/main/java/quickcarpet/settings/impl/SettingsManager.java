@@ -5,11 +5,11 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import quickcarpet.module.QuickCarpetModule;
-import quickcarpet.settings.ParsedRule;
-import quickcarpet.settings.Rule;
-import quickcarpet.settings.RuleCategory;
-import quickcarpet.settings.RuleUpgrader;
+import quickcarpet.api.module.QuickCarpetModule;
+import quickcarpet.api.settings.ParsedRule;
+import quickcarpet.api.settings.Rule;
+import quickcarpet.api.settings.RuleCategory;
+import quickcarpet.api.settings.RuleUpgrader;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
@@ -21,7 +21,7 @@ import java.util.function.Predicate;
 
 import static java.lang.reflect.Modifier.*;
 
-abstract class SettingsManager implements quickcarpet.settings.SettingsManager {
+abstract class SettingsManager implements quickcarpet.api.settings.SettingsManager {
     protected static final Logger LOG = LogManager.getLogger();
     protected final Class<?> settingsClass;
     MinecraftServer server;

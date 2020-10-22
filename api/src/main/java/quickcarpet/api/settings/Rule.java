@@ -1,6 +1,6 @@
-package quickcarpet.settings;
+package quickcarpet.api.settings;
 
-import quickcarpet.annotation.BugFix;
+import quickcarpet.api.annotation.BugFix;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

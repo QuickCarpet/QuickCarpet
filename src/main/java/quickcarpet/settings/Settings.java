@@ -12,7 +12,8 @@ import net.minecraft.util.Unit;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import quickcarpet.QuickCarpetServer;
-import quickcarpet.annotation.BugFix;
+import quickcarpet.api.annotation.BugFix;
+import quickcarpet.api.settings.*;
 import quickcarpet.feature.BreakBlockDispenserBehavior;
 import quickcarpet.feature.PlaceBlockDispenserBehavior;
 import quickcarpet.utils.Messenger;
@@ -22,7 +23,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Optional;
 
-import static quickcarpet.settings.RuleCategory.*;
+import static quickcarpet.api.settings.RuleCategory.*;
 
 public class Settings {
     public static final RuleUpgrader RULE_UPGRADER = new RuleUpgrader() {

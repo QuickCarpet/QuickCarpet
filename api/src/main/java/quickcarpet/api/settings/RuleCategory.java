@@ -1,4 +1,4 @@
-package quickcarpet.settings;
+package quickcarpet.api.settings;
 
 import java.util.Locale;
 

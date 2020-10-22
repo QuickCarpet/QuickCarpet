@@ -13,8 +13,8 @@ import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import quickcarpet.annotation.BugFix;
-import quickcarpet.annotation.Feature;
+import quickcarpet.api.annotation.BugFix;
+import quickcarpet.api.annotation.Feature;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.extensions.ExtendedPistonBlockEntity;
 

@@ -1,4 +1,4 @@
-package quickcarpet.settings;
+package quickcarpet.api.settings;
 
 public interface ChangeListener<T> {
     void onChange(ParsedRule<T> rule, T previous);

@@ -6,9 +6,10 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.TranslatableText;
-import quickcarpet.module.QuickCarpetModule;
+import quickcarpet.api.module.QuickCarpetModule;
+import quickcarpet.api.settings.*;
 import quickcarpet.network.channels.RulesChannel;
-import quickcarpet.settings.*;
+import quickcarpet.settings.Settings;
 import quickcarpet.utils.Reflection;
 import quickcarpet.utils.Translations;
 
@@ -39,7 +40,7 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
     private final ChangeListener<T> onChange;
     private final T defaultValue;
     private final String defaultAsString;
-    private final quickcarpet.settings.SettingsManager manager;
+    private final quickcarpet.api.settings.SettingsManager manager;
     private T saved;
     private String savedAsString;
 
@@ -168,7 +169,7 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
     }
 
     @Override
-    public quickcarpet.settings.SettingsManager getManager() {
+    public quickcarpet.api.settings.SettingsManager getManager() {
         return manager;
     }
 
