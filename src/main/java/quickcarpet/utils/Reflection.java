@@ -91,17 +91,18 @@ public class Reflection {
         throw ex;
     }
 
-    private static final Class<? extends TradeOffers.Factory> SELL_ITEM_FACTORY_CLASS = TradeOffers.WANDERING_TRADER_TRADES.get(1)[0].getClass();
-    private static final MethodHandle newSellItemFactoryHandle = getNewSellItemFactoryHandle();
+    private static class SellItemFactoryHandle {
+        private static final MethodHandle newSellItemFactoryHandle = getNewSellItemFactoryHandle();
 
-    private static MethodHandle getNewSellItemFactoryHandle() {
-        try {
-            Constructor<?> c = SELL_ITEM_FACTORY_CLASS.getDeclaredConstructor(ItemStack.class, int.class, int.class, int.class, int.class, float.class);
-            c.setAccessible(true);
-            return LOOKUP.unreflectConstructor(c);
-        } catch (ReflectiveOperationException e) {
-            e.printStackTrace();
-            return null;
+        private static MethodHandle getNewSellItemFactoryHandle() {
+            try {
+                Constructor<?> c = TradeOffers.WANDERING_TRADER_TRADES.get(1)[0].getClass().getDeclaredConstructor(ItemStack.class, int.class, int.class, int.class, int.class, float.class);
+                c.setAccessible(true);
+                return LOOKUP.unreflectConstructor(c);
+            } catch (ReflectiveOperationException e) {
+                e.printStackTrace();
+                return null;
+            }
         }
     }
 
@@ -117,7 +118,7 @@ public class Reflection {
      */
     public static TradeOffers.Factory newSellItemFactory(ItemStack sell, int price, int count, int maxUses, int experience, float multiplier) {
         try {
-            return (TradeOffers.Factory) newSellItemFactoryHandle.invoke(sell, price, count, maxUses, experience, multiplier);
+            return (TradeOffers.Factory) SellItemFactoryHandle.newSellItemFactoryHandle.invoke(sell, price, count, maxUses, experience, multiplier);
         } catch (Throwable throwable) {
             throw new RuntimeException(throwable);
         }
