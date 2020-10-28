@@ -31,10 +31,12 @@ public class Configs implements IConfigHandler {
         public static final ConfigHotkey OPEN_CONFIG_GUI = hotkey("openConfigGui", "C,Q");
         public static final ConfigBooleanHotkeyed SYNC_LOW_TPS = booleanHotkeyed(ClientSetting.SYNC_LOW_TPS, "");
         public static final ConfigBooleanHotkeyed SYNC_HIGH_TPS = booleanHotkeyed(ClientSetting.SYNC_HIGH_TPS, "");
+        public static final ConfigBooleanHotkeyed CREATIVE_NO_CLIP = booleanHotkeyed(ClientSetting.CREATIVE_NO_CLIP, "");
 
         public static final List<IConfigBase> OPTIONS = ImmutableList.of(
             SYNC_LOW_TPS,
-            SYNC_HIGH_TPS
+            SYNC_HIGH_TPS,
+            CREATIVE_NO_CLIP
         );
 
         public static final List<IHotkey> HOTKEYS = ImmutableList.of(
@@ -43,7 +45,8 @@ public class Configs implements IConfigHandler {
 
         public static final List<IHotkeyTogglable> TOGGLEABLE = ImmutableList.of(
             SYNC_LOW_TPS,
-            SYNC_HIGH_TPS
+            SYNC_HIGH_TPS,
+            CREATIVE_NO_CLIP
         );
 
         public static List<IHotkey> getHotkeys() {

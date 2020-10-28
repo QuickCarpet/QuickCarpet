@@ -129,6 +129,9 @@ public class Settings {
     @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
     public static int commandWaypoint = 0;
 
+    @Rule(category = CREATIVE)
+    public static boolean creativeNoClip = false;
+
     @Rule(category = {FEATURE, EXPERIMENTAL})
     public static BreakBlockDispenserBehavior.Option dispensersBreakBlocks = BreakBlockDispenserBehavior.Option.FALSE;
 

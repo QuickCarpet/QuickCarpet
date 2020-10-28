@@ -210,6 +210,14 @@ Default: `0`
 Categories: commands  
 Validator: `OP Level (0-4)`  
 
+## creativeNoClip
+Enables players to noclip while in creative mode if they have the client-side setting enabled
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: creative  
+
 ## dispensersBreakBlocks
 Gives dispensers the ability to break blocks using gunpowder
 
@@ -520,7 +528,7 @@ Higher levels need lots of RAM (up to 7569 chunks loaded with level 32)
 Type: `int`  
 Default: `11`  
 Categories: experimental  
-Validator: `Settings$SpawnChunkLevel`  
+Validator: `quickcarpet.settings.Settings$SpawnChunkLevel`  
 
 ## stackableShulkerBoxes
 Empty shulker boxes can stack to 64 when dropped on the ground
@@ -547,7 +555,7 @@ Type: `double`
 Default: `-1.0`  
 Options: `-1`  
 Categories: tnt  
-Validator: `Settings$TNTAngle`  
+Validator: `quickcarpet.settings.Settings$TNTAngle`  
 
 ## tntPrimeMomentum
 Removes random TNT momentum when primed and set to false
