@@ -334,6 +334,14 @@ Default: `false`
 Options: `true`, `false`  
 Categories: commands  
 
+## hopperMinecartItemTransfer
+Hopper minecarts can push out items like normal hoppers
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: feature, experimental  
+
 ## isDevelopment
 Sets the isDevelopment constant
 

@@ -74,6 +74,7 @@
   "carpet.rule.flippinCactus.extra": "Doesn't cause block updates when rotated/flipped\nApplies to pistons, observers, droppers, repeaters, stairs, glazed terracotta etc.",
   "carpet.rule.hopperCounters.description": "Hoppers pointing to wool will count items passing through them",
   "carpet.rule.hopperCounters.extra": "Enables /counter command, and actions while placing red and green carpets on wool blocks\nUse /counter <color?> reset to reset the counter, and /counter <color?> to query\nCounters are global and shared between players, 16 channels available\nItems counted are destroyed, count up to one stack per tick per hopper",
+  "carpet.rule.hopperMinecartItemTransfer.description": "Hopper minecarts can push out items like normal hoppers",
   "carpet.rule.isDevelopment.description": "Sets the isDevelopment constant",
   "carpet.rule.isDevelopment.extra": "For example enables the /test command",
   "carpet.rule.movableBlockEntities.description": "Pistons can push block entities, like hoppers, chests etc.",

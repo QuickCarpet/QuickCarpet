@@ -175,6 +175,9 @@ public class Settings {
     @Rule(category = COMMANDS)
     public static boolean hopperCounters = false;
 
+    @Rule(category = {FEATURE, EXPERIMENTAL})
+    public static boolean hopperMinecartItemTransfer = false;
+
     @Rule(category = EXPERIMENTAL, onChange = IsDevelopmentListener.class)
     public static boolean isDevelopment = false;
 
