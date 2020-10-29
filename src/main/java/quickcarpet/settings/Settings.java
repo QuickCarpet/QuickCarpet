@@ -175,6 +175,9 @@ public class Settings {
     @Rule(category = COMMANDS)
     public static boolean hopperCounters = false;
 
+    @Rule(category = {FIX, EXPERIMENTAL}, options = {"0", "4", "8"}, validator = Validator.NonNegative.class)
+    public static int hopperMinecartCooldown = 0;
+
     @Rule(category = {FEATURE, EXPERIMENTAL})
     public static boolean hopperMinecartItemTransfer = false;
 

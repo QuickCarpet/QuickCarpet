@@ -334,6 +334,15 @@ Default: `false`
 Options: `true`, `false`  
 Categories: commands  
 
+## hopperMinecartCooldown
+carpet.rule.hopperMinecartCooldown.description
+
+Type: `int`  
+Default: `0`  
+Options: `0`, `4`, `8`  
+Categories: fix, experimental  
+Validator: `>= 0`  
+
 ## hopperMinecartItemTransfer
 Hopper minecarts can push out items like normal hoppers
 
