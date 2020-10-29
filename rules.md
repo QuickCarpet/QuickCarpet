@@ -269,6 +269,15 @@ Options: `true`, `false`
 Categories: experimental  
 Fixes: [MC-88959](https://bugs.mojang.com/browse/MC-88959)  
 
+## drownedEnchantedTridentsFix
+Makes enchantments work on tridents thrown by drowned
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: fix, experimental  
+Fixes: [MC-127321](https://bugs.mojang.com/browse/MC-127321)  
+
 ## dustOnPistons
 Makes redstone dust not pop off pistons
 

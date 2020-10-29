@@ -65,6 +65,7 @@
   "carpet.rule.dispensersTillSoil.description": "Dispensers with hoes can till soil",
   "carpet.rule.doubleRetraction.description": "1.8 double retraction from pistons.",
   "carpet.rule.doubleRetraction.extra": "Gives pistons the ability to double retract without side effects.",
+  "carpet.rule.drownedEnchantedTridentsFix.description": "Makes enchantments work on tridents thrown by drowned",
   "carpet.rule.dustOnPistons.description": "Makes redstone dust not pop off pistons",
   "carpet.rule.explosionNoBlockDamage.description": "Explosions won't destroy blocks",
   "carpet.rule.fillLimit.description": "Customizable fill/clone volume limit",

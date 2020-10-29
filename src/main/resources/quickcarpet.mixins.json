@@ -46,6 +46,7 @@
     "creativeNoClip.PlayerEntityMixin",
     "creativeNoClip.WorldRendererMixin",
     "dispenser.DispenserBlockMixin",
+    "drownedEnchantedTridentsFix.DrownedEntityMixin",
     "drownedNavigationFix.MobEntityMixin",
     "drownedNavigationFix.ServerWorldMixin",
     "fabricApi.RegistrySyncManagerMixin",
