@@ -21,6 +21,8 @@ public class ClientSetting<T> {
     public static final ClientSetting<Boolean> MOVING_BLOCK_CULLING = new ClientSetting<>("movingBlockCulling", false, () -> Configs.Rendering.MOVING_BLOCK_CULLING.getBooleanValue());
     public static final ClientSetting<Boolean> SMOOTH_PISTONS = new ClientSetting<>("smoothPistons", true, () -> Configs.Rendering.SMOOTH_PISTONS.getBooleanValue());
     public static final ClientSetting<Boolean> CREATIVE_NO_CLIP = new ClientSetting<>("creativeNoClip", false, () -> Configs.Generic.CREATIVE_NO_CLIP.getBooleanValue());
+    public static final ClientSetting<Boolean> CREATIVE_NO_CLIP_OVERRIDE = new ClientSetting<>("creativeNoClipOverride", false, () -> Configs.Generic.CREATIVE_NO_CLIP_OVERRIDE.getBooleanValue());
+
 
     public final String id;
     public final T defaultValue;

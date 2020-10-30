@@ -9,8 +9,8 @@ public final class Utils {
 
     public static boolean isNoClip(PlayerEntity player) {
         if (player.isSpectator()) return true;
-        if (!Settings.creativeNoClip) return false;
-        if (player.world.isClient() && !ClientSetting.CREATIVE_NO_CLIP.get()) return false;
-        return player.isCreative() && player.abilities.flying;
+        if (!player.isCreative() || !player.abilities.flying) return false;
+        if (!Settings.creativeNoClip && !ClientSetting.CREATIVE_NO_CLIP_OVERRIDE.get()) return false;
+        return !player.world.isClient() || ClientSetting.CREATIVE_NO_CLIP.get();
     }
 }
