@@ -43,6 +43,7 @@
     "core.TestCommandMixin",
     "core.ThreadedAnvilChunkStorageMixin",
     "creativeNoClip.BlockItemMixin",
+    "creativeNoClip.PistonBlockEntityMixin",
     "creativeNoClip.PlayerEntityMixin",
     "creativeNoClip.WorldRendererMixin",
     "dispenser.DispenserBlockMixin",
