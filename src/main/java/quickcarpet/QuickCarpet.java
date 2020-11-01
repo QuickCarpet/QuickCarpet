@@ -235,6 +235,7 @@ public final class QuickCarpet implements QuickCarpetAPI, ServerEventListener, T
     }
 
     public static boolean isDevelopment() {
+        //noinspection ConstantConditions
         return Build.VERSION.contains("dev") || FabricLoader.getInstance().isDevelopmentEnvironment();
     }
 

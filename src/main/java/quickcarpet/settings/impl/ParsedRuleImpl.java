@@ -228,7 +228,7 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
     @Override
     public void save() {
         rememberSaved();
-        ((CoreSettingsManager) Settings.MANAGER).save();
+        Settings.MANAGER.save();
     }
 
     void load(String value) {

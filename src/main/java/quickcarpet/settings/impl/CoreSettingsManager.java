@@ -38,13 +38,19 @@ public class CoreSettingsManager extends SettingsManager implements quickcarpet.
     private static Class<?> getAndVerifyCallingClass() {
         try {
             Class<?> caller = Reflection.getCallingClass(2);
-            if (caller != Settings.class) {
+            if (!isValidCallingClass(caller)) {
                 throw new IllegalArgumentException("CoreSettingsManager can only be created by the core Settings class, not from " + caller);
             }
             return caller;
         } catch (ClassNotFoundException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    private static boolean isValidCallingClass(Class<?> caller) {
+        if (caller == Settings.class) return true;
+        return System.getProperty("org.gradle.test.worker") != null
+                && "quickcarpet.api.settings.TestSettings".equals(caller.getName());
     }
 
     @Nullable

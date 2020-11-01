@@ -18,7 +18,9 @@ class ApiUtils {
     private static MethodHandle findInstanceGetter(String className, Class<?> type) {
         return INSTANCE_GETTERS.computeIfAbsent(type, type1 -> {
             Optional<ModContainer> mod = FabricLoader.getInstance().getModContainer("quickcarpet");
-            if (!mod.isPresent()) throw new IllegalStateException("QuickCarpet not found");
+            if (!mod.isPresent() && System.getProperty("org.gradle.test.worker") == null) {
+                throw new IllegalStateException("QuickCarpet not found");
+            }
             try {
                 Class<?> cls = Class.forName(className);
                 MethodHandle handle = LOOKUP.findStatic(cls, "getInstance", MethodType.methodType(cls));
