@@ -609,10 +609,10 @@ Categories: survival, experimental
 Validator: `>= 0`  
 
 ## xpMerging
-Experience Orbs can merge like items
+Enables or disables the vanilla xp merging added in 20w45a
 
 Type: `boolean`  
-Default: `false`  
+Default: `true`  
 Options: `true`, `false`  
 Categories: survival, experimental  
 

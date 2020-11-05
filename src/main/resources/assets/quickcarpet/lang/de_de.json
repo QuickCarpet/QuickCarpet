@@ -89,7 +89,7 @@
   "carpet.rule.tntPrimeMomentum.description": "Entfernt die zufällige Sprungrichtung beim Zünden von TNT falls 'false'",
   "carpet.rule.tntUpdateOnPlace.description": "Ob TNT beim Platzieren gezündet werden kann",
   "carpet.rule.xpCoolDown.description": "Verzögerung bis Spieler die nächste Erfahrung sammeln kann",
-  "carpet.rule.xpMerging.description": "Erfahrung kann sich ähnlich fallen gelassenen Gegenständen vereinigen",
+  "carpet.rule.xpMerging.description": "Ermöglicht das Ausschalten der Erfahrungsvereinigung die in 20w45a eingeführt wurde",
   "carpet.validator.positive": "Wert muss positiv sein",
   "carpet.validator.nonNegative": "Wert darf nicht negativ sein",
   "carpet.validator.negative": "Wert muss negativ sein",

@@ -318,7 +318,7 @@ public class Settings {
     public static int xpCoolDown = 2;
 
     @Rule(category = {SURVIVAL, EXPERIMENTAL})
-    public static boolean xpMerging = false;
+    public static boolean xpMerging = true;
 
     public static void main(String[] args) throws IOException {
         Bootstrap.initialize();

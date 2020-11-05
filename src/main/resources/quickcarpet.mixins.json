@@ -106,7 +106,8 @@
     "tnt.TntBlockMixin",
     "tnt.TntEntityMixin",
     "waypoints.ServerWorldMixin",
-    "waypoints.TeleportCommandMixin"
+    "waypoints.TeleportCommandMixin",
+    "xp.ExperienceOrbEntityMixin"
   ],
   "client": [
     "accessor.PlayerListHudAccessor",
