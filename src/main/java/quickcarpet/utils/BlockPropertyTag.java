@@ -65,5 +65,15 @@ public class BlockPropertyTag implements Tag<Block> {
         public FluidState getFluidState(BlockPos pos) {
             return state.getFluidState();
         }
+
+        @Override
+        public int method_31607() {
+            return 1;
+        }
+
+        @Override
+        public int method_31605() {
+            return 0;
+        }
     }
 }

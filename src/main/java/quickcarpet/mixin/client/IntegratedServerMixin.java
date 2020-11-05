@@ -12,8 +12,8 @@ import quickcarpet.api.annotation.Feature;
 @Mixin(IntegratedServer.class)
 public abstract class IntegratedServerMixin {
 
-    @Inject(method = "setupServer", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/server/integrated/IntegratedServer;setKeyPair(Ljava/security/KeyPair;)V"))
-    private void onSteupServerIntegrated(CallbackInfoReturnable<Boolean> cir) {
+    @Inject(method = "setupServer", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/server/integrated/IntegratedServer;method_31400()V"))
+    private void onSetupServerIntegrated(CallbackInfoReturnable<Boolean> cir) {
         QuickCarpet.getInstance().onServerLoaded((IntegratedServer) (Object) this);
     }
 }

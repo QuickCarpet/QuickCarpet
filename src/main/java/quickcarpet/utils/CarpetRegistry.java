@@ -1,6 +1,7 @@
 package quickcarpet.utils;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.block.Block;
@@ -22,7 +23,6 @@ import quickcarpet.settings.Settings;
 
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 
 public class CarpetRegistry {
     // Initializes Reflection
@@ -69,8 +69,8 @@ public class CarpetRegistry {
 
     }
 
-    private static <T extends BlockEntity> BlockEntityType<T> registerBlockEntity(String id, Supplier<T> supplier, Block... blocks) {
-        return Registry.register(Registry.BLOCK_ENTITY_TYPE, id, Reflection.newBlockEntityTypeBuilder(supplier, blocks).build(null));
+    private static <T extends BlockEntity> BlockEntityType<T> registerBlockEntity(String id, BlockEntityType.class_5559<? extends T> supplier, Block... blocks) {
+        return Registry.register(Registry.BLOCK_ENTITY_TYPE, id, new BlockEntityType<>(supplier, ImmutableSet.copyOf(blocks), null));
     }
 
     public static void init() {
@@ -87,7 +87,7 @@ public class CarpetRegistry {
 
     public static DispenserBehavior getDispenserBehavior(Item item, Map<Item, DispenserBehavior> behaviors) {
         if (item == Items.GUNPOWDER) return CarpetRegistry.BREAK_BLOCK_DISPENSER_BEHAVIOR;
-        boolean carpet = item.isIn(ItemTags.CARPETS);
+        boolean carpet = ItemTags.CARPETS.contains(item);
         if (Settings.dispensersPlaceBlocks != PlaceBlockDispenserBehavior.Option.FALSE && (!behaviors.containsKey(item) || carpet) && item instanceof BlockItem) {
             if (PlaceBlockDispenserBehavior.canPlace(((BlockItem) item).getBlock())) {
                 if (carpet) {

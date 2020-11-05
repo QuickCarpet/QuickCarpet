@@ -63,11 +63,9 @@ public class Configs implements IConfigHandler {
 
     public static class Rendering {
         public static final ConfigBooleanHotkeyed MOVING_BLOCK_CULLING = booleanHotkeyed(ClientSetting.MOVING_BLOCK_CULLING, "");
-        public static final ConfigBooleanHotkeyed SMOOTH_PISTONS = booleanHotkeyed(ClientSetting.SMOOTH_PISTONS, "");
 
         public static final List<IHotkeyTogglable> OPTIONS = ImmutableList.of(
-            MOVING_BLOCK_CULLING,
-            SMOOTH_PISTONS
+            MOVING_BLOCK_CULLING
         );
     }
 

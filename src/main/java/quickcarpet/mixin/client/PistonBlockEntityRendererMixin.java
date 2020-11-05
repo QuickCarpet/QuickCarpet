@@ -2,6 +2,7 @@ package quickcarpet.mixin.client;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.PistonBlockEntity;
+import net.minecraft.class_5614;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
@@ -19,9 +20,12 @@ import quickcarpet.settings.Settings;
 import quickcarpet.utils.extensions.ExtendedPistonBlockEntity;
 
 @Mixin(PistonBlockEntityRenderer.class)
-public abstract class PistonBlockEntityRendererMixin extends BlockEntityRenderer<PistonBlockEntity> {
-    public PistonBlockEntityRendererMixin(BlockEntityRenderDispatcher renderDispatcher) {
-        super(renderDispatcher);
+public abstract class PistonBlockEntityRendererMixin implements BlockEntityRenderer<PistonBlockEntity> {
+    private BlockEntityRenderDispatcher blockEntityRenderDispatcher;
+
+    @Inject(method = "<init>", at = @At("RETURN"))
+    private void onInit(class_5614.class_5615 ctx, CallbackInfo ci) {
+        blockEntityRenderDispatcher = ctx.method_32139();
     }
 
     @Inject(method = "render", at = @At(value = "INVOKE",
@@ -39,13 +43,13 @@ public abstract class PistonBlockEntityRendererMixin extends BlockEntityRenderer
         if (pistonBlockEntityExt.getRenderCarriedBlockEntity()) {
             BlockEntity carriedBlockEntity = pistonBlockEntityExt.getCarriedBlockEntity();
             if (carriedBlockEntity != null) {
-                carriedBlockEntity.setPos(pistonBlockEntity_1.getPos());
+                //carriedBlockEntity.setPos(pistonBlockEntity_1.getPos());
                 transform.translate(
                     pistonBlockEntity_1.getRenderOffsetX(partialTicks),
                     pistonBlockEntity_1.getRenderOffsetY(partialTicks),
                     pistonBlockEntity_1.getRenderOffsetZ(partialTicks)
                 );
-                BlockEntityRenderDispatcher.INSTANCE.render(carriedBlockEntity, partialTicks, transform, bufferWrapper);
+                blockEntityRenderDispatcher.render(carriedBlockEntity, partialTicks, transform, bufferWrapper);
             }
         }
     }

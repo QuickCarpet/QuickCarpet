@@ -2,7 +2,6 @@ package quickcarpet.mixin.client;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.world.ClientChunkManager;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.profiler.Profiler;
@@ -13,7 +12,6 @@ import net.minecraft.world.dimension.DimensionType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import quickcarpet.QuickCarpetClient;
 import quickcarpet.api.annotation.Feature;
@@ -34,11 +32,10 @@ public abstract class ClientWorldMixin extends World {
         if (QuickCarpetClient.getInstance().tickSpeed.isPaused()) ci.cancel();
     }
 
-    @Redirect(method = "tickEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/world/ClientChunkManager;shouldTickEntity(Lnet/minecraft/entity/Entity;)Z"))
-    private boolean tickFreezeEntities(ClientChunkManager clientChunkManager, Entity entity) {
+    @Inject(method = "tickEntity", at = @At("HEAD"), cancellable = true)
+    private void tickFreezeEntities(Entity entity, CallbackInfo ci) {
         if (QuickCarpetClient.getInstance().tickSpeed.isPaused()) {
-            return false;
+            ci.cancel();
         }
-        return clientChunkManager.shouldTickEntity(entity);
     }
 }

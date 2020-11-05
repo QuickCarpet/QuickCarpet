@@ -6,8 +6,8 @@ import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.Tickable;
 import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.math.BlockPos;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -22,16 +22,16 @@ import javax.annotation.Nullable;
 
 @Feature("optimizedInventories")
 @Mixin(ChestBlockEntity.class)
-public abstract class ChestBlockEntityMixin extends LootableContainerBlockEntity implements OptimizedInventory, Tickable {
+public abstract class ChestBlockEntityMixin extends LootableContainerBlockEntity implements OptimizedInventory {
     @Shadow private DefaultedList<ItemStack> inventory;
     private InventoryOptimizer optimizer;
 
-    protected ChestBlockEntityMixin(BlockEntityType<?> beType) {
-        super(beType);
+    protected ChestBlockEntityMixin(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
+        super(blockEntityType, blockPos, blockState);
     }
 
-    @Inject(method = "<init>(Lnet/minecraft/block/entity/BlockEntityType;)V", at = @At("RETURN"))
-    private void onInit(BlockEntityType<?> beType, CallbackInfo ci) {
+    @Inject(method = "<init>(Lnet/minecraft/block/entity/BlockEntityType;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;)V", at = @At("RETURN"))
+    private void onInit(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState, CallbackInfo ci) {
         reoptimize();
     }
 
@@ -41,7 +41,7 @@ public abstract class ChestBlockEntityMixin extends LootableContainerBlockEntity
     }
 
     @Inject(method = "fromTag", at = @At("RETURN"))
-    private void onDeserialize(BlockState state, CompoundTag tag, CallbackInfo ci) {
+    private void onDeserialize(CompoundTag tag, CallbackInfo ci) {
         reoptimize();
     }
 

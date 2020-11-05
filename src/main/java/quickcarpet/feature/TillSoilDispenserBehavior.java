@@ -41,7 +41,7 @@ public class TillSoilDispenserBehavior extends ItemDispenserBehavior {
     }
 
     private boolean canDirectlyTurnToFarmland(BlockState state) {
-        return state.getBlock() == Blocks.DIRT || state.getBlock() == Blocks.GRASS_BLOCK || state.getBlock() == Blocks.GRASS_PATH;
+        return state.getBlock() == Blocks.DIRT || state.getBlock() == Blocks.GRASS_BLOCK || state.getBlock() == Blocks.DIRT_PATH;
     }
 
     private boolean isFarmland(BlockState state) {

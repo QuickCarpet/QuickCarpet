@@ -95,7 +95,7 @@ public abstract class HopperMinecartEntityMixin extends StorageMinecartEntity im
         Block block = blockState.getBlock();
         if (block instanceof InventoryProvider) {
             inventory = ((InventoryProvider)block).getInventory(blockState, world, blockPos);
-        } else if (block.hasBlockEntity()) {
+        } else if (blockState.method_31709()) { // hasBlockEntity
             BlockEntity blockEntity = world.getBlockEntity(blockPos);
             if (blockEntity instanceof Inventory) {
                 inventory = (Inventory)blockEntity;

@@ -24,7 +24,7 @@ public class DispenserBlockMixin {
     private BlockEntity fixBlockEntityType(BlockPointerImpl blockPointer) {
         BlockEntity be = blockPointer.getBlockEntity();
         if (Settings.blockEntityFix && !(be instanceof DispenserBlockEntity)) {
-            be.markInvalid();
+            be.markRemoved();
             return null;
         }
         return be;

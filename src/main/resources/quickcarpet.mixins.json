@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "accessor.AxeItemAccessor",
+    "accessor.BlockEntityAccessor",
     "accessor.BlockTagsAccessor",
     "accessor.ClientSettingsC2SPacketAccessor",
     "accessor.CraftingInventoryAccessor",
@@ -48,8 +49,6 @@
     "creativeNoClip.WorldRendererMixin",
     "dispenser.DispenserBlockMixin",
     "drownedEnchantedTridentsFix.DrownedEntityMixin",
-    "drownedNavigationFix.MobEntityMixin",
-    "drownedNavigationFix.ServerWorldMixin",
     "fabricApi.RegistrySyncManagerMixin",
     "fillUpdates.BlockStateArgumentMixin",
     "fillUpdates.StructureMixin",
@@ -107,8 +106,7 @@
     "tnt.TntBlockMixin",
     "tnt.TntEntityMixin",
     "waypoints.ServerWorldMixin",
-    "waypoints.TeleportCommandMixin",
-    "xp.ExperienceOrbEntityMixin"
+    "waypoints.TeleportCommandMixin"
   ],
   "client": [
     "accessor.PlayerListHudAccessor",

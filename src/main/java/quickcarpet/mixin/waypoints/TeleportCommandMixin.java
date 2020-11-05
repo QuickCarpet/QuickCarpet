@@ -5,6 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.entity.Entity;
+import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.command.TeleportCommand;
 import net.minecraft.server.world.ServerWorld;
@@ -12,17 +13,19 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.Slice;
 import quickcarpet.api.annotation.Feature;
 import quickcarpet.commands.WaypointCommand;
 import quickcarpet.settings.Settings;
-import quickcarpet.utils.Reflection;
 import quickcarpet.utils.Waypoint;
 
+import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Set;
 
 import static com.mojang.brigadier.arguments.StringArgumentType.getString;
 import static com.mojang.brigadier.arguments.StringArgumentType.greedyString;
@@ -35,6 +38,10 @@ import static quickcarpet.utils.Messenger.*;
 @Feature("waypoints")
 @Mixin(TeleportCommand.class)
 public abstract class TeleportCommandMixin {
+    @Shadow protected static void teleport(ServerCommandSource source, Entity target, ServerWorld world, double x, double y, double z, Set<PlayerPositionLookS2CPacket.Flag> movementFlags, float yaw, float pitch, @Nullable TeleportCommand.LookTarget facingLocation) throws CommandSyntaxException {
+        throw new AbstractMethodError();
+    }
+
     @SuppressWarnings("unchecked")
     @Redirect(method = "register", at = @At(
         value = "INVOKE",
@@ -64,7 +71,7 @@ public abstract class TeleportCommandMixin {
         return teleportToWaypoint(ctx, getEntities(ctx, "targets"));
     }
 
-    private static int teleportToWaypoint(CommandContext<ServerCommandSource> ctx, Collection<? extends Entity> entities) {
+    private static int teleportToWaypoint(CommandContext<ServerCommandSource> ctx, Collection<? extends Entity> entities) throws CommandSyntaxException {
         ServerCommandSource source = ctx.getSource();
         String name = getString(ctx, "waypoint");
         Waypoint destination = WaypointCommand.getWaypoint(source, name);
@@ -76,7 +83,7 @@ public abstract class TeleportCommandMixin {
         Vec3d pos = destination.position;
         Vec2f rot = destination.rotation;
         for (Entity e : entities) {
-            Reflection.teleport(source, e, world, pos.x, pos.y, pos.z, Collections.emptySet(), rot.y, rot.x);
+            teleport(source, e, world, pos.x, pos.y, pos.z, Collections.emptySet(), rot.y, rot.x, null);
         }
         if (entities.size() == 1) {
             send(source, t("commands.teleport.success.entity.single", entities.iterator().next().getDisplayName(), destination), true);

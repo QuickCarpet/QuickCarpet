@@ -1,6 +1,7 @@
 package quickcarpet.mixin.renewableFromAnvil;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -9,6 +10,7 @@ import net.minecraft.tag.BlockTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -19,6 +21,8 @@ import quickcarpet.settings.Settings;
 @Feature("renewableSand")
 @Mixin(FallingBlockEntity.class)
 public abstract class FallingBlockEntityMixin extends Entity {
+    @Shadow private BlockState block;
+
     public FallingBlockEntityMixin(EntityType<?> entityType_1, World world_1) {
         super(entityType_1, world_1);
     }
@@ -32,7 +36,7 @@ public abstract class FallingBlockEntityMixin extends Entity {
             locals = LocalCapture.CAPTURE_FAILHARD,
             cancellable = true)
     private void onTick(CallbackInfo ci, Block block, BlockPos pos) {
-        if (block.isIn(BlockTags.ANVIL)) {
+        if (this.block.isIn(BlockTags.ANVIL)) {
             BlockPos posBelow = new BlockPos(this.getX(), this.getY() - 0.06, this.getZ());
             Block blockBelow = this.world.getBlockState(posBelow).getBlock();
             if (blockBelow == Blocks.COBBLESTONE) {

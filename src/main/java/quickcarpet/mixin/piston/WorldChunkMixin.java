@@ -13,10 +13,7 @@ import net.minecraft.world.chunk.WorldChunk;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import quickcarpet.api.annotation.Feature;
-import quickcarpet.settings.Settings;
 import quickcarpet.utils.extensions.ExtendedWorldChunk;
 
 import javax.annotation.Nullable;
@@ -27,27 +24,16 @@ import static net.minecraft.world.chunk.WorldChunk.EMPTY_SECTION;
 @Feature("movableBlockEntities")
 @Mixin(WorldChunk.class)
 public abstract class WorldChunkMixin implements ExtendedWorldChunk {
-
     @Shadow @Final private ChunkSection[] sections;
     @Shadow @Final private Map<Heightmap.Type, Heightmap> heightmaps;
     @Shadow private boolean shouldSave;
     @Shadow @Final private World world;
+    @Nullable @Shadow public abstract BlockEntity getBlockEntity(BlockPos blockPos_1, WorldChunk.CreationType worldChunk$CreationType_1);
+    @Shadow public abstract void addBlockEntity(BlockEntity blockEntity);
 
-    @Nullable
-    @Shadow public abstract BlockEntity getBlockEntity(BlockPos blockPos_1, WorldChunk.CreationType worldChunk$CreationType_1);
+    @Shadow protected abstract <T extends BlockEntity> void method_31723(T blockEntity);
 
-    // Fix Failure: If a moving BlockEntity is placed while BlockEntities are ticking, this will not find it and then replace it with a new TileEntity!
-    // blockEntity_2 = this.getBlockEntity(pos, WorldChunk.CreationType.CHECK);
-    @Redirect(method = "setBlockState", at = @At(value = "INVOKE", ordinal = 1,
-            target = "Lnet/minecraft/world/chunk/WorldChunk;getBlockEntity(Lnet/minecraft/util/math/BlockPos;" + "Lnet/minecraft/world/chunk/WorldChunk$CreationType;)" + "Lnet/minecraft/block/entity/BlockEntity;"))
-    private BlockEntity ifGetBlockEntity(WorldChunk worldChunk, BlockPos pos, WorldChunk.CreationType creationType) {
-        if (!Settings.movableBlockEntities) {
-            return this.getBlockEntity(pos, WorldChunk.CreationType.CHECK);
-        } else {
-            return this.world.getBlockEntity(pos);
-        }
-    }
-
+    @Shadow public abstract void removeBlockEntity(BlockPos pos);
 
     /**
      * Sets the Blockstate and the BlockEntity.
@@ -91,33 +77,34 @@ public abstract class WorldChunkMixin implements ExtendedWorldChunk {
                 if (!(oldBlock instanceof PistonExtensionBlock))
                     oldBlockState.onStateReplaced(this.world, pos, newBlockState, callListeners); //this kills it
             } else if (oldBlock != newBlock && oldBlock instanceof BlockEntityProvider) {
-                this.world.removeBlockEntity(pos);
+                this.removeBlockEntity(pos);
             }
 
             if (chunkSection.getBlockState(x, y & 15, z).getBlock() != newBlock) {
                 return null;
             } else {
                 BlockEntity oldBlockEntity = null;
-                if (oldBlock instanceof BlockEntityProvider) {
+                if (oldBlockState.method_31709()) {
                     oldBlockEntity = this.getBlockEntity(pos, WorldChunk.CreationType.CHECK);
                     if (oldBlockEntity != null) {
-                        oldBlockEntity.resetBlock();
+                        oldBlockEntity.method_31664(newBlockState);
+                        this.method_31723(oldBlockEntity);
                     }
                 }
 
-                if (newBlock instanceof BlockEntityProvider) {
+                if (newBlockState.method_31709()) {
                     if (newBlockEntity == null) {
-                        newBlockEntity = ((BlockEntityProvider) newBlock).createBlockEntity(this.world);
+                        newBlockEntity = ((BlockEntityProvider) newBlock).createBlockEntity(pos, newBlockState);
                     }
                     if (newBlockEntity != oldBlockEntity && newBlockEntity != null) {
-                        newBlockEntity.cancelRemoval();
-                        this.world.setBlockEntity(pos, newBlockEntity);
-                        newBlockEntity.resetBlock();
+                        this.removeBlockEntity(pos);
+                        this.addBlockEntity(newBlockEntity);
                     }
                 }
 
                 if (!this.world.isClient) {
-                    newBlockState.onBlockAdded(this.world, pos, oldBlockState, callListeners); //This can call setblockstate! (e.g. hopper does)
+                    //This can call setblockstate! (e.g. hopper does)
+                    newBlockState.onBlockAdded(this.world, pos, oldBlockState, callListeners);
                 }
 
                 this.shouldSave = true;

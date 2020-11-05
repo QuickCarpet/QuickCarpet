@@ -36,8 +36,8 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
         server.getPlayerManager().onPlayerConnect(connection, instance);
         if (!instance.world.getRegistryKey().equals(dimension.getRegistryKey())) {
             ServerWorld old_world = (ServerWorld) instance.world;
-            old_world.removePlayer(instance);
-            instance.removed = false;
+            old_world.removePlayer(instance, class_5529.field_27002);
+            instance.method_31482();
             dimension.spawnEntity(instance);
             instance.setWorld(dimension);
             server.getPlayerManager().sendWorldInfo(instance, old_world);
@@ -45,7 +45,7 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
             instance.interactionManager.setWorld(dimension);
         }
         instance.setHealth(20.0F);
-        instance.removed = false;
+        instance.method_31482();
         instance.networkHandler.requestTeleport(x, y, z, (float) yaw, (float) pitch);
         instance.stepHeight = 0.6F;
         interactionManagerIn.setGameMode(gamemode, GameMode.NOT_SET);

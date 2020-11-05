@@ -16,6 +16,7 @@ import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import quickcarpet.mixin.accessor.CraftingInventoryAccessor;
 import quickcarpet.utils.CarpetRegistry;
@@ -29,20 +30,19 @@ import java.util.Optional;
 public class CraftingTableBlockEntity extends LockableContainerBlockEntity implements SidedInventory, RecipeUnlocker, RecipeInputProvider {
     private static final int[] OUTPUT_SLOTS = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     private static final int[] INPUT_SLOTS = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+    private final CraftingInventory craftingInventory = new CraftingInventory(null, 3, 3);
     public DefaultedList<ItemStack> inventory;
     public ItemStack output = ItemStack.EMPTY;
     private final List<AutoCraftingTableContainer> openContainers = new ArrayList<>();
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     private Optional<CraftingRecipe> cachedRecipe;
 
-    public CraftingTableBlockEntity() {
-        this(CarpetRegistry.CRAFTING_TABLE_BLOCK_ENTITY_TYPE);
+    public CraftingTableBlockEntity(BlockPos pos, BlockState state) {
+        this(CarpetRegistry.CRAFTING_TABLE_BLOCK_ENTITY_TYPE, pos, state);
     }
 
-    private final CraftingInventory craftingInventory = new CraftingInventory(null, 3, 3);
-
-    private CraftingTableBlockEntity(BlockEntityType<?> type) {
-        super(type);
+    private CraftingTableBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
+        super(type, pos, state);
         this.inventory = DefaultedList.ofSize(9, ItemStack.EMPTY);
         ((CraftingInventoryAccessor) craftingInventory).setInventory(this.inventory);
     }
@@ -56,8 +56,8 @@ public class CraftingTableBlockEntity extends LockableContainerBlockEntity imple
     }
 
     @Override
-    public void fromTag(BlockState state, CompoundTag tag) {
-        super.fromTag(state, tag);
+    public void fromTag(CompoundTag tag) {
+        super.fromTag(tag);
         Inventories.fromTag(tag, inventory);
         this.output = ItemStack.fromTag(tag.getCompound("Output"));
     }

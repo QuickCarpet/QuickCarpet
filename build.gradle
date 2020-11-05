@@ -6,6 +6,7 @@ plugins {
 }
 
 minecraft {
+	accessWidener "src/main/resources/quickcarpet.accesswidener"
 }
 
 def buildDate = new Date()
@@ -116,7 +117,7 @@ repositories {
 dependencies {
 	implementation project(":quickcarpet-api")
 
-	def useModMenu = true
+	def useModMenu = false
 	if (useModMenu) {
 		modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 		modImplementation "io.github.prospector:modmenu:${project.modmenu_version}"

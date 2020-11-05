@@ -39,7 +39,7 @@ public abstract class WorldChunkMixin implements ExtendedWorldChunkFillUpdates {
         if (fillUpdates) {
             oldState.onStateReplaced(world, pos, newState, moved);
         } else {
-            if (oldState.getBlock().hasBlockEntity() && !oldState.isOf(newState.getBlock())) {
+            if (oldState.method_31709() && !oldState.isOf(newState.getBlock())) {
                 world.removeBlockEntity(pos);
             }
         }

@@ -12,7 +12,6 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -40,13 +39,13 @@ public class CraftingTableBlockMixin extends Block implements DynamicBlockEntity
 
     @Nullable
     @Override
-    public BlockEntity createBlockEntity(BlockView var1) {
-        return new CraftingTableBlockEntity();
+    public BlockEntity createBlockEntity(BlockPos pos, BlockState state) {
+        return new CraftingTableBlockEntity(pos, state);
     }
 
     @Inject(method = "onUse", at = @At("HEAD"), cancellable = true)
     private void onActivate(BlockState blockState, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir) {
-        if (!hasBlockEntity()) return;
+        if (!providesBlockEntity()) return;
         if (!world.isClient) {
             BlockEntity blockEntity = world.getBlockEntity(pos);
             if (blockEntity instanceof CraftingTableBlockEntity) {
@@ -58,12 +57,12 @@ public class CraftingTableBlockMixin extends Block implements DynamicBlockEntity
     }
 
     public boolean hasComparatorOutput(BlockState blockState) {
-        return hasBlockEntity();
+        return providesBlockEntity();
     }
 
     @Override
     public int getComparatorOutput(BlockState blockState, World world, BlockPos pos) {
-        if (!hasBlockEntity()) return 0;
+        if (!providesBlockEntity()) return 0;
         BlockEntity blockEntity = world.getBlockEntity(pos);
         if (blockEntity instanceof CraftingTableBlockEntity) {
             CraftingTableBlockEntity craftingTableBlockEntity = (CraftingTableBlockEntity) blockEntity;

@@ -9,7 +9,6 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.PistonBlockEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -19,7 +18,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import quickcarpet.api.annotation.Feature;
-import quickcarpet.client.ClientSetting;
+import quickcarpet.mixin.accessor.BlockEntityAccessor;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.extensions.ExtendedPistonBlockEntity;
 import quickcarpet.utils.extensions.ExtendedWorld;
@@ -29,16 +28,17 @@ import quickcarpet.utils.extensions.ExtendedWorld;
 public abstract class PistonBlockEntityMixin extends BlockEntity implements ExtendedPistonBlockEntity {
     @Shadow private boolean source;
     @Shadow private BlockState pushedBlock;
-    @Shadow private float progress;
-
-    @Shadow private float lastProgress;
     private BlockEntity carriedBlockEntity;
     private boolean renderCarriedBlockEntity = false;
     private boolean renderSet = false;
-    private float actualProgress;
 
-    public PistonBlockEntityMixin(BlockEntityType<?> blockEntityType_1) {
-        super(blockEntityType_1);
+    public PistonBlockEntityMixin(BlockEntityType<?> blockEntityType, BlockPos blockPos, BlockState blockState) {
+        super(blockEntityType, blockPos, blockState);
+    }
+
+    public void method_31662(World world) {
+        super.method_31662(world);
+        if (carriedBlockEntity != null) carriedBlockEntity.method_31662(world);
     }
 
     /**
@@ -50,8 +50,10 @@ public abstract class PistonBlockEntityMixin extends BlockEntity implements Exte
 
     public void setCarriedBlockEntity(BlockEntity blockEntity) {
         this.carriedBlockEntity = blockEntity;
-        if (this.carriedBlockEntity != null)
-            this.carriedBlockEntity.setPos(this.pos); //actually this.pos is not initialized properly
+        if (this.carriedBlockEntity != null) {
+            ((BlockEntityAccessor) this.carriedBlockEntity).setPos(this.pos);
+            if (world != null) carriedBlockEntity.method_31662(world);
+        }
     }
 
     public boolean isRenderModeSet() {
@@ -70,12 +72,12 @@ public abstract class PistonBlockEntityMixin extends BlockEntity implements Exte
     /**
      * @author 2No2Name
      */
-    @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
-    private boolean movableTEsetBlockState0(World world, BlockPos blockPos_1, BlockState blockAState_2, int int_1) {
+    @Redirect(method = "method_31707", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
+    private static boolean movableTEsetBlockState0(World world, BlockPos pos, BlockState state, int flags, World world1, BlockPos blockPos, BlockState blockState, PistonBlockEntity pistonBlockEntity) {
         if (!Settings.movableBlockEntities)
-            return world.setBlockState(blockPos_1, blockAState_2, int_1);
+            return world.setBlockState(pos, state, flags);
         else
-            return ((ExtendedWorld) (world)).setBlockStateWithBlockEntity(blockPos_1, blockAState_2, this.carriedBlockEntity, int_1);
+            return ((ExtendedWorld) (world)).setBlockStateWithBlockEntity(pos, state, ((ExtendedPistonBlockEntity) pistonBlockEntity).getCarriedBlockEntity(), flags);
     }
 
     @Redirect(method = "finish", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
@@ -108,14 +110,16 @@ public abstract class PistonBlockEntityMixin extends BlockEntity implements Exte
     }
 
     @Inject(method = "fromTag", at = @At(value = "TAIL"))
-    private void onFromTag(BlockState state, CompoundTag compoundTag_1, CallbackInfo ci) {
+    private void onFromTag(CompoundTag compoundTag_1, CallbackInfo ci) {
         if (Settings.movableBlockEntities && compoundTag_1.contains("carriedTileEntity", 10)) {
-            if (this.pushedBlock.getBlock() instanceof BlockEntityProvider)
-                this.carriedBlockEntity = ((BlockEntityProvider) (this.pushedBlock.getBlock())).createBlockEntity(this.world);
-            if (carriedBlockEntity != null) //Can actually be null, as BlockPistonMoving.createNewTileEntity(...) returns null
-                this.carriedBlockEntity.fromTag(this.pushedBlock, compoundTag_1.getCompound("carriedTileEntity"));
+            if (this.pushedBlock.getBlock() instanceof BlockEntityProvider) {
+                BlockEntity carried = ((BlockEntityProvider) (this.pushedBlock.getBlock())).createBlockEntity(pos, pushedBlock);
+                if (carried != null) { //Can actually be null, as BlockPistonMoving.createNewTileEntity(...) returns null
+                    carried.fromTag(compoundTag_1.getCompound("carriedTileEntity"));
+                    this.setCarriedBlockEntity(carried);
+                }
+            }
         }
-        this.actualProgress = Math.max(0f, lastProgress - 0.5f);
     }
 
     @Inject(method = "toTag", at = @At(value = "RETURN", shift = At.Shift.BEFORE))
@@ -124,21 +128,5 @@ public abstract class PistonBlockEntityMixin extends BlockEntity implements Exte
             //Leave name "carriedTileEntity" instead of "carriedBlockEntity" for upgrade compatibility with 1.12 movable TE
             compoundTag_1.put("carriedTileEntity", this.carriedBlockEntity.toTag(new CompoundTag()));
         }
-    }
-
-    @Feature("smoothPistons")
-    @Inject(method = "getProgress", at = @At(value = "HEAD"), cancellable = true)
-    private void smoothPistons(float partialTicks, CallbackInfoReturnable<Float> cir) {
-        float val;
-        if (this.world != null && this.world.isClient && ClientSetting.SMOOTH_PISTONS.get()) {
-            val = MathHelper.lerp(partialTicks, this.lastProgress, this.progress) * (2 / 3f);
-            cir.setReturnValue(val);
-        }
-    }
-
-    @Feature("smoothPistons")
-    @Inject(method = "tick", at = @At(value = "FIELD", target = "Lnet/minecraft/block/entity/PistonBlockEntity;progress:F", ordinal = 0))
-    private void setActualProgress(CallbackInfo ci) {
-        this.actualProgress = this.lastProgress;
     }
 }
