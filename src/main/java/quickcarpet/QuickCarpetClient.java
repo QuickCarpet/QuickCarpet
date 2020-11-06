@@ -80,4 +80,11 @@ public class QuickCarpetClient implements QuickCarpetClientAPI {
     public void tick() {
         tickSpeed.tick();
     }
+
+    public static class Provider implements QuickCarpetClientAPI.Provider {
+        @Override
+        public QuickCarpetClientAPI getInstance() {
+            return QuickCarpetClient.getInstance();
+        }
+    }
 }

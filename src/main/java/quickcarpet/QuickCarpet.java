@@ -248,4 +248,11 @@ public final class QuickCarpet implements QuickCarpetAPI, ServerEventListener, T
     public String getVersion() {
         return Build.VERSION;
     }
+
+    public static class Provider implements QuickCarpetAPI.Provider {
+        @Override
+        public QuickCarpetAPI getInstance() {
+            return QuickCarpet.getInstance();
+        }
+    }
 }

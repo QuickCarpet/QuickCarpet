@@ -142,4 +142,11 @@ public class QuickCarpetServer implements QuickCarpetServerAPI, ServerEventListe
         obj.add("tickSpeed", tickSpeed.getTelemetryData());
         return obj;
     }
+
+    public static class Provider implements QuickCarpetServerAPI.Provider {
+        @Override
+        public QuickCarpetServerAPI getInstance() {
+            return QuickCarpetServer.getInstance();
+        }
+    }
 }
