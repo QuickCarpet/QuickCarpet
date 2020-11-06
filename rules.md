@@ -396,37 +396,6 @@ Default: `false`
 Options: `true`, `false`  
 Categories: feature  
 
-## optimizedFluidTicks
-Optimizes random ticks for fluids
-
-Testing showed around 2-3mspt improvement in regular worlds  
-Needs reloading of chunks to be effective  
-
-Type: `boolean`  
-Default: `false`  
-Options: `true`, `false`  
-Categories: optimizations, experimental  
-
-## optimizedInventories
-Optimizes hoppers and droppers interacting with chests ("Killer Hopper"s)
-
-Tests showed ca. 5-10x performance improvement in worst-case scenarios  
-
-Deprecated: 2No2Name's mod includes this and much more  
-Type: `boolean`  
-Default: `false`  
-Options: `true`, `false`  
-Categories: optimizations, experimental  
-
-## optimizedSpawning
-Optimizes spawning
-
-Type: `boolean`  
-Default: `false`  
-Options: `true`, `false`  
-Categories: optimizations, experimental  
-Fixes: [MC-151802](https://bugs.mojang.com/browse/MC-151802) fixed in 1.14.3-pre1 (partial)  
-
 ## phantomsRespectMobcap
 Phantoms don't ignore the mobcap.
 
