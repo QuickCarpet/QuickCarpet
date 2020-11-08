@@ -103,9 +103,6 @@ public final class QuickCarpet implements QuickCarpetAPI, ServerEventListener, T
     public void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher) {
         CarpetCommand.register(dispatcher);
         TickCommand.register(dispatcher);
-        CarpetFillCommand.register(dispatcher);
-        CarpetCloneCommand.register(dispatcher);
-        CarpetSetBlockCommand.register(dispatcher);
         CounterCommand.register(dispatcher);
         PlayerCommand.register(dispatcher);
         LogCommand.register(dispatcher);

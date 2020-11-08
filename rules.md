@@ -90,36 +90,6 @@ Default: `2`
 Categories: commands  
 Validator: `OP Level (0-4)`  
 
-## commandCarpetClone
-Enables /carpetclone command for players with this permission level
-
-This is a replica of the /clone command for fillUpdates and fillLimits  
-
-Type: `int`  
-Default: `2`  
-Categories: commands  
-Validator: `OP Level (0-4)`  
-
-## commandCarpetFill
-Enables /carpetfill command for players with this permission level
-
-This is a replica of the /fill command for fillUpdates and fillLimits  
-
-Type: `int`  
-Default: `2`  
-Categories: commands  
-Validator: `OP Level (0-4)`  
-
-## commandCarpetSetBlock
-Enables /carpetsetblock command for players with this permission level
-
-This is a replica of the /setblock command for fillUpdates and fillLimits  
-
-Type: `int`  
-Default: `2`  
-Categories: commands  
-Validator: `OP Level (0-4)`  
-
 ## commandFix
 Enables /fix command to fix chunk data
 

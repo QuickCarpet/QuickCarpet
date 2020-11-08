@@ -88,15 +88,6 @@ public class Settings {
     public static int commandCameramode = 2;
 
     @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
-    public static int commandCarpetClone = 2;
-
-    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
-    public static int commandCarpetFill = 2;
-
-    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
-    public static int commandCarpetSetBlock = 2;
-
-    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
     public static int commandFix = 2;
 
     @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
