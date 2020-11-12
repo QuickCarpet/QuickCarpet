@@ -6,13 +6,17 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
-public class LogParameter<T> implements Map.Entry<String, T> {
+public class LogParameter implements Map.Entry<String, Object> {
     private final String key;
-    private final Supplier<T> supplier;
+    private final Supplier<Object> supplier;
 
-    public LogParameter(String key, Supplier<T> supplier) {
+    public LogParameter(String key, Supplier<Object> supplier) {
         this.key = key;
         this.supplier = supplier;
+    }
+
+    public LogParameter(String key, Object value) {
+        this(key, () -> value);
     }
 
     @Override
@@ -21,12 +25,12 @@ public class LogParameter<T> implements Map.Entry<String, T> {
     }
 
     @Override
-    public T getValue() {
+    public Object getValue() {
         return supplier.get();
     }
 
     @Override
-    public T setValue(T value) {
+    public Object setValue(Object value) {
         throw new UnsupportedOperationException();
     }
 

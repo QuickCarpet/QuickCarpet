@@ -2,6 +2,7 @@ package quickcarpet.settings.impl;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Pair;
+import net.minecraft.util.WorldSavePath;
 import quickcarpet.Build;
 import quickcarpet.QuickCarpet;
 import quickcarpet.QuickCarpetServer;
@@ -105,7 +106,7 @@ public class CoreSettingsManager extends SettingsManager implements quickcarpet.
 
     private Path getFile() {
         if (!initialized) throw new IllegalStateException("Not initialized");
-        return QuickCarpetServer.getConfigFile(Reflection.newWorldSavePath("carpet.conf"));
+        return QuickCarpetServer.getConfigFile(new WorldSavePath("carpet.conf"));
     }
 
     @Override
@@ -121,7 +122,7 @@ public class CoreSettingsManager extends SettingsManager implements quickcarpet.
                 if (line.isEmpty()) continue;
                 if (line.equalsIgnoreCase("locked")) {
                     this.locked = true;
-                    LOG.info("[" + Build.NAME + "]: " + Build.NAME + " is locked by the administrator");
+                    LOG.info(Build.NAME + " is locked by the administrator");
                     disableAll(RuleCategory.COMMANDS, false);
                     continue;
                 }
@@ -143,7 +144,7 @@ public class CoreSettingsManager extends SettingsManager implements quickcarpet.
                         }
                     }
                     if (rule == null) {
-                        LOG.error("[" + Build.NAME + "]: Setting " + kv[0] + " is not a valid - ignoring...");
+                        LOG.error("Setting " + kv[0] + " is not a valid - ignoring...");
                         continue;
                     }
                     try {
@@ -151,21 +152,21 @@ public class CoreSettingsManager extends SettingsManager implements quickcarpet.
                         RuleUpgrader upgrader = rule.getManager().getRuleUpgrader();
                         if (upgrader != null) value = upgrader.upgradeValue(rule, value);
                         if (!value.equals(kv[1]) || !pair.getLeft().equals(kv[0])) {
-                            LOG.info("[" + Build.NAME + "]: converted "   + kv[0] + "=" + kv[1] + " to " + rule.getName() + "=" + value);
+                            LOG.info("Converted "   + kv[0] + "=" + kv[1] + " to " + rule.getName() + "=" + value);
                         }
                         //noinspection rawtypes
                         ((ParsedRuleImpl) rule).load(value);
-                        LOG.info("[" + Build.NAME + "]: loaded setting " + rule.getName() + "=" + rule.getAsString() + " from carpet.conf");
+                        LOG.info("Loaded setting " + rule.getName() + "=" + rule.getAsString() + " from carpet.conf");
                     } catch (IllegalArgumentException e) {
-                        LOG.error("[" + Build.NAME + "]: The value " + kv[1] + " for " + rule.getName() + " is not valid - ignoring...");
+                        LOG.error("The value " + kv[1] + " for " + rule.getName() + " is not valid - ignoring...");
                     }
                 } else {
-                    LOG.error("[" + Build.NAME + "]: Unknown line '" + line + "' - ignoring...");
+                    LOG.error("Unknown line '" + line + "' - ignoring...");
                 }
             }
         } catch (NoSuchFileException ignored) {
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error("Error loading settings", e);
         }
     }
 
@@ -178,7 +179,7 @@ public class CoreSettingsManager extends SettingsManager implements quickcarpet.
                 out.println(rule.getName() + " " + rule.getSavedAsString());
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error("Error saving settings", e);
         }
         resendCommandTree();
     }

@@ -83,7 +83,7 @@
   "carpet.validator.negative": "Wert muss negativ sein",
   "carpet.validator.range": "Wert muss zwischen %s und %s sein",
   "carpet.validator.tntAngle": "Wert muss im Bereich [0,360) oder -1 für die Standardeinstellung sein",
-  "command.counter.unknownColor": "Unbekannte Wollfarbe",
+  "command.counter.unknown": "Unbekannter Zähler",
   "command.counter.reset.success": "Alle Zähler wurden zurückgesetzt",
   "command.counter.reset.one.success": "Zähler '%s' zurückgesetzt",
   "counter.none": "Es wurden noch keine Gegenstände gezählt.",

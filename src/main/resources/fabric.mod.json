@@ -26,6 +26,7 @@
   "mixins": [
     "quickcarpet.mixins.json"
   ],
+  "accessWidener": "quickcarpet.accesswidener",
   "depends": {
     "minecraft": ">=1.16"
   },

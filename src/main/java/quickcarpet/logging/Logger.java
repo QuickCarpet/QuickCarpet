@@ -1,6 +1,6 @@
 package quickcarpet.logging;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectMaps;
+import com.google.common.collect.ImmutableMap;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
@@ -9,14 +9,16 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Lazy;
 import quickcarpet.QuickCarpetServer;
+import quickcarpet.logging.loghelpers.LogParameter;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-public class Logger<T extends Logger.CommandParameters> implements Comparable<Logger<?>> {
+public class Logger implements Comparable<Logger> {
     boolean active = false;
     @Nullable
     private Text unavailable;
@@ -49,7 +51,7 @@ public class Logger<T extends Logger.CommandParameters> implements Comparable<Lo
     }
 
     @Override
-    public int compareTo(Logger<?> o) {
+    public int compareTo(Logger o) {
         return name.compareTo(o.name);
     }
 
@@ -88,10 +90,10 @@ public class Logger<T extends Logger.CommandParameters> implements Comparable<Lo
     }
 
     public void log(MessageSupplier message) {
-        this.log(message, (Supplier<T>) EmptyCommandParameters.SUPPLIER);
+        this.log(message, () -> null);
     }
 
-    public void log(MessageSupplier message, Supplier<T> commandParams) {
+    public void log(MessageSupplier message, Supplier<Collection<LogParameter>> commandParams) {
         getOnlineSubscribers().forEach(player -> {
             sendMessage(player, message.get(getOption(player), player), commandParams);
         });
@@ -110,19 +112,19 @@ public class Logger<T extends Logger.CommandParameters> implements Comparable<Lo
     }
 
     public void log(PlayerIndependentMessageSupplier message) {
-        this.log(message, (Supplier<T>) EmptyCommandParameters.SUPPLIER);
+        this.log(message, () -> null);
     }
 
-    public void log(PlayerIndependentMessageSupplier message, Supplier<T>  commandParams) {
+    public void log(PlayerIndependentMessageSupplier message, Supplier<Collection<LogParameter>>  commandParams) {
         Map<String, MutableText[]> messages = new HashMap<>();
         getOnlineSubscribers().forEach(player -> sendMessage(player, messages.computeIfAbsent(getOption(player), message::get), commandParams));
     }
 
     public void log(Supplier<MutableText[]> message) {
-        this.log(message, (Supplier<T>) EmptyCommandParameters.SUPPLIER);
+        this.log(message, () -> null);
     }
 
-    public void log(Supplier<MutableText[]> message, Supplier<T>  commandParams) {
+    public void log(Supplier<MutableText[]> message, Supplier<Collection<LogParameter>>  commandParams) {
         Lazy<MutableText[]> messages = new Lazy<>(message);
         getOnlineSubscribers().forEach(player -> sendMessage(player, messages.get(), commandParams));
     }
@@ -146,17 +148,13 @@ public class Logger<T extends Logger.CommandParameters> implements Comparable<Lo
         return manager.getOnlineSubscribers(this);
     }
 
-    private void sendMessage(ServerPlayerEntity player, MutableText[] messages, Supplier<T> commandParams) {
+    private void sendMessage(ServerPlayerEntity player, MutableText[] messages, Supplier<Collection<LogParameter>> commandParams) {
         if (messages == null) return;
-        //noinspection unchecked
-        getHandler(player).handle(this, player, messages, (Supplier) commandParams);
-    }
-
-    public interface CommandParameters<T> extends Map<String, T> {}
-
-    public static class EmptyCommandParameters extends Object2ObjectMaps.EmptyMap<String, Object> implements CommandParameters<Object> {
-        public static final EmptyCommandParameters INSTANCE = new EmptyCommandParameters();
-        public static final Supplier<EmptyCommandParameters> SUPPLIER = () -> INSTANCE;
-        private EmptyCommandParameters() {}
+        Supplier<Map<String, Object>> params = () -> {
+            ImmutableMap.Builder<String, Object> builder = new ImmutableMap.Builder<>();
+            for (LogParameter p : commandParams.get()) builder.put(p);
+            return builder.build();
+        };
+        getHandler(player).handle(this, player, messages, params);
     }
 }

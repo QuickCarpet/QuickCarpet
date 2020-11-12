@@ -1,17 +1,14 @@
 package quickcarpet.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import net.minecraft.command.CommandSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import quickcarpet.QuickCarpetServer;
 import quickcarpet.logging.*;
@@ -23,8 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import static com.mojang.brigadier.arguments.StringArgumentType.getString;
-import static com.mojang.brigadier.arguments.StringArgumentType.greedyString;
+import static com.mojang.brigadier.arguments.StringArgumentType.*;
+import static net.minecraft.command.CommandSource.suggestMatching;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 import static quickcarpet.utils.Messenger.*;
@@ -33,42 +30,44 @@ public class LogCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         LiteralArgumentBuilder<ServerCommandSource> log = literal("log")
             .requires(s -> s.hasPermissionLevel(Settings.commandLog))
-            .executes((context) -> listLogs(context.getSource()))
+            .executes(c -> listLogs(c.getSource()))
             .then(literal("clear")
                 .executes(c -> unsubFromAll(c.getSource(), c.getSource().getName()))
-                .then(argument("player", StringArgumentType.word()).requires(s -> s.hasPermissionLevel(2))
-                    .suggests((c, b)-> CommandSource.suggestMatching(c.getSource().getPlayerNames(), b))
+                .then(argument("player", word()).requires(s -> s.hasPermissionLevel(2))
+                    .suggests((c, b)-> suggestMatching(c.getSource().getPlayerNames(), b))
                     .executes(c -> unsubFromAll(c.getSource(), getString(c, "player")))));
 
         LiteralArgumentBuilder<ServerCommandSource> handlerArg = literal("handler");
         for (Map.Entry<String, LogHandler.LogHandlerCreator> c : LogHandlers.CREATORS.entrySet()) {
-            LiteralArgumentBuilder<ServerCommandSource> handler = literal(c.getKey());
+            String name = c.getKey();
+            LiteralArgumentBuilder<ServerCommandSource> handler = literal(name);
             if (c.getValue().usesExtraArgs()) {
                 handlerArg.then(handler
-                        .executes(ctx -> subscribe(ctx, c.getKey()))
-                        .then(argument("extra", greedyString()).executes(ctx -> subscribe(ctx, c.getKey()))));
+                    .executes(ctx -> subscribe(ctx, name))
+                    .then(argument("extra", greedyString()).executes(ctx -> subscribe(ctx, name))));
             } else {
-                handlerArg.then(handler.executes(ctx -> subscribe(ctx, c.getKey())));
+                handlerArg.then(handler.executes(ctx -> subscribe(ctx, name)));
             }
         }
 
-        LiteralArgumentBuilder<ServerCommandSource> playerArg = literal("player").requires(s -> s.hasPermissionLevel(2))
-                .then(argument("player", StringArgumentType.word())
-                .suggests( (c, b) -> CommandSource.suggestMatching(c.getSource().getPlayerNames(),b))
-                .executes(LogCommand::subscribe)
-                    .then(handlerArg));
+        LiteralArgumentBuilder<ServerCommandSource> playerArg = literal("player")
+            .requires(s -> s.hasPermissionLevel(2))
+            .then(argument("player", word())
+            .suggests((c, b) -> suggestMatching(c.getSource().getPlayerNames(), b))
+            .executes(LogCommand::subscribe)
+                .then(handlerArg));
 
-        log.then(argument("log name", StringArgumentType.word())
-            .suggests((c, b)-> CommandSource.suggestMatching(Loggers.getLoggerNames(),b))
+        log.then(argument("log name", word())
+            .suggests((c, b)-> suggestMatching(Loggers.getLoggerNames(), b))
             .executes(c -> toggleSubscription(c.getSource(), c.getSource().getName(), getString(c, "log name")))
             .then(literal("clear")
-                .executes( (c) -> unsubFromLogger(
+                .executes(c -> unsubFromLogger(
                     c.getSource(),
                     c.getSource().getName(),
                     getString(c, "log name"))))
             .then(playerArg)
             .then(handlerArg)
-            .then(argument("option", StringArgumentType.word())
+            .then(argument("option", word())
                 .suggests(LogCommand::suggestLoggerOptions)
                 .executes(LogCommand::subscribe)
                 .then(playerArg)));
@@ -97,7 +96,7 @@ public class LogCommand {
         String loggerName = getString(context, "log name");
         Logger logger = Loggers.getLogger(loggerName);
         String[] options = logger == null ? new String[]{} : logger.getOptions();
-        return CommandSource.suggestMatching(options, builder);
+        return suggestMatching(options, builder);
     }
 
     private static int listLogs(ServerCommandSource source) {
@@ -106,37 +105,52 @@ public class LogCommand {
             return 0;
         }
         LoggerManager.PlayerSubscriptions subs = getLoggers().getPlayerSubscriptions(source.getName());
-        List<Logger<?>> loggers = new ArrayList<>(Loggers.values());
+        List<Logger> loggers = new ArrayList<>(Loggers.values());
         Collections.sort(loggers);
         m(source, s("_____________________"));
         m(source, t("command.log.availableOptions"));
-        for (Logger<?> logger : loggers) {
-            boolean subscribed = subs.isSubscribedTo(logger);
-            MutableText line = s(" - " + logger.getName() + ": ");
-            String[] options = logger.getOptions();
-            if (options.length == 0) {
-                if (subscribed) {
-                    line.append(ts("command.log.subscribed", Formatting.GREEN));
-                } else {
-                    MutableText button = style(c(s("["), t("command.log.action.subscribe"), s("]")), Formatting.GRAY);
-                    runCommand(button, "/log " + logger.getName(), t("command.log.action.subscribeTo", logger.getName()));
-                    line.append(button);
-                }
-            } else {
-                for (String option : logger.getOptions()) {
-                    if (subscribed && option.equalsIgnoreCase(subs.getOption(logger))) {
-                        line.append(s("[" + option + "]", Formatting.AQUA));
-                    } else {
-                        MutableText button = s("[" + option + "]", Formatting.GRAY);
-                        Text hoverText = t("command.log.action.subscribeTo.option", logger.getName(), option);
-                        runCommand(button, "/log " + logger.getName() + " " + option, hoverText);
-                        line.append(button);
-                    }
-                }
-            }
-            m(source, line);
+        for (Logger logger : loggers) {
+            m(source, formatListEntry(subs, logger, subs.isSubscribedTo(logger)));
         }
         return 1;
+    }
+
+    private static MutableText formatListEntry(LoggerManager.PlayerSubscriptions subs, Logger logger, boolean subscribed) {
+        MutableText line = s(" - " + logger.getName() + ": ");
+        String[] options = logger.getOptions();
+        if (options.length == 0) {
+            if (subscribed) {
+                line.append(ts("command.log.subscribed", Formatting.GREEN));
+            } else {
+                line.append(formatButton(
+                    t("command.log.action.subscribe"),
+                    t("command.log.action.subscribeTo", logger.getName()),
+                    "/log " + logger.getName(),
+                    true
+                ));
+            }
+        } else {
+            for (String option : logger.getOptions()) {
+                line.append(formatButton(
+                    s(option),
+                    t("command.log.action.subscribeTo.option", logger.getName(), option),
+                    "/log " + logger.getName() + " " + option,
+                    !subscribed || !option.equalsIgnoreCase(subs.getOption(logger)
+                )));
+            }
+        }
+        return line;
+    }
+
+    private static MutableText formatButton(MutableText buttonText, MutableText hoverText, String command, boolean active) {
+        MutableText button = c(s("["), buttonText, s("]"));
+        if (active) {
+            style(button, Formatting.GRAY);
+            runCommand(button, command, hoverText);
+        } else {
+            style(button, Formatting.AQUA);
+        }
+        return button;
     }
 
     private static boolean areArgumentsInvalid(ServerCommandSource source, String playerName, String loggerName) {
@@ -148,7 +162,9 @@ public class LogCommand {
         if (loggerName != null && Loggers.getLogger(loggerName) == null) {
             Logger logger = Loggers.getLogger(loggerName, true);
             if (logger != null) {
-                m(source, ts("command.log.unavailable", Formatting.RED, style(logger.getUnavailabilityReason(), Formatting.GOLD, Formatting.BOLD)));
+                MutableText reason = logger.getUnavailabilityReason();
+                assert reason != null;
+                m(source, ts("command.log.unavailable", Formatting.RED, style(reason, Formatting.GOLD, Formatting.BOLD)));
             } else {
                 m(source, ts("command.log.unknown", Formatting.RED, s(loggerName, Formatting.BOLD)));
             }

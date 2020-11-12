@@ -17,8 +17,8 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import quickcarpet.QuickCarpetServer;
 import quickcarpet.helper.TickSpeed;
-import quickcarpet.logging.Logger;
 import quickcarpet.logging.Loggers;
+import quickcarpet.logging.loghelpers.LogParameter;
 
 import javax.annotation.Nullable;
 import javax.management.Notification;
@@ -329,33 +329,30 @@ public class CarpetProfiler
         }
     }
 
-    public static class GCCommandParameters extends LinkedHashMap<String, Object> implements Logger.CommandParameters<Object> {
-        public final GarbageCollectionNotificationInfo info;
-
-        private GCCommandParameters(GarbageCollectionNotificationInfo info) {
-            this.info = info;
-            this.put("action", info.getGcAction());
-            this.put("cause", info.getGcCause());
-            this.put("name", info.getGcName());
-            GcInfo gcInfo = info.getGcInfo();
-            this.put("start_time", gcInfo.getStartTime());
-            this.put("end_time", gcInfo.getEndTime());
-            this.put("duration", gcInfo.getDuration());
-            for (Map.Entry<String, MemoryUsage> e : gcInfo.getMemoryUsageBeforeGc().entrySet()) {
-                MemoryUsage m = e.getValue();
-                this.put("before." + e.getKey() + ".used", m.getUsed());
-                this.put("before." + e.getKey() + ".committed", m.getCommitted());
-                this.put("before." + e.getKey() + ".init", m.getInit());
-                this.put("before." + e.getKey() + ".max", m.getMax());
-            }
-            for (Map.Entry<String, MemoryUsage> e : gcInfo.getMemoryUsageAfterGc().entrySet()) {
-                MemoryUsage m = e.getValue();
-                this.put("after." + e.getKey() + ".used", m.getUsed());
-                this.put("after." + e.getKey() + ".committed", m.getCommitted());
-                this.put("after." + e.getKey() + ".init", m.getInit());
-                this.put("after." + e.getKey() + ".max", m.getMax());
-            }
+    private static List<LogParameter> getCommandParameters(GarbageCollectionNotificationInfo info) {
+        List<LogParameter> params = new ArrayList<>();
+        GcInfo gcInfo = info.getGcInfo();
+        params.add(new LogParameter("action", info.getGcAction()));
+        params.add(new LogParameter("cause", info.getGcCause()));
+        params.add(new LogParameter("name", info.getGcName()));
+        params.add(new LogParameter("start_time", gcInfo.getStartTime()));
+        params.add(new LogParameter("end_time", gcInfo.getEndTime()));
+        params.add(new LogParameter("duration", gcInfo.getDuration()));
+        for (Map.Entry<String, MemoryUsage> e : gcInfo.getMemoryUsageBeforeGc().entrySet()) {
+            MemoryUsage m = e.getValue();
+            params.add(new LogParameter("before." + e.getKey() + ".used", m.getUsed()));
+            params.add(new LogParameter("before." + e.getKey() + ".committed", m.getCommitted()));
+            params.add(new LogParameter("before." + e.getKey() + ".init", m.getInit()));
+            params.add(new LogParameter("before." + e.getKey() + ".max", m.getMax()));
         }
+        for (Map.Entry<String, MemoryUsage> e : gcInfo.getMemoryUsageAfterGc().entrySet()) {
+            MemoryUsage m = e.getValue();
+            params.add(new LogParameter("after." + e.getKey() + ".used", m.getUsed()));
+            params.add(new LogParameter("after." + e.getKey() + ".committed", m.getCommitted()));
+            params.add(new LogParameter("after." + e.getKey() + ".init", m.getInit()));
+            params.add(new LogParameter("after." + e.getKey() + ".max", m.getMax()));
+        }
+        return params;
     }
 
     private static void handleGCNotification(Notification notification, Object handback) {
@@ -373,7 +370,7 @@ public class CarpetProfiler
                 s(", "), s(usedBefore / (1024 * 1024) + "MB", Formatting.AQUA),
                 s(" -> "), s(usedAfter / (1024 * 1024) + "MB", Formatting.AQUA)
             )};
-        }, () -> new GCCommandParameters(info));
+        }, () -> getCommandParameters(info));
         if (inTick) {
             if (!isActive(ReportType.HEALTH)) return;
             for (Measurement m : MEASUREMENTS.values()) {

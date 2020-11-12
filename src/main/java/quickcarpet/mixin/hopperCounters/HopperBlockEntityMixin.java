@@ -33,16 +33,16 @@ public abstract class HopperBlockEntityMixin extends LootableContainerBlockEntit
     @Inject(method = "insert", at = @At("HEAD"), cancellable = true)
     private void onInsert(CallbackInfoReturnable<Boolean> cir) {
         if (Settings.hopperCounters) {
-            DyeColor wool_color = WoolTool.getWoolColorAtPosition(
+            DyeColor woolColor = WoolTool.getWoolColorAtPosition(
                     getWorld(),
                     new BlockPos(getHopperX(), getHopperY(), getHopperZ()).offset(this.getCachedState().get(HopperBlock.FACING)));
 
 
-            if (wool_color != null) {
+            if (woolColor != null) {
                 for (int i = 0; i < this.size(); ++i) {
                     if (!this.getStack(i).isEmpty()) {
                         ItemStack itemstack = this.getStack(i);//.copy();
-                        HopperCounter.COUNTERS.get(wool_color).add(this.getWorld().getServer(), itemstack);
+                        HopperCounter.COUNTERS.get(HopperCounter.Key.get(woolColor)).add(this.getWorld().getServer(), itemstack);
                         this.setStack(i, ItemStack.EMPTY);
                     }
                 }

@@ -107,7 +107,7 @@
   "carpet.validator.negative": "Must be negative",
   "carpet.validator.range": "Must be between %s and %s",
   "carpet.validator.tntAngle": "Must be in the range [0,360) or -1 for default",
-  "command.counter.unknownColor": "Unknown wool color",
+  "command.counter.unknown": "Unknown counter",
   "command.counter.reset.success": "Restarted all counters",
   "command.counter.reset.one.success": "Restarted %s counter",
   "counter.none": "No items have been counted yet.",

@@ -9,16 +9,17 @@ import quickcarpet.utils.HUDController;
 import quickcarpet.utils.Messenger;
 
 import java.util.Arrays;
+import java.util.Map;
 import java.util.function.Supplier;
 
-public interface LogHandler
-{
-
+@FunctionalInterface
+public interface LogHandler {
     LogHandler CHAT = (logger, player, message, commandParams) -> Arrays.stream(message)
             .forEach(m -> player.sendMessage(new TranslatableText("chat.type.announcement", logger.getDisplayName(), m), false));
+
     LogHandler HUD = new LogHandler() {
         @Override
-        public void handle(Logger logger, ServerPlayerEntity player, MutableText[] message, Supplier<Logger.CommandParameters> commandParams) {
+        public void handle(Logger logger, ServerPlayerEntity player, MutableText[] message, Supplier<Map<String, Object>> commandParams) {
             for (MutableText m : message)
                 HUDController.addMessage(player, m);
         }
@@ -29,12 +30,10 @@ public interface LogHandler
             if (player != null)
                 HUDController.clearPlayerHUD(player);
         }
-    };
-    LogHandler ACTION_BAR = (logger, player, message, commandParams) -> player.networkHandler.sendPacket(new TitleS2CPacket(TitleS2CPacket.Action.ACTIONBAR, Messenger.c(message)));
+    };    LogHandler ACTION_BAR = (logger, player, message, commandParams) -> player.networkHandler.sendPacket(new TitleS2CPacket(TitleS2CPacket.Action.ACTIONBAR, Messenger.c(message)));
 
     @FunctionalInterface
-    interface LogHandlerCreator
-    {
+    interface LogHandlerCreator {
         LogHandler create(String... extraArgs);
 
         default boolean usesExtraArgs() {
@@ -42,10 +41,7 @@ public interface LogHandler
         }
     }
 
-    void handle(Logger logger, ServerPlayerEntity player, MutableText[] message, Supplier<Logger.CommandParameters> commandParams);
-
+    void handle(Logger logger, ServerPlayerEntity player, MutableText[] message, Supplier<Map<String, Object>> commandParams);
     default void onAddPlayer(String playerName) {}
-
     default void onRemovePlayer(String playerName) {}
-
 }

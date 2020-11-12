@@ -16,8 +16,8 @@ public class CommandLogHandler implements LogHandler {
     }
 
     @Override
-    public void handle(Logger logger, ServerPlayerEntity player, MutableText[] message, Supplier<Logger.CommandParameters> commandParams) {
-        Logger.CommandParameters<?> params = commandParams.get();
+    public void handle(Logger logger, ServerPlayerEntity player, MutableText[] message, Supplier<Map<String, Object>> commandParams) {
+        Map<String, Object> params = commandParams.get();
         String command = this.command;
         for (Map.Entry<String, ?> param : params.entrySet()) {
             String variable = "$" + param.getKey();

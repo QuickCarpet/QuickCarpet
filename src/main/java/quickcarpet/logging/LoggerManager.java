@@ -5,7 +5,6 @@ import com.google.common.collect.MultimapBuilder;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,17 +12,26 @@ import java.util.stream.Stream;
 
 public class LoggerManager {
     private final MinecraftServer server;
-    private Map<String, PlayerSubscriptions> playerSubscriptions = new HashMap<>();
-    private Multimap<Logger, String> subscribedOfflinePlayers = MultimapBuilder.hashKeys().hashSetValues().build();
-    private Multimap<Logger, String> subscribedOnlinePlayers = MultimapBuilder.hashKeys().hashSetValues().build();
+    private final Map<String, PlayerSubscriptions> playerSubscriptions = new HashMap<>();
+    private final Multimap<Logger, String> subscribedOnlinePlayers = MultimapBuilder.hashKeys().hashSetValues().build();
 
     public LoggerManager(MinecraftServer server) {
         this.server = server;
     }
 
+    public static final class LoggerOptions {
+        public final String option;
+        public final LogHandler handler;
+
+        public LoggerOptions(String option, LogHandler handler) {
+            this.option = option;
+            this.handler = handler;
+        }
+    }
+
     public static final class PlayerSubscriptions {
         final String playerName;
-        final Map<Logger, Pair<LogHandler, String>> subscriptions = new HashMap<>();
+        final Map<Logger, LoggerOptions> subscriptions = new HashMap<>();
 
         PlayerSubscriptions(String playerName) {
             this.playerName = playerName;
@@ -34,13 +42,13 @@ public class LoggerManager {
         }
 
         public String getOption(Logger logger) {
-            Pair<LogHandler, String> sub = subscriptions.get(logger);
-            return sub == null ? null : sub.getRight();
+            LoggerOptions sub = subscriptions.get(logger);
+            return sub == null ? null : sub.option;
         }
 
         public LogHandler getHandler(Logger logger) {
-            Pair<LogHandler, String> sub = subscriptions.get(logger);
-            return sub == null ? null : sub.getLeft();
+            LoggerOptions sub = subscriptions.get(logger);
+            return sub == null ? null : sub.handler;
         }
     }
 
@@ -52,17 +60,19 @@ public class LoggerManager {
     }
 
     private void subscribePlayer(String playerName, Logger logger, String option, LogHandler handler) {
-        PlayerSubscriptions subs = playerSubscriptions.computeIfAbsent(playerName, PlayerSubscriptions::new);
         if (option == null) option = logger.getDefault();
         if (handler == null) handler = logger.defaultHandler;
-        subs.subscriptions.put(logger, Pair.of(handler, option));
+        subscribePlayer(playerName, logger, new LoggerOptions(option, handler));
+    }
+
+    private void subscribePlayer(String playerName, Logger logger, LoggerOptions options) {
+        PlayerSubscriptions subs = playerSubscriptions.computeIfAbsent(playerName, PlayerSubscriptions::new);
+        subs.subscriptions.put(logger, options);
         if (playerFromName(playerName) != null) {
             subscribedOnlinePlayers.put(logger, playerName);
             logger.active = true;
-        } else {
-            subscribedOfflinePlayers.put(logger, playerName);
         }
-        handler.onAddPlayer(playerName);
+        options.handler.onAddPlayer(playerName);
     }
 
     /**
@@ -75,11 +85,10 @@ public class LoggerManager {
     private void unsubscribePlayer(String playerName, Logger logger) {
         PlayerSubscriptions subs = playerSubscriptions.get(playerName);
         if (subs == null) return;
-        LogHandler handler = subs.subscriptions.remove(logger).getLeft();
+        LogHandler handler = subs.subscriptions.remove(logger).handler;
         handler.onRemovePlayer(playerName);
         if (subs.subscriptions.isEmpty()) playerSubscriptions.remove(playerName);
         subscribedOnlinePlayers.remove(logger, playerName);
-        subscribedOfflinePlayers.remove(logger, playerName);
         logger.active = hasOnlineSubscribers(logger);
     }
 
@@ -120,7 +129,6 @@ public class LoggerManager {
         if (subs == null) return;
         for (Logger logger : subs.subscriptions.keySet()) {
             subscribedOnlinePlayers.put(logger, playerName);
-            subscribedOfflinePlayers.remove(logger, playerName);
             logger.active = true;
         }
     }
@@ -130,7 +138,6 @@ public class LoggerManager {
         PlayerSubscriptions subs = playerSubscriptions.get(playerName);
         if (subs == null) return;
         for (Logger logger : subs.subscriptions.keySet()) {
-            subscribedOfflinePlayers.put(logger, playerName);
             subscribedOnlinePlayers.remove(logger, playerName);
             logger.active = hasOnlineSubscribers(logger);
         }

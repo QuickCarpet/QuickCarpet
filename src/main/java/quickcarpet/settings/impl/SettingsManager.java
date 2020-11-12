@@ -5,6 +5,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import quickcarpet.Build;
 import quickcarpet.api.module.QuickCarpetModule;
 import quickcarpet.api.settings.ParsedRule;
 import quickcarpet.api.settings.Rule;
@@ -22,7 +23,7 @@ import java.util.function.Predicate;
 import static java.lang.reflect.Modifier.*;
 
 abstract class SettingsManager implements quickcarpet.api.settings.SettingsManager {
-    protected static final Logger LOG = LogManager.getLogger();
+    protected static final Logger LOG = LogManager.getLogger(Build.NAME);
     protected final Class<?> settingsClass;
     MinecraftServer server;
     protected boolean parsed;

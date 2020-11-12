@@ -12,13 +12,13 @@ import quickcarpet.QuickCarpet;
 import quickcarpet.QuickCarpetServer;
 import quickcarpet.api.TelemetryProvider;
 import quickcarpet.commands.TickCommand;
-import quickcarpet.logging.Logger;
-import quickcarpet.logging.loghelpers.LogParameter;
 import quickcarpet.pubsub.PubSubInfoProvider;
 import quickcarpet.utils.Messenger;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 import static quickcarpet.utils.Messenger.*;
 
@@ -35,11 +35,9 @@ public class TickSpeed implements TelemetryProvider {
     private String tickWarpCallback = null;
     private ServerCommandSource tickWarpSender = null;
 
-    public final LogCommandParameters LOG_COMMAND_PARAMETERS = new LogCommandParameters();
-
-    private static PubSubInfoProvider<Float> TICK_RATE_GOAL_PUBSUB_PROVIDER = new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "carpet.tick-rate.tps-goal", 0, () -> getServerTickSpeed().tickRateGoal);
-    private static PubSubInfoProvider<Integer> TICK_STEP_PUBSUB_PROVIDER = new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "carpet.tick-rate.step", 0, () -> getServerTickSpeed().stepAmount);
-    private static PubSubInfoProvider<Boolean> PAUSED_PUBSUB_PROVIDER = new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "carpet.tick-rate.paused", 0, () -> getServerTickSpeed().paused);
+    private static final PubSubInfoProvider<Float> TICK_RATE_GOAL_PUBSUB_PROVIDER = new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "carpet.tick-rate.tps-goal", 0, () -> getServerTickSpeed().tickRateGoal);
+    private static final PubSubInfoProvider<Integer> TICK_STEP_PUBSUB_PROVIDER = new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "carpet.tick-rate.step", 0, () -> getServerTickSpeed().stepAmount);
+    private static final PubSubInfoProvider<Boolean> PAUSED_PUBSUB_PROVIDER = new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "carpet.tick-rate.paused", 0, () -> getServerTickSpeed().paused);
 
     static {
         new PubSubInfoProvider<>(QuickCarpet.PUBSUB, "minecraft.performance.mspt", 20, () -> getServerTickSpeed().getCurrentMSPT());
@@ -345,15 +343,5 @@ public class TickSpeed implements TelemetryProvider {
         loadAvg.addProperty("15", loadAvg15min);
         obj.add("loadAvg", loadAvg);
         return obj;
-    }
-
-    public class LogCommandParameters extends AbstractMap<String, Double> implements Logger.CommandParameters<Double> {
-        private LogCommandParameters() {}
-        @Override
-        public Set<Entry<String, Double>> entrySet() {
-            return LogParameter.parameters(
-                    new LogParameter<>("MSPT", TickSpeed.this::getCurrentMSPT),
-                    new LogParameter<>("TPS", TickSpeed.this::getTPS));
-        }
     }
 }

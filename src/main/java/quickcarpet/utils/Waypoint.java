@@ -13,6 +13,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.WorldSavePath;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
@@ -156,7 +157,7 @@ public class Waypoint implements Comparable<Waypoint>, Messenger.Formattable {
     }
 
     public static Path getWaypointFile(WaypointContainer world) {
-        return QuickCarpetServer.getConfigFile(Reflection.newWorldSavePath("waypoints" + world.getWaypointDimensionType().getSuffix() + ".json"));
+        return QuickCarpetServer.getConfigFile(new WorldSavePath("waypoints" + world.getWaypointDimensionType().getSuffix() + ".json"));
     }
 
     public static class CollectionAdapter extends TypeAdapter<Collection<Waypoint>> {
