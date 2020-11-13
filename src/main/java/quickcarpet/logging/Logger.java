@@ -1,6 +1,7 @@
 package quickcarpet.logging;
 
 import com.google.common.collect.ImmutableMap;
+import com.mojang.serialization.Codec;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.LiteralText;
@@ -19,6 +20,8 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class Logger implements Comparable<Logger> {
+    public static Codec<Logger> NAME_CODEC = Codec.STRING.comapFlatMap(Loggers::getDataResult, Logger::getName).stable();
+
     boolean active = false;
     @Nullable
     private Text unavailable;

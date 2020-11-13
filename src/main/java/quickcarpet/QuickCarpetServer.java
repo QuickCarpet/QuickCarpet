@@ -95,6 +95,16 @@ public class QuickCarpetServer implements QuickCarpetServerAPI, ServerEventListe
     }
 
     @Override
+    public void onServerLoaded(MinecraftServer server) {
+        loggers.readSaveFile();
+    }
+
+    @Override
+    public void onWorldsSaved(MinecraftServer server) {
+        loggers.writeSaveFile();
+    }
+
+    @Override
     public void onPlayerConnect(ServerPlayerEntity player) {
         try {
             loggers.onPlayerConnect(player);

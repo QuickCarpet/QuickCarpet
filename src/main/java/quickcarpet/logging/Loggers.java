@@ -1,6 +1,8 @@
 package quickcarpet.logging;
 
+import com.mojang.serialization.DataResult;
 import net.minecraft.util.DyeColor;
+import quickcarpet.utils.Translations;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -46,8 +48,18 @@ public final class Loggers {
 
     public static Logger getLogger(String name, boolean includeUnavailable) {
         Logger logger = LOGGERS.get(name);
+        if (logger == null) return null;
         if (!includeUnavailable && !logger.isAvailable()) return null;
         return logger;
+    }
+
+    public static DataResult<Logger> getDataResult(String name) {
+        Logger logger = LOGGERS.get(name);
+        if (logger == null) return DataResult.error("Unknown logger: " + name);
+        if (!logger.isAvailable()) {
+            return DataResult.error(Translations.translate(logger.getUnavailabilityReason(), "en_US").getString());
+        }
+        return DataResult.success(logger);
     }
 
     /**

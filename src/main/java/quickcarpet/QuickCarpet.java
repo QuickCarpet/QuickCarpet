@@ -66,6 +66,7 @@ public final class QuickCarpet implements QuickCarpetAPI, ServerEventListener, T
     @Override
     public void onServerLoaded(MinecraftServer server) {
         Settings.MANAGER.init(server);
+        this.server.onServerLoaded(server);
         for (QuickCarpetModule m : modules) m.onServerLoaded(server);
         registerCommands(dispatcher);
     }
@@ -197,6 +198,7 @@ public final class QuickCarpet implements QuickCarpetAPI, ServerEventListener, T
     @Override
     public void onWorldsSaved(MinecraftServer server) {
         for (ServerWorld world : server.getWorlds()) onWorldSaved(world);
+        if (this.server != null) this.server.onWorldsSaved(server);
         for (QuickCarpetModule m : modules) m.onWorldsSaved(server);
     }
 

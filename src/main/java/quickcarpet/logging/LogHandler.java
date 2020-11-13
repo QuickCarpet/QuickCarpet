@@ -1,5 +1,8 @@
 package quickcarpet.logging;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.packet.s2c.play.TitleS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
@@ -9,11 +12,18 @@ import quickcarpet.utils.HUDController;
 import quickcarpet.utils.Messenger;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 @FunctionalInterface
 public interface LogHandler {
+    MapCodec<LogHandler> CODEC = RecordCodecBuilder.mapCodec(it -> it.group(
+        Codec.STRING.fieldOf("name").forGetter(h -> LogHandlers.getCreatorName(LogHandlers.getCreator(h))),
+        Codec.STRING.listOf().optionalFieldOf("extra").forGetter(h -> Optional.ofNullable(h.getExtraArgs()))
+    ).apply(it, (name, extra) -> LogHandlers.createHandler(name, extra.map(strings -> strings.toArray(new String[0])).orElseGet(() -> new String[0]))));
+
     LogHandler CHAT = (logger, player, message, commandParams) -> Arrays.stream(message)
             .forEach(m -> player.sendMessage(new TranslatableText("chat.type.announcement", logger.getDisplayName(), m), false));
 
@@ -44,4 +54,10 @@ public interface LogHandler {
     void handle(Logger logger, ServerPlayerEntity player, MutableText[] message, Supplier<Map<String, Object>> commandParams);
     default void onAddPlayer(String playerName) {}
     default void onRemovePlayer(String playerName) {}
+    default List<String> getExtraArgs() {
+        return null;
+    }
+    default LogHandlerCreator getCreator() {
+        return null;
+    }
 }
