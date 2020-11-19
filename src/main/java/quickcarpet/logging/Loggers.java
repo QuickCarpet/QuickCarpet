@@ -57,7 +57,7 @@ public final class Loggers {
         Logger logger = LOGGERS.get(name);
         if (logger == null) return DataResult.error("Unknown logger: " + name);
         if (!logger.isAvailable()) {
-            return DataResult.error(Translations.translate(logger.getUnavailabilityReason(), "en_US").getString());
+            return DataResult.error(Translations.translate(logger.getUnavailabilityReason(), Translations.DEFAULT_LOCALE).getString());
         }
         return DataResult.success(logger);
     }
