@@ -146,7 +146,9 @@ public class Messenger {
     }
 
     public static MutableText tp(Waypoint waypoint, Formatting... style) {
-        return tp(waypoint.position, style);  //TODO: tp to waypoint
+        return runCommand(
+                s(String.format(Locale.ROOT, "[ %.1f, %.1f, %.1f ]", waypoint.position.x, waypoint.position.y, waypoint.position.z), style),
+                String.format(Locale.ROOT, "/tp waypoint %s", waypoint.getFullName()));
     }
 
     public static MutableText tp(BlockPos pos, Formatting... style) {
