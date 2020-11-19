@@ -31,7 +31,7 @@ import java.util.stream.Stream;
 
 public class LoggerManager {
     private static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger();
-    private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
     private final MinecraftServer server;
     private final Map<String, PlayerSubscriptions> playerSubscriptions = new HashMap<>();
     private final Multimap<Logger, String> subscribedOnlinePlayers = MultimapBuilder.hashKeys().hashSetValues().build();
