@@ -2,8 +2,8 @@ package quickcarpet.mixin.renewableLava;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.MapColor;
 import net.minecraft.block.Material;
-import net.minecraft.block.MaterialColor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,6 +26,6 @@ public class BlocksMixin {
             target = "Lnet/minecraft/block/Blocks;register(Ljava/lang/String;Lnet/minecraft/block/Block;)Lnet/minecraft/block/Block;",
             ordinal = 0))
     private static Block registerObsidian(String id, Block obsidian) {
-        return register("obsidian", new ObsidianBlock(Block.Settings.of(Material.STONE, MaterialColor.BLACK).requiresTool().strength(50.0F, 1200.0F)));
+        return register("obsidian", new ObsidianBlock(Block.Settings.of(Material.STONE, MapColor.BLACK).requiresTool().strength(50.0F, 1200.0F)));
     }
 }

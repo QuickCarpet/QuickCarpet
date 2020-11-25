@@ -37,7 +37,7 @@ public abstract class WorldMixin implements WorldAccess, ExtendedWorld {
      * @author 2No2Name
      */
     public boolean setBlockStateWithBlockEntity(BlockPos pos, BlockState state, BlockEntity newBlockEntity, int flags, int depth) {
-        if (this.method_31606(pos)) return false;
+        if (this.isOutOfHeightLimit(pos)) return false;
         if (!this.isClient && this.isDebugWorld()) return false;
         WorldChunk worldChunk = this.getWorldChunk(pos);
         Block block = state.getBlock();

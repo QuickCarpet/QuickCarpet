@@ -2,10 +2,10 @@ package quickcarpet.mixin.client;
 
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.PistonBlockEntity;
-import net.minecraft.class_5614;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.block.entity.BlockEntityRenderDispatcher;
 import net.minecraft.client.render.block.entity.BlockEntityRenderer;
+import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.block.entity.PistonBlockEntityRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -24,8 +24,8 @@ public abstract class PistonBlockEntityRendererMixin implements BlockEntityRende
     private BlockEntityRenderDispatcher blockEntityRenderDispatcher;
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void onInit(class_5614.class_5615 ctx, CallbackInfo ci) {
-        blockEntityRenderDispatcher = ctx.method_32139();
+    private void onInit(BlockEntityRendererFactory.Context ctx, CallbackInfo ci) {
+        blockEntityRenderDispatcher = ctx.getRenderDispatcher();
     }
 
     @Inject(method = "render", at = @At(value = "INVOKE",

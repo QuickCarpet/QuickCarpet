@@ -67,12 +67,12 @@ public class BlockPropertyTag implements Tag<Block> {
         }
 
         @Override
-        public int method_31607() {
+        public int getSectionCount() {
             return 1;
         }
 
         @Override
-        public int method_31605() {
+        public int getBottomSectionLimit() {
             return 0;
         }
     }

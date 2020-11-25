@@ -34,7 +34,7 @@ public class PistonBlockMixin extends FacingBlock {
     private ThreadLocal<List<BlockEntity>> list1_BlockEntities = new ThreadLocal<>(); //Unneccessary ThreadLocal if client and server use different PistonBlock instances
 
     @Feature("autoCraftingTable")
-    @Inject(method = "isMovable", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;method_31709()Z"),
+    @Inject(method = "isMovable", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;hasBlockEntity()Z"),
             cancellable = true)
     private static void craftingTableMoveable(BlockState state, World world, BlockPos pos, Direction pistonDirection,
                                               boolean allowDestroy, Direction moveDirection, CallbackInfoReturnable<Boolean> cir) {
@@ -45,7 +45,7 @@ public class PistonBlockMixin extends FacingBlock {
     }
 
     @Feature("additionalMovableBlocks")
-    @Inject(method = "isMovable", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;method_31709()Z"),
+    @Inject(method = "isMovable", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;hasBlockEntity()Z"),
             cancellable = true)
     //Blocks overwritten to be pushable will be pushable without not hasBlockEntity check.
     private static void additionalBlocksMovable(BlockState state, World world, BlockPos pos, Direction pistonDirection,
@@ -112,9 +112,9 @@ public class PistonBlockMixin extends FacingBlock {
                 block != Blocks.SPAWNER;
     }
 
-    @Redirect(method = "isMovable", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;method_31709()Z"))
+    @Redirect(method = "isMovable", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;hasBlockEntity()Z"))
     private static boolean ifHasBlockEntity(BlockState state) {
-        return state.method_31709() && (!quickcarpet.settings.Settings.movableBlockEntities || !isPushableTileEntityBlock(state));
+        return state.hasBlockEntity() && (!quickcarpet.settings.Settings.movableBlockEntities || !isPushableTileEntityBlock(state));
     }
 
 
@@ -129,7 +129,7 @@ public class PistonBlockMixin extends FacingBlock {
             List<BlockEntity> list = new ArrayList<>();
             for (int i = 0; i < list_1.size(); ++i) {
                 BlockPos blockpos = list_1.get(i);
-                BlockEntity blockEntity = (list_2.get(i).method_31709()) ? world_1.getBlockEntity(blockpos) : null;
+                BlockEntity blockEntity = list_2.get(i).hasBlockEntity() ? world_1.getBlockEntity(blockpos) : null;
                 list.add(blockEntity);
                 if (blockEntity != null) {
                     //hopefully this call won't have any side effects in the future, such as dropping all the BlockEntity's items

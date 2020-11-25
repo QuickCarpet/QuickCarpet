@@ -13,7 +13,7 @@ import quickcarpet.utils.extensions.DynamicBlockEntityProvider;
 public abstract class AbstractBlockMixin {
     @Shadow public abstract Block getBlock();
 
-    @Inject(method = "method_31709", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "hasBlockEntity", at = @At("HEAD"), cancellable = true)
     private void betterHasBlockEntity(CallbackInfoReturnable<Boolean> cir) {
         Block block = getBlock();
         if (block instanceof DynamicBlockEntityProvider) {

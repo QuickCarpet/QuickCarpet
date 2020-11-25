@@ -8,6 +8,7 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.GameMode;
 import quickcarpet.settings.Settings;
 
@@ -42,7 +43,7 @@ public class CameraModeCommand {
         }
     }
 
-    private static int cameraMode(ServerCommandSource source, PlayerEntity target) {
+    private static int cameraMode(ServerCommandSource source, ServerPlayerEntity target) {
         if (!(hasPermission(source, target))) return 0;
         target.setGameMode(GameMode.SPECTATOR);
         target.addStatusEffect(new StatusEffectInstance(StatusEffects.NIGHT_VISION, 999999, 0, false, false));
@@ -50,7 +51,7 @@ public class CameraModeCommand {
         return 1;
     }
 
-    private static int serverMode(ServerCommandSource source, PlayerEntity target) {
+    private static int serverMode(ServerCommandSource source, ServerPlayerEntity target) {
         if (!(hasPermission(source, target))) return 0;
         GameMode mode = source.getMinecraftServer().getDefaultGameMode();
         if (mode == GameMode.SPECTATOR) mode = GameMode.SURVIVAL;

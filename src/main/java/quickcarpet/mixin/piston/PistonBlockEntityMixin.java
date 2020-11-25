@@ -36,9 +36,9 @@ public abstract class PistonBlockEntityMixin extends BlockEntity implements Exte
         super(blockEntityType, blockPos, blockState);
     }
 
-    public void method_31662(World world) {
-        super.method_31662(world);
-        if (carriedBlockEntity != null) carriedBlockEntity.method_31662(world);
+    public void setWorld(World world) {
+        super.setWorld(world);
+        if (carriedBlockEntity != null) carriedBlockEntity.setWorld(world);
     }
 
     /**
@@ -52,7 +52,7 @@ public abstract class PistonBlockEntityMixin extends BlockEntity implements Exte
         this.carriedBlockEntity = blockEntity;
         if (this.carriedBlockEntity != null) {
             ((BlockEntityAccessor) this.carriedBlockEntity).setPos(this.pos);
-            if (world != null) carriedBlockEntity.method_31662(world);
+            if (world != null) carriedBlockEntity.setWorld(world);
         }
     }
 
@@ -72,7 +72,7 @@ public abstract class PistonBlockEntityMixin extends BlockEntity implements Exte
     /**
      * @author 2No2Name
      */
-    @Redirect(method = "method_31707", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
+    @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
     private static boolean movableTEsetBlockState0(World world, BlockPos pos, BlockState state, int flags, World world1, BlockPos blockPos, BlockState blockState, PistonBlockEntity pistonBlockEntity) {
         if (!Settings.movableBlockEntities)
             return world.setBlockState(pos, state, flags);

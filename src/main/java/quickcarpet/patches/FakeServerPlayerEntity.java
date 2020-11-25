@@ -26,29 +26,29 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
     private float startingYaw, startingPitch;
 
     public static FakeServerPlayerEntity createFake(GameProfile profile, MinecraftServer server, double x, double y, double z, double yaw, double pitch, ServerWorld dimension, GameMode gamemode) {
-        ServerPlayerInteractionManager interactionManagerIn = new ServerPlayerInteractionManager(dimension);
         if (profile.getProperties().containsKey("textures")) {
             profile = SkullBlockEntity.loadProperties(profile);
         }
-        FakeServerPlayerEntity instance = new FakeServerPlayerEntity(server, dimension, profile, interactionManagerIn, x, y, z, (float) yaw, (float) pitch);
+        FakeServerPlayerEntity instance = new FakeServerPlayerEntity(server, dimension, profile, x, y, z, (float) yaw, (float) pitch);
+        ServerPlayerInteractionManager interactionManagerIn = new ServerPlayerInteractionManager(instance);
         FakeClientConnection connection = new FakeClientConnection(NetworkSide.SERVERBOUND);
         ((ServerNetworkIoAccessor) server.getNetworkIo()).getConnections().add(connection);
         server.getPlayerManager().onPlayerConnect(connection, instance);
         if (!instance.world.getRegistryKey().equals(dimension.getRegistryKey())) {
             ServerWorld old_world = (ServerWorld) instance.world;
-            old_world.removePlayer(instance, class_5529.field_27002);
-            instance.method_31482();
+            old_world.removePlayer(instance, RemovalReason.CHANGED_DIMENSION);
+            instance.unsetRemoved();
             dimension.spawnEntity(instance);
-            instance.setWorld(dimension);
+            instance.method_32747(dimension);
             server.getPlayerManager().sendWorldInfo(instance, old_world);
             instance.networkHandler.requestTeleport(x, y, z, (float) yaw, (float) pitch);
             instance.interactionManager.setWorld(dimension);
         }
         instance.setHealth(20.0F);
-        instance.method_31482();
+        instance.unsetRemoved();
         instance.networkHandler.requestTeleport(x, y, z, (float) yaw, (float) pitch);
         instance.stepHeight = 0.6F;
-        interactionManagerIn.setGameMode(gamemode, GameMode.NOT_SET);
+        interactionManagerIn.setGameMode(gamemode);
         server.getPlayerManager().sendToDimension(new EntitySetHeadYawS2CPacket(instance, (byte) (instance.headYaw * 256 / 360)), instance.world.getRegistryKey());
         server.getPlayerManager().sendToDimension(new EntityPositionS2CPacket(instance), instance.world.getRegistryKey());
         instance.getServerWorld().getChunkManager().updateCameraPosition(instance);
@@ -60,16 +60,16 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
         server.getPlayerManager().remove(real);
         real.networkHandler.disconnect(new TranslatableText("multiplayer.disconnect.duplicate_login"));
         ServerWorld world = (ServerWorld) real.world;
-        ServerPlayerInteractionManager interactionManager = new ServerPlayerInteractionManager(world);
         GameProfile profile = real.getGameProfile();
-        FakeServerPlayerEntity shadow = new FakeServerPlayerEntity(server, world, profile, interactionManager);
+        FakeServerPlayerEntity shadow = new FakeServerPlayerEntity(server, world, profile);
+        ServerPlayerInteractionManager interactionManager = new ServerPlayerInteractionManager(shadow);
         FakeClientConnection connection = new FakeClientConnection(NetworkSide.SERVERBOUND);
         ((ServerNetworkIoAccessor) server.getNetworkIo()).getConnections().add(connection);
         server.getPlayerManager().onPlayerConnect(connection, shadow);
 
         shadow.setHealth(real.getHealth());
         shadow.networkHandler.requestTeleport(real.getX(), real.getY(), real.getZ(), real.yaw, real.pitch);
-        interactionManager.setGameMode(real.interactionManager.getGameMode(), GameMode.NOT_SET);
+        interactionManager.setGameMode(real.interactionManager.getGameMode());
         ((ActionPackOwner) shadow).getActionPack().copyFrom(((ActionPackOwner) real).getActionPack());
         shadow.stepHeight = 0.6F;
         shadow.dataTracker.set(PLAYER_MODEL_PARTS, real.getDataTracker().get(PLAYER_MODEL_PARTS));
@@ -80,13 +80,13 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
         return shadow;
     }
 
-    private FakeServerPlayerEntity(MinecraftServer server, ServerWorld worldIn, GameProfile profile, ServerPlayerInteractionManager interactionManagerIn) {
-        super(server, worldIn, profile, interactionManagerIn);
+    private FakeServerPlayerEntity(MinecraftServer server, ServerWorld world, GameProfile profile) {
+        super(server, world, profile);
         this.hasStartingPos = false;
     }
 
-    private FakeServerPlayerEntity(MinecraftServer server, ServerWorld worldIn, GameProfile profile, ServerPlayerInteractionManager interactionManagerIn, double x, double y, double z, float yaw, float pitch) {
-        super(server, worldIn, profile, interactionManagerIn);
+    private FakeServerPlayerEntity(MinecraftServer server, ServerWorld world, GameProfile profile, double x, double y, double z, float yaw, float pitch) {
+        super(server, world, profile);
         this.hasStartingPos = true;
         this.startingX = x;
         this.startingY = y;

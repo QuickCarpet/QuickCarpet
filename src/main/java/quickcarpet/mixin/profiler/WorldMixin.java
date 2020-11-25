@@ -1,8 +1,8 @@
 package quickcarpet.mixin.profiler;
 
-import net.minecraft.class_5562;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.BlockEntityTickInvoker;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -37,15 +37,15 @@ public class WorldMixin {
 
     @Redirect(
             method = "tickBlockEntities",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/class_5562;method_31703()V")
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/BlockEntityTickInvoker;tick()V")
     )
-    private void tickBlockEntity(class_5562 tickable) {
+    private void tickBlockEntity(BlockEntityTickInvoker tickable) {
         if (!this.isClient) {
             CarpetProfiler.startBlockEntity((World) (Object) this, tickable);
-            tickable.method_31703();
+            tickable.tick();
             CarpetProfiler.endBlockEntity((World) (Object) this);
         } else {
-            tickable.method_31703();
+            tickable.tick();
         }
     }
 

@@ -11,10 +11,6 @@ import quickcarpet.settings.Settings;
 
 @Mixin(MapState.class)
 public abstract class MapStateMixin extends PersistentState {
-    public MapStateMixin(String key) {
-        super(key);
-    }
-
     @Redirect(method = "addIcon", at = @At(
         value = "FIELD",
         target = "Lnet/minecraft/item/map/MapState;dimension:Lnet/minecraft/util/registry/RegistryKey;"

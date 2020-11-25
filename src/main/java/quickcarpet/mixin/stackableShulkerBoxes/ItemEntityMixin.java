@@ -75,7 +75,7 @@ public abstract class ItemEntityMixin extends Entity {
 
             otherStack.decrement(amount);
             if (otherStack.isEmpty()) {
-                other.method_31472();
+                other.discard();
             } else {
                 other.setStack(otherStack);
             }

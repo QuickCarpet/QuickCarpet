@@ -199,7 +199,7 @@ public class PlayerCommand {
     }
 
     private static int spawn(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        return spawn(context, GameMode.NOT_SET);
+        return spawn(context, null);
     }
 
     private static int spawn(CommandContext<ServerCommandSource> context, GameMode gameMode) throws CommandSyntaxException {
@@ -218,7 +218,7 @@ public class PlayerCommand {
             ServerPlayerEntity player = context.getSource().getPlayer();
             mode = player.interactionManager.getGameMode();
         } catch (CommandSyntaxException ignored) {}
-        if (gameMode != GameMode.NOT_SET) mode = gameMode;
+        if (gameMode != null) mode = gameMode;
         GameMode finalMode = mode;
         getSpawnableProfile(context).thenAccept(profile -> {
             if (profile == null) return;

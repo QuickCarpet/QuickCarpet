@@ -40,7 +40,7 @@ public interface BlockInfoProvider<T extends Comparable<T>> extends StateInfoPro
     BlockInfoProvider<Integer> LIGHT_EMISSION = register("light_emission", (state, world, pos) -> state.getLuminance());
     BlockInfoProvider<Boolean> AIR = register("air", (state, world, pos) -> state.isAir());
     BlockInfoProvider<Integer> MAP_COLOR = register("map_color", withFormatter(
-        (state, world, pos) -> state.getTopMaterialColor(world, pos).color,
+        (state, world, pos) -> state.getMapColor(world, pos).color,
         color -> Messenger.format("#%06x", color)
     ));
     BlockInfoProvider<Boolean> CONDUCTS_POWER = register("conducts_power", AbstractBlock.AbstractBlockState::isSolidBlock);

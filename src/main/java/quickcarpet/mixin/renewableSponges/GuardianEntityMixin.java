@@ -31,7 +31,7 @@ public class GuardianEntityMixin extends HostileEntity {
             elderGuardian.setCustomName(this.getCustomName());
             elderGuardian.setCustomNameVisible(this.isCustomNameVisible());
         }
-        this.method_31472();
+        this.discard();
         world.spawnEntityAndPassengers(elderGuardian);
     }
 }

@@ -4,7 +4,6 @@ import com.sun.management.GarbageCollectionNotificationInfo;
 import com.sun.management.GcInfo;
 import it.unimi.dsi.fastutil.objects.*;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.class_5562;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.server.MinecraftServer;
@@ -16,6 +15,7 @@ import net.minecraft.util.Pair;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.BlockEntityTickInvoker;
 import quickcarpet.QuickCarpet;
 import quickcarpet.QuickCarpetServer;
 import quickcarpet.helper.TickSpeed;
@@ -195,10 +195,10 @@ public class CarpetProfiler
         getMeasurement(world).startEntity(e.getType());
     }
 
-    public static void startBlockEntity(World world, class_5562 ticker) {
+    public static void startBlockEntity(World world, BlockEntityTickInvoker ticker) {
         if (!isActive(ReportType.ENTITIES)) return;
         try {
-            BlockEntityType<?> type = Registry.BLOCK_ENTITY_TYPE.get(new Identifier(ticker.method_31706()));
+            BlockEntityType<?> type = Registry.BLOCK_ENTITY_TYPE.get(new Identifier(ticker.getName()));
             getMeasurement(world).startBlockEntity(type);
         } catch (RuntimeException e) {
             if (QuickCarpet.isDevelopment()) e.printStackTrace();

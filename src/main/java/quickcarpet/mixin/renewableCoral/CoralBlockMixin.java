@@ -37,11 +37,11 @@ public abstract class CoralBlockMixin implements Fertilizable {
         // can't be a static final field because of bootstap order (this would load features from blocks)
         List<CoralFeature> FEATURES = Arrays.asList((CoralFeature) Feature.CORAL_CLAW, (CoralFeature) Feature.CORAL_TREE, (CoralFeature) Feature.CORAL_MUSHROOM);
         CoralFeature coral = FEATURES.get(random.nextInt(FEATURES.size()));
-        MaterialColor color = blockUnder.getTopMaterialColor(worldIn, pos);
+        MapColor color = blockUnder.getMapColor(worldIn, pos);
         BlockState proper_block = blockUnder;
         for (Block block : BlockTags.CORAL_BLOCKS.values()) {
             proper_block = block.getDefaultState();
-            if (proper_block.getTopMaterialColor(worldIn, pos) == color) {
+            if (proper_block.getMapColor(worldIn, pos) == color) {
                 break;
             }
         }

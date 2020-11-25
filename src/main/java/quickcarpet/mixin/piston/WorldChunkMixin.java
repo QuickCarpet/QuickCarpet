@@ -31,7 +31,7 @@ public abstract class WorldChunkMixin implements ExtendedWorldChunk {
     @Nullable @Shadow public abstract BlockEntity getBlockEntity(BlockPos blockPos_1, WorldChunk.CreationType worldChunk$CreationType_1);
     @Shadow public abstract void addBlockEntity(BlockEntity blockEntity);
 
-    @Shadow protected abstract <T extends BlockEntity> void method_31723(T blockEntity);
+    @Shadow protected abstract <T extends BlockEntity> void updateTicker(T blockEntity);
 
     @Shadow public abstract void removeBlockEntity(BlockPos pos);
 
@@ -84,15 +84,15 @@ public abstract class WorldChunkMixin implements ExtendedWorldChunk {
                 return null;
             } else {
                 BlockEntity oldBlockEntity = null;
-                if (oldBlockState.method_31709()) {
+                if (oldBlockState.hasBlockEntity()) {
                     oldBlockEntity = this.getBlockEntity(pos, WorldChunk.CreationType.CHECK);
                     if (oldBlockEntity != null) {
-                        oldBlockEntity.method_31664(newBlockState);
-                        this.method_31723(oldBlockEntity);
+                        oldBlockEntity.setCachedState(newBlockState);
+                        this.updateTicker(oldBlockEntity);
                     }
                 }
 
-                if (newBlockState.method_31709()) {
+                if (newBlockState.hasBlockEntity()) {
                     if (newBlockEntity == null) {
                         newBlockEntity = ((BlockEntityProvider) newBlock).createBlockEntity(pos, newBlockState);
                     }

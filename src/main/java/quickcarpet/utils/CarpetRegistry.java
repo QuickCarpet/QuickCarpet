@@ -23,7 +23,6 @@ import quickcarpet.settings.Settings;
 
 import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
 
 public class CarpetRegistry {
     // Initializes Reflection
@@ -70,7 +69,7 @@ public class CarpetRegistry {
 
     }
 
-    private static <T extends BlockEntity> BlockEntityType<T> registerBlockEntity(String id, BlockEntityType.class_5559<? extends T> supplier, Block... blocks) {
+    private static <T extends BlockEntity> BlockEntityType<T> registerBlockEntity(String id, BlockEntityType.BlockEntityFactory<? extends T> supplier, Block... blocks) {
         return Registry.register(Registry.BLOCK_ENTITY_TYPE, id, new BlockEntityType<>(supplier, ImmutableSet.copyOf(blocks), null));
     }
 
