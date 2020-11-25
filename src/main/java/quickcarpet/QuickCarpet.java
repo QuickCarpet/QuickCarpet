@@ -102,6 +102,7 @@ public final class QuickCarpet implements QuickCarpetAPI, ServerEventListener, T
 
     @Override
     public void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher) {
+        VanillaCommandAddons.register(dispatcher);
         CarpetCommand.register(dispatcher);
         TickCommand.register(dispatcher);
         CounterCommand.register(dispatcher);

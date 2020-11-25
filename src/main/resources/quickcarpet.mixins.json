@@ -18,6 +18,7 @@
     "accessor.ServerChunkManagerAccessor",
     "accessor.ServerCommandSourceAccessor",
     "accessor.ServerNetworkIoAccessor",
+    "accessor.TeleportCommandAccessor",
     "accessor.UpgradeDataAccessor",
     "antiCheat.ServerPlayNetworkHandlerMixin",
     "autoCraftingTable.CraftingTableBlockMixin",
@@ -102,7 +103,6 @@
     "tnt.TntBlockMixin",
     "tnt.TntEntityMixin",
     "waypoints.ServerWorldMixin",
-    "waypoints.TeleportCommandMixin",
     "xp.ExperienceOrbEntityMixin"
   ],
   "client": [
