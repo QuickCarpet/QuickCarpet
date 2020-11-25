@@ -1,26 +1,25 @@
 package quickcarpet.logging;
 
+import com.mojang.serialization.DataResult;
 import net.minecraft.util.DyeColor;
-import quickcarpet.helper.HopperCounter;
-import quickcarpet.helper.Mobcaps;
-import quickcarpet.helper.TickSpeed;
-import quickcarpet.logging.loghelpers.PacketCounter;
-import quickcarpet.logging.loghelpers.TNTLogHelper;
-import quickcarpet.utils.CarpetProfiler;
+import quickcarpet.utils.Translations;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public final class Loggers {
     // Map from logger names to loggers.
-    private static Map<String, Logger<?>> LOGGERS = new HashMap<>();
+    private static final Map<String, Logger> LOGGERS = new HashMap<>();
 
-    public static final Logger<TNTLogHelper.LogParameters> TNT = registerLogger("tnt", "brief", new String[]{"brief", "full"}, LogHandler.CHAT, TNTLogHelper.LogParameters.class);
-    public static final Logger<TickSpeed.LogCommandParameters> TPS = registerLogger("tps", null, null, LogHandler.HUD, TickSpeed.LogCommandParameters.class);
-    public static final Logger<PacketCounter.LogCommandParameters> PACKETS = registerLogger("packets", null, null, LogHandler.HUD, PacketCounter.LogCommandParameters.class);
-    public static final Logger<HopperCounter.LogCommandParameters> COUNTER = registerLogger("counter", "white", Arrays.stream(DyeColor.values()).map(Object::toString).toArray(String[]::new), LogHandler.HUD, HopperCounter.LogCommandParameters.class);
-    public static final Logger<Mobcaps.LogCommandParameters> MOBCAPS = registerLogger("mobcaps", "dynamic", new String[]{"dynamic", "overworld", "nether", "end"}, LogHandler.HUD, Mobcaps.LogCommandParameters.class);
-    public static final Logger<CarpetProfiler.GCCommandParameters> GC = registerLogger("gc", null, null, LogHandler.CHAT, CarpetProfiler.GCCommandParameters.class);
+    public static final Logger TNT = registerLogger("tnt", "brief", new String[]{"brief", "full"}, LogHandler.CHAT);
+    public static final Logger TPS = registerLogger("tps", null, null, LogHandler.HUD);
+    public static final Logger PACKETS = registerLogger("packets", null, null, LogHandler.HUD);
+    public static final Logger COUNTER = registerLogger("counter", "white", Arrays.stream(DyeColor.values()).map(Object::toString).toArray(String[]::new), LogHandler.HUD);
+    public static final Logger MOBCAPS = registerLogger("mobcaps", "dynamic", new String[]{"dynamic", "overworld", "nether", "end"}, LogHandler.HUD);
+    public static final Logger GC = registerLogger("gc", null, null, LogHandler.CHAT);
 
 //    public static final Logger PROJECTILES<Logger.EmptyCommandParameters> = registerLogger("projectiles", "full",  new String[]{"brief", "full"}, LogHandler.CHAT);
 //    public static final Logger FALLING_BLOCKS<Logger.EmptyCommandParameters> = registerLogger("fallingBlocks", "brief", new String[]{"brief", "full"}, LogHandler.CHAT);
@@ -31,15 +30,11 @@ public final class Loggers {
 
     private Loggers() {}
 
-    private static Logger<Logger.EmptyCommandParameters> registerLogger(String logName, String def, String[] options, LogHandler defaultHandler) {
-        return registerLogger(new Logger<>(logName, def, options, defaultHandler));
+    private static Logger registerLogger(String logName, String def, String[] options, LogHandler defaultHandler) {
+        return registerLogger(new Logger(logName, def, options, defaultHandler));
     }
 
-    private static <T extends Logger.CommandParameters> Logger<T> registerLogger(String logName, String def, String[] options, LogHandler defaultHandler, Class<T> cls) {
-        return registerLogger(new Logger<>(logName, def, options, defaultHandler));
-    }
-
-    private static <T extends Logger.CommandParameters> Logger<T> registerLogger(Logger<T> logger) {
+    private static Logger registerLogger(Logger logger) {
         LOGGERS.put(logger.getName(), logger);
         return logger;
     }
@@ -53,8 +48,18 @@ public final class Loggers {
 
     public static Logger getLogger(String name, boolean includeUnavailable) {
         Logger logger = LOGGERS.get(name);
+        if (logger == null) return null;
         if (!includeUnavailable && !logger.isAvailable()) return null;
         return logger;
+    }
+
+    public static DataResult<Logger> getDataResult(String name) {
+        Logger logger = LOGGERS.get(name);
+        if (logger == null) return DataResult.error("Unknown logger: " + name);
+        if (!logger.isAvailable()) {
+            return DataResult.error(Translations.translate(logger.getUnavailabilityReason(), Translations.DEFAULT_LOCALE).getString());
+        }
+        return DataResult.success(logger);
     }
 
     /**
@@ -67,7 +72,7 @@ public final class Loggers {
                 .collect(Collectors.toSet());
     }
 
-    public static Collection<Logger<?>> values() {
+    public static Set<Logger> values() {
         return LOGGERS.values().stream().filter(Logger::isAvailable).collect(Collectors.toSet());
     }
 }

@@ -2,14 +2,13 @@ package quickcarpet.helper;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.entity.SpawnGroup;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Pair;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.SpawnHelper;
 import net.minecraft.world.World;
-import quickcarpet.QuickCarpetServer;
-import quickcarpet.logging.Logger;
 import quickcarpet.logging.loghelpers.LogParameter;
 import quickcarpet.mixin.accessor.ServerChunkManagerAccessor;
 
@@ -38,26 +37,20 @@ public class Mobcaps {
         return count < cap;
     }
 
-    public static class LogCommandParameters extends AbstractMap<String, Integer> implements Logger.CommandParameters<Integer> {
-        public static final LogCommandParameters INSTANCE = new LogCommandParameters();
-        private LogCommandParameters() {}
-
-        @Override
-        public Set<Entry<String, Integer>> entrySet() {
-            LinkedHashSet<Entry<String, Integer>> entries = new LinkedHashSet<>();
-            for (World world : QuickCarpetServer.getMinecraftServer().getWorlds()) {
-                RegistryKey<World> dimKey = world.getRegistryKey();
-                for (SpawnGroup category : SpawnGroup.values()) {
-                    if (category == SpawnGroup.MISC) continue;
-                    entries.add(new LogParameter<>(
-                            dimKey.getValue().toString() + "." + category.getName() + ".present",
-                            () -> getMobcaps((ServerWorld) world).get(category).getLeft()));
-                    entries.add(new LogParameter<>(
-                            dimKey.getValue().toString() + "." + category.getName() + ".limit",
-                            () -> getMobcaps((ServerWorld) world).get(category).getRight()));
-                }
+    public static Collection<LogParameter> getCommandParameters(MinecraftServer server) {
+        Collection<LogParameter> entries = new ArrayList<>();
+        for (World world : server.getWorlds()) {
+            RegistryKey<World> dimKey = world.getRegistryKey();
+            for (SpawnGroup category : SpawnGroup.values()) {
+                if (category == SpawnGroup.MISC) continue;
+                entries.add(new LogParameter(
+                        dimKey.getValue().toString() + "." + category.getName() + ".present",
+                        () -> getMobcaps((ServerWorld) world).get(category).getLeft()));
+                entries.add(new LogParameter(
+                        dimKey.getValue().toString() + "." + category.getName() + ".limit",
+                        () -> getMobcaps((ServerWorld) world).get(category).getRight()));
             }
-            return entries;
         }
+        return entries;
     }
 }

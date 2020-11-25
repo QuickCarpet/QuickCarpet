@@ -12,7 +12,7 @@ import quickcarpet.api.annotation.Feature;
 @Mixin(IntegratedServer.class)
 public abstract class IntegratedServerMixin {
 
-    @Inject(method = "setupServer", at = @At(value = "INVOKE", shift = At.Shift.AFTER, target = "Lnet/minecraft/server/integrated/IntegratedServer;method_31400()V"))
+    @Inject(method = "setupServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/integrated/IntegratedServer;loadWorld()V"))
     private void onSetupServerIntegrated(CallbackInfoReturnable<Boolean> cir) {
         QuickCarpet.getInstance().onServerLoaded((IntegratedServer) (Object) this);
     }

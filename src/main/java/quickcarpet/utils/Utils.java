@@ -13,4 +13,9 @@ public final class Utils {
         if (!Settings.creativeNoClip && !ClientSetting.CREATIVE_NO_CLIP_OVERRIDE.get()) return false;
         return !player.world.isClient() || ClientSetting.CREATIVE_NO_CLIP.get();
     }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T cast(Object o, Class<T> type) {
+        return (T) o;
+    }
 }

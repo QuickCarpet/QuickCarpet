@@ -66,6 +66,7 @@ public final class QuickCarpet implements QuickCarpetAPI, ServerEventListener, T
     @Override
     public void onServerLoaded(MinecraftServer server) {
         Settings.MANAGER.init(server);
+        this.server.onServerLoaded(server);
         for (QuickCarpetModule m : modules) m.onServerLoaded(server);
         registerCommands(dispatcher);
     }
@@ -101,11 +102,9 @@ public final class QuickCarpet implements QuickCarpetAPI, ServerEventListener, T
 
     @Override
     public void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher) {
+        VanillaCommandAddons.register(dispatcher);
         CarpetCommand.register(dispatcher);
         TickCommand.register(dispatcher);
-        CarpetFillCommand.register(dispatcher);
-        CarpetCloneCommand.register(dispatcher);
-        CarpetSetBlockCommand.register(dispatcher);
         CounterCommand.register(dispatcher);
         PlayerCommand.register(dispatcher);
         LogCommand.register(dispatcher);
@@ -200,6 +199,7 @@ public final class QuickCarpet implements QuickCarpetAPI, ServerEventListener, T
     @Override
     public void onWorldsSaved(MinecraftServer server) {
         for (ServerWorld world : server.getWorlds()) onWorldSaved(world);
+        if (this.server != null) this.server.onWorldsSaved(server);
         for (QuickCarpetModule m : modules) m.onWorldsSaved(server);
     }
 
@@ -247,5 +247,12 @@ public final class QuickCarpet implements QuickCarpetAPI, ServerEventListener, T
     @Override
     public String getVersion() {
         return Build.VERSION;
+    }
+
+    public static class Provider implements QuickCarpetAPI.Provider {
+        @Override
+        public QuickCarpetAPI getInstance() {
+            return QuickCarpet.getInstance();
+        }
     }
 }

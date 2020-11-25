@@ -17,11 +17,11 @@ import quickcarpet.logging.loghelpers.PacketCounter;
 public class ClientConnectionMixin {
     @Inject(method = "sendImmediately", at = @At("HEAD"))
     private void countPacketOut(Packet<?> packet_1, GenericFutureListener<? extends Future<? super Void>> genericFutureListener_1, CallbackInfo ci) {
-        PacketCounter.totalOut++;
+        PacketCounter.out();
     }
 
     @Inject(method = "channelRead0", at = @At("HEAD"))
     private void countPacketIn(ChannelHandlerContext channelHandlerContext_1, Packet<?> packet_1, CallbackInfo ci) {
-        PacketCounter.totalIn++;
+        PacketCounter.in();
     }
 }

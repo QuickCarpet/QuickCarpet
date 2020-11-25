@@ -38,12 +38,12 @@ public abstract class HopperBlockEntityMixin extends LootableContainerBlockEntit
                     blockPos.offset(blockState.get(HopperBlock.FACING)));
 
 
-            if (wool_color != null) {
-                for (int i = 0; i < inventory.size(); ++i) {
-                    if (!inventory.getStack(i).isEmpty()) {
-                        ItemStack itemstack = inventory.getStack(i);//.copy();
-                        HopperCounter.COUNTERS.get(wool_color).add(world.getServer(), itemstack);
-                        inventory.setStack(i, ItemStack.EMPTY);
+            if (woolColor != null) {
+                for (int i = 0; i < this.size(); ++i) {
+                    if (!this.getStack(i).isEmpty()) {
+                        ItemStack itemstack = this.getStack(i);//.copy();
+                        HopperCounter.COUNTERS.get(HopperCounter.Key.get(woolColor)).add(this.getWorld().getServer(), itemstack);
+                        this.setStack(i, ItemStack.EMPTY);
                     }
                 }
                 cir.setReturnValue(true);

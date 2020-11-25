@@ -5,7 +5,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.command.CommandException;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
-import net.minecraft.util.DyeColor;
 import quickcarpet.helper.HopperCounter;
 import quickcarpet.settings.Settings;
 
@@ -20,8 +19,8 @@ public class CounterCommand {
 
         counter.then(literal("reset").executes(c-> resetCounter(c.getSource(), null)));
         counter.then(literal("realtime").executes(c -> listAllCounters(c.getSource(), true)));
-        for (DyeColor enumDyeColor: DyeColor.values()) {
-            String color = enumDyeColor.toString();
+        for (HopperCounter.Key key: HopperCounter.Key.values()) {
+            String color = key.toString();
             counter.then(literal(color).executes(c -> displayCounter(c.getSource(), color, false)));
             counter.then(literal(color).then(literal("reset").executes(c -> resetCounter(c.getSource(), color))));
             counter.then(literal(color).then(literal("realtime").executes((c) -> displayCounter(c.getSource(), color, true))));
@@ -29,9 +28,9 @@ public class CounterCommand {
         dispatcher.register(counter);
     }
 
-    private static int displayCounter(ServerCommandSource source, String color, boolean realtime) {
-        HopperCounter counter = HopperCounter.getCounter(color);
-        if (counter == null) throw new CommandException(t("command.counter.unknownColor"));
+    private static int displayCounter(ServerCommandSource source, String key, boolean realtime) {
+        HopperCounter counter = HopperCounter.getCounter(key);
+        if (counter == null) throw new CommandException(t("command.counter.unknown"));
         for (Text message : counter.format(source.getMinecraftServer(), realtime, false)) {
             m(source, message);
         }
@@ -44,9 +43,9 @@ public class CounterCommand {
             m(source, t("command.counter.reset.success"));
         } else {
             HopperCounter counter = HopperCounter.getCounter(color);
-            if (counter == null) throw new CommandException(t("command.counter.unknownColor"));
+            if (counter == null) throw new CommandException(t("command.counter.unknown"));
             counter.reset(source.getMinecraftServer());
-            m(source, t("command.counter.reset.one.success", t("color.minecraft." + counter.color.getName())));
+            m(source, t("command.counter.reset.one.success", counter.key.getText()));
         }
         return 1;
     }

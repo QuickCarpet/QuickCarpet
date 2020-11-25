@@ -7,7 +7,6 @@ import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.command.TeleportCommand;
 import net.minecraft.server.world.ServerChunkManager;
-import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Lazy;
 import net.minecraft.util.WorldSavePath;
 
@@ -17,7 +16,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.Set;
 import java.util.function.BooleanSupplier;
 
 public class Reflection {
@@ -108,34 +106,8 @@ public class Reflection {
     }
 
     public static Class<?> getCallingClass(int frames) throws ClassNotFoundException {
-        //noinspection ThrowableNotThrown
         StackTraceElement[] elements = new Error().getStackTrace();
         return Class.forName(elements[frames + 1].getClassName());
-    }
-
-    private static class TeleportHandler {
-        private static final String INT_LOOK_TARGET = "net.minecraft.class_3143$class_3144";
-        private static final MethodHandle teleport;
-
-        static {
-            try {
-                teleport = getMappedMethod(TeleportCommand.class,
-                    "method_13766", void.class,
-                    ServerCommandSource.class, Entity.class, ServerWorld.class,
-                    double.class, double.class, double.class, Set.class,
-                    float.class, float.class, classForName(INT_LOOK_TARGET));
-            } catch (ReflectiveOperationException e) {
-                throw new IllegalStateException(e);
-            }
-        }
-    }
-
-    public static void teleport(ServerCommandSource source, Entity entity_1, ServerWorld world, double x, double y, double z, Set<PlayerPositionLookS2CPacket.Flag> flags, float yaw, float pitch) {
-        try {
-            TeleportHandler.teleport.invoke(source, entity_1, world, x, y, z, flags, yaw, pitch, null);
-        } catch (Throwable throwable) {
-            throw new RuntimeException(throwable);
-        }
     }
 
     // WTF Fabric? https://github.com/FabricMC/intermediary/issues/6
@@ -154,26 +126,6 @@ public class Reflection {
     public static void tickChunkManager(ServerChunkManager chunkManager, BooleanSupplier shouldKeepTicking) {
         try {
             ServerChunkManagerTickHandler.tick.invokeExact(chunkManager, shouldKeepTicking);
-        } catch (Throwable throwable) {
-            throw new RuntimeException(throwable);
-        }
-    }
-
-    private static MethodHandle newWorldSavePathHandle = getWorldSavePathConstructor();
-
-    private static MethodHandle getWorldSavePathConstructor() {
-        try {
-            Constructor<WorldSavePath> constructor = WorldSavePath.class.getDeclaredConstructor(String.class);
-            constructor.setAccessible(true);
-            return LOOKUP.unreflectConstructor(constructor);
-        } catch (ReflectiveOperationException e) {
-            throw new IllegalStateException(e);
-        }
-    }
-
-    public static WorldSavePath newWorldSavePath(String relative) {
-        try {
-            return (WorldSavePath) newWorldSavePathHandle.invokeExact(relative);
         } catch (Throwable throwable) {
             throw new RuntimeException(throwable);
         }

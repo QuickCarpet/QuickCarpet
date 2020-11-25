@@ -9,6 +9,8 @@ public interface QuickCarpetClientAPI {
     ClientPluginChannelManager getPluginChannelManager();
 
     static QuickCarpetClientAPI getInstance() {
-        return ApiUtils.getInstance("quickcarpet.QuickCarpetClient", QuickCarpetClientAPI.class);
+        return ApiUtils.getInstance(Provider.class, QuickCarpetClientAPI.class);
     }
+
+    interface Provider extends ApiProvider<QuickCarpetClientAPI> {}
 }

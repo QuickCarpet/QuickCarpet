@@ -4,10 +4,9 @@ import net.minecraft.entity.TntEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Vec3d;
-import quickcarpet.logging.Logger;
 import quickcarpet.logging.Loggers;
 
-import java.util.LinkedHashMap;
+import java.util.Arrays;
 
 import static quickcarpet.utils.Messenger.*;
 
@@ -52,18 +51,14 @@ public class TNTLogHelper {
                     )};
             }
             return null;
-        }, () -> new LogParameters(primed, primedAngle, exploded));
-    }
-
-    public static class LogParameters extends LinkedHashMap<String, Double> implements Logger.CommandParameters<Double> {
-        public LogParameters(Vec3d primed, double angle, Vec3d exploded) {
-            put("primed.x", primed.x);
-            put("primed.y", primed.y);
-            put("primed.z", primed.z);
-            put("primed.angle", angle);
-            put("exploded.x", exploded.x);
-            put("exploded.y", exploded.y);
-            put("exploded.z", exploded.z);
-        }
+        }, () -> Arrays.asList(
+            new LogParameter("primed.x", primed.x),
+            new LogParameter("primed.x", primed.y),
+            new LogParameter("primed.x", primed.z),
+            new LogParameter("primed.angle", primedAngle),
+            new LogParameter("exploded.x", exploded.x),
+            new LogParameter("exploded.y", exploded.y),
+            new LogParameter("exploded.z", exploded.z)
+        ));
     }
 }

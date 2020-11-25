@@ -95,6 +95,16 @@ public class QuickCarpetServer implements QuickCarpetServerAPI, ServerEventListe
     }
 
     @Override
+    public void onServerLoaded(MinecraftServer server) {
+        loggers.readSaveFile();
+    }
+
+    @Override
+    public void onWorldsSaved(MinecraftServer server) {
+        loggers.writeSaveFile();
+    }
+
+    @Override
     public void onPlayerConnect(ServerPlayerEntity player) {
         try {
             loggers.onPlayerConnect(player);
@@ -141,5 +151,12 @@ public class QuickCarpetServer implements QuickCarpetServerAPI, ServerEventListe
         obj.add("worlds", worlds);
         obj.add("tickSpeed", tickSpeed.getTelemetryData());
         return obj;
+    }
+
+    public static class Provider implements QuickCarpetServerAPI.Provider {
+        @Override
+        public QuickCarpetServerAPI getInstance() {
+            return QuickCarpetServer.getInstance();
+        }
     }
 }

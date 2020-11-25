@@ -88,15 +88,6 @@ public class Settings {
     public static int commandCameramode = 2;
 
     @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
-    public static int commandCarpetClone = 2;
-
-    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
-    public static int commandCarpetFill = 2;
-
-    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
-    public static int commandCarpetSetBlock = 2;
-
-    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
     public static int commandFix = 2;
 
     @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
@@ -203,15 +194,6 @@ public class Settings {
 
     @Rule(category = FEATURE)
     public static boolean netherMaps = false;
-
-    @Rule(category = {OPTIMIZATIONS, EXPERIMENTAL})
-    public static boolean optimizedFluidTicks = false;
-
-    @Rule(category = {OPTIMIZATIONS, EXPERIMENTAL}, deprecated = true)
-    public static boolean optimizedInventories = false;
-
-    @Rule(category = {OPTIMIZATIONS, EXPERIMENTAL}, bug = @BugFix(value = "MC-151802", fixVersion = "1.14.3-pre1 (partial)"))
-    public static boolean optimizedSpawning = false;
 
     @Rule(category = {SURVIVAL, FIX, EXPERIMENTAL})
     public static boolean phantomsRespectMobcap = false;
