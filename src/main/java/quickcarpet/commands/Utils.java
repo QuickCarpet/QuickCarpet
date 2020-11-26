@@ -1,12 +1,15 @@
 package quickcarpet.commands;
 
+import com.google.common.collect.ImmutableList;
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.BlockPosArgumentType;
+import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.State;
@@ -20,6 +23,9 @@ import net.minecraft.world.BlockView;
 import quickcarpet.helper.StateInfoProvider;
 import quickcarpet.utils.Translations;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -27,7 +33,6 @@ import java.util.function.Function;
 import static net.minecraft.command.argument.BlockPosArgumentType.getLoadedBlockPos;
 import static net.minecraft.command.argument.IdentifierArgumentType.getIdentifier;
 import static net.minecraft.command.argument.IdentifierArgumentType.identifier;
-import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 import static quickcarpet.utils.Messenger.*;
 
@@ -64,7 +69,7 @@ public class Utils {
     }
 
     static RequiredArgumentBuilder<ServerCommandSource, Identifier> identifierArgument(String name, Registry<?> registry) {
-        return argument(name, identifier()).suggests((ctx, builder) -> CommandSource.suggestIdentifiers(registry.getIds(), builder));
+        return CommandManager.argument(name, identifier()).suggests((ctx, builder) -> CommandSource.suggestIdentifiers(registry.getIds(), builder));
     }
 
     static <T> T getIdentifierArgumentValue(CommandContext<ServerCommandSource> ctx, String name, Registry<T> registry, Function<Identifier, CommandSyntaxException> exceptionCreator) throws CommandSyntaxException {
@@ -84,7 +89,7 @@ public class Utils {
     }
 
     static <T extends ArgumentBuilder<ServerCommandSource, T>> T makeStateInfoCommand(T root, Registry<? extends StateInfoProvider<?, ?>> registry, Command<ServerCommandSource> command, StateInfoExecuteSingle single) {
-        return root.then(argument("pos", BlockPosArgumentType.blockPos())
+        return root.then(CommandManager.argument("pos", BlockPosArgumentType.blockPos())
             .executes(command)
             .then(identifierArgument("provider", registry)
                     .executes(ctx -> single.executeDirection(ctx, null))
@@ -122,5 +127,25 @@ public class Utils {
                 : provider.get(state, world, pos);
         m(source, provider.format(value));
         return getReturnValue(value);
+    }
+
+    static <E extends Enum<E>> List<String> getOptions(Class<E> type) {
+        return Arrays.stream(type.getEnumConstants())
+                .map(e -> e.name().toLowerCase(Locale.ROOT))
+                .collect(ImmutableList.toImmutableList());
+    }
+
+    static <E extends Enum<E>> RequiredArgumentBuilder<ServerCommandSource, String> argument(String name, Class<E> type) {
+        Iterable<String> options = getOptions(type);
+        return CommandManager.argument(name, StringArgumentType.string())
+                .suggests((c, b) -> CommandSource.suggestMatching(options, b));
+    }
+
+    static <E extends Enum<E>> E getArgument(CommandContext<ServerCommandSource> context, String argument, Class<E> type) throws CommandSyntaxException {
+        try {
+            return Enum.valueOf(type, StringArgumentType.getString(context, argument).toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException e) {
+            throw CommandSyntaxException.BUILT_IN_EXCEPTIONS.literalIncorrect().create(String.join(", ", getOptions(type)));
+        }
     }
 }

@@ -2,6 +2,8 @@ package quickcarpet.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandException;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
@@ -19,16 +21,19 @@ public class CounterCommand {
 
         counter.then(literal("reset").executes(c-> resetCounter(c.getSource(), null)));
         counter.then(literal("realtime").executes(c -> listAllCounters(c.getSource(), true)));
-        for (HopperCounter.Key key: HopperCounter.Key.values()) {
-            String color = key.toString();
-            counter.then(literal(color).executes(c -> displayCounter(c.getSource(), color, false)));
-            counter.then(literal(color).then(literal("reset").executes(c -> resetCounter(c.getSource(), color))));
-            counter.then(literal(color).then(literal("realtime").executes((c) -> displayCounter(c.getSource(), color, true))));
-        }
+
+        counter.then(Utils.argument("key", HopperCounter.Key.class)
+                .executes(c -> displayCounter(c.getSource(), getKey(c, "key"), false))
+                .then(literal("reset").executes(c -> resetCounter(c.getSource(), getKey(c, "key"))))
+                .then(literal("realtime").executes((c) -> displayCounter(c.getSource(), getKey(c, "key"), true))));
         dispatcher.register(counter);
     }
 
-    private static int displayCounter(ServerCommandSource source, String key, boolean realtime) {
+    private static HopperCounter.Key getKey(CommandContext<ServerCommandSource> ctx, String name) throws CommandSyntaxException {
+        return Utils.getArgument(ctx, name, HopperCounter.Key.class);
+    }
+
+    private static int displayCounter(ServerCommandSource source, HopperCounter.Key key, boolean realtime) {
         HopperCounter counter = HopperCounter.getCounter(key);
         if (counter == null) throw new CommandException(t("command.counter.unknown"));
         for (Text message : counter.format(source.getMinecraftServer(), realtime, false)) {
@@ -37,7 +42,7 @@ public class CounterCommand {
         return 1;
     }
 
-    private static int resetCounter(ServerCommandSource source, String color) {
+    private static int resetCounter(ServerCommandSource source, HopperCounter.Key color) {
         if (color == null) {
             HopperCounter.resetAll(source.getMinecraftServer());
             m(source, t("command.counter.reset.success"));

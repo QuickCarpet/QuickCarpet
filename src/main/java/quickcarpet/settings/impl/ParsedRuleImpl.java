@@ -338,7 +338,7 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
             @Override
             public Enum<T> getArgument(CommandContext<ServerCommandSource> context, String argument, Class<Enum<T>> type) throws CommandSyntaxException {
                 try {
-                    return parse(StringArgumentType.getString(context, "value"));
+                    return parse(StringArgumentType.getString(context, argument));
                 } catch (IllegalArgumentException e) {
                     throw CommandSyntaxException.BUILT_IN_EXCEPTIONS.literalIncorrect().create(String.join(", ", getOptions()));
                 }
