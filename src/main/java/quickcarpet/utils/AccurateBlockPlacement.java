@@ -57,7 +57,12 @@ public class AccurateBlockPlacement {
             return state.with(StairsBlock.FACING, Direction.byId(code & 0xf)).with(StairsBlock.HALF, code > 0xf ? BlockHalf.TOP : BlockHalf.BOTTOM);
         }
         if (state.contains(Properties.HORIZONTAL_FACING)) {
-            return state.with(Properties.HORIZONTAL_FACING, getHorizontalFacing(ctx, code));
+            Direction facing = getHorizontalFacing(ctx, code);
+            if (block instanceof BedBlock) {
+                BlockPos headPos = ctx.getBlockPos().offset(facing);
+                if (!ctx.getWorld().getBlockState(headPos).canReplace(ctx)) return null;
+            }
+            return state.with(Properties.HORIZONTAL_FACING, facing);
         }
         if (state.contains(Properties.FACING)) {
             return state.with(Properties.FACING, Direction.byId(code));
