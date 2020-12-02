@@ -33,7 +33,7 @@ public abstract class FallingBlockEntityMixin extends Entity {
     private int packedIceCount;
 
     @Inject(method = "tick", at = @At(value = "INVOKE", ordinal = 0,
-            target = "Lnet/minecraft/entity/FallingBlockEntity;remove()V"),
+            target = "Lnet/minecraft/entity/FallingBlockEntity;discard()V"),
             slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;isOf(Lnet/minecraft/block/Block;)Z", ordinal = 1)),
             locals = LocalCapture.CAPTURE_FAILHARD,
             cancellable = true)
