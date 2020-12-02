@@ -47,7 +47,7 @@ public class NBTHelper {
             changed = true;
         }
 
-        if (bet.isEmpty()) {
+        if (bet.method_33133()) {
             stack.setTag(null);
             changed = true;
         }

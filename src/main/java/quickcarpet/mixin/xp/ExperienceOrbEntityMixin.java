@@ -16,8 +16,8 @@ public class ExperienceOrbEntityMixin {
         return Settings.xpCoolDown;
     }
 
-    @Inject(method = "method_31495", at = @At("HEAD"), cancellable = true)
-    private static void checkMergeDisabled(ExperienceOrbEntity experienceOrbEntity, int i, int j, CallbackInfoReturnable<Boolean> cir) {
+    @Inject(method = "isMergeable(Lnet/minecraft/entity/ExperienceOrbEntity;II)Z", at = @At("HEAD"), cancellable = true)
+    private static void checkMergeDisabled(ExperienceOrbEntity experienceOrbEntity, int seed, int amount, CallbackInfoReturnable<Boolean> cir) {
         if (!Settings.xpMerging) cir.setReturnValue(false);
     }
 }

@@ -184,7 +184,7 @@ public class PlayerActionPack {
                             BlockHitResult blockHit = (BlockHitResult) hit;
                             BlockPos pos = blockHit.getBlockPos();
                             Direction side = blockHit.getSide();
-                            if (pos.getY() < player.server.getWorldHeight() - (side == Direction.UP ? 1 : 0) && world.canPlayerModifyAt(player, pos)) {
+                            if (pos.getY() < player.world.getTopHeightLimit() - (side == Direction.UP ? 1 : 0) && world.canPlayerModifyAt(player, pos)) {
                                 ActionResult result = player.interactionManager.interactBlock(player, world, player.getStackInHand(hand), hand, blockHit);
                                 if (result.shouldSwingHand()) player.swingHand(hand);
                                 if (result != ActionResult.PASS) return;
@@ -246,9 +246,9 @@ public class PlayerActionPack {
                         BlockState state = player.world.getBlockState(pos);
                         if (ap.currentBlock == null || !ap.currentBlock.equals(pos)) {
                             if (ap.currentBlock != null) {
-                                player.interactionManager.processBlockBreakingAction(ap.currentBlock, PlayerActionC2SPacket.Action.ABORT_DESTROY_BLOCK, side, player.server.getWorldHeight());
+                                player.interactionManager.processBlockBreakingAction(ap.currentBlock, PlayerActionC2SPacket.Action.ABORT_DESTROY_BLOCK, side, player.world.getTopHeightLimit());
                             }
-                            player.interactionManager.processBlockBreakingAction(pos, PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, side, player.server.getWorldHeight());
+                            player.interactionManager.processBlockBreakingAction(pos, PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, side, player.world.getTopHeightLimit());
                             boolean notAir = !state.isAir();
                             if (notAir && ap.curBlockDamageMP == 0) {
                                 state.onBlockBreakStart(player.world, pos, player);
@@ -262,7 +262,7 @@ public class PlayerActionPack {
                         } else {
                             ap.curBlockDamageMP += state.calcBlockBreakingDelta(player, player.world, pos);
                             if (ap.curBlockDamageMP >= 1) {
-                                player.interactionManager.processBlockBreakingAction(pos, PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK, side, player.server.getWorldHeight());
+                                player.interactionManager.processBlockBreakingAction(pos, PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK, side, player.world.getTopHeightLimit());
                                 ap.curBlockDamageMP = 0;
                             }
                             player.world.setBlockBreakingInfo(-1, pos, (int) (ap.curBlockDamageMP * 10));
@@ -279,7 +279,7 @@ public class PlayerActionPack {
                 PlayerActionPack ap = ((ActionPackOwner) player).getActionPack();
                 if (ap.currentBlock == null) return;
                 player.world.setBlockBreakingInfo(-1, ap.currentBlock, -1);
-                player.interactionManager.processBlockBreakingAction(ap.currentBlock, PlayerActionC2SPacket.Action.ABORT_DESTROY_BLOCK, Direction.DOWN, player.server.getWorldHeight());
+                player.interactionManager.processBlockBreakingAction(ap.currentBlock, PlayerActionC2SPacket.Action.ABORT_DESTROY_BLOCK, Direction.DOWN, player.world.getTopHeightLimit());
             }
         },
         JUMP(true) {

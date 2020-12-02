@@ -48,7 +48,7 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
         instance.unsetRemoved();
         instance.networkHandler.requestTeleport(x, y, z, (float) yaw, (float) pitch);
         instance.stepHeight = 0.6F;
-        interactionManagerIn.setGameMode(gamemode);
+        interactionManagerIn.changeGameMode(gamemode);
         server.getPlayerManager().sendToDimension(new EntitySetHeadYawS2CPacket(instance, (byte) (instance.headYaw * 256 / 360)), instance.world.getRegistryKey());
         server.getPlayerManager().sendToDimension(new EntityPositionS2CPacket(instance), instance.world.getRegistryKey());
         instance.getServerWorld().getChunkManager().updateCameraPosition(instance);
@@ -69,7 +69,7 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
 
         shadow.setHealth(real.getHealth());
         shadow.networkHandler.requestTeleport(real.getX(), real.getY(), real.getZ(), real.yaw, real.pitch);
-        interactionManager.setGameMode(real.interactionManager.getGameMode());
+        interactionManager.changeGameMode(real.interactionManager.getGameMode());
         ((ActionPackOwner) shadow).getActionPack().copyFrom(((ActionPackOwner) real).getActionPack());
         shadow.stepHeight = 0.6F;
         shadow.dataTracker.set(PLAYER_MODEL_PARTS, real.getDataTracker().get(PLAYER_MODEL_PARTS));
