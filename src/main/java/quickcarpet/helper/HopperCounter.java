@@ -120,8 +120,13 @@ public class HopperCounter {
     }
 
     @Nullable
-    public static HopperCounter getCounter(String color) {
-        return COUNTERS.get(Key.get(color));
+    public static HopperCounter getCounter(String key) {
+        return COUNTERS.get(Key.get(key));
+    }
+
+    @Nullable
+    public static HopperCounter getCounter(HopperCounter.Key key) {
+        return COUNTERS.get(key);
     }
 
     public enum Key {
