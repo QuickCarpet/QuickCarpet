@@ -28,8 +28,8 @@ jobs:
             build/loom-cache
             .gradle/loom-cache
           key: ${{ runner.os }}-loom-${{ hashFiles('**/*{gradle*,.accesswidener}') }}
-            restore-keys: |
-              ${{ runner.os }}-loom-
+          restore-keys: |
+            ${{ runner.os }}-loom-
       - name: Build with Gradle
         run: ./gradlew clean build
       - name: Upload Main JARs
