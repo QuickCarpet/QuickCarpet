@@ -1,4 +1,8 @@
 # QuickCarpet
+![GitHub](https://img.shields.io/github/license/DeadlyMC/QuickCarpet114?style=flat-square)
+![GitHub commits since latest release (by date including pre-releases)](https://img.shields.io/github/commits-since/DeadlyMC/QuickCarpet114/latest/master?style=flat-square)
+![GitHub commits since latest release (by date including pre-releases)](https://img.shields.io/github/commits-since/DeadlyMC/QuickCarpet114/latest/master?include_prereleases&style=flat-square)
+
 Carpetmod for snapshot testing!
 This is not the official carpet vesion.
 Built on top of the Fabric modding framework.
