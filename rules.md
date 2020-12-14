@@ -356,6 +356,16 @@ Default: `false`
 Options: `true`, `false`  
 Categories: feature, experimental  
 
+## nbtMotionLimit
+Sets the limit for 'Motion' set via NBT
+
+Set to 0 for no limit (could be dangerous)  
+
+Type: `double`  
+Default: `10.0`  
+Categories: creative, fix  
+Validator: `>= 0`  
+
 ## netherMaps
 Enables normal mapping of the nether
 

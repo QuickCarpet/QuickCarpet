@@ -60,6 +60,7 @@
     "hopperCounters.ItemEntityMixin",
     "hopperMinecartCooldown.HopperMinecartEntityMixin",
     "hopperMinecartItemTransfer.HopperMinecartEntityMixin",
+    "nbtMotionLimit.EntityMixin",
     "netherMaps.FilledMapItemMixin",
     "netherMaps.MapStateMixin",
     "packetCounter.ClientConnectionMixin",
