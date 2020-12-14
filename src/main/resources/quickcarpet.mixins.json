@@ -57,6 +57,7 @@
     "fillUpdates.WorldChunkMixin",
     "fillUpdates.WorldMixin",
     "hopperCounters.HopperBlockEntityMixin",
+    "hopperCounters.ItemEntityMixin",
     "hopperMinecartCooldown.HopperMinecartEntityMixin",
     "hopperMinecartItemTransfer.HopperMinecartEntityMixin",
     "netherMaps.FilledMapItemMixin",
