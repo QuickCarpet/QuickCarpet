@@ -1,11 +1,14 @@
 package quickcarpet.mixin.client;
 
+import com.google.common.collect.Multimap;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
+import net.minecraft.network.packet.s2c.play.SynchronizeTagsS2CPacket;
+import net.minecraft.tag.TagManager;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -15,6 +18,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import quickcarpet.QuickCarpetClient;
 import quickcarpet.api.annotation.Feature;
 import quickcarpet.client.ClientPluginChannelManager;
+import quickcarpet.utils.CarpetRegistry;
 
 @Feature("core")
 @Environment(EnvType.CLIENT)
@@ -47,5 +51,10 @@ public abstract class ClientPlayNetworkHandlerMixin implements ClientPlayPacketL
         if (ClientPluginChannelManager.INSTANCE.process(packet, (ClientPlayNetworkHandler) (Object) this)) {
             info.cancel();
         }
+    }
+
+    @Inject(method = "onSynchronizeTags", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/Multimap;isEmpty()Z"), locals = LocalCapture.CAPTURE_FAILHARD)
+    private void ignoreMissingCarpetTags(SynchronizeTagsS2CPacket packet, CallbackInfo ci, TagManager manager, Multimap<Identifier, Identifier> map) {
+        map.get(new Identifier("block")).removeAll(CarpetRegistry.CARPET_BLOCK_TAGS);
     }
 }

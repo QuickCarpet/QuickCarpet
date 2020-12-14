@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class BlockPropertyTag implements Tag<Block> {
+public class BlockPropertyTag implements Tag.Identified<Block> {
     public final Identifier id;
     private final Predicate<BlockState> property;
 
@@ -27,6 +27,11 @@ public class BlockPropertyTag implements Tag<Block> {
     public BlockPropertyTag(Identifier id, BlockPropertyPredicate function) {
         this.id = id;
         this.property = state -> function.test(state, new SingleBlockView(state), BlockPos.ORIGIN);
+    }
+
+    @Override
+    public Identifier getId() {
+        return id;
     }
 
     @Override
