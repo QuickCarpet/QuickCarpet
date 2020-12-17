@@ -15,8 +15,21 @@ jobs:
       - name: Cache Gradle packages
         uses: actions/cache@v2
         with:
-          path: ~/.gradle/caches
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+      - name: Cache Loom Files
+        uses: actions/cache@v2
+        with:
+          path: |
+            build/loom-cache
+            .gradle/loom-cache
+          key: ${{ runner.os }}-loom-${{ hashFiles('**/*gradle*', '**/*.accesswidener') }}
+          restore-keys: |
+            ${{ runner.os }}-loom-
       - name: Build with Gradle
         run: ./gradlew clean build
       - name: Upload Main JARs

@@ -192,6 +192,9 @@ public class Settings {
     @Rule(category = {FEATURE, EXPERIMENTAL})
     public static boolean movableBlockOverrides = false;
 
+    @Rule(category = {CREATIVE, FIX}, validator = Validator.NonNegative.class)
+    public static double nbtMotionLimit = 10;
+
     @Rule(category = FEATURE)
     public static boolean netherMaps = false;
 

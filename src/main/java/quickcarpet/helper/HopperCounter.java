@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.objects.Object2LongLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
@@ -15,8 +16,10 @@ import quickcarpet.QuickCarpet;
 import quickcarpet.logging.loghelpers.LogParameter;
 import quickcarpet.pubsub.PubSubInfoProvider;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static quickcarpet.utils.Messenger.*;
@@ -24,11 +27,12 @@ import static quickcarpet.utils.Messenger.*;
 public class HopperCounter {
     public static final Map<Key, HopperCounter> COUNTERS;
     public static final ImmutableSet<LogParameter> COMMAND_PARAMETERS;
+    private static HopperCounter.Combined combined = null;
 
     static {
         EnumMap<Key, HopperCounter> counterMap = new EnumMap<>(Key.class);
         for (Key key : Key.values()) {
-            counterMap.put(key, new HopperCounter(key));
+            counterMap.put(key, key.createCounter());
         }
         COUNTERS = Maps.immutableEnumMap(counterMap);
         ImmutableSet.Builder<LogParameter> params = new ImmutableSet.Builder<>();
@@ -39,10 +43,10 @@ public class HopperCounter {
     }
 
     public final Key key;
-    private final Object2LongMap<Item> counter = new Object2LongLinkedOpenHashMap<>();
-    private long startTick;
-    private long startMillis;
-    private final PubSubInfoProvider<Long> pubSubProvider;
+    protected final Object2LongMap<Item> counter = new Object2LongLinkedOpenHashMap<>();
+    protected long startTick;
+    protected long startMillis;
+    protected final PubSubInfoProvider<Long> pubSubProvider;
 
     private HopperCounter(Key key) {
         this.key = key;
@@ -57,6 +61,7 @@ public class HopperCounter {
         Item item = stack.getItem();
         counter.put(item, counter.getLong(item) + stack.getCount());
         pubSubProvider.publish();
+        combined.update();
     }
 
     public void reset(MinecraftServer server) {
@@ -64,19 +69,14 @@ public class HopperCounter {
         startTick = server.getTicks();
         startMillis = System.currentTimeMillis();
         pubSubProvider.publish();
-    }
-
-    public static void resetAll(MinecraftServer server) {
-        for (HopperCounter counter : COUNTERS.values()) {
-            counter.reset(server);
-        }
+        combined.update();
     }
 
     public static List<MutableText> formatAll(MinecraftServer server, boolean realtime) {
         List<MutableText> text = new ArrayList<>();
 
         for (HopperCounter counter : COUNTERS.values()) {
-            if (counter.getTotalItems() == 0) continue;
+            if (counter.getTotalItems() == 0 || counter.key == Key.ALL) continue;
             List<MutableText> temp = counter.format(server, realtime, false);
             if (!text.isEmpty()) text.add(s(""));
             text.add(c(style(counter.key.getText(), Formatting.DARK_GREEN), s(":", Formatting.GRAY)));
@@ -119,12 +119,47 @@ public class HopperCounter {
         return counter.values().stream().mapToLong(Long::longValue).sum();
     }
 
+    private static class Combined extends HopperCounter {
+        private Combined(Key key) {
+            super(key);
+            combined = this;
+        }
+
+        @Override
+        public void add(MinecraftServer server, ItemStack stack) {
+            throw new UnsupportedOperationException("Don't add items to the 'all' counter");
+        }
+
+        @Override
+        public void reset(MinecraftServer server) {
+            for (HopperCounter c : COUNTERS.values()) {
+                if (c == this) continue;
+                c.reset(server);
+            }
+        }
+
+        public void update() {
+            counter.clear();
+            startTick = Long.MAX_VALUE;
+            startMillis = Long.MAX_VALUE;
+            for (HopperCounter c : COUNTERS.values()) {
+                if (c == this) continue;
+                startTick = Math.min(startTick, c.startTick);
+                startMillis = Math.min(startMillis, c.startMillis);
+                for (Object2LongMap.Entry<Item> e : c.counter.object2LongEntrySet()) {
+                    counter.put(e.getKey(), counter.getLong(e) + e.getLongValue());
+                }
+            }
+            pubSubProvider.publish();
+        }
+    }
+
     @Nullable
     public static HopperCounter getCounter(String key) {
         return COUNTERS.get(Key.get(key));
     }
 
-    @Nullable
+    @Nonnull
     public static HopperCounter getCounter(HopperCounter.Key key) {
         return COUNTERS.get(key);
     }
@@ -146,6 +181,8 @@ public class HopperCounter {
         GREEN(DyeColor.GREEN),
         RED(DyeColor.RED),
         BLACK(DyeColor.BLACK),
+        CACTUS("cactus", Items.CACTUS.getTranslationKey()),
+        ALL("all", "gui.all", Combined::new)
         ;
 
         private static final Map<String, Key> BY_NAME;
@@ -162,6 +199,7 @@ public class HopperCounter {
         private @Nullable DyeColor color;
         public final String name;
         private final String translationKey;
+        private final Function<Key, HopperCounter> creator;
 
         Key(DyeColor color) {
             this(color.getName(), "color.minecraft." + color.getName());
@@ -169,8 +207,13 @@ public class HopperCounter {
         }
 
         Key(String name, String translationKey) {
+            this(name, translationKey, HopperCounter::new);
+        }
+
+        Key(String name, String translationKey, Function<Key, HopperCounter> creator) {
             this.name = name;
             this.translationKey = translationKey;
+            this.creator = creator;
         }
 
         @Nullable
@@ -189,6 +232,10 @@ public class HopperCounter {
         @Nullable
         public static Key get(String name) {
             return BY_NAME.get(name);
+        }
+
+        public HopperCounter createCounter() {
+            return creator.apply(this);
         }
     }
 }

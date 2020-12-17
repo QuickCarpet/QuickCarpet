@@ -33,19 +33,31 @@ public class CarpetRegistry {
     public static final BlockPropertyTag FULL_CUBE = new BlockPropertyTag(new Identifier("carpet:full_cube"), BlockState::isFullCube);
     public static final List<BlockPropertyTag> VIRTUAL_BLOCK_TAGS = ImmutableList.of(SIMPLE_FULL_BLOCK, FULL_CUBE);
 
-    public static final Tag<Block> DISPENSER_BLOCK_WHITELIST = BlockTagsAccessor.register("carpet:dispenser_placeable_whitelist");
-    public static final Tag<Block> DISPENSER_BLOCK_BLACKLIST = BlockTagsAccessor.register("carpet:dispenser_placeable_blacklist");
+    public static final Tag.Identified<Block> DISPENSER_BLOCK_WHITELIST = BlockTagsAccessor.register("carpet:dispenser_placeable_whitelist");
+    public static final Tag.Identified<Block> DISPENSER_BLOCK_BLACKLIST = BlockTagsAccessor.register("carpet:dispenser_placeable_blacklist");
     public static final DispenserBehavior PLACE_BLOCK_DISPENSER_BEHAVIOR = new PlaceBlockDispenserBehavior();
     public static final DispenserBehavior BREAK_BLOCK_DISPENSER_BEHAVIOR = new BreakBlockDispenserBehavior();
     public static final DispenserBehavior DISPENSERS_TILL_SOIL_BEHAVIOR = new TillSoilDispenserBehavior();
     public static final DispenserBehavior DISPENSERS_STRIP_LOGS_BEHAVIOR = new StripLogsDispenserBehavior();
 
     //Additional Movable Blocks
-    public static final Tag<Block> PISTON_OVERRIDE_MOVABLE = BlockTagsAccessor.register("carpet:piston_movable");
-    public static final Tag<Block> PISTON_OVERRIDE_PUSH_ONLY = BlockTagsAccessor.register("carpet:piston_push_only");
-    public static final Tag<Block> PISTON_OVERRIDE_IMMOVABLE = BlockTagsAccessor.register("carpet:piston_immovable");
-    public static final Tag<Block> PISTON_OVERRIDE_DESTROY = BlockTagsAccessor.register("carpet:piston_destroy");
-    public static final Tag<Block> PISTON_OVERRIDE_WEAK_STICKY = BlockTagsAccessor.register("carpet:piston_weak_sticky");
+    public static final Tag.Identified<Block> PISTON_OVERRIDE_MOVABLE = BlockTagsAccessor.register("carpet:piston_movable");
+    public static final Tag.Identified<Block> PISTON_OVERRIDE_PUSH_ONLY = BlockTagsAccessor.register("carpet:piston_push_only");
+    public static final Tag.Identified<Block> PISTON_OVERRIDE_IMMOVABLE = BlockTagsAccessor.register("carpet:piston_immovable");
+    public static final Tag.Identified<Block> PISTON_OVERRIDE_DESTROY = BlockTagsAccessor.register("carpet:piston_destroy");
+    public static final Tag.Identified<Block> PISTON_OVERRIDE_WEAK_STICKY = BlockTagsAccessor.register("carpet:piston_weak_sticky");
+
+    public static final List<Identifier> CARPET_BLOCK_TAGS = ImmutableList.of(
+        SIMPLE_FULL_BLOCK.getId(),
+        FULL_CUBE.getId(),
+        DISPENSER_BLOCK_BLACKLIST.getId(),
+        DISPENSER_BLOCK_WHITELIST.getId(),
+        PISTON_OVERRIDE_MOVABLE.getId(),
+        PISTON_OVERRIDE_PUSH_ONLY.getId(),
+        PISTON_OVERRIDE_IMMOVABLE.getId(),
+        PISTON_OVERRIDE_DESTROY.getId(),
+        PISTON_OVERRIDE_WEAK_STICKY.getId()
+    );
 
     public static final Object2IntMap<Block> TERRACOTTA_BLOCKS = new Object2IntOpenHashMap<>();
 

@@ -1,5 +1,8 @@
 package quickcarpet.helper;
 
+import net.minecraft.block.ShulkerBoxBlock;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -60,5 +63,10 @@ public class NBTHelper {
         if (bet == null) return false;
         ListTag items = getTagOrNull(bet, "Items", TAG_LIST);
         return items != null && !items.isEmpty();
+    }
+
+    public static boolean isEmptyShulkerBox(ItemStack stack) {
+        Item item = stack.getItem();
+        return item instanceof BlockItem && ((BlockItem) item).getBlock() instanceof ShulkerBoxBlock && !hasShulkerBoxItems(stack);
     }
 }

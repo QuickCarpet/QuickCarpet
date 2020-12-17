@@ -44,7 +44,7 @@ public class CounterCommand {
 
     private static int resetCounter(ServerCommandSource source, HopperCounter.Key color) {
         if (color == null) {
-            HopperCounter.resetAll(source.getMinecraftServer());
+            HopperCounter.getCounter(HopperCounter.Key.ALL).reset(source.getMinecraftServer());
             m(source, t("command.counter.reset.success"));
         } else {
             HopperCounter counter = HopperCounter.getCounter(color);
