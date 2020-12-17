@@ -476,15 +476,6 @@ Default: `false`
 Options: `true`, `false`  
 Categories: feature, renewable  
 
-## sleepingThreshold
-Percentage of sleeping players required to skip the night
-
-Type: `double`  
-Default: `100.0`  
-Options: `0`, `50`, `100`  
-Categories: feature, survival  
-Validator: `Range [0.0,100.0]`  
-
 ## sparkingLighter
 Adds back the ability to create fire in mid-air using Flint and Steel or Fire Charges
 

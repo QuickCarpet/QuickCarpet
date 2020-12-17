@@ -39,7 +39,7 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
             old_world.removePlayer(instance, RemovalReason.CHANGED_DIMENSION);
             instance.unsetRemoved();
             dimension.spawnEntity(instance);
-            instance.method_32747(dimension);
+            instance.setWorld(dimension);
             server.getPlayerManager().sendWorldInfo(instance, old_world);
             instance.networkHandler.requestTeleport(x, y, z, (float) yaw, (float) pitch);
             instance.interactionManager.setWorld(dimension);

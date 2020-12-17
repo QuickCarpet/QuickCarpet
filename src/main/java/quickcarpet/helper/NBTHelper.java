@@ -50,7 +50,7 @@ public class NBTHelper {
             changed = true;
         }
 
-        if (bet.method_33133()) {
+        if (bet.isEmpty()) {
             stack.setTag(null);
             changed = true;
         }

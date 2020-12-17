@@ -87,7 +87,6 @@
     "renewableLava.BlocksMixin",
     "renewableSoulSand.LivingEntityMixin",
     "renewableSponges.GuardianEntityMixin",
-    "sleepingThreshold.ServerWorldMixin",
     "sparkingLighter.LighterItemMixin",
     "spawnChunkLevel.ServerWorldMixin",
     "spawning.EndCityFeatureMixin",

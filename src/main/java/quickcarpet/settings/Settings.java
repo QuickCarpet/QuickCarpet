@@ -238,15 +238,6 @@ public class Settings {
     @Rule(category = {FEATURE, RENEWABLE})
     public static boolean shulkerSpawningInEndCities = false;
 
-    public static class SleepingThreshold extends Validator.Range<Double> {
-        public SleepingThreshold() {
-            super(0.0, 100.0);
-        }
-    }
-
-    @Rule(category = {FEATURE, SURVIVAL}, options = {"0", "50", "100"}, validator = SleepingThreshold.class)
-    public static double sleepingThreshold = 100;
-
     public static class SpawnChunkLevel implements ChangeListener<Integer>, Validator<Integer> {
         @Override
         public void onChange(ParsedRule<Integer> rule, Integer previous) {

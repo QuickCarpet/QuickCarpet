@@ -68,7 +68,6 @@
   "carpet.rule.renewableSoulSand.description": "Lebewesen die auf Sand verbrennen konvertieren diesen zu Seelensand",
   "carpet.rule.renewableSponges.description": "Wächter die vom Blitz getroffen werden verwandeln sich in Große Wächter",
   "carpet.rule.shulkerSpawningInEndCities.description": "Shulkers können in End-Städten spawnen",
-  "carpet.rule.sleepingThreshold.description": "Prozentualer Anteil der Spieler die schlafen müssen um die Nacht zu überspringen",
   "carpet.rule.spawnChunkLevel.description": "Größe der Spawnchunks",
   "carpet.rule.spawnChunkLevel.extra": "Wie Sichtweite (11 -> 23x23 aktiv geladene Chunks).\n11 weitere Chunks bleiben geladen, falls diese auf andere Wege geladen wurden.\nHöhere Werte erhöhen den benötigten Hauptspeicher quadratisch (bis zu geladene 7569 Chunks bei Level 32)",
   "carpet.rule.stackableShulkerBoxes.description": "Leere Shulkerkisten haben auf dem Boden eine maximale Stapelgröße von 64",

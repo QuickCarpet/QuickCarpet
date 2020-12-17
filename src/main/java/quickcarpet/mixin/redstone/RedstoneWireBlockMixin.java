@@ -22,7 +22,7 @@ import java.util.Iterator;
 
 @Mixin(RedstoneWireBlock.class)
 public abstract class RedstoneWireBlockMixin {
-    @Shadow protected abstract BlockState method_27840(BlockView world, BlockState state, BlockPos pos);
+    @Shadow protected abstract BlockState getPlacementState(BlockView world, BlockState state, BlockPos pos);
 
     @Redirect(method = "canRunOnTop", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;isOf(Lnet/minecraft/block/Block;)Z"))
     private boolean canRunOnPiston(BlockState blockState, Block block) {
@@ -44,7 +44,7 @@ public abstract class RedstoneWireBlockMixin {
 
     private static final ThreadLocal<Direction> lastDirection = new ThreadLocal<>();
 
-    @Inject(method = "method_27841", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "getRenderConnectionType(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/Direction;Z)Lnet/minecraft/block/enums/WireConnection;", at = @At("HEAD"), cancellable = true)
     private void dontConnectOverExtendedPiston(BlockView blockView, BlockPos blockPos, Direction direction, boolean bl, CallbackInfoReturnable<WireConnection> cir) {
         if (!Settings.dustOnPistons) return;
         lastDirection.set(direction);
@@ -59,7 +59,7 @@ public abstract class RedstoneWireBlockMixin {
         }
     }
 
-    @Redirect(method = "method_27841", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;isSolidBlock(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;)Z"))
+    @Redirect(method = "getRenderConnectionType(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/Direction;Z)Lnet/minecraft/block/enums/WireConnection;", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;isSolidBlock(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;)Z"))
     private boolean fakeSolidBlock1(BlockState blockState, BlockView world, BlockPos pos) {
         return fakeSolidBlock(blockState, world, pos);
     }
@@ -89,7 +89,7 @@ public abstract class RedstoneWireBlockMixin {
     @Inject(method = "getStateForNeighborUpdate", at = @At("HEAD"), cancellable = true)
     private void stateForNeighborUpdate(BlockState state, Direction direction, BlockState newState, WorldAccess world, BlockPos pos, BlockPos posFrom, CallbackInfoReturnable<BlockState> cir) {
         if (direction == Direction.DOWN && Settings.dustOnPistons) {
-            BlockState updated = method_27840(world, state, pos);
+            BlockState updated = getPlacementState(world, state, pos);
             BlockPos.Mutable pos2 = new BlockPos.Mutable();
             for (Direction d : Direction.Type.HORIZONTAL) {
                 pos2.set(pos, d).move(Direction.UP);
