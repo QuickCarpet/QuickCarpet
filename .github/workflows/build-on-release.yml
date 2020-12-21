@@ -6,7 +6,7 @@ on:
       - created
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
     environment: maven
     steps:
@@ -34,10 +34,12 @@ jobs:
           key: ${{ runner.os }}-loom-${{ hashFiles('**/*gradle*', '**/*.accesswidener') }}
           restore-keys: |
             ${{ runner.os }}-loom-
-      - name: Build with Gradle & Publish to Maven
-        run: ./gradlew clean build publish
+      - name: Build with Gradle
+        run: ./gradlew clean build
       - name: Attach JARs to release
         uses: AButler/upload-release-assets@v2.0
         with:
           files: build/libs/*.jar;api/build/libs/*.jar
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish to Maven
+        run: ./gradlew publish
