@@ -299,6 +299,9 @@ public class Settings {
     @Rule(category = TNT)
     public static boolean tntUpdateOnPlace = true;
 
+    @Rule(category = {FIX, EXPERIMENTAL})
+    public static boolean updateSuppressionCrashFix = false;
+
     @Rule(category = {SURVIVAL, EXPERIMENTAL}, options = {"0", "2"}, validator = Validator.NonNegative.class)
     public static int xpCoolDown = 2;
 
