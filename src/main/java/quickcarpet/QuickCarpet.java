@@ -171,28 +171,28 @@ public final class QuickCarpet implements QuickCarpetAPI, ServerEventListener, T
 
     @Override
     public void onWorldLoaded(ServerWorld world) {
+        Identifier dimType = world.getRegistryKey().getValue();
+        String prefix = dimType.getNamespace() + "." + dimType.getPath() + ".mob_cap";
+        PubSubNode mobCapNode = PUBSUB.getOrCreateNode(prefix);
+        for (SpawnGroup category : SpawnGroup.values()) {
+            PUBSUB.addKnownNode(mobCapNode.getOrCreateChildNode(category.getName(), "filled"));
+            PUBSUB.addKnownNode(mobCapNode.getOrCreateChildNode(category.getName(), "total"));
+        }
+        PubSubManager.CallbackHandle handle = PUBSUB.addCallback(mobCapNode, 20, node -> {
+            Map<SpawnGroup, Pair<Integer, Integer>> mobcaps = Mobcaps.getMobcaps(world);
+            for (Map.Entry<SpawnGroup, Pair<Integer, Integer>> entry : mobcaps.entrySet()) {
+                PubSubNode categoryNode = node.getOrCreateChildNode(entry.getKey().getName());
+                PUBSUB.publish(categoryNode.getOrCreateChildNode("filled"), entry.getValue().getLeft());
+                PUBSUB.publish(categoryNode.getOrCreateChildNode("total"), entry.getValue().getRight());
+            }
+        });
+        worldUnloadCallbacks.put(world, handle::remove);
         try {
             Map<String, Waypoint> waypoints = ((WaypointContainer) world).getWaypoints();
             waypoints.clear();
             waypoints.putAll(Waypoint.loadWaypoints((WaypointContainer) world));
-            Identifier dimType = world.getRegistryKey().getValue();
-            String prefix = dimType.getNamespace() + "." + dimType.getPath() + ".mob_cap";
-            PubSubNode mobCapNode = PUBSUB.getOrCreateNode(prefix);
-            for (SpawnGroup category : SpawnGroup.values()) {
-                PUBSUB.addKnownNode(mobCapNode.getOrCreateChildNode(category.getName(), "filled"));
-                PUBSUB.addKnownNode(mobCapNode.getOrCreateChildNode(category.getName(), "total"));
-            }
-            PubSubManager.CallbackHandle handle = PUBSUB.addCallback(mobCapNode, 20, node -> {
-                Map<SpawnGroup, Pair<Integer, Integer>> mobcaps = Mobcaps.getMobcaps(world);
-                for (Map.Entry<SpawnGroup, Pair<Integer, Integer>> entry : mobcaps.entrySet()) {
-                    PubSubNode categoryNode = node.getOrCreateChildNode(entry.getKey().getName());
-                    PUBSUB.publish(categoryNode.getOrCreateChildNode("filled"), entry.getValue().getLeft());
-                    PUBSUB.publish(categoryNode.getOrCreateChildNode("total"), entry.getValue().getRight());
-                }
-            });
-            worldUnloadCallbacks.put(world, handle::remove);
         } catch (Exception e) {
-            LOG.error("Error loading waypoints for " + ((ServerWorldProperties) world.getLevelProperties()).getLevelName() + "/" + world.getRegistryKey().getValue());
+            LOG.error("Error loading waypoints for {}/{}", ((ServerWorldProperties) world.getLevelProperties()).getLevelName(), world.getRegistryKey().getValue(), e);
         }
     }
 
@@ -208,7 +208,7 @@ public final class QuickCarpet implements QuickCarpetAPI, ServerEventListener, T
         try {
             Waypoint.saveWaypoints((WaypointContainer) world);
         } catch (Exception e) {
-            LOG.error("Error saving waypoints for " + ((ServerWorldProperties) world.getLevelProperties()).getLevelName() + "/" + world.getRegistryKey().getValue());
+            LOG.error("Error saving waypoints for {}/{}", ((ServerWorldProperties) world.getLevelProperties()).getLevelName(), world.getRegistryKey().getValue(), e);
         }
     }
 
