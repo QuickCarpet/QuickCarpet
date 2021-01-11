@@ -19,8 +19,8 @@ import quickcarpet.helper.Mobcaps;
 import quickcarpet.helper.TickSpeed;
 import quickcarpet.logging.Logger;
 import quickcarpet.logging.Loggers;
-import quickcarpet.logging.loghelpers.LogParameter;
-import quickcarpet.logging.loghelpers.PacketCounter;
+import quickcarpet.logging.LogParameter;
+import quickcarpet.logging.PacketCounter;
 import quickcarpet.mixin.accessor.PlayerListHeaderS2CPacketAccessor;
 
 import java.util.*;

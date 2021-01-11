@@ -10,7 +10,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Lazy;
 import quickcarpet.QuickCarpetServer;
-import quickcarpet.logging.loghelpers.LogParameter;
 
 import javax.annotation.Nullable;
 import java.util.Collection;

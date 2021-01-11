@@ -1,10 +1,8 @@
-package quickcarpet.logging.loghelpers;
+package quickcarpet.logging;
 
 import net.minecraft.entity.TntEntity;
-import net.minecraft.text.MutableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Vec3d;
-import quickcarpet.logging.Loggers;
 
 import java.util.Arrays;
 

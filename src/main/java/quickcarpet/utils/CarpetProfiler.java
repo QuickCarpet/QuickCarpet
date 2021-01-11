@@ -18,7 +18,7 @@ import net.minecraft.world.World;
 import quickcarpet.QuickCarpetServer;
 import quickcarpet.helper.TickSpeed;
 import quickcarpet.logging.Loggers;
-import quickcarpet.logging.loghelpers.LogParameter;
+import quickcarpet.logging.LogParameter;
 
 import javax.annotation.Nullable;
 import javax.management.Notification;

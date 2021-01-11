@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import quickcarpet.QuickCarpetServer;
 import quickcarpet.commands.Utils;
 import quickcarpet.logging.Loggers;
-import quickcarpet.logging.loghelpers.LogParameter;
+import quickcarpet.logging.LogParameter;
 
 import java.util.Arrays;
 

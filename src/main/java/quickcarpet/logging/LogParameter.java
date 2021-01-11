@@ -1,4 +1,4 @@
-package quickcarpet.logging.loghelpers;
+package quickcarpet.logging;
 
 import java.util.Arrays;
 import java.util.LinkedHashSet;
