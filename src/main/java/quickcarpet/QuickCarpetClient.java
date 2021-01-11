@@ -5,9 +5,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.integrated.IntegratedServer;
-import net.minecraft.server.network.ServerPlayerEntity;
 import quickcarpet.api.QuickCarpetClientAPI;
 import quickcarpet.api.settings.ParsedRule;
 import quickcarpet.client.ClientInit;
@@ -15,11 +12,7 @@ import quickcarpet.client.ClientPluginChannelManager;
 import quickcarpet.client.ClientPubSubListener;
 import quickcarpet.client.ClientRulesChannel;
 import quickcarpet.helper.TickSpeed;
-import quickcarpet.network.channels.RulesChannel;
 import quickcarpet.settings.Settings;
-
-import java.util.Map;
-import java.util.TreeMap;
 
 @Environment(EnvType.CLIENT)
 public class QuickCarpetClient implements QuickCarpetClientAPI {
@@ -28,7 +21,6 @@ public class QuickCarpetClient implements QuickCarpetClientAPI {
     private final ClientRulesChannel rulesChannel;
     private final ClientPubSubListener pubSubListener;
     public TickSpeed tickSpeed = new TickSpeed(null);
-    public final Map<String, CompoundTag> serverRules = new TreeMap<>();
 
     public QuickCarpetClient() {
         instance = this;
@@ -76,23 +68,13 @@ public class QuickCarpetClient implements QuickCarpetClientAPI {
             "carpet.tick-rate.paused",
             "carpet.tick-rate.step"
         );
-        serverRules.clear();
-        IntegratedServer server = MinecraftClient.getInstance().getServer();
-        if (server == null) {
-            for (ParsedRule<?> rule : Settings.MANAGER.getRules()) {
-                rule.resetToDefault(false);
-            }
-        } else {
-            ServerPlayerEntity player = server.getPlayerManager().getPlayer(server.getUserName());
-            for (ParsedRule<?> rule : Settings.MANAGER.getRules()) {
-                serverRules.put(rule.getName(), RulesChannel.serializeRule(player, rule));
-            }
+        if (!isSingleplayer()) {
+            for (ParsedRule<?> rule : Settings.MANAGER.getRules()) rule.resetToDefault(false);
         }
     }
 
     public void onLeaveServer() {
         tickSpeed = new TickSpeed(null);
-        serverRules.clear();
     }
 
     public void tick() {
