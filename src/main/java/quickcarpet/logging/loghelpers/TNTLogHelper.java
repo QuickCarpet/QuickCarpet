@@ -40,15 +40,15 @@ public class TNTLogHelper {
         Loggers.TNT.log(option -> {
             switch (option) {
                 case "brief":
-                    return new MutableText[]{c(
+                    return c(
                         style(c(s("P "), dblt(primed.x, primed.y, primed.z, primedAngle)), Formatting.GREEN),
                         style(c(s("E "), dblt(exploded.x, exploded.y, exploded.z)), Formatting.RED)
-                    )};
+                    );
                 case "full":
-                    return new MutableText[]{c(
+                    return c(
                         style(c(s("P "), dblf(primed.x, primed.y, primed.z, primedAngle)), Formatting.GREEN),
                         style(c(s("E "), dblf(exploded.x, exploded.y, exploded.z)), Formatting.RED)
-                    )};
+                    );
             }
             return null;
         }, () -> Arrays.asList(

@@ -26,6 +26,7 @@ import org.apache.logging.log4j.Logger;
 import javax.annotation.MatchesPattern;
 import javax.annotation.Nonnull;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.function.Function;
 import java.util.stream.Collector;
@@ -152,7 +153,7 @@ public class Messenger {
     }
 
     public static MutableText tp(BlockPos pos, Formatting... style) {
-        return tp(pos.getX(), pos.getZ(), pos.getY(), style);
+        return tp(pos.getX(), pos.getY(), pos.getZ(), style);
     }
 
     public static MutableText tp(double x, double y, double z, Formatting... style) {
@@ -210,6 +211,15 @@ public class Messenger {
         MutableText message = components.length > 0 ? components[0] : new LiteralText("");
         for (int i = 1; i < components.length; i++) {
             message.append(components[i]);
+        }
+        return message;
+    }
+
+    public static MutableText c(@Nonnull Iterable<MutableText> components) {
+        Iterator<MutableText> it = components.iterator();
+        MutableText message = it.hasNext() ? it.next() : new LiteralText("");
+        while (it.hasNext()) {
+            message.append(it.next());
         }
         return message;
     }

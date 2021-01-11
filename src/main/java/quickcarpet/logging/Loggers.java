@@ -20,6 +20,7 @@ public final class Loggers {
     public static final Logger COUNTER = registerLogger("counter", "white", Arrays.stream(DyeColor.values()).map(Object::toString).toArray(String[]::new), LogHandler.HUD);
     public static final Logger MOBCAPS = registerLogger("mobcaps", "dynamic", new String[]{"dynamic", "overworld", "nether", "end"}, LogHandler.HUD);
     public static final Logger GC = registerLogger("gc", null, null, LogHandler.CHAT);
+    public static final Logger COMMAND_BLOCKS = registerLogger("command_blocks", "brief", new String[]{"brief", "full"}, LogHandler.CHAT);
 
 //    public static final Logger PROJECTILES<Logger.EmptyCommandParameters> = registerLogger("projectiles", "full",  new String[]{"brief", "full"}, LogHandler.CHAT);
 //    public static final Logger FALLING_BLOCKS<Logger.EmptyCommandParameters> = registerLogger("fallingBlocks", "brief", new String[]{"brief", "full"}, LogHandler.CHAT);
