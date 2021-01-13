@@ -44,17 +44,15 @@ public class CraftingTableBlockMixin extends Block implements DynamicBlockEntity
         return new CraftingTableBlockEntity();
     }
 
-    @Inject(method = "onUse", at = @At("HEAD"), cancellable = true)
-    private void onActivate(BlockState blockState, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir) {
+    @Inject(method = "createScreenHandlerFactory", at = @At("HEAD"), cancellable = true)
+    private void onCreateScreenHandler(BlockState state, World world, BlockPos pos, CallbackInfoReturnable<NamedScreenHandlerFactory> cir) {
         if (!hasBlockEntity()) return;
         if (!world.isClient) {
             BlockEntity blockEntity = world.getBlockEntity(pos);
             if (blockEntity instanceof CraftingTableBlockEntity) {
-                player.openHandledScreen((NamedScreenHandlerFactory) blockEntity);
+                cir.setReturnValue((NamedScreenHandlerFactory) blockEntity);
             }
         }
-        cir.setReturnValue(ActionResult.SUCCESS);
-        cir.cancel();
     }
 
     public boolean hasComparatorOutput(BlockState blockState) {
