@@ -9,7 +9,7 @@ minecraft {
 }
 
 def buildDate = new Date()
-def branch = gitBranch()
+def branch = GitHelper.branch
 def ci = System.getenv("CI") != null
 def isDev = project.mod_version.endsWith('-dev')
 
@@ -22,7 +22,7 @@ if (branch != "master" && branch != "HEAD") {
 	project.mod_version += "+" + branch.replaceAll("[+-]", '_')
 }
 if (isDev && ci) {
-	project.mod_version += "+" + gitCommit().substring(0, 7)
+	project.mod_version += "+" + GitHelper.commit.substring(0, 7)
 }
 version = project.mod_version
 
@@ -119,32 +119,6 @@ dependencies {
 
 remapJar.dependsOn(project(":quickcarpet-api").tasks.remapJar)
 
-static def gitCommit() {
-	def commit = ""
-	def proc = "git rev-parse HEAD".execute()
-	proc.in.eachLine { line -> commit = line }
-	proc.err.eachLine { line -> println line }
-	proc.waitFor()
-	commit
-}
-
-static def gitBranch() {
-	def branch = ""
-	def proc = "git rev-parse --abbrev-ref HEAD".execute()
-	proc.in.eachLine { line -> branch = line }
-	proc.err.eachLine { line -> println line }
-	proc.waitFor()
-	branch.substring(branch.lastIndexOf('/') + 1)
-}
-
-static def gitStatus() {
-	def exitCode = "git diff --quiet".execute().waitFor() // not added
-	if (exitCode == 0) {
-		exitCode = "git diff --cached --quiet".execute().waitFor() // not committed
-	}
-	exitCode == 0
-}
-
 task generateJava(type: Copy) {
 	group = 'build'
 	description 'Generates Build.java'
@@ -154,9 +128,9 @@ task generateJava(type: Copy) {
 	def templateContext = [
 			version: project.version,
 			timestamp: df.format(buildDate),
-			branch: gitBranch(),
-			commit: gitCommit(),
-			working_dir_clean: gitStatus(),
+			branch: GitHelper.branch,
+			commit: GitHelper.commit,
+			working_dir_clean: GitHelper.status,
 			minecraft_version: project.minecraft_version,
 			yarn_mappings: project.yarn_mappings
 	]
@@ -184,3 +158,5 @@ task dumpRules(type: JavaExec, dependsOn: jar) {
 		}
 	}
 }
+
+apply from: 'setupAuth.gradle'
