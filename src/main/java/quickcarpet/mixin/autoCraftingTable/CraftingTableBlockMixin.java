@@ -4,13 +4,9 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CraftingTableBlock;
 import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.screen.NamedScreenHandlerFactory;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
 import net.minecraft.util.ItemScatterer;
-import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
@@ -44,29 +40,35 @@ public class CraftingTableBlockMixin extends Block implements DynamicBlockEntity
         return new CraftingTableBlockEntity();
     }
 
+    @Nullable
+    private CraftingTableBlockEntity getBlockEntity(World world, BlockPos pos) {
+        if (!hasBlockEntity()) return null;
+        BlockEntity blockEntity = world.getBlockEntity(pos);
+        if (blockEntity instanceof CraftingTableBlockEntity) {
+            return (CraftingTableBlockEntity) blockEntity;
+        }
+        return null;
+    }
+
     @Inject(method = "createScreenHandlerFactory", at = @At("HEAD"), cancellable = true)
     private void onCreateScreenHandler(BlockState state, World world, BlockPos pos, CallbackInfoReturnable<NamedScreenHandlerFactory> cir) {
-        if (!hasBlockEntity()) return;
-        if (!world.isClient) {
-            BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof CraftingTableBlockEntity) {
-                cir.setReturnValue((NamedScreenHandlerFactory) blockEntity);
-            }
+        CraftingTableBlockEntity blockEntity = getBlockEntity(world, pos);
+        if (blockEntity != null) {
+            cir.setReturnValue(blockEntity);
         }
     }
 
+    @Override
     public boolean hasComparatorOutput(BlockState blockState) {
         return hasBlockEntity();
     }
 
     @Override
     public int getComparatorOutput(BlockState blockState, World world, BlockPos pos) {
-        if (!hasBlockEntity()) return 0;
-        BlockEntity blockEntity = world.getBlockEntity(pos);
-        if (blockEntity instanceof CraftingTableBlockEntity) {
-            CraftingTableBlockEntity craftingTableBlockEntity = (CraftingTableBlockEntity) blockEntity;
+        CraftingTableBlockEntity blockEntity = getBlockEntity(world, pos);
+        if (blockEntity != null) {
             int filled = 0;
-            for (ItemStack stack : craftingTableBlockEntity.inventory) {
+            for (ItemStack stack : blockEntity.inventory) {
                 if (!stack.isEmpty()) filled++;
             }
             return (filled * 15) / 9;
@@ -77,12 +79,11 @@ public class CraftingTableBlockMixin extends Block implements DynamicBlockEntity
     @Override
     public void onStateReplaced(BlockState state1, World world, BlockPos pos, BlockState state2, boolean boolean_1) {
         if (state1.getBlock() != state2.getBlock()) {
-            BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof CraftingTableBlockEntity) {
-                CraftingTableBlockEntity craftingTableBlockEntity = ((CraftingTableBlockEntity)blockEntity);
-                ItemScatterer.spawn(world, pos, craftingTableBlockEntity.inventory);
-                if (!craftingTableBlockEntity.output.isEmpty()) {
-                    ItemScatterer.spawn(world, pos.getX(), pos.getY(), pos.getZ(), craftingTableBlockEntity.output);
+            CraftingTableBlockEntity blockEntity = getBlockEntity(world, pos);
+            if (blockEntity != null) {
+                ItemScatterer.spawn(world, pos, blockEntity.inventory);
+                if (!blockEntity.output.isEmpty()) {
+                    ItemScatterer.spawn(world, pos.getX(), pos.getY(), pos.getZ(), blockEntity.output);
                 }
                 world.updateComparators(pos, this);
             }
