@@ -1,4 +1,4 @@
-package quickcarpet.logging.loghelpers;
+package quickcarpet.logging;
 
 public class PacketCounter {
     private static long totalOut = 0;

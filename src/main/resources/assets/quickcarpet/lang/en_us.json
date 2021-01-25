@@ -101,6 +101,7 @@
   "carpet.rule.tntHardcodeAngle.description": "Sets the horizontal random angle on TNT for debugging of TNT contraptions",
   "carpet.rule.tntPrimeMomentum.description": "Removes random TNT momentum when primed and set to false",
   "carpet.rule.tntUpdateOnPlace.description": "Whether TNT should check for redstone power when placed",
+  "carpet.rule.updateSuppressionCrashFix.description": "Fixes updates suppression causing server crashes",
   "carpet.rule.xpCoolDown.description": "Delay before players can absorb the next Experience Orb",
   "carpet.rule.xpMerging.description": "Enables or disables the vanilla xp merging added in 20w45a",
   "carpet.validator.positive": "Must be positive",

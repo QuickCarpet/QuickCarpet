@@ -2,10 +2,13 @@ package quickcarpet.commands;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.ParseResults;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.ArgumentBuilder;
 import com.mojang.brigadier.builder.RequiredArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.context.CommandContextBuilder;
+import com.mojang.brigadier.context.ParsedArgument;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.BlockPosArgumentType;
@@ -14,6 +17,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.state.State;
 import net.minecraft.text.MutableText;
+import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -23,10 +27,7 @@ import net.minecraft.world.BlockView;
 import quickcarpet.helper.StateInfoProvider;
 import quickcarpet.utils.Translations;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -37,6 +38,8 @@ import static net.minecraft.server.command.CommandManager.literal;
 import static quickcarpet.utils.Messenger.*;
 
 public class Utils {
+    private static final List<Formatting> ARG_COLORS = ImmutableList.of(Formatting.AQUA, Formatting.YELLOW, Formatting.GREEN, Formatting.LIGHT_PURPLE, Formatting.GOLD);
+
     interface ArgumentGetter<T> {
         T get(CommandContext<ServerCommandSource> context, String name) throws CommandSyntaxException;
     }
@@ -147,5 +150,44 @@ public class Utils {
         } catch (IllegalArgumentException e) {
             throw CommandSyntaxException.BUILT_IN_EXCEPTIONS.literalIncorrect().create(String.join(", ", getOptions(type)));
         }
+    }
+
+    public static <T extends CommandSource> MutableText highlight(ParseResults<T> parse, String original, int firstCharacterIndex) {
+        List<MutableText> list = new ArrayList<>();
+        int i = 0;
+        int argIndex = -1;
+        CommandContextBuilder<T> commandContextBuilder = parse.getContext().getLastChild();
+
+        for (ParsedArgument<T, ?> arg : commandContextBuilder.getArguments().values()) {
+            ++argIndex;
+            if (argIndex >= ARG_COLORS.size()) {
+                argIndex = 0;
+            }
+
+            int k = Math.max(arg.getRange().getStart() - firstCharacterIndex, 0);
+            if (k >= original.length()) {
+                break;
+            }
+
+            int l = Math.min(arg.getRange().getEnd() - firstCharacterIndex, original.length());
+            if (l > 0) {
+                list.add(s(original.substring(i, k), Formatting.GRAY));
+                list.add(s(original.substring(k, l), ARG_COLORS.get(argIndex)));
+                i = l;
+            }
+        }
+
+        if (parse.getReader().canRead()) {
+            int m = Math.max(parse.getReader().getCursor() - firstCharacterIndex, 0);
+            if (m < original.length()) {
+                int n = Math.min(m + parse.getReader().getRemainingLength(), original.length());
+                list.add(s(original.substring(i, m), Formatting.GRAY));
+                list.add(s(original.substring(m, n), Formatting.RED));
+                i = n;
+            }
+        }
+
+        list.add(s(original.substring(i), Formatting.GRAY));
+        return c(list);
     }
 }

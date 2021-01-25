@@ -63,6 +63,7 @@ public class PlayerCommand {
                 .then(makeActionCommand("drop", ActionType.DROP_ITEM))
                 .then(makeActionCommand("dropStack", ActionType.DROP_STACK))
                 .then(makeActionCommand("swapHands", ActionType.SWAP_HANDS))
+                .then(literal("dropAll").executes(PlayerCommand::dropAll))
                 .then(literal("kill").executes(PlayerCommand::kill))
                 .then(literal("shadow"). executes(PlayerCommand::shadow))
                 .then(literal("mount").executes(manipulation(PlayerActionPack::mount)))
@@ -258,6 +259,17 @@ public class PlayerCommand {
             return 0;
         }
         FakeServerPlayerEntity.createShadow(player.server, player);
+        return 1;
+    }
+
+    private static int dropAll(CommandContext<ServerCommandSource> context) {
+        if (cantManipulate(context)) return 0;
+        ServerPlayerEntity player = getPlayer(context);
+        int count = player.getInventory().size();
+        for (int i = 0; i < count; i++) {
+            player.dropItem(player.getInventory().getStack(i), true);
+        }
+        player.getInventory().clear();
         return 1;
     }
 }

@@ -13,7 +13,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
 import quickcarpet.QuickCarpet;
-import quickcarpet.logging.loghelpers.LogParameter;
+import quickcarpet.logging.LogParameter;
 import quickcarpet.pubsub.PubSubInfoProvider;
 
 import javax.annotation.Nonnull;

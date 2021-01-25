@@ -20,7 +20,7 @@ import quickcarpet.QuickCarpet;
 import quickcarpet.QuickCarpetServer;
 import quickcarpet.helper.TickSpeed;
 import quickcarpet.logging.Loggers;
-import quickcarpet.logging.loghelpers.LogParameter;
+import quickcarpet.logging.LogParameter;
 
 import javax.annotation.Nullable;
 import javax.management.Notification;
@@ -369,14 +369,14 @@ public class CarpetProfiler
         Loggers.GC.log(() -> {
             long usedBefore = gcInfo.getMemoryUsageBeforeGc().values().stream().mapToLong(MemoryUsage::getUsed).sum();
             long usedAfter = gcInfo.getMemoryUsageAfterGc().values().stream().mapToLong(MemoryUsage::getUsed).sum();
-            return new MutableText[] {c(
+            return c(
                 s(info.getGcName(), Formatting.GREEN), s(" "),
                 s(info.getGcAction(), Formatting.YELLOW),
                 s(" caused by "), s(info.getGcCause(), Formatting.AQUA),
                 s(": "), s(info.getGcInfo().getDuration() + "ms", Formatting.AQUA),
                 s(", "), s(usedBefore / (1024 * 1024) + "MB", Formatting.AQUA),
                 s(" -> "), s(usedAfter / (1024 * 1024) + "MB", Formatting.AQUA)
-            )};
+            );
         }, () -> getCommandParameters(info));
         if (inTick) {
             if (!isActive(ReportType.HEALTH)) return;

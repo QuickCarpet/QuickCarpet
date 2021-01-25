@@ -19,8 +19,8 @@ import quickcarpet.helper.Mobcaps;
 import quickcarpet.helper.TickSpeed;
 import quickcarpet.logging.Logger;
 import quickcarpet.logging.Loggers;
-import quickcarpet.logging.loghelpers.LogParameter;
-import quickcarpet.logging.loghelpers.PacketCounter;
+import quickcarpet.logging.LogParameter;
+import quickcarpet.logging.PacketCounter;
 import quickcarpet.mixin.accessor.PlayerListHeaderS2CPacketAccessor;
 
 import java.util.*;
@@ -80,11 +80,10 @@ public class HUDController {
         double MSPT = tickSpeed.getCurrentMSPT();
         double TPS = tickSpeed.calculateTPS(MSPT);
         Formatting color = getHeatmapColor(MSPT, tickSpeed.msptGoal);
-        MutableText[] message = {c(
-            s("TPS: ", Formatting.GRAY), formats("%.1f", color, TPS),
-            s(" MSPT: ", Formatting.GRAY), formats("%.1f", color, MSPT)
-        )};
-        logger.log(() -> message, () -> Arrays.asList(
+        logger.log(() -> c(
+                s("TPS: ", Formatting.GRAY), formats("%.1f", color, TPS),
+                s(" MSPT: ", Formatting.GRAY), formats("%.1f", color, MSPT)
+        ), () -> Arrays.asList(
             new LogParameter("MSPT", tickSpeed::getCurrentMSPT),
             new LogParameter("TPS", tickSpeed::getTPS)
         ));
@@ -122,7 +121,7 @@ public class HUDController {
                 components.add(s(" "));
             }
             components.remove(components.size() - 1);
-            return new MutableText[]{c(components.toArray(new MutableText[0]))};
+            return c(components.toArray(new MutableText[0]));
         }, () -> Mobcaps.getCommandParameters(QuickCarpetServer.getMinecraftServer()));
     }
 
@@ -130,16 +129,14 @@ public class HUDController {
         logger.log(color -> {
             HopperCounter counter = HopperCounter.getCounter(color);
             List<MutableText> res = counter == null ? Collections.emptyList() : counter.format(QuickCarpetServer.getMinecraftServer(), false, true);
-            return new MutableText[]{c(res.toArray(new MutableText[0]))};
+            return c(res.toArray(new MutableText[0]));
         }, () -> HopperCounter.COMMAND_PARAMETERS);
     }
 
     private static void logPackets(Logger logger) {
         logger.log(() -> {
             PacketCounter.reset();
-            return new MutableText[]{
-                s("I/" + PacketCounter.getPreviousIn() + " O/" + PacketCounter.getPreviousOut()),
-            };
+            return s("I/" + PacketCounter.getPreviousIn() + " O/" + PacketCounter.getPreviousOut());
         }, () -> Arrays.asList(
             new LogParameter("in", PacketCounter::getPreviousIn),
             new LogParameter("out", PacketCounter::getPreviousOut)

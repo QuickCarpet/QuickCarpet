@@ -539,6 +539,14 @@ Default: `true`
 Options: `true`, `false`  
 Categories: tnt  
 
+## updateSuppressionCrashFix
+Fixes updates suppression causing server crashes
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: fix, experimental  
+
 ## xpCoolDown
 Delay before players can absorb the next Experience Orb
 

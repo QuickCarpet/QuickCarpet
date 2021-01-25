@@ -3,36 +3,44 @@
 ![GitHub commits since latest release (by date)](https://img.shields.io/github/commits-since/DeadlyMC/QuickCarpet114/latest/master?style=flat-square)
 ![GitHub commits since latest release (by date including pre-releases)](https://img.shields.io/github/commits-since/DeadlyMC/QuickCarpet114/latest/master?include_prereleases&style=flat-square)
 
-Carpetmod for snapshot testing!
-This is not the official carpet vesion.
-Built on top of the Fabric modding framework.
-Meant to be used as a standalone mod! Compatibility with other mods is not tested.
+This is not the [official carpet version](https://github.com/gnembon/fabric-carpet) by [gnembon](https://github.com/gnembon),
+but an alternative implementation providing a different set of features.
 
-## Requirements
-- Fabric Installer : https://fabricmc.net/use/
+Major features include:
+- Commands to measure performance and change the tick speed
+- Movable Block Entities
+- Auto Crafting Table
+- Features to make more items renewable
 
-## How to install?
-Singleplayer :
-- Download fabric installer for client for appropriate version.
-- Open the installer and make sure you are in the client tab.
-- Fill all options and hit install.
-- Download the mod jar.
-- Place the jar file in your mods folder. (Make sure u put the mods directly inside `mods/` and not in
-  something like mods/1.14)
-- Open the minecraft launcher and run the game with fabric profile.
+Almost all features can be configured using `/carpet` and are set to their vanilla value by default.
 
-Multiplayer :
-- Download the fabric installer for server for the appropriate version.
-- Open the installer and go to server tab.
-- Fill all options and hit install.
-- You should now have a `fabric-server-launch.jar`. Place it in the folder will all the mod files.
-- Run the `fabric-server-launch.jar` once, it should create a `fabric-server-launch.properties` file.
-  Specify the name of the 1.14 server jar in this file.
-- Create a folder `mods` in the same directory and place the mod jar.
-- Run the `fabric-server-launch.jar` to launch the server.
+A list of all configurable rules can be queried with `/carpet list` or seen
+[here][rules] for the latest development version
+
+Primarily aimed for use as a standalone mod, but compatibility with other *open source* mods is attempted if feasible.
+Report an [issue][new-issue] in that case.
+
+## Installation
+- Install Fabric: [Instructions][fabric-wiki-install] 
+- Download QuickCarpet:
+    - Full releases from [Releases][releases]
+    - Development builds from [Actions][actions-dev-builds]
+        - Select the build you want to download
+            (`master` for the latest stable Minecraft version,other branches for snapshots)
+        - When logged in click on `quickcarpet-jars`
+        - Extract `quickcarpet-jars` and use the JAR file with the shortest name (without `-dev.jar` or `-sources`)
+- Put the `quickcarpet-<version>.jar` into the `mods/` folder
 
 ## Compiling
-- Clone this repo
-- Run `gradlew genSources idea` for IntelliJ and `gradlew genSources eclipse` for Eclipse
-- Add `build/generated/java` as a source directory ("Generated Sources Root" in IntelliJ)
-- Run `gradlew build` for creating local jars
+Steps 2 & 3 are optional if you don't want to change the source code
+
+1. Clone this repo
+2. Run `gradlew genSources idea` for IntelliJ and `gradlew genSources eclipse` for Eclipse and import the Gradle project
+3. Run `gradlew generateJava` and add `build/generated/java` as a source directory ("Generated Sources Root" in IntelliJ)
+4. Run `gradlew build` for creating a build (result in `build/libs/`)
+
+[rules]: rules.md
+[new-issue]: ../../issues/new
+[releases]: ../../releases
+[actions-dev-builds]: ../../actions?query=workflow%3A%22Development+Builds%22
+[fabric-wiki-install]: https://fabricmc.net/wiki/install

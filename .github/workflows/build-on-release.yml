@@ -6,8 +6,9 @@ on:
       - created
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
+    environment: maven
     steps:
       - name: Checkout sources
         uses: actions/checkout@v1
@@ -40,3 +41,5 @@ jobs:
         with:
           files: build/libs/*.jar;api/build/libs/*.jar
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish to Maven
+        run: ./gradlew publish

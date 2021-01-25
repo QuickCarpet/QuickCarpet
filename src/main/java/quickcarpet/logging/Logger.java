@@ -10,7 +10,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Lazy;
 import quickcarpet.QuickCarpetServer;
-import quickcarpet.logging.loghelpers.LogParameter;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -23,8 +22,7 @@ public class Logger implements Comparable<Logger> {
     public static Codec<Logger> NAME_CODEC = Codec.STRING.comapFlatMap(Loggers::getDataResult, Logger::getName).stable();
 
     boolean active = false;
-    @Nullable
-    private Text unavailable;
+    private @Nullable Text unavailable;
 
     private final String name;
     private final MutableText displayName;
@@ -89,7 +87,7 @@ public class Logger implements Comparable<Logger> {
      */
     @FunctionalInterface
     public interface MessageSupplier {
-        MutableText[] get(String playerOption, PlayerEntity player);
+        MutableText get(String playerOption, PlayerEntity player);
     }
 
     public void log(MessageSupplier message) {
@@ -108,8 +106,8 @@ public class Logger implements Comparable<Logger> {
      */
     @FunctionalInterface
     public interface PlayerIndependentMessageSupplier extends MessageSupplier {
-        MutableText[] get(String playerOption);
-        default MutableText[] get(String playerOption, PlayerEntity player) {
+        MutableText get(String playerOption);
+        default MutableText get(String playerOption, PlayerEntity player) {
             return get(playerOption);
         }
     }
@@ -119,16 +117,16 @@ public class Logger implements Comparable<Logger> {
     }
 
     public void log(PlayerIndependentMessageSupplier message, Supplier<Collection<LogParameter>>  commandParams) {
-        Map<String, MutableText[]> messages = new HashMap<>();
+        Map<String, MutableText> messages = new HashMap<>();
         getOnlineSubscribers().forEach(player -> sendMessage(player, messages.computeIfAbsent(getOption(player), message::get), commandParams));
     }
 
-    public void log(Supplier<MutableText[]> message) {
+    public void log(Supplier<MutableText> message) {
         this.log(message, () -> null);
     }
 
-    public void log(Supplier<MutableText[]> message, Supplier<Collection<LogParameter>>  commandParams) {
-        Lazy<MutableText[]> messages = new Lazy<>(message);
+    public void log(Supplier<MutableText> message, Supplier<Collection<LogParameter>>  commandParams) {
+        Lazy<MutableText> messages = new Lazy<>(message);
         getOnlineSubscribers().forEach(player -> sendMessage(player, messages.get(), commandParams));
     }
 
@@ -151,13 +149,13 @@ public class Logger implements Comparable<Logger> {
         return manager.getOnlineSubscribers(this);
     }
 
-    private void sendMessage(ServerPlayerEntity player, MutableText[] messages, Supplier<Collection<LogParameter>> commandParams) {
-        if (messages == null) return;
+    private void sendMessage(ServerPlayerEntity player, MutableText message, Supplier<Collection<LogParameter>> commandParams) {
+        if (message == null) return;
         Supplier<Map<String, Object>> params = () -> {
             ImmutableMap.Builder<String, Object> builder = new ImmutableMap.Builder<>();
             for (LogParameter p : commandParams.get()) builder.put(p);
             return builder.build();
         };
-        getHandler(player).handle(this, player, messages, params);
+        getHandler(player).handle(this, player, message, params);
     }
 }

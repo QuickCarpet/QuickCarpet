@@ -81,7 +81,7 @@ public class StatHelper {
     }
 
     public static void initialize(Scoreboard scoreboard, MinecraftServer server, ScoreboardObjective objective) {
-        LOGGER.info("Initializing " + objective);
+        LOGGER.debug("Initializing " + objective);
         ScoreboardCriterion criterion = objective.getCriterion();
         if (!(criterion instanceof Stat)) return;
         Stat<?> stat = ((Stat<?>) criterion);
@@ -94,7 +94,7 @@ public class StatHelper {
             if (username == null) continue;
             ScoreboardPlayerScore score = scoreboard.getPlayerScore(username, objective);
             score.setScore(value);
-            LOGGER.info("Initialized score " + objective.getName() + " of " + username + " to " + value);
+            LOGGER.debug("Initialized score " + objective.getName() + " of " + username + " to " + value);
         }
     }
 

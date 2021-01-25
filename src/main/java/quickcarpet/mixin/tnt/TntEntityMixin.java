@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import quickcarpet.api.annotation.Feature;
 import quickcarpet.logging.Loggers;
-import quickcarpet.logging.loghelpers.TNTLogHelper;
+import quickcarpet.logging.TNTLogHelper;
 import quickcarpet.settings.Settings;
 
 @Feature("logger.tnt")

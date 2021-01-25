@@ -24,14 +24,12 @@ public interface LogHandler {
         Codec.STRING.listOf().optionalFieldOf("extra").forGetter(h -> Optional.ofNullable(h.getExtraArgs()))
     ).apply(it, (name, extra) -> LogHandlers.createHandler(name, extra.map(strings -> strings.toArray(new String[0])).orElseGet(() -> new String[0]))));
 
-    LogHandler CHAT = (logger, player, message, commandParams) -> Arrays.stream(message)
-            .forEach(m -> player.sendMessage(new TranslatableText("chat.type.announcement", logger.getDisplayName(), m), false));
+    LogHandler CHAT = (logger, player, message, commandParams) -> player.sendMessage(new TranslatableText("chat.type.announcement", logger.getDisplayName(), message), false);
 
     LogHandler HUD = new LogHandler() {
         @Override
-        public void handle(Logger logger, ServerPlayerEntity player, MutableText[] message, Supplier<Map<String, Object>> commandParams) {
-            for (MutableText m : message)
-                HUDController.addMessage(player, m);
+        public void handle(Logger logger, ServerPlayerEntity player, MutableText message, Supplier<Map<String, Object>> commandParams) {
+           HUDController.addMessage(player, message);
         }
 
         @Override
@@ -40,7 +38,7 @@ public interface LogHandler {
             if (player != null)
                 HUDController.clearPlayerHUD(player);
         }
-    };    LogHandler ACTION_BAR = (logger, player, message, commandParams) -> player.networkHandler.sendPacket(new TitleS2CPacket(TitleS2CPacket.Action.ACTIONBAR, Messenger.c(message)));
+    };    LogHandler ACTION_BAR = (logger, player, message, commandParams) -> player.networkHandler.sendPacket(new TitleS2CPacket(TitleS2CPacket.Action.ACTIONBAR, message));
 
     @FunctionalInterface
     interface LogHandlerCreator {
@@ -51,7 +49,7 @@ public interface LogHandler {
         }
     }
 
-    void handle(Logger logger, ServerPlayerEntity player, MutableText[] message, Supplier<Map<String, Object>> commandParams);
+    void handle(Logger logger, ServerPlayerEntity player, MutableText message, Supplier<Map<String, Object>> commandParams);
     default void onAddPlayer(String playerName) {}
     default void onRemovePlayer(String playerName) {}
     default List<String> getExtraArgs() {

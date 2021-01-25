@@ -9,7 +9,7 @@ import net.minecraft.util.Pair;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.SpawnHelper;
 import net.minecraft.world.World;
-import quickcarpet.logging.loghelpers.LogParameter;
+import quickcarpet.logging.LogParameter;
 import quickcarpet.mixin.accessor.ServerChunkManagerAccessor;
 
 import java.util.*;

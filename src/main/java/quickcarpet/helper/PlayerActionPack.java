@@ -280,6 +280,21 @@ public class PlayerActionPack {
                 if (ap.currentBlock == null) return;
                 player.world.setBlockBreakingInfo(-1, ap.currentBlock, -1);
                 player.interactionManager.processBlockBreakingAction(ap.currentBlock, PlayerActionC2SPacket.Action.ABORT_DESTROY_BLOCK, Direction.DOWN, player.world.getTopHeightLimit());
+                ap.curBlockDamageMP = 0;
+                ap.currentBlock = null;
+            }
+
+            @Override
+            void inactiveTick(ServerPlayerEntity player, Action action) {
+                HitResult hit = getTarget(player);
+                if (hit.getType() == HitResult.Type.BLOCK) {
+                    PlayerActionPack ap = ((ActionPackOwner) player).getActionPack();
+                    BlockHitResult blockHit = (BlockHitResult) hit;
+                    BlockPos pos = blockHit.getBlockPos();
+                    if (pos.equals(ap.currentBlock)) {
+                        stop(player, action);
+                    }
+                }
             }
         },
         JUMP(true) {
