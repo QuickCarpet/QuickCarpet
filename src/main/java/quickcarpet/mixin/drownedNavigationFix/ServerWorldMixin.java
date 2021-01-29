@@ -6,7 +6,9 @@ import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.server.world.ServerWorld;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import quickcarpet.utils.extensions.ExtendedMobEntity;
 
 import java.util.Set;
@@ -19,8 +21,8 @@ public class ServerWorldMixin {
         return set.add((EntityNavigation) nav);
     }
 
-    @Redirect(method = "unloadEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/mob/MobEntity;getNavigation()Lnet/minecraft/entity/ai/pathing/EntityNavigation;"))
-    private EntityNavigation removeEntityNavigation(MobEntity mob) {
-        return ((ExtendedMobEntity) mob).getSavedNavigation();
+    @Inject(method = "unloadEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/mob/MobEntity;getNavigation()Lnet/minecraft/entity/ai/pathing/EntityNavigation;"))
+    private void setFromSavedNavigation(Entity mob, CallbackInfo ci) {
+        ((ExtendedMobEntity) mob).reloadToSavedNavigation();
     }
 }
