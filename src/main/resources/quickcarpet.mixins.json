@@ -46,7 +46,6 @@
     "creativeNoClip.BlockItemMixin",
     "creativeNoClip.PistonBlockEntityMixin",
     "creativeNoClip.PlayerEntityMixin",
-    "client.WorldRendererMixin",
     "dispenser.DispenserBlockMixin",
     "drownedEnchantedTridentsFix.DrownedEntityMixin",
     "drownedNavigationFix.MobEntityMixin",
@@ -119,7 +118,8 @@
     "client.IntegratedServerMixin",
     "client.MinecraftClientMixin",
     "client.PistonBlockEntityRendererMixin",
-    "client.RenderTickCounterMixin"
+    "client.RenderTickCounterMixin",
+    "client.WorldRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
