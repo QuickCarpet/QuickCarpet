@@ -46,7 +46,7 @@
     "creativeNoClip.BlockItemMixin",
     "creativeNoClip.PistonBlockEntityMixin",
     "creativeNoClip.PlayerEntityMixin",
-    "creativeNoClip.WorldRendererMixin",
+    "client.WorldRendererMixin",
     "dispenser.DispenserBlockMixin",
     "drownedEnchantedTridentsFix.DrownedEntityMixin",
     "drownedNavigationFix.MobEntityMixin",
