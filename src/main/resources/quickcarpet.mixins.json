@@ -2,6 +2,7 @@
   "required": true,
   "package": "quickcarpet.mixin",
   "compatibilityLevel": "JAVA_8",
+  "plugin": "quickcarpet.utils.MixinConfigPlugin",
   "mixins": [
     "accessor.AxeItemAccessor",
     "accessor.BlockTagsAccessor",
@@ -53,8 +54,9 @@
     "fabricApi.RegistrySyncManagerMixin",
     "fillUpdates.BlockStateArgumentMixin",
     "fillUpdates.StructureMixin",
-    "fillUpdates.WorldChunkMixin",
     "fillUpdates.WorldMixin",
+    "fillUpdates.compat.WorldChunkMixin",
+    "fillUpdates.compat.worldedit.WorldChunkMixin",
     "hopperCounters.HopperBlockEntityMixin",
     "hopperCounters.ItemEntityMixin",
     "hopperMinecartCooldown.HopperMinecartEntityMixin",
