@@ -309,7 +309,6 @@ public class Settings {
     public static boolean xpMerging = false;
 
     public static void main(String[] args) throws IOException {
-        Bootstrap.initialize();
         Translations.init();
         MANAGER.parse();
         MANAGER.dump(new FileOutputStream(args.length > 0 ? args[0] : "rules.md"));
