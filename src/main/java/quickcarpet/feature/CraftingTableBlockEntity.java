@@ -1,8 +1,12 @@
 package quickcarpet.feature;
 
+import com.mojang.datafixers.DSL;
+import com.mojang.datafixers.schemas.Schema;
+import com.mojang.datafixers.types.Type;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.LockableContainerBlockEntity;
+import net.minecraft.datafixer.TypeReferences;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.CraftingInventory;
@@ -45,6 +49,13 @@ public class CraftingTableBlockEntity extends LockableContainerBlockEntity imple
         super(type);
         this.inventory = DefaultedList.ofSize(9, ItemStack.EMPTY);
         ((CraftingInventoryAccessor) craftingInventory).setInventory(this.inventory);
+    }
+
+    public static Type<?> getType(Schema schema) {
+        return DSL.optionalFields(
+            "Items", DSL.list(TypeReferences.ITEM_STACK.in(schema)),
+            "Output", TypeReferences.ITEM_STACK.in(schema)
+        ).toSimpleType();
     }
 
     @Override
