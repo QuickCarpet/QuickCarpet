@@ -74,6 +74,14 @@ Default: `true`
 Options: `true`, `false`  
 Categories: fix  
 
+## cameraModeRestoreLocation
+/s restores the player to the location they used /c at
+
+Type: `boolean`  
+Default: `true`  
+Options: `true`, `false`  
+Categories: commands  
+
 ## commandBlockInfo
 Enables /blockinfo command to get info about blocks
 

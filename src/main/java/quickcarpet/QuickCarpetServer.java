@@ -20,11 +20,15 @@ import quickcarpet.network.channels.RulesChannel;
 import quickcarpet.network.channels.StructureChannel;
 import quickcarpet.network.impl.PluginChannelManager;
 import quickcarpet.pubsub.PubSubMessenger;
+import quickcarpet.utils.CameraData;
 import quickcarpet.utils.HUDController;
 
 import javax.annotation.Nullable;
+import java.io.IOException;
 import java.nio.file.Path;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import static quickcarpet.api.network.server.ServerPluginChannelManager.LOG;
 
@@ -35,6 +39,7 @@ public class QuickCarpetServer implements QuickCarpetServerAPI, ServerEventListe
     private final PubSubMessenger pubSubMessenger = new PubSubMessenger(QuickCarpet.PUBSUB);
     public LoggerManager loggers;
     public TickSpeed tickSpeed;
+    public Map<UUID, CameraData> cameraData = new HashMap<>();
 
     private QuickCarpetServer(MinecraftServer server) {
         this.server = server;
@@ -97,11 +102,21 @@ public class QuickCarpetServer implements QuickCarpetServerAPI, ServerEventListe
     @Override
     public void onServerLoaded(MinecraftServer server) {
         loggers.readSaveFile();
+        try {
+            cameraData = CameraData.readSaveFile();
+        } catch (IOException e) {
+            LOG.error("Error loading camera data", e);
+        }
     }
 
     @Override
     public void onWorldsSaved(MinecraftServer server) {
         loggers.writeSaveFile();
+        try {
+            CameraData.writeSaveFile(cameraData);
+        } catch (IOException e) {
+            LOG.error("Error saving camera data", e);
+        }
     }
 
     @Override
