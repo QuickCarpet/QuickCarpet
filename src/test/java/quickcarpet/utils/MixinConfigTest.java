@@ -51,7 +51,7 @@ public class MixinConfigTest {
     }
 
     private static Set<String> getMixinPackages() {
-        return useResourceFileSystem(path -> {
+        return useClassesFileSystem(path -> {
             try {
                 Path mixinPath = path.resolve(Paths.get("quickcarpet", "mixin"));
                 return Files.walk(path)
@@ -67,8 +67,8 @@ public class MixinConfigTest {
         });
     }
 
-    private static <T> T useResourceFileSystem(Function<Path, T> fn) {
-        URL root = QuickCarpet.class.getResource("/pack.mcmeta");
+    private static <T> T useClassesFileSystem(Function<Path, T> fn) {
+        URL root = QuickCarpet.class.getClassLoader().getResource("quickcarpet/QuickCarpet.class");
         if (root == null) throw new IllegalStateException("Could not find resource root");
         URI uri;
         try {
@@ -78,7 +78,7 @@ public class MixinConfigTest {
         }
         switch (uri.getScheme()) {
             case "file": {
-                return fn.apply(Paths.get(uri).getParent());
+                return fn.apply(Paths.get(uri).getParent().getParent());
             }
             case "jar": {
                 try (FileSystem fs = FileSystems.newFileSystem(uri, ImmutableMap.of())) {

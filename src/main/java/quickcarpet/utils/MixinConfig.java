@@ -157,7 +157,7 @@ public class MixinConfig {
             } catch (IOException e) {
                 throw new RuntimeException("Could not load mixin config file", e);
             }
-        } else if (Files.notExists(path)) {
+        } else if (Files.notExists(path) && System.getProperty("org.gradle.test.worker") == null) {
             try {
                 Files.createDirectories(path.getParent());
                 try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
