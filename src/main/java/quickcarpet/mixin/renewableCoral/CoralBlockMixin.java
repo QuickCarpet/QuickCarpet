@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-@quickcarpet.api.annotation.Feature("renewableCoral")
 @Mixin(CoralBlock.class)
 @Implements(@Interface(iface = Fertilizable.class, prefix = "fert$"))
 public abstract class CoralBlockMixin implements Fertilizable {

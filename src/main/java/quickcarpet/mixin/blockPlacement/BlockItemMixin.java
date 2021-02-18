@@ -7,10 +7,8 @@ import net.minecraft.item.ItemPlacementContext;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import quickcarpet.api.annotation.Feature;
 import quickcarpet.utils.AccurateBlockPlacement;
 
-@Feature("accurateBlockPlacement")
 @Mixin(BlockItem.class)
 public class BlockItemMixin {
     @Redirect(method = "getPlacementState", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;getPlacementState(Lnet/minecraft/item/ItemPlacementContext;)Lnet/minecraft/block/BlockState;"))

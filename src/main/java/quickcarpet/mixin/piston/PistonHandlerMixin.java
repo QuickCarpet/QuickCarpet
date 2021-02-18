@@ -16,7 +16,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-import quickcarpet.api.annotation.Feature;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.PistonBehaviors;
 
@@ -25,7 +24,6 @@ import java.util.List;
 
 @Mixin(PistonHandler.class)
 public abstract class PistonHandlerMixin {
-    @Feature("pushLimit")
     @ModifyConstant(method = "tryMove", constant = @Constant(intValue = 12), expect = 3)
     private int adjustPushLimit(int pushLimit) {
         return Settings.pushLimit;
@@ -54,7 +52,6 @@ public abstract class PistonHandlerMixin {
      * Handles blocks besides the slimeblock that are sticky. Currently only supports blocks that are sticky on one side.
      * @author 2No2Name
      */
-    @Feature("movableBlockEntities")
     @Inject(method = "tryMove", at = @At(value = "INVOKE", target = "Ljava/util/List;get(I)Ljava/lang/Object;", remap = false, shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
     private void stickToStickySides(BlockPos blockPos_1, Direction direction_1, CallbackInfoReturnable<Boolean> cir, BlockState blockState_1, Block block_1, int int_1, int int_2, int int_4, BlockPos blockPos_3, int int_5, int int_6){
         if(!stickToStickySides(blockPos_3)){
@@ -69,7 +66,6 @@ public abstract class PistonHandlerMixin {
      * Handles blocks besides the slimeblock that are sticky. Currently only supports blocks that are sticky on one side.
      * @author 2No2Name
      */
-    @Feature("movableBlockEntities")
     @Inject(method = "calculatePush", at = @At(value = "INVOKE", target = "Ljava/util/List;get(I)Ljava/lang/Object;", remap = false, shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
     private void stickToStickySides(CallbackInfoReturnable<Boolean> cir, int int_1){
         if(!stickToStickySides(this.movedBlocks.get(int_1))){
@@ -79,13 +75,11 @@ public abstract class PistonHandlerMixin {
     }
 
 
-    @Feature("movableBlockEntities")
     @Redirect(method = "tryMove",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;", ordinal = 0))
     private BlockState redirectGetBlockState_1_A(World world, BlockPos pos) {
         return blockState_1 = world.getBlockState(pos);
     }
-    @Feature("movableBlockEntities")
     @Redirect(method = "tryMove",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;", ordinal = 1))
     private BlockState redirectGetBlockState_1_B(World world, BlockPos pos) {
@@ -98,7 +92,6 @@ public abstract class PistonHandlerMixin {
      * Makes backwards stickyness work with sticky non-slimeblocks as well.
      * @author 2No2Name
      */
-    @Feature("movableBlockEntities")
     @Redirect(method = "tryMove", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/piston/PistonHandler;isBlockSticky(Lnet/minecraft/block/Block;)Z"))
     private boolean modifiedIsSticky(Block block) {
         if (Settings.movableBlockEntities && isStickyOnSide(blockState_1, this.motionDirection.getOpposite())) {
@@ -182,7 +175,6 @@ public abstract class PistonHandlerMixin {
     private final List<BlockPos> weaklyMovedBlocks_moveBreakBefore = Lists.newArrayList();
 
 
-    @Feature("additionalMovableBlocks")
     @Inject(method = "calculatePush", at = @At(value = "HEAD"))
     private void clearWeaklyMovedBlocks(CallbackInfoReturnable<Boolean> cir){
         weaklyMovedBlocks.clear();

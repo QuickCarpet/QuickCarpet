@@ -13,8 +13,6 @@ import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import quickcarpet.api.annotation.BugFix;
-import quickcarpet.api.annotation.Feature;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.extensions.ExtendedPistonBlockEntity;
 
@@ -50,7 +48,6 @@ public abstract class PistonBlockEntityRendererMixin extends BlockEntityRenderer
         }
     }
 
-    @Feature(value = "smoothPistons", bug = @BugFix(""))
     @ModifyConstant(method = "render", constant = @Constant(floatValue = 4f))
     private float fixShort(float shortCutoff) {
         return 0.5f;

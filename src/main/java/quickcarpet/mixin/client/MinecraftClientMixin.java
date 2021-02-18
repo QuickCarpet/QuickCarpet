@@ -10,9 +10,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import quickcarpet.QuickCarpet;
 import quickcarpet.QuickCarpetClient;
-import quickcarpet.api.annotation.Feature;
 
-@Feature("core")
 @Mixin(MinecraftClient.class)
 @Environment(EnvType.CLIENT)
 public abstract class MinecraftClientMixin {

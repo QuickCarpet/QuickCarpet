@@ -15,7 +15,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import quickcarpet.api.annotation.Feature;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.extensions.ExtendedWorldChunk;
 
@@ -24,7 +23,6 @@ import java.util.Map;
 
 import static net.minecraft.world.chunk.WorldChunk.EMPTY_SECTION;
 
-@Feature("movableBlockEntities")
 @Mixin(WorldChunk.class)
 public abstract class WorldChunkMixin implements ExtendedWorldChunk {
 

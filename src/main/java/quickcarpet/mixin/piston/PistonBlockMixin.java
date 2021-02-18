@@ -14,7 +14,6 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-import quickcarpet.api.annotation.Feature;
 import quickcarpet.utils.CarpetRegistry;
 import quickcarpet.utils.PistonBehaviors;
 import quickcarpet.utils.extensions.ExtendedPistonBlockEntity;
@@ -23,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Feature("movableBlockEntities")
 @Mixin(PistonBlock.class)
 public class PistonBlockMixin extends FacingBlock {
 
@@ -33,7 +31,6 @@ public class PistonBlockMixin extends FacingBlock {
 
     private ThreadLocal<List<BlockEntity>> list1_BlockEntities = new ThreadLocal<>(); //Unneccessary ThreadLocal if client and server use different PistonBlock instances
 
-    @Feature("autoCraftingTable")
     @Inject(method = "isMovable", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;hasBlockEntity()Z"),
             cancellable = true)
     private static void craftingTableMoveable(BlockState state, World world, BlockPos pos, Direction pistonDirection,
@@ -44,7 +41,6 @@ public class PistonBlockMixin extends FacingBlock {
         }
     }
 
-    @Feature("additionalMovableBlocks")
     @Inject(method = "isMovable", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;hasBlockEntity()Z"),
             cancellable = true)
     //Blocks overwritten to be pushable will be pushable without not hasBlockEntity check.
@@ -55,7 +51,6 @@ public class PistonBlockMixin extends FacingBlock {
         }
     }
 
-    @Feature("additionalMovableBlocks")
     @Inject(method = "isMovable", at = @At(value = "RETURN", ordinal = 3, shift = At.Shift.BEFORE))
     private static void additionalBlocksMovable2(BlockState blockState_1, World world_1, BlockPos blockPos_1, Direction direction_1,
                                                  boolean allowDestroy, Direction direction_2, CallbackInfoReturnable<Boolean> cir) {
@@ -72,7 +67,6 @@ public class PistonBlockMixin extends FacingBlock {
         }
     }
 
-    @Feature("additionalMovableBlocks")
     @Inject(method = "isMovable", at = @At(value = "RETURN", ordinal = 0, shift = At.Shift.BEFORE))
     private static void additionalObsidianMovable(BlockState blockState_1, World world_1, BlockPos blockPos_1, Direction direction_1, boolean allowDestroy, Direction direction_2, CallbackInfoReturnable<Boolean> cir) {
         if(quickcarpet.settings.Settings.movableBlockOverrides){
@@ -183,7 +177,6 @@ public class PistonBlockMixin extends FacingBlock {
     }
 
 
-    @Feature("additionalMovableBlocks")
     @Redirect(method = "onSyncedBlockEvent", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getPistonBehavior()Lnet/minecraft/block/piston/PistonBehavior;"))
     private PistonBehavior returnNormalWhenMovable(BlockState blockState){
         PistonBehavior pistonBehavior = blockState.getPistonBehavior();

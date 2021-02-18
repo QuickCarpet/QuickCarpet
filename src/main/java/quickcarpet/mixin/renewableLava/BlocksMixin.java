@@ -9,10 +9,8 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.Slice;
-import quickcarpet.api.annotation.Feature;
 import quickcarpet.feature.ObsidianBlock;
 
-@Feature("renewableLava")
 @Mixin(Blocks.class)
 public class BlocksMixin {
     @Shadow private static Block register(String string_1, Block block_1) {

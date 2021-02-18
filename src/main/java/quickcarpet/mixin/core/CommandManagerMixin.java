@@ -20,7 +20,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import quickcarpet.QuickCarpet;
 import quickcarpet.api.annotation.BugFix;
-import quickcarpet.api.annotation.Feature;
 import quickcarpet.utils.Translations;
 
 @Mixin(CommandManager.class)
@@ -28,7 +27,6 @@ public abstract class CommandManagerMixin {
 
     @Shadow @Final private CommandDispatcher<ServerCommandSource> dispatcher;
 
-    @Feature("core")
     @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/CommandDispatcher;findAmbiguities(Lcom/mojang/brigadier/AmbiguityConsumer;)V"))
     private void onRegister(CommandManager.RegistrationEnvironment environment, CallbackInfo ci) {
         QuickCarpet.getInstance().setCommandDispatcher(this.dispatcher);
@@ -39,19 +37,18 @@ public abstract class CommandManagerMixin {
         return true;
     }
 
-    @Feature(value = "core", bug = @BugFix(value = "MC-124493", status = "WAI"))
+    @BugFix(value = "MC-124493", status = "WAI")
     @Redirect(method = "execute", at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;isDebugEnabled()Z", remap = false))
     private boolean moreStackTraces(Logger logger) {
         return logger.isDebugEnabled() || QuickCarpet.isDevelopment();
     }
 
-    @Feature(value = "core", bug = @BugFix(value = "MC-124493", status = "WAI"))
+    @BugFix(value = "MC-124493", status = "WAI")
     @Inject(method = "execute", at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;isDebugEnabled()Z", remap = false), locals = LocalCapture.CAPTURE_FAILHARD)
     private void printStackTrace(ServerCommandSource source, String command, CallbackInfoReturnable<Integer> cir, Exception e) {
         e.printStackTrace();
     }
 
-    @Feature("core")
     @Redirect(method = "execute", at = @At(value = "INVOKE", target = "Lnet/minecraft/command/CommandException;getTextMessage()Lnet/minecraft/text/Text;"))
     private Text translateError(CommandException e, ServerCommandSource source, String command) {
         Entity entity = source.getEntity();

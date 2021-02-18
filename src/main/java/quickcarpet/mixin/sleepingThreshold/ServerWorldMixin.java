@@ -13,7 +13,6 @@ import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import quickcarpet.api.annotation.Feature;
 import quickcarpet.settings.Settings;
 
 import java.util.List;
@@ -21,7 +20,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-@Feature("sleepingThreshold")
 @Mixin(ServerWorld.class)
 public abstract class ServerWorldMixin extends World {
     @Shadow

@@ -15,13 +15,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import quickcarpet.api.annotation.Feature;
 import quickcarpet.utils.CarpetProfiler;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
-@Feature("profiler")
 @Mixin(ServerWorld.class)
 public abstract class ServerWorldMixin extends World {
     protected ServerWorldMixin(MutableWorldProperties properties, RegistryKey<World> registryKey, DimensionType dimensionType, Supplier<Profiler> supplier, boolean bl, boolean bl2, long l) {

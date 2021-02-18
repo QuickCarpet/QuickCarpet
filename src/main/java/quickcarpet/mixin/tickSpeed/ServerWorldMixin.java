@@ -14,7 +14,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import quickcarpet.api.annotation.Feature;
 import quickcarpet.helper.TickSpeed;
 import quickcarpet.utils.Reflection;
 
@@ -22,7 +21,6 @@ import java.util.List;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
-@Feature("tickSpeed")
 @Mixin(ServerWorld.class)
 public abstract class ServerWorldMixin extends World {
     @Shadow @Final private List<ServerPlayerEntity> players;

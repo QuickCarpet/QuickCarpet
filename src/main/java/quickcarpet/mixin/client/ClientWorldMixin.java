@@ -16,12 +16,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import quickcarpet.QuickCarpetClient;
-import quickcarpet.api.annotation.Feature;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
-@Feature("tickSpeed")
 @Environment(EnvType.CLIENT)
 @Mixin(ClientWorld.class)
 public abstract class ClientWorldMixin extends World {

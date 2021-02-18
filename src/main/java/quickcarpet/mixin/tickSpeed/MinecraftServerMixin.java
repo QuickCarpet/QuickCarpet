@@ -12,13 +12,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import quickcarpet.api.annotation.Feature;
 import quickcarpet.helper.TickSpeed;
 
 import javax.annotation.Nullable;
 import java.util.function.BooleanSupplier;
 
-@Feature("tickSpeed")
 @Mixin(MinecraftServer.class)
 public abstract class MinecraftServerMixin {
     @Shadow @Final private static Logger LOGGER;

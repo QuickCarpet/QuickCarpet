@@ -6,9 +6,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import quickcarpet.QuickCarpet;
-import quickcarpet.api.annotation.Feature;
 
-@Feature("core")
 @Mixin(IntegratedServer.class)
 public abstract class IntegratedServerMixin {
 
