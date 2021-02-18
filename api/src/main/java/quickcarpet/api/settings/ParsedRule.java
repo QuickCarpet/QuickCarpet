@@ -30,6 +30,7 @@ public interface ParsedRule<T> {
     Class<T> getType();
     Validator<T> getValidator();
     ChangeListener<T> getChangeListener();
+    boolean isDisabled();
 
     ArgumentType<?> getArgumentType();
     T getArgument(CommandContext<ServerCommandSource> context) throws CommandSyntaxException;

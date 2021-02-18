@@ -10,6 +10,8 @@ import quickcarpet.api.module.QuickCarpetModule;
 import quickcarpet.api.settings.*;
 import quickcarpet.network.channels.RulesChannel;
 import quickcarpet.settings.Settings;
+import quickcarpet.utils.Messenger;
+import quickcarpet.utils.MixinConfig;
 import quickcarpet.utils.Reflection;
 import quickcarpet.utils.Translations;
 
@@ -34,6 +36,7 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
     private final TranslatableText deprecated;
     private final ImmutableList<RuleCategory> categories;
     private final ImmutableList<String> options;
+    private final ImmutableList<String> enabledOptions;
     private final Class<T> type;
     private final TypeAdapter<T, ?> typeAdapter;
     private final Validator<T> validator;
@@ -41,6 +44,7 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
     private final T defaultValue;
     private final String defaultAsString;
     private final quickcarpet.api.settings.SettingsManager manager;
+    private final boolean disabled;
     private T saved;
     private String savedAsString;
 
@@ -63,9 +67,19 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
         this.typeAdapter = getTypeAdapter(this.type);
         this.defaultValue = get();
         this.defaultAsString = typeAdapter.toString(this.defaultValue);
+        boolean disabled = !MixinConfig.INSTANCE.isRuleEnabled(this);
         ImmutableList<String> options = typeAdapter.getOptions();
         if (options == null) options = ImmutableList.copyOf(rule.options());
         this.options = options;
+        if (!disabled) {
+            this.enabledOptions = options.stream()
+                .filter(option -> MixinConfig.INSTANCE.isOptionEnabled(this, option))
+                .collect(ImmutableList.toImmutableList());
+            if (!options.isEmpty() && enabledOptions.size() <= 1) disabled = true;
+        } else {
+            this.enabledOptions = ImmutableList.of();
+        }
+        this.disabled = disabled;
         this.deprecated = rule.deprecated() ? new TranslatableText(manager.getDeprecationTranslationKey(field, rule)) : null;
     }
 
@@ -113,7 +127,7 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
 
     @Override
     public List<String> getOptions() {
-        return options;
+        return enabledOptions;
     }
 
     @Override
@@ -129,6 +143,11 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
     @Override
     public ChangeListener<T> getChangeListener() {
         return onChange;
+    }
+
+    @Override
+    public boolean isDisabled() {
+        return disabled;
     }
 
     @Override
@@ -183,6 +202,12 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
         T previousValue = this.get();
         Optional<TranslatableText> error = this.validator.validate(value);
         if (error.isPresent()) throw new ParsedRule.ValueException(error.get());
+        if (sync) {
+            String str = typeAdapter.toString(value);
+            if (options.contains(str) && !enabledOptions.contains(str)) {
+                throw new ParsedRule.ValueException(Messenger.t(""));
+            }
+        }
         try {
             this.field.set(null, value);
             this.onChange.onChange(this, previousValue);

@@ -30,6 +30,14 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
+        if (!mixinClassName.startsWith(MixinConfig.MIXIN_PACKAGE + ".")) {
+            LOGGER.warn("Foreign mixin {}, disabling", mixinClassName);
+            return false;
+        }
+        if (!MixinConfig.INSTANCE.isMixinEnabled(mixinClassName)) {
+            LOGGER.debug("{} disabled by config", mixinClassName);
+            return false;
+        }
         switch (mixinClassName) {
             case "quickcarpet.mixin.fillUpdates.compat.worldedit.WorldChunkMixin": {
                 if (incompatibleWorldEdit) {

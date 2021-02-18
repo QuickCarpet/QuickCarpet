@@ -20,6 +20,7 @@ import quickcarpet.api.settings.RuleCategory;
 import quickcarpet.settings.Settings;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.mojang.brigadier.arguments.StringArgumentType.getString;
@@ -42,19 +43,21 @@ public class CarpetCommand {
                 player.hasPermissionLevel(2));
 
         carpet.executes((context)->listAllSettings(context.getSource())).
-                then(literal("list").
-                        executes( (c) -> listSettings(c.getSource(),
-                                new TranslatableText("command.carpet.title.all", Build.NAME),
-                                Settings.MANAGER.getRules())).
-                        then(literal("defaults").
-                                executes( (c)-> listSettings(c.getSource(),
-                                        new TranslatableText("command.carpet.title.startup"),
-                                        Settings.MANAGER.getSavedRules()))).
-                        then(argument("search", StringArgumentType.word()).
-                                suggests( (c, b)-> CommandSource.suggestMatching(RULE_CATEGORIES, b)).
-                                executes( (c) -> listSettings(c.getSource(),
-                                        new TranslatableText("command.carpet.title.search", Build.NAME, getString(c, "search")),
-                                        Settings.MANAGER.getRulesMatching(getString(c, "search"))))));
+            then(literal("list").
+                executes( (c) -> listSettings(c.getSource(),
+                    new TranslatableText("command.carpet.title.all", Build.NAME),
+                    Settings.MANAGER.getRules().stream()
+                        .filter(rule -> !rule.isDisabled())
+                        .collect(Collectors.toSet()))).
+                then(literal("defaults").
+                    executes( (c)-> listSettings(c.getSource(),
+                        new TranslatableText("command.carpet.title.startup"),
+                        Settings.MANAGER.getSavedRules()))).
+                then(argument("search", StringArgumentType.word()).
+                    suggests( (c, b)-> CommandSource.suggestMatching(RULE_CATEGORIES, b)).
+                    executes( (c) -> listSettings(c.getSource(),
+                        new TranslatableText("command.carpet.title.search", Build.NAME, getString(c, "search")),
+                        Settings.MANAGER.getRulesMatching(getString(c, "search"))))));
 
         LiteralArgumentBuilder<ServerCommandSource> removeDefault = literal("removeDefault").requires(s -> !Settings.MANAGER.isLocked());
         LiteralArgumentBuilder<ServerCommandSource> setDefault = literal("setDefault").requires(s -> !Settings.MANAGER.isLocked());
@@ -63,7 +66,7 @@ public class CarpetCommand {
                 .executes(c -> displayRuleMenu(c.getSource(), rule))
                 .then(argument("value", rule.getArgumentType())
                     .suggests((c, b) -> CommandSource.suggestMatching(rule.getOptions(), b))
-                    .requires(s -> !Settings.MANAGER.isLocked())
+                    .requires(s -> !Settings.MANAGER.isLocked() && !rule.isDisabled())
                     .executes(c -> setRule(c.getSource(), (ParsedRule) rule, rule.getArgument(c)))
                 )
             );
@@ -87,12 +90,20 @@ public class CarpetCommand {
         }
 
         m(source, "");
-        m(source, runCommand(s(rule.getName(), Formatting.BOLD), "/carpet" + rule.getName(), ts("command.carpet.refresh", Formatting.GRAY)));
+        MutableText title = runCommand(s(rule.getName(), Formatting.BOLD), "/carpet" + rule.getName(), ts("command.carpet.refresh", Formatting.GRAY));
+        if (rule.isDisabled()) {
+            title.append(c(s(" ("), t("command.carpet.rule.disabled"), s(")")).formatted(Formatting.RED));
+        }
+        m(source, title);
         m(source, rule.getDescription());
 
-        if (rule.getExtraInfo() != null) m(source, style(rule.getExtraInfo(), Formatting.GRAY));
+        if (rule.getExtraInfo() != null) {
+            m(source, style(rule.getExtraInfo(), Formatting.GRAY));
+        }
 
-        if (rule.getDeprecated() != null) m(source, ts("command.carpet.rule.deprecated", Formatting.RED, rule.getDeprecated()));
+        if (rule.getDeprecated() != null) {
+            m(source, ts("command.carpet.rule.deprecated", Formatting.RED, rule.getDeprecated()));
+        }
 
         List<Text> categories = new ArrayList<>();
         categories.add(t("command.carpet.categories"));
@@ -127,6 +138,9 @@ public class CarpetCommand {
         MutableText baseText = s((brackets ? "[" : "") + option + (brackets ? "]" : ""));
         if (option.equals(rule.getDefaultAsString()) && !brackets) baseText = baseText.formatted(Formatting.UNDERLINE);
         baseText = option.equals(rule.getAsString()) ? baseText.formatted(Formatting.BOLD, Formatting.GREEN) : baseText.formatted(Formatting.YELLOW);
+        if (rule.isDisabled()) {
+            return hoverText(baseText, ts("command.carpet.rule.disabled", Formatting.GRAY));
+        }
         if (Settings.MANAGER.isLocked()) {
             return hoverText(baseText, ts("carpet.locked", Formatting.GRAY));
         }
@@ -156,6 +170,8 @@ public class CarpetCommand {
             m(source, ts("command.carpet.setDefault.success", GRAY_ITALIC, rule.getName(), defaultValue));
         } catch (ParsedRule.ValueException e) {
             throw new CommandException(ts("command.carpet.rule.invalidValue", Formatting.RED, e.message));
+        } catch (IllegalArgumentException e) {
+            throw new CommandException(ts("command.carpet.rule.invalidValue", Formatting.RED, e.getMessage()));
         }
         return 1;
     }
