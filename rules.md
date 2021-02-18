@@ -74,6 +74,16 @@ Default: `true`
 Options: `true`, `false`  
 Categories: fix  
 
+## calmNetherFires
+Make infinite fires calmer to cause less lag
+
+0: disable ticking, 1: vanilla, 2+: multiply the ticking interval  
+
+Type: `int`  
+Default: `1`  
+Categories: experimental, optimizations  
+Validator: `>= 0`  
+
 ## cameraModeRestoreLocation
 /s restores the player to the location they used /c at
 

@@ -37,6 +37,8 @@
   "carpet.rule.betterChunkLoading.description": "Makes things load chunks again",
   "carpet.rule.betterStatistics.description": "Scoreboards initialize to the statistic values",
   "carpet.rule.blockEntityFix.description": "Fixes a crash when activating droppers or dispensers with invalid block entities",
+  "carpet.rule.calmNetherFires.description": "Make infinite fires calmer to cause less lag",
+  "carpet.rule.calmNetherFires.extra": "0: disable ticking, 1: vanilla, 2+: multiply the ticking interval",
   "carpet.rule.cameraModeRestoreLocation.description": "/s restores the player to the location they used /c at",
   "carpet.rule.commandBlockInfo.description": "Enables /blockinfo command to get info about blocks",
   "carpet.rule.commandCameramode.description": "Enables /c and /s commands to quickly switch between camera and survival modes for players with this permission level",

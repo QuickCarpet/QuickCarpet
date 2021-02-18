@@ -1,6 +1,5 @@
 package quickcarpet.settings;
 
-import net.minecraft.Bootstrap;
 import net.minecraft.SharedConstants;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ChunkTicketType;
@@ -80,6 +79,9 @@ public class Settings {
 
     @Rule(category = FIX)
     public static boolean blockEntityFix = true;
+
+    @Rule(category = {EXPERIMENTAL, OPTIMIZATIONS}, validator = Validator.NonNegative.class)
+    public static int calmNetherFires = 1;
 
     @Rule(category = COMMANDS)
     public static boolean cameraModeRestoreLocation = true;

@@ -30,6 +30,7 @@
     "blockEntityFix.DispenserBlockMixin",
     "blockPlacement.BlockItemMixin",
     "blockPlacement.ServerPlayInteractionManagerMixin",
+    "calmNetherFires.FireBlockMixin",
     "commands.CloneCommandMixin",
     "commands.FillCommandMixin",
     "commands.SetBlockCommandMixin",
