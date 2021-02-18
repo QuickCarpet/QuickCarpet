@@ -23,7 +23,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 public class MixinConfig {
-    public static final MixinConfig INSTANCE;
+    private static MixinConfig instance;
     private static final Logger LOGGER = LogManager.getLogger("QuickCarpet|MixinConfig");
     private static final Properties DEFAULT_PROPERTIES = new Properties();
     static final String MIXIN_PACKAGE = "quickcarpet.mixin";
@@ -158,8 +158,11 @@ public class MixinConfig {
                 throw new RuntimeException("Could not load mixin config file", e);
             }
         } else if (Files.notExists(path)) {
-            try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
-                DEFAULT_PROPERTIES.store(writer, "");
+            try {
+                Files.createDirectories(path.getParent());
+                try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+                    DEFAULT_PROPERTIES.store(writer, "");
+                }
             } catch (IOException e) {
                 throw new RuntimeException("Could not write default mixin config file", e);
             }
@@ -167,10 +170,16 @@ public class MixinConfig {
         return new MixinConfig(props);
     }
 
+    public static MixinConfig getInstance() {
+        if (instance == null) {
+            instance = load(Paths.get("config", Build.ID + ".properties"));
+        }
+        return instance;
+    }
+
     static {
         Stream.concat(MIXIN_TO_RULES.keySet().stream(), MIXINS_WITHOUT_RULES.stream()).forEach(pkg -> {
             DEFAULT_PROPERTIES.put("mixin." + pkg, "true");
         });
-        INSTANCE = load(Paths.get("config", Build.ID + ".properties"));
     }
 }

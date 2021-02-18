@@ -155,7 +155,7 @@ public class CoreSettingsManager extends SettingsManager implements quickcarpet.
                         if (!value.equals(kv[1]) || !pair.getLeft().equals(kv[0])) {
                             LOG.info("Converted "   + kv[0] + "=" + kv[1] + " to " + rule.getName() + "=" + value);
                         }
-                        if (!rule.isDisabled() && MixinConfig.INSTANCE.isOptionEnabled(rule, value)) {
+                        if (!rule.isDisabled() && MixinConfig.getInstance().isOptionEnabled(rule, value)) {
                             //noinspection rawtypes
                             ((ParsedRuleImpl) rule).load(value);
                             LOG.info("Loaded setting " + rule.getName() + "=" + rule.getAsString() + " from carpet.conf");

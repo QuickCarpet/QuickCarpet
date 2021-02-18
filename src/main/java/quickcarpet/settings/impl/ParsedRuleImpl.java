@@ -67,13 +67,13 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
         this.typeAdapter = getTypeAdapter(this.type);
         this.defaultValue = get();
         this.defaultAsString = typeAdapter.toString(this.defaultValue);
-        boolean disabled = !MixinConfig.INSTANCE.isRuleEnabled(this);
+        boolean disabled = !MixinConfig.getInstance().isRuleEnabled(this);
         ImmutableList<String> options = typeAdapter.getOptions();
         if (options == null) options = ImmutableList.copyOf(rule.options());
         this.options = options;
         if (!disabled) {
             this.enabledOptions = options.stream()
-                .filter(option -> MixinConfig.INSTANCE.isOptionEnabled(this, option))
+                .filter(option -> MixinConfig.getInstance().isOptionEnabled(this, option))
                 .collect(ImmutableList.toImmutableList());
             if (!options.isEmpty() && enabledOptions.size() <= 1) disabled = true;
         } else {

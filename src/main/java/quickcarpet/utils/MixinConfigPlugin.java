@@ -34,7 +34,7 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
             LOGGER.warn("Foreign mixin {}, disabling", mixinClassName);
             return false;
         }
-        if (!MixinConfig.INSTANCE.isMixinEnabled(mixinClassName)) {
+        if (!MixinConfig.getInstance().isMixinEnabled(mixinClassName)) {
             LOGGER.debug("{} disabled by config", mixinClassName);
             return false;
         }
