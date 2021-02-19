@@ -8,11 +8,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import quickcarpet.api.annotation.Feature;
 import quickcarpet.helper.PlayerActionPack;
 import quickcarpet.utils.extensions.ActionPackOwner;
 
-@Feature("actionPack")
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin implements ActionPackOwner {
     private PlayerActionPack actionPack;

@@ -74,6 +74,24 @@ Default: `true`
 Options: `true`, `false`  
 Categories: fix  
 
+## calmNetherFires
+Make infinite fires calmer to cause less lag
+
+0: disable ticking, 1: vanilla, 2+: multiply the ticking interval  
+
+Type: `int`  
+Default: `1`  
+Categories: experimental, optimizations  
+Validator: `>= 0`  
+
+## cameraModeRestoreLocation
+/s restores the player to the location they used /c at
+
+Type: `boolean`  
+Default: `true`  
+Options: `true`, `false`  
+Categories: commands  
+
 ## commandBlockInfo
 Enables /blockinfo command to get info about blocks
 
@@ -339,6 +357,15 @@ Type: `boolean`
 Default: `false`  
 Options: `true`, `false`  
 Categories: experimental  
+
+## lightningKillsDropsFix
+Prevents lightning strikes from destroying the items it creates
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: fix  
+Fixes: [MC-206922](https://bugs.mojang.com/browse/MC-206922)  
 
 ## movableBlockEntities
 Pistons can push block entities, like hoppers, chests etc.

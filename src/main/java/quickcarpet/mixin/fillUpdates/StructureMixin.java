@@ -9,12 +9,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.Slice;
-import quickcarpet.api.annotation.Feature;
 import quickcarpet.settings.Settings;
 
 import static quickcarpet.utils.Constants.SetBlockState.NO_FILL_UPDATE;
 
-@Feature("fillUpdates")
 @Mixin(Structure.class)
 public abstract class StructureMixin {
     @Redirect(method = "place(Lnet/minecraft/world/ServerWorldAccess;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/structure/StructurePlacementData;Ljava/util/Random;I)Z", at = @At(value = "INVOKE",

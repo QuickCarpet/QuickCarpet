@@ -15,23 +15,18 @@
   },
   "license": "MIT",
   "environment": "*",
-  "entrypoints": {
-    "main": [
-      "quickcarpet.QuickCarpet::getInstance"
-    ],
-    "client": [
-      "quickcarpet.QuickCarpetClient::getInstance"
-    ]
-  },
   "mixins": [
     "quickcarpet.mixins.json"
   ],
   "accessWidener": "quickcarpet.accesswidener",
   "depends": {
-    "minecraft": ">=1.16"
+    "minecraft": ">=1.17-alpha.21.3.a"
   },
   "recommends": {
     "malilib": "${malilib_version}",
     "fabric-resource-loader-v0": "*"
+  },
+  "breaks": {
+    "carpet": "*"
   }
 }

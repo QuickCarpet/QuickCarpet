@@ -109,7 +109,6 @@ public class PlaceBlockDispenserBehavior extends FallibleItemDispenserBehavior {
         BlockState currentBlockState = world.getBlockState(pos);
         FluidState currentFluidState = world.getFluidState(pos);
         if ((world.isAir(pos) || currentBlockState.getMaterial().isReplaceable()) && currentBlockState.getBlock() != block && state.canPlaceAt(world, pos)) {
-            world.setBlockState(pos, state);
             CompoundTag blockEntityTag = itemStack.getSubTag("BlockEntityTag");
             if (blockEntityTag != null && block instanceof BlockEntityProvider) {
                 BlockEntity be = world.getBlockEntity(pos);
@@ -120,7 +119,11 @@ public class PlaceBlockDispenserBehavior extends FallibleItemDispenserBehavior {
                 be.fromTag(blockEntityTag);
             }
             if (currentFluidState.isStill() && block instanceof FluidFillable) {
-                ((FluidFillable) block).tryFillWithFluid(world, pos, state, currentFluidState);
+                if (!((FluidFillable) block).tryFillWithFluid(world, pos, state, currentFluidState)) {
+                    world.setBlockState(pos, state);
+                }
+            } else {
+                world.setBlockState(pos, state);
             }
             BlockSoundGroup soundType = state.getSoundGroup();
             world.playSound(null, pos, soundType.getPlaceSound(), SoundCategory.BLOCKS, (soundType.getVolume() + 1.0F / 2.0F), soundType.getPitch() * 0.8F);

@@ -10,6 +10,7 @@ import quickcarpet.api.annotation.BugFix;
 import quickcarpet.api.module.QuickCarpetModule;
 import quickcarpet.api.settings.*;
 import quickcarpet.settings.Settings;
+import quickcarpet.utils.MixinConfig;
 import quickcarpet.utils.Reflection;
 import quickcarpet.utils.Translations;
 
@@ -154,9 +155,13 @@ public class CoreSettingsManager extends SettingsManager implements quickcarpet.
                         if (!value.equals(kv[1]) || !pair.getLeft().equals(kv[0])) {
                             LOG.info("Converted "   + kv[0] + "=" + kv[1] + " to " + rule.getName() + "=" + value);
                         }
-                        //noinspection rawtypes
-                        ((ParsedRuleImpl) rule).load(value);
-                        LOG.info("Loaded setting " + rule.getName() + "=" + rule.getAsString() + " from carpet.conf");
+                        if (!rule.isDisabled() && MixinConfig.getInstance().isOptionEnabled(rule, value)) {
+                            //noinspection rawtypes
+                            ((ParsedRuleImpl) rule).load(value);
+                            LOG.info("Loaded setting " + rule.getName() + "=" + rule.getAsString() + " from carpet.conf");
+                        } else {
+                            LOG.warn("Not loading setting " + rule.getName() + "=" + rule.getAsString() + " from carpet.conf because it is disabled");
+                        }
                     } catch (IllegalArgumentException e) {
                         LOG.error("The value " + kv[1] + " for " + rule.getName() + " is not valid - ignoring...");
                     }

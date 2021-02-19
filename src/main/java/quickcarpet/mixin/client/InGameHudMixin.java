@@ -10,10 +10,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import quickcarpet.api.annotation.Feature;
 import quickcarpet.mixin.accessor.PlayerListHudAccessor;
 
-@Feature("logger.hud")
 @Environment(EnvType.CLIENT)
 @Mixin(InGameHud.class)
 public abstract class InGameHudMixin {

@@ -9,10 +9,8 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import quickcarpet.QuickCarpetClient;
-import quickcarpet.api.annotation.Feature;
 import quickcarpet.client.ClientSetting;
 
-@Feature("tickSpeed")
 @Mixin(RenderTickCounter.class)
 @Environment(EnvType.CLIENT)
 public class RenderTickCounterMixin {

@@ -1,6 +1,5 @@
 package quickcarpet.settings;
 
-import net.minecraft.Bootstrap;
 import net.minecraft.SharedConstants;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ChunkTicketType;
@@ -80,6 +79,12 @@ public class Settings {
 
     @Rule(category = FIX)
     public static boolean blockEntityFix = true;
+
+    @Rule(category = {EXPERIMENTAL, OPTIMIZATIONS}, validator = Validator.NonNegative.class)
+    public static int calmNetherFires = 1;
+
+    @Rule(category = COMMANDS)
+    public static boolean cameraModeRestoreLocation = true;
 
     @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
     public static int commandBlockInfo = 0;
@@ -299,8 +304,10 @@ public class Settings {
     @Rule(category = {SURVIVAL, EXPERIMENTAL})
     public static boolean xpMerging = true;
 
+    @Rule(category = {FIX}, bug = @BugFix("MC-206922"))
+    public static boolean lightningKillsDropsFix = false;
+
     public static void main(String[] args) throws IOException {
-        Bootstrap.initialize();
         Translations.init();
         MANAGER.parse();
         MANAGER.dump(new FileOutputStream(args.length > 0 ? args[0] : "rules.md"));

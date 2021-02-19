@@ -7,11 +7,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import quickcarpet.api.annotation.Feature;
 import quickcarpet.helper.Mobcaps;
 import quickcarpet.settings.Settings;
 
-@Feature("phantomsRespectMobcap")
 @Mixin(PhantomSpawner.class)
 public class PhantomSpawnerMixin {
     @Inject(method = "spawn", at = @At("HEAD"), cancellable = true)

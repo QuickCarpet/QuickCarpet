@@ -16,11 +16,9 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import quickcarpet.QuickCarpetClient;
-import quickcarpet.api.annotation.Feature;
 import quickcarpet.client.ClientPluginChannelManager;
 import quickcarpet.utils.CarpetRegistry;
 
-@Feature("core")
 @Environment(EnvType.CLIENT)
 @Mixin(ClientPlayNetworkHandler.class)
 public abstract class ClientPlayNetworkHandlerMixin implements ClientPlayPacketListener {

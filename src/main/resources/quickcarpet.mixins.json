@@ -2,6 +2,7 @@
   "required": true,
   "package": "quickcarpet.mixin",
   "compatibilityLevel": "JAVA_8",
+  "plugin": "quickcarpet.utils.MixinConfigPlugin",
   "mixins": [
     "accessor.AxeItemAccessor",
     "accessor.BlockEntityAccessor",
@@ -30,6 +31,7 @@
     "blockEntityFix.DispenserBlockMixin",
     "blockPlacement.BlockItemMixin",
     "blockPlacement.ServerPlayInteractionManagerMixin",
+    "calmNetherFires.FireBlockMixin",
     "commands.CloneCommandMixin",
     "commands.FillCommandMixin",
     "commands.SetBlockCommandMixin",
@@ -47,18 +49,19 @@
     "creativeNoClip.BlockItemMixin",
     "creativeNoClip.PistonBlockEntityMixin",
     "creativeNoClip.PlayerEntityMixin",
-    "creativeNoClip.WorldRendererMixin",
     "dispenser.DispenserBlockMixin",
     "drownedEnchantedTridentsFix.DrownedEntityMixin",
     "fabricApi.RegistrySyncManagerMixin",
     "fillUpdates.BlockStateArgumentMixin",
     "fillUpdates.StructureMixin",
-    "fillUpdates.WorldChunkMixin",
     "fillUpdates.WorldMixin",
+    "fillUpdates.compat.WorldChunkMixin",
+    "fillUpdates.compat.worldedit.WorldChunkMixin",
     "hopperCounters.HopperBlockEntityMixin",
     "hopperCounters.ItemEntityMixin",
     "hopperMinecartCooldown.HopperMinecartEntityMixin",
     "hopperMinecartItemTransfer.HopperMinecartEntityMixin",
+    "lightningKillsDropsFix.ItemEntityMixin",
     "loggers.CommandBlockExecutorMixin",
     "nbtMotionLimit.EntityMixin",
     "netherMaps.FilledMapItemMixin",
@@ -117,7 +120,8 @@
     "client.IntegratedServerMixin",
     "client.MinecraftClientMixin",
     "client.PistonBlockEntityRendererMixin",
-    "client.RenderTickCounterMixin"
+    "client.RenderTickCounterMixin",
+    "client.WorldRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

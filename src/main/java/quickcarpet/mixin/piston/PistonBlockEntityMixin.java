@@ -17,13 +17,12 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import quickcarpet.api.annotation.Feature;
+import quickcarpet.client.ClientSetting;
 import quickcarpet.mixin.accessor.BlockEntityAccessor;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.extensions.ExtendedPistonBlockEntity;
 import quickcarpet.utils.extensions.ExtendedWorld;
 
-@Feature("movableBlockEntities")
 @Mixin(PistonBlockEntity.class)
 public abstract class PistonBlockEntityMixin extends BlockEntity implements ExtendedPistonBlockEntity {
     @Shadow private boolean source;

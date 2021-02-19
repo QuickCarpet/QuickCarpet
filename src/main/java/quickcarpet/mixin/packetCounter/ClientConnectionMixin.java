@@ -9,10 +9,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import quickcarpet.api.annotation.Feature;
 import quickcarpet.logging.PacketCounter;
 
-@Feature("packetCounter")
 @Mixin(ClientConnection.class)
 public class ClientConnectionMixin {
     @Inject(method = "sendImmediately", at = @At("HEAD"))

@@ -13,13 +13,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import quickcarpet.Build;
-import quickcarpet.api.annotation.Feature;
 import quickcarpet.utils.BlockPropertyTag;
 import quickcarpet.utils.CarpetRegistry;
 
 import java.util.Map;
 
-@Feature("core")
 @Mixin(TagGroupLoader.class)
 public abstract class TagGroupLoaderMixin<T> {
     @Shadow @Final private String dataType;

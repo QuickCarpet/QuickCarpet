@@ -1,4 +1,4 @@
-package quickcarpet.mixin.fillUpdates;
+package quickcarpet.mixin.fillUpdates.compat.worldedit;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;

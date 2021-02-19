@@ -9,14 +9,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import quickcarpet.api.annotation.Feature;
 import quickcarpet.logging.Loggers;
 import quickcarpet.logging.TNTLogHelper;
 import quickcarpet.settings.Settings;
 
-@Feature("logger.tnt")
-@Feature("tntHardcodeAngle")
-@Feature("tntPrimeMomentum")
 @Mixin(TntEntity.class)
 public abstract class TntEntityMixin extends Entity {
     private TNTLogHelper logHelper = null;

@@ -13,7 +13,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import quickcarpet.api.annotation.Feature;
 import quickcarpet.feature.CraftingTableBlockEntity;
 import quickcarpet.utils.extensions.DynamicBlockEntityProvider;
 
@@ -21,7 +20,6 @@ import javax.annotation.Nullable;
 
 import static quickcarpet.settings.Settings.autoCraftingTable;
 
-@Feature("autoCraftingTable")
 @Mixin(CraftingTableBlock.class)
 public class CraftingTableBlockMixin extends Block implements DynamicBlockEntityProvider {
     protected CraftingTableBlockMixin(Settings block$Settings_1) {

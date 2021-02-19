@@ -6,9 +6,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import quickcarpet.api.annotation.Feature;
 
-@Feature("shulkerSpawningInEndCities")
 @Mixin(SpawnRestriction.class)
 public abstract class SpawnRestrictionMixin {
     @Inject(method = "getLocation", at = @At("HEAD"), cancellable = true)

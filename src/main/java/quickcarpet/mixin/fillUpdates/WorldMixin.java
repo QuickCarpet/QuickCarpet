@@ -9,13 +9,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import quickcarpet.api.annotation.Feature;
 import quickcarpet.utils.extensions.ExtendedWorldChunkFillUpdates;
 
 import static quickcarpet.utils.Constants.SetBlockState.NO_FILL_UPDATE;
 import static quickcarpet.utils.Constants.SetBlockState.NO_OBSERVER_UPDATE;
 
-@Feature("fillUpdates")
 @Mixin(World.class)
 public class WorldMixin {
     @ModifyConstant(method = "setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;II)Z",
