@@ -59,18 +59,18 @@ public class CraftingTableBlockEntity extends LockableContainerBlockEntity imple
     }
 
     @Override
-    public CompoundTag toTag(CompoundTag tag) {
-        super.toTag(tag);
-        Inventories.toTag(tag, inventory);
-        tag.put("Output", output.toTag(new CompoundTag()));
+    public CompoundTag writeNbt(CompoundTag tag) {
+        super.writeNbt(tag);
+        Inventories.writeNbt(tag, inventory);
+        tag.put("Output", output.writeNbt(new CompoundTag()));
         return tag;
     }
 
     @Override
-    public void fromTag(CompoundTag tag) {
-        super.fromTag(tag);
-        Inventories.fromTag(tag, inventory);
-        this.output = ItemStack.fromTag(tag.getCompound("Output"));
+    public void readNbt(CompoundTag tag) {
+        super.readNbt(tag);
+        Inventories.readNbt(tag, inventory);
+        this.output = ItemStack.fromNbt(tag.getCompound("Output"));
     }
 
     @Override

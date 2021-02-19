@@ -17,7 +17,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import quickcarpet.client.ClientSetting;
 import quickcarpet.mixin.accessor.BlockEntityAccessor;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.extensions.ExtendedPistonBlockEntity;
@@ -108,24 +107,24 @@ public abstract class PistonBlockEntityMixin extends BlockEntity implements Exte
         }
     }
 
-    @Inject(method = "fromTag", at = @At(value = "TAIL"))
+    @Inject(method = "readNbt", at = @At(value = "TAIL"))
     private void onFromTag(CompoundTag compoundTag_1, CallbackInfo ci) {
         if (Settings.movableBlockEntities && compoundTag_1.contains("carriedTileEntity", 10)) {
             if (this.pushedBlock.getBlock() instanceof BlockEntityProvider) {
                 BlockEntity carried = ((BlockEntityProvider) (this.pushedBlock.getBlock())).createBlockEntity(pos, pushedBlock);
                 if (carried != null) { //Can actually be null, as BlockPistonMoving.createNewTileEntity(...) returns null
-                    carried.fromTag(compoundTag_1.getCompound("carriedTileEntity"));
+                    carried.readNbt(compoundTag_1.getCompound("carriedTileEntity"));
                     this.setCarriedBlockEntity(carried);
                 }
             }
         }
     }
 
-    @Inject(method = "toTag", at = @At(value = "RETURN", shift = At.Shift.BEFORE))
+    @Inject(method = "writeNbt", at = @At(value = "RETURN", shift = At.Shift.BEFORE))
     private void onToTag(CompoundTag compoundTag_1, CallbackInfoReturnable<CompoundTag> cir) {
         if (Settings.movableBlockEntities && this.carriedBlockEntity != null) {
             //Leave name "carriedTileEntity" instead of "carriedBlockEntity" for upgrade compatibility with 1.12 movable TE
-            compoundTag_1.put("carriedTileEntity", this.carriedBlockEntity.toTag(new CompoundTag()));
+            compoundTag_1.put("carriedTileEntity", this.carriedBlockEntity.writeNbt(new CompoundTag()));
         }
     }
 }

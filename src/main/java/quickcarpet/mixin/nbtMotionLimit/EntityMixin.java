@@ -8,7 +8,7 @@ import quickcarpet.settings.Settings;
 
 @Mixin(Entity.class)
 public class EntityMixin {
-    @ModifyConstant(method = "fromTag", constant = @Constant(doubleValue = 10))
+    @ModifyConstant(method = "readNbt", constant = @Constant(doubleValue = 10))
     private double nbtMotionLimit(double limit) {
         double carpetLimit = Settings.nbtMotionLimit;
         if (carpetLimit <= 0) return Double.POSITIVE_INFINITY;

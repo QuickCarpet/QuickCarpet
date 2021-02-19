@@ -26,7 +26,7 @@ public class SpawnHelperMixin {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;spawnEntityAndPassengers(Lnet/minecraft/entity/Entity;)V")
     )
     private static void onSuccessfulSpawn(ServerWorld world, Entity entity) {
-        entity.streamPassengersRecursively().forEach(e -> {
+        entity.streamSelfAndPassengers().forEach(e -> {
             if (world.spawnEntity(e)) {
                 SpawnTracker.registerSpawn(entity);
             }

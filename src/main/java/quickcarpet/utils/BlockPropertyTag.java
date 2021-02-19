@@ -72,12 +72,12 @@ public class BlockPropertyTag implements Tag.Identified<Block> {
         }
 
         @Override
-        public int getSectionCount() {
+        public int getHeight() {
             return 1;
         }
 
         @Override
-        public int getBottomSectionLimit() {
+        public int getBottomY() {
             return 0;
         }
     }

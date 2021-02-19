@@ -116,7 +116,7 @@ public class PlaceBlockDispenserBehavior extends FallibleItemDispenserBehavior {
                 blockEntityTag.putInt("x", pos.getX());
                 blockEntityTag.putInt("y", pos.getY());
                 blockEntityTag.putInt("z", pos.getZ());
-                be.fromTag(blockEntityTag);
+                be.readNbt(blockEntityTag);
             }
             if (currentFluidState.isStill() && block instanceof FluidFillable) {
                 if (!((FluidFillable) block).tryFillWithFluid(world, pos, state, currentFluidState)) {
