@@ -78,6 +78,7 @@
   "carpet.rule.hopperMinecartItemTransfer.description": "Hopper minecarts can push out items like normal hoppers",
   "carpet.rule.isDevelopment.description": "Sets the isDevelopment constant",
   "carpet.rule.isDevelopment.extra": "For example enables the /test command",
+  "carpet.rule.lightningKillsDropsFix.description": "Prevents lightning strikes from destroying the items it creates",
   "carpet.rule.movableBlockEntities.description": "Pistons can push block entities, like hoppers, chests etc.",
   "carpet.rule.movableBlockOverrides.description": "Override how pistons interact with any block. Adds weak stickiness behavior used by default for redstone components, flowerpots, etc.",
   "carpet.rule.nbtMotionLimit.description": "Sets the limit for 'Motion' set via NBT",

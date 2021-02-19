@@ -62,6 +62,7 @@
     "hopperCounters.ItemEntityMixin",
     "hopperMinecartCooldown.HopperMinecartEntityMixin",
     "hopperMinecartItemTransfer.HopperMinecartEntityMixin",
+    "lightningKillsDropsFix.ItemEntityMixin",
     "loggers.CommandBlockExecutorMixin",
     "nbtMotionLimit.EntityMixin",
     "netherMaps.FilledMapItemMixin",

@@ -358,6 +358,15 @@ Default: `false`
 Options: `true`, `false`  
 Categories: experimental  
 
+## lightningKillsDropsFix
+Prevents lightning strikes from destroying the items it creates
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: fix  
+Fixes: [MC-206922](https://bugs.mojang.com/browse/MC-206922)  
+
 ## movableBlockEntities
 Pistons can push block entities, like hoppers, chests etc.
 
