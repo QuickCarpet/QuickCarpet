@@ -313,6 +313,9 @@ public class Settings {
     @Rule(category = {SURVIVAL, EXPERIMENTAL})
     public static boolean xpMerging = false;
 
+    @Rule(category = {FIX}, bug = @BugFix("MC-206922"))
+    public static boolean lightningKillsDropsFix = false;
+
     public static void main(String[] args) throws IOException {
         Translations.init();
         MANAGER.parse();

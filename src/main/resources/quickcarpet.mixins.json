@@ -111,7 +111,8 @@
     "updateSuppressionCrashFix.ThreadExecutorMixin",
     "updateSuppressionCrashFix.WorldMixin",
     "waypoints.ServerWorldMixin",
-    "xp.ExperienceOrbEntityMixin"
+    "xp.ExperienceOrbEntityMixin",
+    "lightningKillsDropsFix.ItemEntityMixin"
   ],
   "client": [
     "accessor.PlayerListHudAccessor",
