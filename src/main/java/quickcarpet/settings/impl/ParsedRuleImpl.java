@@ -77,7 +77,7 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
                 .collect(ImmutableList.toImmutableList());
             if (!options.isEmpty() && enabledOptions.size() <= 1) disabled = true;
         } else {
-            this.enabledOptions = ImmutableList.of();
+            this.enabledOptions = ImmutableList.of(defaultAsString);
         }
         this.disabled = disabled;
         this.deprecated = rule.deprecated() ? new TranslatableText(manager.getDeprecationTranslationKey(field, rule)) : null;
