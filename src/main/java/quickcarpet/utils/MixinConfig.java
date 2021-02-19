@@ -47,6 +47,7 @@ public class MixinConfig {
         .putAll("hopperCounters", "hopperCounters")
         .putAll("hopperMinecartCooldown", "hopperMinecartCooldown")
         .putAll("hopperMinecartItemTransfer", "hopperMinecartItemTransfer")
+        .putAll("lightningKillsDropsFix", "lightningKillsDropsFix")
         .putAll("nbtMotionLimit", "nbtMotionLimit")
         .putAll("netherMaps", "netherMaps")
         .putAll("piston", "doubleRetraction", "movableBlockEntities", "movableBlockOverrides", "pushLimit")

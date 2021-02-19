@@ -4,6 +4,7 @@ Allows client mods to specify the orientation of placed blocks
 
 Type: `boolean`  
 Default: `true`  
+Options: `true`, `false`  
 Categories: feature  
 
 ## antiCheat
@@ -11,6 +12,7 @@ Prevents players from rubberbanding when moving too fast
 
 Type: `boolean`  
 Default: `true`  
+Options: `true`, `false`  
 Categories: fix  
 
 ## anvilledBlueIce
@@ -45,6 +47,7 @@ Automatic crafting table
 
 Type: `boolean`  
 Default: `false`  
+Options: `true`, `false`  
 Categories: feature, experimental  
 
 ## betterChunkLoading
@@ -52,6 +55,7 @@ Makes things load chunks again
 
 Type: `boolean`  
 Default: `false`  
+Options: `true`, `false`  
 Categories: feature, experimental  
 
 ## betterStatistics
@@ -59,6 +63,7 @@ Scoreboards initialize to the statistic values
 
 Type: `boolean`  
 Default: `true`  
+Options: `true`, `false`  
 Categories: feature, experimental  
 
 ## blockEntityFix
@@ -66,6 +71,7 @@ Fixes a crash when activating droppers or dispensers with invalid block entities
 
 Type: `boolean`  
 Default: `true`  
+Options: `true`, `false`  
 Categories: fix  
 
 ## calmNetherFires
@@ -155,6 +161,7 @@ Enables certain /scoreboard commands for all players
 
 Type: `boolean`  
 Default: `false`  
+Options: `true`, `false`  
 Categories: commands  
 
 ## commandSpawn
@@ -196,6 +203,7 @@ Enables players to noclip while in creative mode if they have the client-side se
 
 Type: `boolean`  
 Default: `false`  
+Options: `true`, `false`  
 Categories: creative  
 
 ## dispensersBreakBlocks
@@ -203,6 +211,7 @@ Gives dispensers the ability to break blocks using gunpowder
 
 Type: `Option`  
 Default: `false`  
+Options: `false`, `normal`, `silk_touch`  
 Categories: feature, experimental  
 
 ## dispensersPlaceBlocks
@@ -210,6 +219,7 @@ Dispensers can place most blocks
 
 Type: `Option`  
 Default: `false`  
+Options: `false`, `whitelist`, `blacklist`, `all`  
 Categories: feature  
 
 ## dispensersShearVines
@@ -217,6 +227,7 @@ Dispensers can shear vines
 
 Type: `boolean`  
 Default: `false`  
+Options: `true`, `false`  
 Categories: feature  
 
 ## dispensersStripLogs
@@ -224,6 +235,7 @@ Dispensers with axes can strip logs and wood
 
 Type: `boolean`  
 Default: `false`  
+Options: `true`, `false`  
 Categories: feature  
 
 ## dispensersTillSoil
@@ -231,6 +243,7 @@ Dispensers with hoes can till soil
 
 Type: `boolean`  
 Default: `false`  
+Options: `true`, `false`  
 Categories: feature  
 
 ## doubleRetraction
@@ -240,6 +253,7 @@ Gives pistons the ability to double retract without side effects.
 
 Type: `boolean`  
 Default: `false`  
+Options: `true`, `false`  
 Categories: experimental  
 Fixes: [MC-88959](https://bugs.mojang.com/browse/MC-88959)  
 
@@ -248,6 +262,7 @@ Makes enchantments work on tridents thrown by drowned
 
 Type: `boolean`  
 Default: `false`  
+Options: `true`, `false`  
 Categories: fix, experimental  
 Fixes: [MC-127321](https://bugs.mojang.com/browse/MC-127321)  
 
@@ -256,6 +271,7 @@ Makes redstone dust not pop off pistons
 
 Type: `boolean`  
 Default: `false`  
+Options: `true`, `false`  
 Categories: experimental  
 
 ## explosionNoBlockDamage
@@ -263,6 +279,7 @@ Explosions won't destroy blocks
 
 Type: `boolean`  
 Default: `false`  
+Options: `true`, `false`  
 Categories: tnt  
 
 ## fillLimit
@@ -270,6 +287,7 @@ Customizable fill/clone volume limit
 
 Type: `int`  
 Default: `32768`  
+Options: `32768`, `250000`, `1000000`  
 Categories: creative  
 Validator: `> 0`  
 
@@ -278,6 +296,7 @@ fill/clone/setblock and structure blocks cause block updates
 
 Type: `boolean`  
 Default: `true`  
+Options: `true`, `false`  
 Categories: creative  
 
 ## fillUpdatesPostProcessing
@@ -285,6 +304,7 @@ Whether fillUpdates=false post-processes the block state (like when upgrading a 
 
 Type: `boolean`  
 Default: `true`  
+Options: `true`, `false`  
 Categories: creative  
 
 ## flippinCactus
@@ -295,6 +315,7 @@ Applies to pistons, observers, droppers, repeaters, stairs, glazed terracotta et
 
 Type: `boolean`  
 Default: `false`  
+Options: `true`, `false`  
 Categories: creative, survival  
 
 ## hopperCounters
@@ -307,6 +328,7 @@ Items counted are destroyed, count up to one stack per tick per hopper
 
 Type: `boolean`  
 Default: `false`  
+Options: `true`, `false`  
 Categories: commands  
 
 ## hopperMinecartCooldown
@@ -314,6 +336,7 @@ carpet.rule.hopperMinecartCooldown.description
 
 Type: `int`  
 Default: `0`  
+Options: `0`, `4`, `8`  
 Categories: fix, experimental  
 Validator: `>= 0`  
 
@@ -322,6 +345,7 @@ Hopper minecarts can push out items like normal hoppers
 
 Type: `boolean`  
 Default: `false`  
+Options: `true`, `false`  
 Categories: feature, experimental  
 
 ## isDevelopment
@@ -334,11 +358,21 @@ Default: `false`
 Options: `true`, `false`  
 Categories: experimental  
 
+## lightningKillsDropsFix
+Prevents lightning strikes from destroying the items it creates
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: fix  
+Fixes: [MC-206922](https://bugs.mojang.com/browse/MC-206922)  
+
 ## movableBlockEntities
 Pistons can push block entities, like hoppers, chests etc.
 
 Type: `boolean`  
 Default: `false`  
+Options: `true`, `false`  
 Categories: feature, experimental  
 
 ## movableBlockOverrides
@@ -346,6 +380,7 @@ Override how pistons interact with any block. Adds weak stickiness behavior used
 
 Type: `boolean`  
 Default: `false`  
+Options: `true`, `false`  
 Categories: feature, experimental  
 
 ## nbtMotionLimit
@@ -365,6 +400,7 @@ Useful for builds above the nether roof or SkyBlock
 
 Type: `boolean`  
 Default: `false`  
+Options: `true`, `false`  
 Categories: feature  
 
 ## phantomsRespectMobcap
@@ -372,6 +408,7 @@ Phantoms don't ignore the mobcap.
 
 Type: `boolean`  
 Default: `false`  
+Options: `true`, `false`  
 Categories: survival, fix, experimental  
 
 ## portalCreativeDelay
@@ -381,6 +418,7 @@ Holding obsidian in either hand won't let you through at all
 
 Type: `boolean`  
 Default: `false`  
+Options: `true`, `false`  
 Categories: creative  
 
 ## pushLimit
@@ -388,6 +426,7 @@ Piston push limit
 
 Type: `int`  
 Default: `12`  
+Options: `10`, `12`, `14`, `100`  
 Categories: creative  
 Validator: `>= 0`  
 
@@ -396,6 +435,7 @@ Rail power limit
 
 Type: `int`  
 Default: `9`  
+Options: `9`, `15`, `30`  
 Categories: creative  
 Validator: `> 0`  
 
@@ -404,6 +444,7 @@ Coral structures will grow with bonemeal from coral plants
 
 Type: `boolean`  
 Default: `false`  
+Options: `true`, `false`  
 Categories: feature, renewable  
 
 ## renewableGravel
@@ -411,7 +452,7 @@ Cobblestone crushed by falling anvils makes gravel, or silverfish drop a gravel 
 
 Type: `RenewableGravelOrSandOption`  
 Default: `none`  
-Options: `none`  
+Options: `none`, `anvil`, `silverfish`  
 Categories: feature, renewable  
 
 ## renewableLava
@@ -419,6 +460,7 @@ Obsidian surrounded by 6 lava sources has a chance of converting to lava
 
 Type: `boolean`  
 Default: `false`  
+Options: `true`, `false`  
 Categories: feature, renewable  
 
 ## renewableNetherrack
@@ -426,6 +468,7 @@ Fire charges from dispensers convert cobblestone to netherrack
 
 Type: `boolean`  
 Default: `false`  
+Options: `true`, `false`  
 Categories: feature, renewable  
 
 ## renewableSand
@@ -433,7 +476,7 @@ Cobblestone crushed by falling anvils makes sand, or silverfish drop a sand item
 
 Type: `RenewableGravelOrSandOption`  
 Default: `none`  
-Options: `none`  
+Options: `none`, `anvil`, `silverfish`  
 Categories: feature, renewable  
 
 ## renewableSoulSand
@@ -441,6 +484,7 @@ If a living entity dies on sand with fire on top the sand will convert into soul
 
 Type: `boolean`  
 Default: `false`  
+Options: `true`, `false`  
 Categories: feature, renewable  
 
 ## renewableSponges
@@ -448,6 +492,7 @@ Guardians struck by lightning turn into Elder Guardians
 
 Type: `boolean`  
 Default: `false`  
+Options: `true`, `false`  
 Categories: feature, renewable  
 
 ## shulkerSpawningInEndCities
@@ -455,6 +500,7 @@ Shulkers will respawn in end cities
 
 Type: `boolean`  
 Default: `false`  
+Options: `true`, `false`  
 Categories: feature, renewable  
 
 ## sleepingThreshold
@@ -462,6 +508,7 @@ Percentage of sleeping players required to skip the night
 
 Type: `double`  
 Default: `100.0`  
+Options: `0`, `50`, `100`  
 Categories: feature, survival  
 Validator: `Range [0.0,100.0]`  
 
@@ -470,6 +517,7 @@ Adds back the ability to create fire in mid-air using Flint and Steel or Fire Ch
 
 Type: `boolean`  
 Default: `false`  
+Options: `true`, `false`  
 Categories: survival, fix  
 
 ## spawnChunkLevel
@@ -491,6 +539,7 @@ To move them around between inventories, use shift click to move entire stacks
 
 Type: `boolean`  
 Default: `false`  
+Options: `true`, `false`  
 Categories: survival  
 
 ## terracottaRepeaters
@@ -498,6 +547,7 @@ Multiplies the repeater delay by the legacy block data (1-15) of terracotta belo
 
 Type: `boolean`  
 Default: `false`  
+Options: `true`, `false`  
 Categories: feature, creative  
 
 ## tntHardcodeAngle
@@ -505,6 +555,7 @@ Sets the horizontal random angle on TNT for debugging of TNT contraptions
 
 Type: `double`  
 Default: `-1.0`  
+Options: `-1`  
 Categories: tnt  
 Validator: `quickcarpet.settings.Settings$TNTAngle`  
 
@@ -513,6 +564,7 @@ Removes random TNT momentum when primed and set to false
 
 Type: `boolean`  
 Default: `true`  
+Options: `true`, `false`  
 Categories: tnt  
 
 ## tntUpdateOnPlace
@@ -520,6 +572,7 @@ Whether TNT should check for redstone power when placed
 
 Type: `boolean`  
 Default: `true`  
+Options: `true`, `false`  
 Categories: tnt  
 
 ## updateSuppressionCrashFix
@@ -527,6 +580,7 @@ Fixes updates suppression causing server crashes
 
 Type: `boolean`  
 Default: `false`  
+Options: `true`, `false`  
 Categories: fix, experimental  
 
 ## xpCoolDown
@@ -534,6 +588,7 @@ Delay before players can absorb the next Experience Orb
 
 Type: `int`  
 Default: `2`  
+Options: `0`, `2`  
 Categories: survival, experimental  
 Validator: `>= 0`  
 
@@ -542,5 +597,6 @@ Experience Orbs can merge like items
 
 Type: `boolean`  
 Default: `false`  
+Options: `true`, `false`  
 Categories: survival, experimental  
 
