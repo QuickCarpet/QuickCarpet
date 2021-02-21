@@ -1,7 +1,9 @@
+![QuickCarpet Icon](src/main/resources/assets/quickcarpet/icon@128.png)
+
 # QuickCarpet
-![GitHub](https://img.shields.io/github/license/DeadlyMC/QuickCarpet114?style=flat-square)
-![GitHub commits since latest release (by date)](https://img.shields.io/github/commits-since/DeadlyMC/QuickCarpet114/latest/master?style=flat-square)
-![GitHub commits since latest release (by date including pre-releases)](https://img.shields.io/github/commits-since/DeadlyMC/QuickCarpet114/latest/master?include_prereleases&style=flat-square)
+![GitHub](https://img.shields.io/github/license/DeadlyMC/QuickCarpet?style=flat-square)
+![GitHub commits since latest release (by date)](https://img.shields.io/github/commits-since/DeadlyMC/QuickCarpet/latest/master?style=flat-square)
+![GitHub commits since latest release (by date including pre-releases)](https://img.shields.io/github/commits-since/DeadlyMC/QuickCarpet/latest/master?include_prereleases&style=flat-square)
 
 This is not the [official carpet version](https://github.com/gnembon/fabric-carpet) by [gnembon](https://github.com/gnembon),
 but an alternative implementation providing a different set of features.

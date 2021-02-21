@@ -9,13 +9,17 @@
   ],
   "contact": {
     "homepage": "https://discord.gg/scicraft",
-    "sources": "https://github.com/DeadlyMC/QuickCarpet114",
-    "issues": "https://github.com/DeadlyMC/QuickCarpet114/issues"
+    "sources": "https://github.com/DeadlyMC/QuickCarpet",
+    "issues": "https://github.com/DeadlyMC/QuickCarpet/issues"
   },
   "license": "MIT",
   "environment": "*",
   "custom": {
     "modmenu:api": true,
-    "modmenu:parent": "quickcarpet"
+    "modmenu:parent": "quickcarpet",
+    "modmenu": {
+      "parent": "quickcarpet",
+      "badges": ["library"]
+    }
   }
 }
