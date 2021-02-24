@@ -23,6 +23,7 @@ public class CameraModeCommand {
                 executes((c) -> cameraMode(c.getSource(), c.getSource().getPlayer())).
                 then(argument("player", EntityArgumentType.player()).
                         executes( (c) -> cameraMode(c.getSource(), EntityArgumentType.getPlayer(c, "player"))));
+        dispatcher.register(camera);
 
         LiteralArgumentBuilder<ServerCommandSource> survival = literal("s").
                 requires(s -> s.hasPermissionLevel(Settings.commandCameramode)).
@@ -31,9 +32,12 @@ public class CameraModeCommand {
                         c.getSource().getPlayer())).
                 then(argument("player", EntityArgumentType.player()).
                         executes( (c) -> serverMode(c.getSource(), EntityArgumentType.getPlayer(c, "player"))));
-
-        dispatcher.register(camera);
         dispatcher.register(survival);
+
+        LiteralArgumentBuilder<ServerCommandSource> toggle = literal("cs").
+                requires(s -> s.hasPermissionLevel(Settings.commandCameramode)).
+                executes(c -> toggle(c.getSource(), c.getSource().getPlayer()));
+        dispatcher.register(toggle);
     }
 
     private static boolean hasPermission(ServerCommandSource source, PlayerEntity target) {
@@ -65,5 +69,13 @@ public class CameraModeCommand {
         target.removeStatusEffect(StatusEffects.NIGHT_VISION);
         target.removeStatusEffect(StatusEffects.CONDUIT_POWER);
         return 1;
+    }
+
+    private static int toggle(ServerCommandSource source, PlayerEntity target) {
+        if (target.isSpectator()) {
+            return serverMode(source, target);
+        } else {
+            return cameraMode(source, target);
+        }
     }
 }
