@@ -2,6 +2,7 @@ package quickcarpet.settings;
 
 import net.minecraft.SharedConstants;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.world.ChunkTicketType;
 import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
@@ -10,6 +11,8 @@ import net.minecraft.util.Pair;
 import net.minecraft.util.Unit;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import quickcarpet.QuickCarpetServer;
 import quickcarpet.api.annotation.BugFix;
 import quickcarpet.api.settings.*;
@@ -25,6 +28,7 @@ import java.util.Optional;
 import static quickcarpet.api.settings.RuleCategory.*;
 
 public class Settings {
+    private static final Logger LOGGER = LogManager.getLogger();
     public static final RuleUpgrader RULE_UPGRADER = new RuleUpgrader() {
         @Override
         public Pair<String, String> upgrade(String key, String value) {
@@ -191,6 +195,9 @@ public class Settings {
         }
     }
 
+    @Rule(category = {FIX}, bug = @BugFix("MC-206922"))
+    public static boolean lightningKillsDropsFix = false;
+
     @Rule(category = {FEATURE, EXPERIMENTAL})
     public static boolean movableBlockEntities = false;
 
@@ -252,6 +259,9 @@ public class Settings {
     @Rule(category = {FEATURE, SURVIVAL}, options = {"0", "50", "100"}, validator = SleepingThreshold.class)
     public static double sleepingThreshold = 100;
 
+    @Rule(category = {SURVIVAL, FIX})
+    public static boolean sparkingLighter = false;
+
     public static class SpawnChunkLevel implements ChangeListener<Integer>, Validator<Integer> {
         @Override
         public void onChange(ParsedRule<Integer> rule, Integer previous) {
@@ -273,9 +283,6 @@ public class Settings {
             return Optional.empty();
         }
     }
-
-    @Rule(category = {SURVIVAL, FIX})
-    public static boolean sparkingLighter = false;
 
     @Rule(category = EXPERIMENTAL, onChange = SpawnChunkLevel.class, validator = SpawnChunkLevel.class)
     public static int spawnChunkLevel = 11;
@@ -307,14 +314,39 @@ public class Settings {
     @Rule(category = {FIX, EXPERIMENTAL})
     public static boolean updateSuppressionCrashFix = false;
 
+    @Rule(category = {}, validator = ViewDistance.class, onChange = ViewDistance.class)
+    public static int viewDistance = -1;
+
+    public static class ViewDistance implements ChangeListener<Integer>, Validator<Integer> {
+        @Override
+        public Optional<TranslatableText> validate(Integer value) {
+            if (value == -1) return Optional.empty();
+            MinecraftServer server = QuickCarpetServer.getNullableMinecraftServer();
+            if (server != null && !server.isDedicated()) {
+                return Optional.of(Messenger.t("carpet.validator.viewDistance.integrated"));
+            }
+            if (value >= 2 && value <= 32) return Optional.empty();
+            return Optional.of(Messenger.t("carpet.validator.range", 2, 32));
+        }
+
+        @Override
+        public void onChange(ParsedRule<Integer> rule, Integer previous) {
+            int newValue = rule.get();
+            MinecraftServer server = QuickCarpetServer.getNullableMinecraftServer();
+            if (newValue == previous || server == null || !server.isDedicated()) return;
+            if (newValue == -1) {
+                newValue = ((DedicatedServer) server).getProperties().viewDistance;
+            }
+            LOGGER.info("Changing view distance to {}, from {}", newValue, server.getPlayerManager().getViewDistance());
+            server.getPlayerManager().setViewDistance(newValue);
+        }
+    }
+
     @Rule(category = {SURVIVAL, EXPERIMENTAL}, options = {"0", "2"}, validator = Validator.NonNegative.class)
     public static int xpCoolDown = 2;
 
     @Rule(category = {SURVIVAL, EXPERIMENTAL})
     public static boolean xpMerging = false;
-
-    @Rule(category = {FIX}, bug = @BugFix("MC-206922"))
-    public static boolean lightningKillsDropsFix = false;
 
     public static void main(String[] args) throws IOException {
         Translations.init();

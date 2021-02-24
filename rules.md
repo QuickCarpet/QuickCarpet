@@ -583,6 +583,15 @@ Default: `false`
 Options: `true`, `false`  
 Categories: fix, experimental  
 
+## viewDistance
+View distance of the dedicated server
+
+Use the vanilla client setting for integrated servers  
+
+Type: `int`  
+Default: `-1`  
+Validator: `quickcarpet.settings.Settings$ViewDistance`  
+
 ## xpCoolDown
 Delay before players can absorb the next Experience Orb
 
