@@ -3,15 +3,15 @@
   "id": "quickcarpet",
   "version": "${version}",
   "name": "QuickCarpet",
-  "description": "Powerful toolbox with ultimate control for technical mc!",
+  "description": "Powerful toolbox with ultimate control for technical Minecraft",
   "authors": [
     "DeadlyMC",
     "skyrising"
   ],
   "contact": {
     "homepage": "https://discord.gg/scicraft",
-    "sources": "https://github.com/DeadlyMC/QuickCarpet114",
-    "issues": "https://github.com/DeadlyMC/QuickCarpet114/issues"
+    "sources": "https://github.com/DeadlyMC/QuickCarpet",
+    "issues": "https://github.com/DeadlyMC/QuickCarpet/issues"
   },
   "license": "MIT",
   "environment": "*",
@@ -28,5 +28,12 @@
   },
   "breaks": {
     "carpet": "*"
+  },
+  "custom": {
+    "modmenu": {
+      "links": {
+        "modmenu.discord": "https://discord.gg/scicraft"
+      }
+    }
   }
 }
