@@ -111,7 +111,7 @@ public class StructureChannel implements ServerPluginChannelHandler {
                 ChunkPos chunkPos = new ChunkPos(pos);
                 if (chunkMap.computeIntIfAbsent(chunkPos, c -> 1) > 1) continue;
                 Chunk chunk = world.getChunk(chunkPos.x, chunkPos.z);
-                starts.add(chunk.getStructureStart(StructureFeature.STRUCTURES.get(ref.getKey())).toNbt(chunkPos.x, chunkPos.z));
+                starts.add(chunk.getStructureStart(StructureFeature.STRUCTURES.get(ref.getKey())).toNbt(chunkPos));
             }
         }
         CompoundTag data = new CompoundTag();

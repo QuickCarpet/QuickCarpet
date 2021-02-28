@@ -75,7 +75,7 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
         shadow.dataTracker.set(PLAYER_MODEL_PARTS, real.getDataTracker().get(PLAYER_MODEL_PARTS));
 
         server.getPlayerManager().sendToDimension(new EntitySetHeadYawS2CPacket(shadow, (byte) (real.headYaw * 256 / 360)), shadow.world.getRegistryKey());
-        server.getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.ADD_PLAYER, shadow));
+        server.getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.class_5893.field_29136, shadow));
         real.getServerWorld().getChunkManager().updateCameraPosition(shadow);
         return shadow;
     }
