@@ -15,6 +15,9 @@
   },
   "license": "MIT",
   "environment": "*",
+  "entrypoints": {
+    "client": ["quickcarpet.QuickCarpetClient::getInstance"]
+  },
   "mixins": [
     "quickcarpet.mixins.json"
   ],
