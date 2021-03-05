@@ -3,7 +3,6 @@ package quickcarpet;
 import fi.dy.masa.malilib.event.InitializationHandler;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import quickcarpet.api.QuickCarpetClientAPI;
 import quickcarpet.api.settings.ParsedRule;
@@ -30,9 +29,9 @@ public class QuickCarpetClient implements QuickCarpetClientAPI {
         try {
             new MaLiLibInitializer().run();
         } catch (LinkageError e) {
-            if (FabricLoader.getInstance().isModLoaded("malilib")) {
+            //if (FabricLoader.getInstance().isModLoaded("malilib")) {
                 e.printStackTrace();
-            }
+            //}
         }
     }
 

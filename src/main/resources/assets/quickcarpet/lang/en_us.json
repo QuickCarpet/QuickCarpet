@@ -245,6 +245,8 @@
   "quickcarpet.gui.comment.creativeNoClip": "Enable noclip while in creative (requires server setting to be true)",
   "quickcarpet.gui.pretty.creativeNoClipOverride": "Creative Noclip Override",
   "quickcarpet.gui.comment.creativeNoClipOverride": "Pretends the server setting is turned on",
+  "quickcarpet.gui.pretty.soundEngineFix": "Sound Engine Fix",
+  "quickcarpet.gui.comment.soundEngineFix": "Fixes the log spam caused by too many sound sources",
   "side.up": "Top",
   "side.down": "Bottom",
   "side.north": "North",
