@@ -1,8 +1,6 @@
 name: Development Builds
 
-on:
-  push:
-    tags-ignore: '*'
+on: [push]
 
 jobs:
   build:
