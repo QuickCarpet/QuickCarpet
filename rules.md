@@ -101,7 +101,15 @@ Categories: commands
 Validator: `OP Level (0-4)`  
 
 ## commandCameramode
-Enables /c and /s commands to quickly switch between camera and survival modes for players with this permission level
+Enables /c, /s and /cs commands to quickly switch between camera and survival modes for players with this permission level
+
+Type: `int`  
+Default: `2`  
+Categories: commands  
+Validator: `OP Level (0-4)`  
+
+## commandDataTracker
+Enables /datatracker for viewing tracked entity data
 
 Type: `int`  
 Default: `2`  

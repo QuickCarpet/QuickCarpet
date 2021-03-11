@@ -1,5 +1,6 @@
 package quickcarpet.utils;
 
+import com.google.common.collect.AbstractIterator;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.MappingResolver;
 import net.minecraft.server.world.ServerChunkManager;
@@ -124,5 +125,23 @@ public class Reflection {
         } catch (Throwable throwable) {
             throw new RuntimeException(throwable);
         }
+    }
+
+    public static <B, S extends B> Iterable<Class<? extends B>> iterateSuperClasses(Class<S> start, Class<B> base) {
+        return () -> new AbstractIterator<Class<? extends B>>() {
+            private Class<? extends B> cls;
+            @Override
+            protected Class<? extends B> computeNext() {
+                if (cls == null) {
+                    cls = start;
+                    return start;
+                }
+                if (cls == base) {
+                    return endOfData();
+                }
+                cls = (Class<? extends B>) cls.getSuperclass();
+                return cls;
+            }
+        };
     }
 }

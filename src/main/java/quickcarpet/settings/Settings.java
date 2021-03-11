@@ -97,6 +97,9 @@ public class Settings {
     public static int commandCameramode = 2;
 
     @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
+    public static int commandDataTracker = 2;
+
+    @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
     public static int commandFix = 2;
 
     @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
