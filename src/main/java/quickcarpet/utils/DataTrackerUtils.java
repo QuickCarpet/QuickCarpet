@@ -42,7 +42,7 @@ public final class DataTrackerUtils {
 
     @SuppressWarnings("unchecked")
     public enum KnownType {
-        UNKNOWN(null, Formatter.OBJECT),
+        UNKNOWN(null, (Formatter<Object>) Formatter.OBJECT),
         BYTE(TrackedDataHandlerRegistry.BYTE, Formatter.NUMBER),
         INTEGER(TrackedDataHandlerRegistry.INTEGER, Formatter.NUMBER),
         FLOAT(TrackedDataHandlerRegistry.FLOAT, Formatter.FLOAT),
