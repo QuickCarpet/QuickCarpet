@@ -51,6 +51,13 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
                 }
                 return !incompatibleWorldEdit;
             }
+            case "quickcarpet.mixin.fabricApi.RegistrySyncManagerMixin": {
+                if (FabricLoader.getInstance().isModLoaded("fabric-registry-sync-v0")) {
+                    LOGGER.info("Applying Fabric API Registry Sync workaround");
+                    return true;
+                }
+                return false;
+            }
         }
         return true;
     }
