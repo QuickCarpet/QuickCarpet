@@ -72,8 +72,7 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
             int major = semanticVersion.getVersionComponent(0);
             int minor = semanticVersion.getVersionComponent(1);
             int patch = semanticVersion.getVersionComponent(2);
-            // 7.2.1+
-            return major > 7 || (major == 7 && (minor > 2 || (minor == 2 && patch > 0)));
+            return major == 7 && minor == 2 && patch > 0 && patch < 3;
         }
         return false;
     }
