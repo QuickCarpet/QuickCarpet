@@ -1,4 +1,4 @@
-![QuickCarpet Icon](src/main/resources/assets/quickcarpet/icon@128.png)
+![QuickCarpet Icon](src/template/resources/quickcarpet/icon@128.png)
 
 # QuickCarpet
 ![GitHub](https://img.shields.io/github/license/DeadlyMC/QuickCarpet?style=flat-square)
