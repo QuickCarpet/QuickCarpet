@@ -5,6 +5,7 @@ import fi.dy.masa.malilib.config.ConfigUtils;
 import fi.dy.masa.malilib.config.IConfigBase;
 import fi.dy.masa.malilib.gui.GuiConfigsBase;
 import fi.dy.masa.malilib.gui.button.ButtonGeneric;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resource.language.I18n;
 import quickcarpet.Build;
 
@@ -16,6 +17,11 @@ public class ConfigsGui extends GuiConfigsBase {
 
     public ConfigsGui() {
         super(10, 50, Build.ID, null, "quickcarpet.gui.title.configs");
+    }
+
+    public ConfigsGui(Screen parent) {
+        this();
+        setParent(parent);
     }
 
     @Override

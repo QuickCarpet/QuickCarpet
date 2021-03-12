@@ -27,7 +27,7 @@ public abstract class CommandManagerMixin {
 
     @Shadow @Final private CommandDispatcher<ServerCommandSource> dispatcher;
 
-    @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/CommandDispatcher;findAmbiguities(Lcom/mojang/brigadier/AmbiguityConsumer;)V"))
+    @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/CommandDispatcher;findAmbiguities(Lcom/mojang/brigadier/AmbiguityConsumer;)V", remap = false))
     private void onRegister(CommandManager.RegistrationEnvironment environment, CallbackInfo ci) {
         QuickCarpet.getInstance().setCommandDispatcher(this.dispatcher);
     }

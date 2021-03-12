@@ -51,7 +51,7 @@ public abstract class ClientPlayNetworkHandlerMixin implements ClientPlayPacketL
         }
     }
 
-    @Inject(method = "onSynchronizeTags", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/Multimap;isEmpty()Z"), locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(method = "onSynchronizeTags", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/Multimap;isEmpty()Z", remap = false), locals = LocalCapture.CAPTURE_FAILHARD)
     private void ignoreMissingCarpetTags(SynchronizeTagsS2CPacket packet, CallbackInfo ci, TagManager manager, Multimap<Identifier, Identifier> map) {
         map.get(new Identifier("block")).removeAll(CarpetRegistry.CARPET_BLOCK_TAGS);
     }

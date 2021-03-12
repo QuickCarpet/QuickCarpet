@@ -1,15 +1,9 @@
 package quickcarpet.client;
 
-import io.github.prospector.modmenu.api.ConfigScreenFactory;
-import io.github.prospector.modmenu.api.ModMenuApi;
-
-public class ModMenuEntry implements ModMenuApi {
+@SuppressWarnings("deprecation")
+public class ModMenuEntry implements io.github.prospector.modmenu.api.ModMenuApi {
     @Override
-    public ConfigScreenFactory<?> getModConfigScreenFactory() {
-        return (screen) -> {
-            ConfigsGui gui = new ConfigsGui();
-            gui.setParent(screen);
-            return gui;
-        };
+    public io.github.prospector.modmenu.api.ConfigScreenFactory<?> getModConfigScreenFactory() {
+        return ConfigsGui::new;
     }
 }

@@ -27,7 +27,7 @@ public class ScoreboardCommandMixin {
         return objective;
     }
 
-    @Redirect(method = "register", at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/builder/LiteralArgumentBuilder;requires(Ljava/util/function/Predicate;)Lcom/mojang/brigadier/builder/ArgumentBuilder;"))
+    @Redirect(method = "register", at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/builder/LiteralArgumentBuilder;requires(Ljava/util/function/Predicate;)Lcom/mojang/brigadier/builder/ArgumentBuilder;", remap = false))
     private static ArgumentBuilder<?, ?> changeRequires(LiteralArgumentBuilder<ServerCommandSource> builder, Predicate<ServerCommandSource> requirement) {
         return builder.requires(s -> Settings.commandScoreboardPublic || requirement.test(s));
     }

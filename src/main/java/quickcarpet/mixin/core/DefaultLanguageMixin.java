@@ -10,7 +10,7 @@ import java.util.Map;
 
 @Mixin(targets = "net.minecraft.util.Language$1")
 public abstract class DefaultLanguageMixin extends Language {
-    @Redirect(method = {"get", "method_4679"}, at = @At(value = "INVOKE", target = "Ljava/util/Map;getOrDefault(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", remap = false), require = 1, allow = 1)
+    @Redirect(method = "get(Ljava/lang/String;)Ljava/lang/String;", at = @At(value = "INVOKE", target = "Ljava/util/Map;getOrDefault(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;", remap = false), require = 1, allow = 1)
     private Object get(Map<String, String> map, Object key, Object defaultValue) {
         //noinspection SuspiciousMethodCalls
         Object value = map.get(key);
@@ -18,7 +18,7 @@ public abstract class DefaultLanguageMixin extends Language {
         return Translations.hasTranslation((String) key) ? Translations.get((String) key) : defaultValue;
     }
 
-    @Redirect(method = {"hasTranslation", "method_4678"}, at = @At(value = "INVOKE", target = "Ljava/util/Map;containsKey(Ljava/lang/Object;)Z", remap = false), require = 1, allow = 1)
+    @Redirect(method = "hasTranslation(Ljava/lang/String;)Z", at = @At(value = "INVOKE", target = "Ljava/util/Map;containsKey(Ljava/lang/Object;)Z", remap = false), require = 1, allow = 1)
     private boolean hasTranslation(Map<String, String> map, Object key) {
         //noinspection SuspiciousMethodCalls
         return map.containsKey(key) || Translations.hasTranslation((String) key);
