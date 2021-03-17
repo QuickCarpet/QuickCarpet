@@ -106,6 +106,7 @@
     "terracottaRepeaters.AbstractRedstoneGateBlockMixin",
     "terracottaRepeaters.RepeaterBlockMixin",
     "tickSpeed.MinecraftServerMixin",
+    "tickSpeed.ServerChunkManagerMixin",
     "tickSpeed.ServerWorldMixin",
     "tnt.ExplosionMixin",
     "tnt.TntBlockMixin",
