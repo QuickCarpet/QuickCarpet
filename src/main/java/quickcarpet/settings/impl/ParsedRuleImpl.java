@@ -48,6 +48,7 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
     private T saved;
     private String savedAsString;
 
+    @SuppressWarnings("unchecked")
     ParsedRuleImpl(SettingsManager manager, Field field, Rule rule) {
         if (((field.getModifiers() & (PUBLIC | STATIC | FINAL)) != (PUBLIC | STATIC))) {
             throw new IllegalArgumentException(field + " is not public static");
@@ -62,8 +63,8 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
         String extraKey = manager.getExtraTranslationKey(field, rule);
         this.extraInfo = Translations.hasTranslation(extraKey) ? new TranslatableText(extraKey) : null;
         this.categories = ImmutableList.copyOf(rule.category());
-        this.validator = Reflection.callPrivateConstructor((Class<Validator<T>>) rule.validator());
-        this.onChange = Reflection.callPrivateConstructor((Class<ChangeListener<T>>) rule.onChange());
+        this.validator = (Validator<T>) Reflection.callDeprecatedPrivateConstructor(rule.validator());
+        this.onChange = (ChangeListener<T>) Reflection.callDeprecatedPrivateConstructor(rule.onChange());
         this.typeAdapter = getTypeAdapter(this.type);
         this.defaultValue = get();
         this.defaultAsString = typeAdapter.toString(this.defaultValue);
