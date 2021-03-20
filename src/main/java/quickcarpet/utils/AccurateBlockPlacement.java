@@ -23,7 +23,7 @@ public class AccurateBlockPlacement {
         double hitX = hitPos.x - pos.getX();
         if (hitX < 2) return block.getPlacementState(ctx);
         int code = (int) (hitX - 2) / 2;
-        adjustHitX(ctx, hitX % 2);
+        adjustHitX(ctx, pos.getX() + hitX % 2);
         return getPlacementStateForCode(block, ctx, code);
     }
 
@@ -33,7 +33,7 @@ public class AccurateBlockPlacement {
         if (block instanceof ObserverBlock) {
             return state
                     .with(ObserverBlock.FACING, Direction.byId(code))
-                    .with(ObserverBlock.POWERED, true);
+                    .with(ObserverBlock.POWERED, false);
         }
         if (block instanceof RepeaterBlock) {
             int delay = MathHelper.clamp(code >> 4, 1, 4);
