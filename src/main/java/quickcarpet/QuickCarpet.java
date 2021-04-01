@@ -98,6 +98,7 @@ public final class QuickCarpet implements QuickCarpetAPI, ServerEventListener, T
             m.onGameStarted();
             LOG.info(Build.NAME + " module " + m.getId() + " version " + m.getVersion() + " initialized");
         }
+        DataTrackerUtils.check();
     }
 
     @Override
@@ -117,6 +118,7 @@ public final class QuickCarpet implements QuickCarpetAPI, ServerEventListener, T
         BlockInfoCommand.register(dispatcher);
         FluidInfoCommand.register(dispatcher);
         FixCommand.register(dispatcher);
+        DataTrackerCommand.register(dispatcher);
         for (QuickCarpetModule m : modules) m.registerCommands(dispatcher);
     }
 

@@ -5,6 +5,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtHelper;
+import net.minecraft.particle.ParticleEffect;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -15,19 +19,20 @@ import net.minecraft.state.property.IntProperty;
 import net.minecraft.state.property.Property;
 import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.village.VillagerData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.MatchesPattern;
 import javax.annotation.Nonnull;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Locale;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -39,9 +44,6 @@ import java.util.stream.DoubleStream;
 public class Messenger {
     private static final Logger LOG = LogManager.getLogger();
 
-    public static final Formatter<Number> NUMBER = value -> s(value.toString());
-    public static final Formatter<Number> FLOAT = value -> dbl(value.doubleValue());
-    public static final Formatter<Boolean> BOOLEAN = value -> s(Boolean.toString(value), value ? Formatting.GREEN : Formatting.RED);
     public static final Formatting[] GRAY_ITALIC = new Formatting[]{Formatting.GRAY, Formatting.ITALIC};
 
     public static <T extends MutableText> T style(T text, Formatting style) {
@@ -121,14 +123,23 @@ public class Messenger {
     public static <T extends Comparable<T>> MutableText format(Property<T> prop, T value) {
         MutableText name = s(prop.getName() + "=");
         MutableText valueText = s(prop.name(value));
-        if (prop instanceof DirectionProperty) style(valueText, GOLD);
-        else if (prop instanceof BooleanProperty) style(valueText, (Boolean) value ? LIME : RED);
-        else if (prop instanceof IntProperty) style(valueText, LIME);
+        if (prop instanceof DirectionProperty) style(valueText, Formatting.GOLD);
+        else if (prop instanceof BooleanProperty) style(valueText, (Boolean) value ? Formatting.GREEN : Formatting.RED);
+        else if (prop instanceof IntProperty) style(valueText, Formatting.GREEN);
         return name.append(valueText);
     }
 
     public static MutableText format(Direction side) {
         return new TranslatableText("side." + side.asString());
+    }
+
+    public static <T> MutableText format(Registry<T> registry, T value) {
+        return format(registry.getId(value));
+    }
+
+    public static MutableText format(Identifier id) {
+        if (id == null || !"minecraft".equals(id.getNamespace())) return s(String.valueOf(id));
+        return c(s("minecraft:", Formatting.GRAY), s(id.getPath(), Formatting.WHITE));
     }
 
     public static Formatting creatureTypeColor(SpawnGroup type) {
@@ -325,11 +336,43 @@ public class Messenger {
 
     public interface Formatter<T> {
         MutableText format(T value);
+
+        Formatter<Number> NUMBER = value -> s(value.toString());
+        Formatter<Number> FLOAT = value -> dbl(value.doubleValue());
+        Formatter<Boolean> BOOLEAN = value -> s(Boolean.toString(value), value ? Formatting.GREEN : Formatting.RED);
+        Formatter<String> STRING = Messenger::s;
+        Formatter<Text> TEXT = Text::copy;
+        Formatter<ItemStack> ITEM_STACK = s -> c(s(s.getCount() + " "), s.toHoverableText());
+        Formatter<EulerAngle> ROTATION = r -> s(r.getYaw() + "° yaw, " + r.getPitch() + "° pitch, " + r.getRoll() + "° roll");
+        Formatter<BlockPos> BLOCK_POS = Messenger::tp;
+        Formatter<? extends Enum<?>> ENUM = e -> s(e.toString().toLowerCase(Locale.ROOT));
+        Formatter<?> OBJECT = o -> s(String.valueOf(o));
+        Formatter<BlockState> BLOCK_STATE = Messenger::format;
+        Formatter<FluidState> FLUID_STATE = Messenger::format;
+        Formatter<CompoundTag> COMPOUND_TAG = t -> NbtHelper.toPrettyPrintedText(t).copy();
+        Formatter<ParticleEffect> PARTICLE = p -> s(String.valueOf(Registry.PARTICLE_TYPE.getId(p.getType())));
+        Formatter<VillagerData> VILLAGER_DATA = d -> c(
+            s("type="), Messenger.format(Registry.VILLAGER_TYPE, d.getType()),
+            s(", profession="), Messenger.format(Registry.VILLAGER_PROFESSION, d.getProfession()),
+            s(", level=" + d.getLevel())
+        );
+        Formatter<OptionalInt> OPTIONAL_INT = o -> s(o.isPresent() ? Integer.toString(o.getAsInt()) : "empty");
+
+        static <T> Formatter<Optional<T>> optional(Formatter<T> formatter) {
+            return value -> {
+                if (value.isPresent()) return formatter.format(value.get());
+                return s("empty", Formatting.GRAY, Formatting.ITALIC);
+            };
+        }
     }
 
     /*
      * Deprecated methods, taking String, char or PlayerEntity arguments
      */
+
+    @Deprecated public static final Formatter<Number> NUMBER = Formatter.NUMBER;
+    @Deprecated public static final Formatter<Number> FLOAT = Formatter.FLOAT;
+    @Deprecated public static final Formatter<Boolean> BOOLEAN = Formatter.BOOLEAN;
 
     @Deprecated public static final char ITALIC = 'i';
     @Deprecated public static final char STRIKETHROUGH = 's';

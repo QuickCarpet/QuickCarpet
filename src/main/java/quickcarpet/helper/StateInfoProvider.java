@@ -9,6 +9,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import quickcarpet.utils.Messenger;
+import quickcarpet.utils.Messenger.Formatter;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -18,9 +19,9 @@ import static quickcarpet.utils.Messenger.*;
 public interface StateInfoProvider<S extends State<?, S>, T extends Comparable<T>> {
     T get(S state, ServerWorld world, BlockPos pos);
 
-    default Messenger.Formatter<T> getFormatter(@Nonnull T value) {
+    default Formatter<T> getFormatter(@Nonnull T value) {
         //noinspection unchecked
-        return (Messenger.Formatter<T>) getDefaultFormatter(value.getClass());
+        return (Formatter<T>) getDefaultFormatter(value.getClass());
     }
 
     default MutableText getAndFormat(S state, ServerWorld world, BlockPos pos) {
@@ -32,10 +33,10 @@ public interface StateInfoProvider<S extends State<?, S>, T extends Comparable<T
     }
 
     @SuppressWarnings("unchecked")
-    static <T> Messenger.Formatter<T> getDefaultFormatter(Class<T> type) {
-        if (type == Double.class || type == Float.class) return (Messenger.Formatter<T>) Messenger.FLOAT;
-        if (Number.class.isAssignableFrom(type)) return (Messenger.Formatter<T>) Messenger.NUMBER;
-        if (type == Boolean.class) return (Messenger.Formatter<T>) Messenger.BOOLEAN;
+    static <T> Formatter<T> getDefaultFormatter(Class<T> type) {
+        if (type == Double.class || type == Float.class) return (Formatter<T>) Formatter.FLOAT;
+        if (Number.class.isAssignableFrom(type)) return (Formatter<T>) Formatter.NUMBER;
+        if (type == Boolean.class) return (Formatter<T>) Formatter.BOOLEAN;
         return value -> s(String.valueOf(value));
     }
 
@@ -92,15 +93,15 @@ public interface StateInfoProvider<S extends State<?, S>, T extends Comparable<T
 
     class WithFormatter<S extends State<?, S>, T extends Comparable<T>> implements Directional<S, T> {
         private final StateInfoProvider<S, T> provider;
-        private final Messenger.Formatter<T> formatter;
+        private final Formatter<T> formatter;
 
-        public WithFormatter(StateInfoProvider<S, T> provider, Messenger.Formatter<T> formatter) {
+        public WithFormatter(StateInfoProvider<S, T> provider, Formatter<T> formatter) {
             this.provider = provider;
             this.formatter = formatter;
         }
 
         @Override
-        public Messenger.Formatter<T> getFormatter(@Nonnull T value) {
+        public Formatter<T> getFormatter(@Nonnull T value) {
             return formatter;
         }
 

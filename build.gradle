@@ -1,7 +1,7 @@
 import java.text.SimpleDateFormat
 
 plugins {
-	id 'fabric-loom' version '0.4-SNAPSHOT'
+	id 'fabric-loom' version '0.6-SNAPSHOT'
 }
 
 minecraft {
@@ -98,10 +98,11 @@ repositories {
 dependencies {
 	implementation project(":quickcarpet-api")
 
-	modImplementation "net.fabricmc.fabric-api:fabric-resource-loader-v0:${project.fabric_resource_loader_v0_version}"
-	modImplementation "net.fabricmc.fabric-api:fabric-networking-api-v1:${project.fabric_networking_api_v1_version}"
-	modImplementation "net.fabricmc.fabric-api:fabric-registry-sync-v0:${project.fabric_registry_sync_v0_version}"
-	//modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+	//modImplementation "net.fabricmc.fabric-api:fabric-resource-loader-v0:${project.fabric_resource_loader_v0_version}"
+	//modImplementation "net.fabricmc.fabric-api:fabric-networking-api-v1:${project.fabric_networking_api_v1_version}"
+	//modImplementation "net.fabricmc.fabric-api:fabric-registry-sync-v0:${project.fabric_registry_sync_v0_version}"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	modCompileOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
 
 	// JiJ fabric-resource-loader and quickcarpet-api
 	include "net.fabricmc.fabric-api:fabric-resource-loader-v0:${project.fabric_resource_loader_v0_version}"

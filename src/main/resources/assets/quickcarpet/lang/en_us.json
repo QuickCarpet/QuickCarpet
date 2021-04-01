@@ -43,7 +43,8 @@
   "carpet.rule.calmNetherFires.extra": "0: disable ticking, 1: vanilla, 2+: multiply the ticking interval",
   "carpet.rule.cameraModeRestoreLocation.description": "/s restores the player to the location they used /c at",
   "carpet.rule.commandBlockInfo.description": "Enables /blockinfo command to get info about blocks",
-  "carpet.rule.commandCameramode.description": "Enables /c and /s commands to quickly switch between camera and survival modes for players with this permission level",
+  "carpet.rule.commandCameramode.description": "Enables /c, /s and /cs commands to quickly switch between camera and survival modes for players with this permission level",
+  "carpet.rule.commandDataTracker.description": "Enables /datatracker for viewing tracked entity data",
   "carpet.rule.commandFix.description": "Enables /fix command to fix chunk data",
   "carpet.rule.commandFluidInfo.description": "Enables /fluidinfo command to get info about fluids",
   "carpet.rule.commandLog.description": "Enables /log command to monitor events in the game via chat and overlays for players with this permission level",
@@ -242,6 +243,8 @@
   "quickcarpet.gui.comment.creativeNoClip": "Enable noclip while in creative (requires server setting to be true)",
   "quickcarpet.gui.pretty.creativeNoClipOverride": "Creative Noclip Override",
   "quickcarpet.gui.comment.creativeNoClipOverride": "Pretends the server setting is turned on",
+  "quickcarpet.gui.pretty.soundEngineFix": "Sound Engine Fix",
+  "quickcarpet.gui.comment.soundEngineFix": "Fixes the log spam caused by too many sound sources",
   "side.up": "Top",
   "side.down": "Bottom",
   "side.north": "North",
@@ -300,5 +303,7 @@
   "quickcarpet.fluid_info_provider.quickcarpet.flow_yaw": "Flow Direction (Yaw)",
   "quickcarpet.fluid_info_provider.quickcarpet.blast_resistance": "Blast Resistance",
   "command.fix.fixing": "Fixing chunk [%s, %s]...",
-  "command.fix.fixed": "Fixed chunk [%s, %s]"
+  "command.fix.fixed": "Fixed chunk [%s, %s]",
+  "command.datatracker.no_entries": "No entries",
+  "command.datatracker.entry": "%s (%s): %s"
 }

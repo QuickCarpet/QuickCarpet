@@ -33,7 +33,7 @@ public class Configs implements IConfigHandler {
         public static final ConfigBooleanHotkeyed SYNC_HIGH_TPS = booleanHotkeyed(ClientSetting.SYNC_HIGH_TPS, "");
         public static final ConfigBooleanHotkeyed CREATIVE_NO_CLIP = booleanHotkeyed(ClientSetting.CREATIVE_NO_CLIP, "");
         public static final ConfigBooleanHotkeyed CREATIVE_NO_CLIP_OVERRIDE = booleanHotkeyed(ClientSetting.CREATIVE_NO_CLIP_OVERRIDE, "");
-
+        public static final ConfigBooleanHotkeyed SOUND_ENGINE_FIX = booleanHotkeyed(ClientSetting.SOUND_ENGINE_FIX, "");
 
         public static final List<IConfigBase> OPTIONS = ImmutableList.of(
             SYNC_LOW_TPS,
@@ -50,7 +50,8 @@ public class Configs implements IConfigHandler {
             SYNC_LOW_TPS,
             SYNC_HIGH_TPS,
             CREATIVE_NO_CLIP,
-            CREATIVE_NO_CLIP_OVERRIDE
+            CREATIVE_NO_CLIP_OVERRIDE,
+            SOUND_ENGINE_FIX
         );
 
         public static List<IHotkey> getHotkeys() {

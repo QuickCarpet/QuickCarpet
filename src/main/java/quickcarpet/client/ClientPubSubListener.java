@@ -23,7 +23,7 @@ import static quickcarpet.pubsub.PubSubMessenger.*;
 
 @Environment(EnvType.CLIENT)
 public class ClientPubSubListener implements ClientPluginChannelHandler {
-    private Logger LOG = LogManager.getLogger();
+    private final Logger LOG = LogManager.getLogger();
     private final QuickCarpetClient client = QuickCarpetClient.getInstance();
 
     @Override
@@ -46,6 +46,7 @@ public class ClientPubSubListener implements ClientPluginChannelHandler {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private static <T> boolean onUpdate(Map<String, Object> updates, String key, Class<T> type, Consumer<T> action) {
         Object obj = updates.get(key);
         if (!type.isInstance(obj)) return false;
