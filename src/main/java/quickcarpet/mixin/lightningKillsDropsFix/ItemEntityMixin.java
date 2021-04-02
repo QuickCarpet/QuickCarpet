@@ -13,14 +13,14 @@ import quickcarpet.settings.Settings;
 @Mixin(ItemEntity.class)
 public abstract class ItemEntityMixin extends Entity {
 
-    @Shadow private int age;
+    @Shadow private int itemAge;
 
     public ItemEntityMixin(EntityType<?> entityType_1, World world_1) { super(entityType_1, world_1); }
 
     @Override
     public void onStruckByLightning(ServerWorld world, LightningEntity lightning) {
         if (Settings.lightningKillsDropsFix) {
-            if (this.age > 8) { //Only kill item if its older then 8 ticks
+            if (this.itemAge > 8) { //Only kill item if its older then 8 ticks
                 super.onStruckByLightning(world, lightning);
             }
         } else {

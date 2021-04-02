@@ -66,11 +66,7 @@ public class AutoCraftingTableContainer extends CraftingScreenHandler {
     }
 
     public void close(PlayerEntity player) {
-        PlayerInventory playerInventory = player.getInventory();
-        if (!playerInventory.getCursorStack().isEmpty()) {
-            player.dropItem(playerInventory.getCursorStack(), false);
-            playerInventory.setCursorStack(ItemStack.EMPTY);
-        }
+        super.close(player);
         this.blockEntity.onContainerClose(this);
     }
 

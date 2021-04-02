@@ -3,7 +3,7 @@ package quickcarpet.logging;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.class_5894;
+import net.minecraft.network.packet.s2c.play.OverlayMessageS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableText;
@@ -36,7 +36,7 @@ public interface LogHandler {
             if (player != null)
                 HUDController.clearPlayerHUD(player);
         }
-    };    LogHandler ACTION_BAR = (logger, player, message, commandParams) -> player.networkHandler.sendPacket(new class_5894(message));
+    };    LogHandler ACTION_BAR = (logger, player, message, commandParams) -> player.networkHandler.sendPacket(new OverlayMessageS2CPacket(message));
 
     @FunctionalInterface
     interface LogHandlerCreator {

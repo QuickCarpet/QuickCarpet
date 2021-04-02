@@ -27,7 +27,7 @@ public abstract class MinecraftServerMixin {
     @Shadow private Profiler profiler;
     @Shadow private volatile boolean loading;
     @Shadow private boolean waitingForNextTick;
-    @Shadow private long field_19248;
+    @Shadow private long nextTickTimestamp;
 
     @Shadow protected abstract boolean shouldKeepTicking();
     @Shadow protected abstract void method_16208();
@@ -85,7 +85,7 @@ public abstract class MinecraftServerMixin {
             this.tick(this::shouldKeepTicking);
             this.profiler.swap("nextTickWait");
             this.waitingForNextTick = true;
-            this.field_19248 = Math.max(Util.getMeasuringTimeMs() + (long) mspt, this.timeReference);
+            this.nextTickTimestamp = Math.max(Util.getMeasuringTimeMs() + (long) mspt, this.timeReference);
             this.method_16208();
             this.profiler.pop();
             this.profiler.endTick();

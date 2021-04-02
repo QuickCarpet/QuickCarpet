@@ -51,7 +51,7 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
         interactionManagerIn.changeGameMode(gamemode);
         server.getPlayerManager().sendToDimension(new EntitySetHeadYawS2CPacket(instance, (byte) (instance.headYaw * 256 / 360)), instance.world.getRegistryKey());
         server.getPlayerManager().sendToDimension(new EntityPositionS2CPacket(instance), instance.world.getRegistryKey());
-        instance.getServerWorld().getChunkManager().updateCameraPosition(instance);
+        instance.getServerWorld().getChunkManager().updatePosition(instance);
         instance.dataTracker.set(PLAYER_MODEL_PARTS, (byte) 0x7f); // show all model layers (incl. capes)
         return instance;
     }
@@ -75,8 +75,8 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
         shadow.dataTracker.set(PLAYER_MODEL_PARTS, real.getDataTracker().get(PLAYER_MODEL_PARTS));
 
         server.getPlayerManager().sendToDimension(new EntitySetHeadYawS2CPacket(shadow, (byte) (real.headYaw * 256 / 360)), shadow.world.getRegistryKey());
-        server.getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.class_5893.field_29136, shadow));
-        real.getServerWorld().getChunkManager().updateCameraPosition(shadow);
+        server.getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.ADD_PLAYER, shadow));
+        real.getServerWorld().getChunkManager().updatePosition(shadow);
         return shadow;
     }
 
@@ -119,7 +119,7 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
         this.tickMovement();
         if (this.getServer().getTicks() % 10 == 0) {
             this.networkHandler.syncWithPlayerPosition();
-            this.getServerWorld().getChunkManager().updateCameraPosition(this);
+            this.getServerWorld().getChunkManager().updatePosition(this);
         }
     }
 

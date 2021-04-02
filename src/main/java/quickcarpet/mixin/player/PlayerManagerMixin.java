@@ -1,6 +1,6 @@
 package quickcarpet.mixin.player;
 
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
@@ -17,7 +17,7 @@ import quickcarpet.patches.FakeServerPlayerEntity;
 @Mixin(PlayerManager.class)
 public abstract class PlayerManagerMixin {
     @Inject(method = "loadPlayerData", at = @At(value = "RETURN", shift = At.Shift.BEFORE))
-    private void fixStartingPos(ServerPlayerEntity player, CallbackInfoReturnable<CompoundTag> cir) {
+    private void fixStartingPos(ServerPlayerEntity player, CallbackInfoReturnable<NbtCompound> cir) {
         if (player instanceof FakeServerPlayerEntity) {
             ((FakeServerPlayerEntity) player).applyStartingPosition();
         }

@@ -1,9 +1,9 @@
 package quickcarpet.network.channels;
 
 import io.netty.buffer.Unpooled;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.NbtString;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -59,28 +59,28 @@ public class RulesChannel implements ServerPluginChannelHandler {
     }
 
     public void sendRuleUpdate(ServerPlayerEntity player, Collection<ParsedRule<?>> rules) {
-        CompoundTag data = serializeRuleUpdate(player, rules);
+        NbtCompound data = serializeRuleUpdate(player, rules);
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeVarInt(PACKET_S2C_DATA);
-        buf.writeCompoundTag(data);
+        buf.writeCompound(data);
         PacketSplitter.send(player.networkHandler, CHANNEL, buf);
     }
 
-    public static CompoundTag serializeRuleUpdate(ServerPlayerEntity player, Collection<ParsedRule<?>> rules) {
-        CompoundTag data = new CompoundTag();
+    public static NbtCompound serializeRuleUpdate(ServerPlayerEntity player, Collection<ParsedRule<?>> rules) {
+        NbtCompound data = new NbtCompound();
         data.putInt("Version", VERSION);
-        ListTag rulesList = new ListTag();
+        NbtList rulesList = new NbtList();
         for (ParsedRule<?> rule : rules) {
-            CompoundTag ruleTag = new CompoundTag();
+            NbtCompound ruleTag = new NbtCompound();
             ruleTag.putString("Id", rule.getName());
             ruleTag.putString("Type", rule.getType().getName());
             ruleTag.putString("DefaultValue", rule.getDefaultAsString());
             ruleTag.putString("Value", rule.getAsString());
             ruleTag.putString("Description", Translations.translate(rule.getDescription(), player).getString());
-            ListTag extraList = new ListTag();
+            NbtList extraList = new NbtList();
             if (rule.getExtraInfo() != null) {
                 String[] extraInfo = Translations.translate(rule.getExtraInfo(), player).getString().split("\n");
-                for (String extra : extraInfo) extraList.add(StringTag.of(extra));
+                for (String extra : extraInfo) extraList.add(NbtString.of(extra));
             }
             ruleTag.put("ExtraInfo", extraList);
             rulesList.add(ruleTag);

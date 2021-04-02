@@ -5,15 +5,14 @@ import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.feature.StructureFeature;
 import org.apache.logging.log4j.LogManager;
@@ -33,7 +32,7 @@ public class StructureChannel implements ServerPluginChannelHandler {
 
     public static StructureChannel instance;
 
-    private final CompoundTag metadata = new CompoundTag();
+    private final NbtCompound metadata = new NbtCompound();
     private Map<ServerPlayerEntity, Object2IntMap<ChunkPos>> playerMap = new WeakHashMap<>();
 
     public StructureChannel() {
@@ -52,7 +51,7 @@ public class StructureChannel implements ServerPluginChannelHandler {
         sendData(player, metadata);
         playerMap.put(player, new Object2IntOpenHashMap<>());
         int viewDistance = player.getServer().getPlayerManager().getViewDistance();
-        ChunkPos playerPos = player.getCameraPosition().toChunkPos();
+        ChunkPos playerPos = player.getWatchedSection().toChunkPos();
         ServerWorld world = player.getServerWorld();
         for (int x = playerPos.x - viewDistance; x <= playerPos.x + viewDistance; x++) {
             for (int z = playerPos.z - viewDistance; z <= playerPos.z + viewDistance; z++) {
@@ -91,7 +90,7 @@ public class StructureChannel implements ServerPluginChannelHandler {
     }
 
     private void sendUpdate(ServerPlayerEntity player, Collection<ChunkPos> chunks) {
-        World world = player.getServerWorld();
+        ServerWorld world = player.getServerWorld();
         Map<String, LongSet> references = new HashMap<>();
         for (ChunkPos pos : chunks) {
             if (!world.isChunkLoaded(pos.x, pos.z)) continue;
@@ -104,25 +103,25 @@ public class StructureChannel implements ServerPluginChannelHandler {
                 });
             }
         }
-        ListTag starts = new ListTag();
+        NbtList starts = new NbtList();
         Object2IntMap<ChunkPos> chunkMap = playerMap.get(player);
         for (Map.Entry<String, LongSet> ref : references.entrySet()) {
             for (long pos : ref.getValue()) {
                 ChunkPos chunkPos = new ChunkPos(pos);
                 if (chunkMap.computeIntIfAbsent(chunkPos, c -> 1) > 1) continue;
                 Chunk chunk = world.getChunk(chunkPos.x, chunkPos.z);
-                starts.add(chunk.getStructureStart(StructureFeature.STRUCTURES.get(ref.getKey())).toNbt(chunkPos));
+                starts.add(chunk.getStructureStart(StructureFeature.STRUCTURES.get(ref.getKey())).toNbt(world, chunkPos));
             }
         }
-        CompoundTag data = new CompoundTag();
+        NbtCompound data = new NbtCompound();
         data.put("Structures", starts);
         sendData(player, data);
     }
 
-    private void sendData(ServerPlayerEntity player, CompoundTag data) {
+    private void sendData(ServerPlayerEntity player, NbtCompound data) {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeVarInt(PACKET_S2C_DATA);
-        buf.writeCompoundTag(data);
+        buf.writeCompound(data);
         // LOGGER.info(data);
         PacketSplitter.send(player.networkHandler, CHANNEL, buf);
     }

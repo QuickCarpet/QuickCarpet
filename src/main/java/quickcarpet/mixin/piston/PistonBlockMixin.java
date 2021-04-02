@@ -51,7 +51,7 @@ public class PistonBlockMixin extends FacingBlock {
         }
     }
 
-    @Inject(method = "isMovable", at = @At(value = "RETURN", ordinal = 3, shift = At.Shift.BEFORE))
+    @Inject(method = "isMovable", at = @At(value = "RETURN", ordinal = 3, shift = At.Shift.BEFORE), cancellable = true)
     private static void additionalBlocksMovable2(BlockState blockState_1, World world_1, BlockPos blockPos_1, Direction direction_1,
                                                  boolean allowDestroy, Direction direction_2, CallbackInfoReturnable<Boolean> cir) {
         if(quickcarpet.settings.Settings.movableBlockOverrides){
@@ -67,7 +67,7 @@ public class PistonBlockMixin extends FacingBlock {
         }
     }
 
-    @Inject(method = "isMovable", at = @At(value = "RETURN", ordinal = 0, shift = At.Shift.BEFORE))
+    @Inject(method = "isMovable", at = @At(value = "RETURN", ordinal = 0, shift = At.Shift.BEFORE), cancellable = true)
     private static void additionalObsidianMovable(BlockState blockState_1, World world_1, BlockPos blockPos_1, Direction direction_1, boolean allowDestroy, Direction direction_2, CallbackInfoReturnable<Boolean> cir) {
         if(quickcarpet.settings.Settings.movableBlockOverrides){
 
@@ -83,12 +83,11 @@ public class PistonBlockMixin extends FacingBlock {
                                 (override == PistonBehaviors.WEAK_STICKY) ||
                                 (override == PistonBehaviors.WEAK_STICKY_BREAKABLE);// && allowDestroy);
                 cir.setReturnValue(ret);
-                cir.cancel();
             }
         }
     }
 
-    @Inject(method = "isMovable", at = @At(value = "RETURN", ordinal = 3, shift = At.Shift.BEFORE))
+    @Inject(method = "isMovable", at = @At(value = "RETURN", ordinal = 3, shift = At.Shift.BEFORE), cancellable = true)
     private static void movableCMD(BlockState blockState_1, World world_1, BlockPos blockPos_1,
                                    Direction direction_1, boolean boolean_1, Direction direction_2, CallbackInfoReturnable<Boolean> cir) {
         Block block_1 = blockState_1.getBlock();

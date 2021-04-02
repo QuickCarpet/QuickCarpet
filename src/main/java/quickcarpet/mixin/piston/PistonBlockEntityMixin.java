@@ -7,7 +7,7 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.PistonBlockEntity;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -108,7 +108,7 @@ public abstract class PistonBlockEntityMixin extends BlockEntity implements Exte
     }
 
     @Inject(method = "readNbt", at = @At(value = "TAIL"))
-    private void onFromTag(CompoundTag compoundTag_1, CallbackInfo ci) {
+    private void onFromTag(NbtCompound compoundTag_1, CallbackInfo ci) {
         if (Settings.movableBlockEntities && compoundTag_1.contains("carriedTileEntity", 10)) {
             if (this.pushedBlock.getBlock() instanceof BlockEntityProvider) {
                 BlockEntity carried = ((BlockEntityProvider) (this.pushedBlock.getBlock())).createBlockEntity(pos, pushedBlock);
@@ -121,10 +121,10 @@ public abstract class PistonBlockEntityMixin extends BlockEntity implements Exte
     }
 
     @Inject(method = "writeNbt", at = @At(value = "RETURN", shift = At.Shift.BEFORE))
-    private void onToTag(CompoundTag compoundTag_1, CallbackInfoReturnable<CompoundTag> cir) {
+    private void onToTag(NbtCompound compoundTag_1, CallbackInfoReturnable<NbtCompound> cir) {
         if (Settings.movableBlockEntities && this.carriedBlockEntity != null) {
             //Leave name "carriedTileEntity" instead of "carriedBlockEntity" for upgrade compatibility with 1.12 movable TE
-            compoundTag_1.put("carriedTileEntity", this.carriedBlockEntity.writeNbt(new CompoundTag()));
+            compoundTag_1.put("carriedTileEntity", this.carriedBlockEntity.writeNbt(new NbtCompound()));
         }
     }
 }

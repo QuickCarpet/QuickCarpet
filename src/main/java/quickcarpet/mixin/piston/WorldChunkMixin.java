@@ -3,19 +3,18 @@ package quickcarpet.mixin.piston;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.PistonExtensionBlock;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkSectionPos;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
+import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSection;
 import net.minecraft.world.chunk.WorldChunk;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
-import quickcarpet.settings.Settings;
 import quickcarpet.utils.extensions.ExtendedWorldChunk;
 
 import javax.annotation.Nullable;
@@ -24,7 +23,7 @@ import java.util.Map;
 import static net.minecraft.world.chunk.WorldChunk.EMPTY_SECTION;
 
 @Mixin(WorldChunk.class)
-public abstract class WorldChunkMixin implements ExtendedWorldChunk {
+public abstract class WorldChunkMixin implements ExtendedWorldChunk, Chunk {
     @Shadow @Final private ChunkSection[] sections;
     @Shadow @Final private Map<Heightmap.Type, Heightmap> heightmaps;
     @Shadow private boolean shouldSave;
@@ -43,27 +42,28 @@ public abstract class WorldChunkMixin implements ExtendedWorldChunk {
      * @author 2No2Name
      */
     @Nullable
-    public BlockState setBlockStateWithBlockEntity(BlockPos pos, BlockState newBlockState, BlockEntity newBlockEntity, boolean callListeners) {
-        int x = pos.getX() & 15;
+    public BlockState setBlockStateWithBlockEntity(BlockPos pos, BlockState newBlockState, BlockEntity newBlockEntity, boolean moved) {
         int y = pos.getY();
-        int z = pos.getZ() & 15;
-        ChunkSection chunkSection = this.sections[y >> 4];
+        int sectionY = this.getSectionIndex(y);
+        ChunkSection chunkSection = this.sections[sectionY];
         if (chunkSection == EMPTY_SECTION) {
             if (newBlockState.isAir()) {
                 return null;
             }
 
-            chunkSection = new ChunkSection(y >> 4 << 4);
-            this.sections[y >> 4] = chunkSection;
+            chunkSection = new ChunkSection(ChunkSectionPos.getSectionCoord(y));
+            this.sections[sectionY] = chunkSection;
         }
 
         boolean sectionWasEmpty = chunkSection.isEmpty();
-        BlockState oldBlockState = chunkSection.setBlockState(x, y & 15, z, newBlockState);
+        int x = pos.getX() & 15;
+        int inSectionY = y & 15;
+        int z = pos.getZ() & 15;
+        BlockState oldBlockState = chunkSection.setBlockState(x, inSectionY, z, newBlockState);
         if (oldBlockState == newBlockState) {
             return null;
         } else {
             Block newBlock = newBlockState.getBlock();
-            Block oldBlock = oldBlockState.getBlock();
             this.heightmaps.get(Heightmap.Type.MOTION_BLOCKING).trackUpdate(x, y, z, newBlockState);
             this.heightmaps.get(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES).trackUpdate(x, y, z, newBlockState);
             this.heightmaps.get(Heightmap.Type.OCEAN_FLOOR).trackUpdate(x, y, z, newBlockState);
@@ -73,39 +73,38 @@ public abstract class WorldChunkMixin implements ExtendedWorldChunk {
                 this.world.getChunkManager().getLightingProvider().setSectionStatus(pos, sectionIsEmpty);
             }
 
+            boolean bl3 = oldBlockState.hasBlockEntity();
             if (!this.world.isClient) {
                 //this is a movableBlockEntities special case, if condition wasn't there it would remove the blockentity that was carried for some reason
-                if (!(oldBlock instanceof PistonExtensionBlock))
-                    oldBlockState.onStateReplaced(this.world, pos, newBlockState, callListeners); //this kills it
-            } else if (oldBlock != newBlock && oldBlock instanceof BlockEntityProvider) {
+                if (!oldBlockState.isOf(Blocks.MOVING_PISTON)) {
+                    oldBlockState.onStateReplaced(this.world, pos, newBlockState, moved); //this kills it
+                }
+            } else if (!oldBlockState.isOf(newBlock) && bl3) {
                 this.removeBlockEntity(pos);
             }
 
-            if (chunkSection.getBlockState(x, y & 15, z).getBlock() != newBlock) {
+            if (!chunkSection.getBlockState(x, inSectionY, z).isOf(newBlock)) {
                 return null;
             } else {
-                BlockEntity oldBlockEntity = null;
-                if (oldBlockState.hasBlockEntity()) {
-                    oldBlockEntity = this.getBlockEntity(pos, WorldChunk.CreationType.CHECK);
-                    if (oldBlockEntity != null) {
-                        oldBlockEntity.setCachedState(newBlockState);
-                        this.updateTicker(oldBlockEntity);
-                    }
+                if (!this.world.isClient) {
+                    newBlockState.onBlockAdded(this.world, pos, oldBlockState, moved);
                 }
 
                 if (newBlockState.hasBlockEntity()) {
-                    if (newBlockEntity == null) {
-                        newBlockEntity = ((BlockEntityProvider) newBlock).createBlockEntity(pos, newBlockState);
-                    }
-                    if (newBlockEntity != oldBlockEntity && newBlockEntity != null) {
-                        this.removeBlockEntity(pos);
+                    BlockEntity blockEntity = this.getBlockEntity(pos, WorldChunk.CreationType.CHECK);
+                    if (blockEntity == null && newBlockEntity != null) {
                         this.addBlockEntity(newBlockEntity);
+                        blockEntity = newBlockEntity;
                     }
-                }
-
-                if (!this.world.isClient) {
-                    //This can call setblockstate! (e.g. hopper does)
-                    newBlockState.onBlockAdded(this.world, pos, oldBlockState, callListeners);
+                    if (blockEntity == null) {
+                        blockEntity = ((BlockEntityProvider)newBlock).createBlockEntity(pos, newBlockState);
+                        if (blockEntity != null) {
+                            this.addBlockEntity(blockEntity);
+                        }
+                    } else {
+                        blockEntity.setCachedState(newBlockState);
+                        this.updateTicker(blockEntity);
+                    }
                 }
 
                 this.shouldSave = true;

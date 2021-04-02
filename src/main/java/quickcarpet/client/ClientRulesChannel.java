@@ -1,8 +1,8 @@
 package quickcarpet.client;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtList;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
@@ -26,13 +26,13 @@ public class ClientRulesChannel implements ClientPluginChannelHandler {
         if (buf == null) return;
         int packetId = buf.readVarInt();
         if (packetId == RulesChannel.PACKET_S2C_DATA) {
-            CompoundTag data = buf.readCompoundTag();
+            NbtCompound data = buf.readCompound();
             if (data == null) return;
             int version = data.getInt("Version");
             if (version == 0 || version > RulesChannel.VERSION) return;
-            ListTag rulesList = data.getList("Rules", NBTHelper.TAG_COMPOUND);
-            for (Tag tag : rulesList) {
-                CompoundTag ruleTag = (CompoundTag) tag;
+            NbtList rulesList = data.getList("Rules", NBTHelper.TAG_COMPOUND);
+            for (NbtElement tag : rulesList) {
+                NbtCompound ruleTag = (NbtCompound) tag;
                 String id = ruleTag.getString("Id");
                 try {
                     ParsedRule<?> rule = Settings.MANAGER.getRule(id);

@@ -22,7 +22,7 @@ import java.util.Map;
 public abstract class TagGroupLoaderMixin<T> {
     @Shadow @Final private String dataType;
 
-    @Inject(method = "applyReload", at = @At("HEAD"))
+    @Inject(method = "buildGroup", at = @At("HEAD"))
     private void onReload(Map<Identifier, Tag.Builder> builders, CallbackInfoReturnable<TagGroup<T>> cir) {
         if (this.dataType.equals("tags/blocks")) {
             for (BlockPropertyTag t : CarpetRegistry.VIRTUAL_BLOCK_TAGS) {

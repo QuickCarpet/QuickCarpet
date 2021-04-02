@@ -4,7 +4,7 @@ import io.netty.buffer.Unpooled;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
@@ -62,7 +62,7 @@ public class ClientPubSubListener implements ClientPluginChannelHandler {
             int valueType = buf.readVarInt();
             switch (valueType) {
                 case TYPE_NBT: {
-                    CompoundTag compound = buf.readCompoundTag();
+                    NbtCompound compound = buf.readCompound();
                     if (compound == null) break;
                     if (compound.contains("")) {
                         values.put(name, compound.get(""));

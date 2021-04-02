@@ -6,7 +6,7 @@ import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.server.MinecraftServer;
@@ -349,7 +349,7 @@ public class Messenger {
         Formatter<?> OBJECT = o -> s(String.valueOf(o));
         Formatter<BlockState> BLOCK_STATE = Messenger::format;
         Formatter<FluidState> FLUID_STATE = Messenger::format;
-        Formatter<CompoundTag> COMPOUND_TAG = t -> NbtHelper.toPrettyPrintedText(t).copy();
+        Formatter<NbtCompound> COMPOUND_TAG = t -> NbtHelper.toPrettyPrintedText(t).copy();
         Formatter<ParticleEffect> PARTICLE = p -> s(String.valueOf(Registry.PARTICLE_TYPE.getId(p.getType())));
         Formatter<VillagerData> VILLAGER_DATA = d -> c(
             s("type="), Messenger.format(Registry.VILLAGER_TYPE, d.getType()),

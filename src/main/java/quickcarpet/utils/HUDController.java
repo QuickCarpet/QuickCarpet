@@ -1,9 +1,7 @@
 package quickcarpet.utils;
 
-import io.netty.buffer.Unpooled;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.s2c.play.PlayerListHeaderS2CPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -54,12 +52,7 @@ public class HUDController {
     }
 
     private static void sendHUD(PlayerEntity player, Text header, Text footer) {
-        PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-        buf.writeText(header);
-        buf.writeText(footer);
-        PlayerListHeaderS2CPacket packet = new PlayerListHeaderS2CPacket(buf);
-        buf.release();
-        ((ServerPlayerEntity) player).networkHandler.sendPacket(packet);
+        ((ServerPlayerEntity) player).networkHandler.sendPacket(new PlayerListHeaderS2CPacket(header, footer));
     }
 
 
