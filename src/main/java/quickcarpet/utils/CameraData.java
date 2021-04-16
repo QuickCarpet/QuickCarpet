@@ -39,7 +39,7 @@ public class CameraData {
             Codec.DOUBLE.fieldOf("x").forGetter(d -> d.position.x),
             Codec.DOUBLE.fieldOf("y").forGetter(d -> d.position.y),
             Codec.DOUBLE.fieldOf("z").forGetter(d -> d.position.z)
-    ).apply(it, (dim, x, y, z) -> new CameraData(RegistryKey.of(Registry.DIMENSION, dim), new Vec3d(x, y, z))));
+    ).apply(it, (dim, x, y, z) -> new CameraData(RegistryKey.of(Registry.WORLD_KEY, dim), new Vec3d(x, y, z))));
     public static final Codec<Map<UUID, CameraData>> MAP_CODEC = Codec.unboundedMap(Codec.STRING.xmap(UUID::fromString, UUID::toString), CODEC.codec());
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
     private static final Logger LOGGER = LogManager.getLogger("QuickCarpet|CameraData");

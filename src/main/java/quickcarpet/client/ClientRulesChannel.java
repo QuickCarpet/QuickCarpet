@@ -26,7 +26,7 @@ public class ClientRulesChannel implements ClientPluginChannelHandler {
         if (buf == null) return;
         int packetId = buf.readVarInt();
         if (packetId == RulesChannel.PACKET_S2C_DATA) {
-            NbtCompound data = buf.readCompound();
+            NbtCompound data = buf.readNbt();
             if (data == null) return;
             int version = data.getInt("Version");
             if (version == 0 || version > RulesChannel.VERSION) return;

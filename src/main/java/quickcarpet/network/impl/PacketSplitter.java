@@ -42,7 +42,7 @@ public class PacketSplitter {
         packet.resetReaderIndex();
         for (int offset = 0; offset < len; offset += payloadLimit) {
             int thisLen = Math.min(len - offset, payloadLimit);
-            PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer(thisLen + (offset == 0 ? PacketByteBuf.getVarIntSizeBytes(len) : 0)));
+            PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer(thisLen + (offset == 0 ? PacketByteBuf.getVarIntLength(len) : 0)));
             buf.resetWriterIndex();
             if (offset == 0) buf.writeVarInt(len);
             buf.writeBytes(packet, thisLen);

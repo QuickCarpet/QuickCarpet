@@ -73,7 +73,7 @@ public abstract class WorldMixin implements WorldAccess, ExtendedWorld {
             }
 
             if ((flags & (NO_OBSERVER_UPDATE | NO_FILL_UPDATE)) == 0 && depth > 0) {
-                int maskedFlags = flags & ~(UPDATE_NEIGHBORS | FLAG_32);
+                int maskedFlags = flags & ~(UPDATE_NEIGHBORS | SKIP_DROPS);
                 chunkState.prepare(this, pos, maskedFlags, depth - 1);
                 state.updateNeighbors(this, pos, maskedFlags, depth - 1);
                 state.prepare(this, pos, maskedFlags, depth - 1);

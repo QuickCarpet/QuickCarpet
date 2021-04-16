@@ -62,7 +62,7 @@ public class RulesChannel implements ServerPluginChannelHandler {
         NbtCompound data = serializeRuleUpdate(player, rules);
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeVarInt(PACKET_S2C_DATA);
-        buf.writeCompound(data);
+        buf.writeNbt(data);
         PacketSplitter.send(player.networkHandler, CHANNEL, buf);
     }
 

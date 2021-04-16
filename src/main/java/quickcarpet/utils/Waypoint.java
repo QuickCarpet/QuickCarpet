@@ -100,7 +100,7 @@ public class Waypoint extends UnnamedWaypoint implements Comparable<Waypoint>, M
         RegistryKey<World> dimension = null;
         int slash = name.indexOf('/');
         if (slash >= 0) {
-            dimension = RegistryKey.of(Registry.DIMENSION, new Identifier(name.substring(0, slash)));
+            dimension = RegistryKey.of(Registry.WORLD_KEY, new Identifier(name.substring(0, slash)));
             if (dimension != null) name = name.substring(slash + 1);
         }
         if (dimension == null) {

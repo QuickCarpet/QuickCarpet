@@ -65,7 +65,7 @@ public class UnnamedWaypoint {
             Codec.STRING.optionalFieldOf("creatorUuid").xmap(s -> s.map(UUID::fromString).orElse(null), u -> Optional.ofNullable(u).map(UUID::toString)).forGetter(w -> w.creatorUuid)
     ).apply(it, (dim, x, y, z, yaw, pitch, creator, uuid) -> {
         MinecraftServer server = QuickCarpetServer.getMinecraftServer();
-        WaypointContainer world = (WaypointContainer) server.getWorld(RegistryKey.of(Registry.DIMENSION, dim));
+        WaypointContainer world = (WaypointContainer) server.getWorld(RegistryKey.of(Registry.WORLD_KEY, dim));
         return new UnnamedWaypoint(world, creator, uuid, new Vec3d(x, y, z), new Vec2f(pitch, yaw));
     }));
 

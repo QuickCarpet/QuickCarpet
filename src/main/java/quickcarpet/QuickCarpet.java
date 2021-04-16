@@ -98,7 +98,6 @@ public final class QuickCarpet implements QuickCarpetAPI, ServerEventListener, T
             m.onGameStarted();
             LOG.info(Build.NAME + " module " + m.getId() + " version " + m.getVersion() + " initialized");
         }
-        DataTrackerUtils.check();
     }
 
     @Override

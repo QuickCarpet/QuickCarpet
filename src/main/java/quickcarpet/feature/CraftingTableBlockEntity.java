@@ -171,9 +171,9 @@ public class CraftingTableBlockEntity extends LockableContainerBlockEntity imple
     }
 
     @Override
-    public void provideRecipeInputs(RecipeFinder finder) {
+    public void provideRecipeInputs(RecipeMatcher finder) {
         for (ItemStack stack : this.inventory) {
-            finder.addItem(stack);
+            finder.addInput(stack);
         }
     }
 

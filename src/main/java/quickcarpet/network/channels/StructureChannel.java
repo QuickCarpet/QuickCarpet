@@ -121,7 +121,7 @@ public class StructureChannel implements ServerPluginChannelHandler {
     private void sendData(ServerPlayerEntity player, NbtCompound data) {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeVarInt(PACKET_S2C_DATA);
-        buf.writeCompound(data);
+        buf.writeNbt(data);
         // LOGGER.info(data);
         PacketSplitter.send(player.networkHandler, CHANNEL, buf);
     }

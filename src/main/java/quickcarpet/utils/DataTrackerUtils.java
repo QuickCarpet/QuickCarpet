@@ -6,7 +6,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.entity.*;
 import net.minecraft.entity.boss.WitherEntity;
 import net.minecraft.entity.boss.dragon.EnderDragonEntity;
-import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedDataHandler;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
 import net.minecraft.entity.decoration.ArmorStandEntity;
@@ -24,20 +23,14 @@ import net.minecraft.entity.vehicle.CommandBlockMinecartEntity;
 import net.minecraft.entity.vehicle.FurnaceMinecartEntity;
 import net.minecraft.util.math.Direction;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import quickcarpet.QuickCarpet;
 import quickcarpet.utils.Messenger.Formatter;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.*;
 
 import static net.minecraft.entity.data.TrackedDataHandlerRegistry.*;
 
 public final class DataTrackerUtils {
-    private static final Logger LOGGER = LogManager.getLogger();
-
     private DataTrackerUtils() {}
 
     @SuppressWarnings("unchecked")
@@ -116,51 +109,6 @@ public final class DataTrackerUtils {
         return map;
     }
 
-    public static void check() {
-        Map<Class<? extends Entity>, Integer> vanillaCounts = getVanillaPropertyCounts();
-        if (vanillaCounts == null) {
-            LOGGER.error("Could not get vanilla data tracker property counts");
-            return;
-        }
-        Set<Class<? extends Entity>> vanillaTypes = vanillaCounts.keySet();
-        Set<Class<? extends Entity>> knownTypes = KNOWN_PROPERTIES.keySet();
-        Set<Class<? extends Entity>> allTypes = new LinkedHashSet<>();
-        allTypes.addAll(knownTypes);
-        allTypes.addAll(vanillaTypes);
-        if (vanillaTypes.size() < allTypes.size()) {
-            for (Class<? extends Entity> cls : allTypes) {
-                if (!vanillaTypes.contains(cls)) LOGGER.error("Extra entity " + cls.getSimpleName());
-            }
-        }
-        if (knownTypes.size() < allTypes.size()) {
-            for (Class<? extends Entity> cls : allTypes) {
-                if (!knownTypes.contains(cls)) LOGGER.error("Missing entity " + cls.getSimpleName());
-            }
-        }
-        for (Class<? extends Entity> cls : allTypes) {
-            int vanillaCount = vanillaCounts.getOrDefault(cls, -1) + 1;
-            int knownCount = collectKnownProperties(cls).size();
-            if (vanillaCount != knownCount) {
-                LOGGER.error("Mismatching property count for " + cls.getSimpleName() + ": expected " + vanillaCount + ", got " + knownCount);
-            }
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    private static Map<Class<? extends Entity>, Integer> getVanillaPropertyCounts() {
-        for (Field f : DataTracker.class.getDeclaredFields()) {
-            if ((f.getModifiers() & Modifier.STATIC) == 0) continue;
-            if (f.getType() != Map.class) continue;
-            f.setAccessible(true);
-            try {
-                return (Map<Class<? extends Entity>, Integer>) f.get(null);
-            } catch (IllegalAccessException e) {
-                return null;
-            }
-        }
-        return null;
-    }
-
     static {
         register(Entity.class, BYTE, "flags");
         register(Entity.class, INTEGER, "air");
@@ -169,6 +117,7 @@ public final class DataTrackerUtils {
         register(Entity.class, BOOLEAN, "silent");
         register(Entity.class, BOOLEAN, "no_gravity");
         register(Entity.class, ENTITY_POSE, "pose");
+        register(Entity.class, INTEGER, "frozen_ticks");
         register(AbstractFireballEntity.class, ITEM_STACK, "item");
         register(LivingEntity.class, BYTE, "living_flags");
         register(LivingEntity.class, FLOAT, "health");
@@ -289,7 +238,6 @@ public final class DataTrackerUtils {
         register(RabbitEntity.class, INTEGER, "type");
         register(SheepEntity.class, BYTE, "color");
         register(ShulkerEntity.class, FACING, "attached_face");
-        register(ShulkerEntity.class, OPTIONAL_BLOCK_POS, "attached_block");
         register(ShulkerEntity.class, BYTE, "peek_amount");
         register(ShulkerEntity.class, BYTE, "color");
         register(SlimeEntity.class, INTEGER, "size");

@@ -1,7 +1,7 @@
 package quickcarpet.mixin.spawning;
 
-import net.minecraft.class_6012;
 import net.minecraft.entity.SpawnGroup;
+import net.minecraft.util.collection.Pool;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.SpawnSettings;
@@ -23,8 +23,8 @@ public abstract class NoiseChunkGeneratorMixin extends ChunkGenerator {
         super(biomeSource, structuresConfig);
     }
 
-    @Inject(method = "getEntitySpawnList", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/gen/chunk/ChunkGenerator;getEntitySpawnList(Lnet/minecraft/world/biome/Biome;Lnet/minecraft/world/gen/StructureAccessor;Lnet/minecraft/entity/SpawnGroup;Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/class_6012;"), cancellable = true)
-    private void spawnShulkers(Biome biome, StructureAccessor accessor, SpawnGroup group, BlockPos pos, CallbackInfoReturnable<class_6012<SpawnSettings.SpawnEntry>> cir) {
+    @Inject(method = "getEntitySpawnList", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/gen/chunk/ChunkGenerator;getEntitySpawnList(Lnet/minecraft/world/biome/Biome;Lnet/minecraft/world/gen/StructureAccessor;Lnet/minecraft/entity/SpawnGroup;Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/util/collection/Pool;"), cancellable = true)
+    private void spawnShulkers(Biome biome, StructureAccessor accessor, SpawnGroup group, BlockPos pos, CallbackInfoReturnable<Pool<SpawnSettings.SpawnEntry>> cir) {
         if (Settings.shulkerSpawningInEndCities && group == SpawnGroup.MONSTER && accessor.getStructureAt(pos, true, StructureFeature.END_CITY).hasChildren()) {
             cir.setReturnValue(StructureFeature.END_CITY.getMonsterSpawns());
         }

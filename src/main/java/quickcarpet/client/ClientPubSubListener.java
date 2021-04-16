@@ -62,7 +62,7 @@ public class ClientPubSubListener implements ClientPluginChannelHandler {
             int valueType = buf.readVarInt();
             switch (valueType) {
                 case TYPE_NBT: {
-                    NbtCompound compound = buf.readCompound();
+                    NbtCompound compound = buf.readNbt();
                     if (compound == null) break;
                     if (compound.contains("")) {
                         values.put(name, compound.get(""));
