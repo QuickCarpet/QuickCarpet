@@ -61,6 +61,11 @@ public class AutoCraftingTableContainer extends CraftingScreenHandler {
     }
 
     @Override
+    public void clearCraftingSlots() {
+        this.blockEntity.clear();
+    }
+
+    @Override
     public boolean canUse(PlayerEntity player) {
         return this.blockEntity.canPlayerUse(player);
     }

@@ -156,6 +156,7 @@ public class CraftingTableBlockEntity extends LockableContainerBlockEntity imple
             return;
         }
         inventory.set(slot - 1, stack);
+        markDirty();
     }
 
     @Override
@@ -191,6 +192,7 @@ public class CraftingTableBlockEntity extends LockableContainerBlockEntity imple
     @Override
     public void clear() {
         this.inventory.clear();
+        markDirty();
     }
 
     private Optional<CraftingRecipe> getCurrentRecipe() {
