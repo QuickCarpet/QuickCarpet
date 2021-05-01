@@ -23,6 +23,7 @@
     "accessor.UpgradeDataAccessor",
     "antiCheat.ServerPlayNetworkHandlerMixin",
     "autoCraftingTable.CraftingTableBlockMixin",
+    "autoCraftingTable.compat.multiconnect.BlockEntityMixin",
     "betterChunkLoading.ChunkTicketManagerMixin",
     "betterChunkLoading.MinecraftServerMixin",
     "betterChunkLoading.ServerChunkManagerMixin",

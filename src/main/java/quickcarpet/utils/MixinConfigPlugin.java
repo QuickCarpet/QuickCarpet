@@ -17,10 +17,12 @@ import java.util.Set;
 public class MixinConfigPlugin implements IMixinConfigPlugin {
     private static final Logger LOGGER = LogManager.getLogger("QuickCarpet|MixinConfig");
     private boolean incompatibleWorldEdit;
+    private boolean multiconnect;
 
     @Override
     public void onLoad(String mixinPackage) {
         incompatibleWorldEdit = hasIncompatibleWorldEdit();
+        multiconnect = FabricLoader.getInstance().isModLoaded("multiconnect");
     }
 
     @Override
@@ -50,6 +52,9 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
                     LOGGER.debug("Not applying WorldEdit workaround");
                 }
                 return !incompatibleWorldEdit;
+            }
+            case "quickcarpet.mixin.autoCraftingTable.compat.multiconnect.BlockEntityMixin": {
+                return multiconnect;
             }
             case "quickcarpet.mixin.fabricApi.RegistrySyncManagerMixin": {
                 if (FabricLoader.getInstance().isModLoaded("fabric-registry-sync-v0")) {
