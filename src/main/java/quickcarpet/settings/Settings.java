@@ -87,6 +87,9 @@ public class Settings {
     @Rule(category = {EXPERIMENTAL, OPTIMIZATIONS}, validator = Validator.NonNegative.class)
     public static int calmNetherFires = 1;
 
+    @Rule(category = FIX)
+    public static boolean carpetDuplicationFix = false;
+
     @Rule(category = COMMANDS)
     public static boolean cameraModeRestoreLocation = true;
 
@@ -222,6 +225,9 @@ public class Settings {
     @Rule(category = CREATIVE, options = {"10", "12", "14", "100"}, validator = Validator.NonNegative.class)
     public static int pushLimit = 12;
 
+    @Rule(category = FIX)
+    public static boolean railDuplicationFix = false;
+
     @Rule(category = CREATIVE, options = {"9", "15", "30"}, validator = Validator.Positive.class)
     public static int railPowerLimit = 9;
 
@@ -295,6 +301,9 @@ public class Settings {
 
     @Rule(category = {FEATURE, CREATIVE})
     public static boolean terracottaRepeaters = false;
+
+    @Rule(category = {FIX, TNT})
+    public static boolean tntDuplicationFix = false;
 
     public static class TNTAngle implements Validator<Double> {
         @Override

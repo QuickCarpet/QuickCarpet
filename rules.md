@@ -92,6 +92,14 @@ Default: `true`
 Options: `true`, `false`  
 Categories: commands  
 
+## carpetDuplicationFix
+Fix carpet duplication using pistons
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: fix  
+
 ## commandBlockInfo
 Enables /blockinfo command to get info about blocks
 
@@ -438,6 +446,14 @@ Options: `10`, `12`, `14`, `100`
 Categories: creative  
 Validator: `>= 0`  
 
+## railDuplicationFix
+Fix rail duplication using pistons
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: fix  
+
 ## railPowerLimit
 Rail power limit
 
@@ -557,6 +573,14 @@ Type: `boolean`
 Default: `false`  
 Options: `true`, `false`  
 Categories: feature, creative  
+
+## tntDuplicationFix
+Fix tnt duplication using pistons
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: fix, tnt  
 
 ## tntHardcodeAngle
 Sets the horizontal random angle on TNT for debugging of TNT contraptions

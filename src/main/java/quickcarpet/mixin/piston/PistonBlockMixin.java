@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import quickcarpet.utils.CarpetRegistry;
-import quickcarpet.utils.PistonBehaviors;
+import quickcarpet.utils.PistonHelper;
 import quickcarpet.utils.extensions.ExtendedPistonBlockEntity;
 
 import java.util.ArrayList;
@@ -51,23 +51,23 @@ public class PistonBlockMixin extends FacingBlock {
         }
     }
 
-    @Inject(method = "isMovable", at = @At(value = "RETURN", ordinal = 3, shift = At.Shift.BEFORE))
+    @Inject(method = "isMovable", at = @At(value = "RETURN", ordinal = 3, shift = At.Shift.BEFORE), cancellable = true)
     private static void additionalBlocksMovable2(BlockState blockState_1, World world_1, BlockPos blockPos_1, Direction direction_1,
                                                  boolean allowDestroy, Direction direction_2, CallbackInfoReturnable<Boolean> cir) {
         if(quickcarpet.settings.Settings.movableBlockOverrides){
-            PistonBehavior override = PistonBehaviors.getOverridePistonBehavior(blockState_1);
+            PistonBehavior override = PistonHelper.getOverridePistonBehavior(blockState_1);
             if(override != null){
                 boolean ret = (override == PistonBehavior.NORMAL) ||
                         (override == PistonBehavior.PUSH_ONLY && direction_1 == direction_2) ||
                         (override == PistonBehavior.DESTROY && allowDestroy) ||
-                        (override == PistonBehaviors.WEAK_STICKY) ||
-                        (override == PistonBehaviors.WEAK_STICKY_BREAKABLE);// && allowDestroy);
+                        (override == PistonHelper.WEAK_STICKY) ||
+                        (override == PistonHelper.WEAK_STICKY_BREAKABLE);// && allowDestroy);
                 cir.setReturnValue(ret);
             }
         }
     }
 
-    @Inject(method = "isMovable", at = @At(value = "RETURN", ordinal = 0, shift = At.Shift.BEFORE))
+    @Inject(method = "isMovable", at = @At(value = "RETURN", ordinal = 0, shift = At.Shift.BEFORE), cancellable = true)
     private static void additionalObsidianMovable(BlockState blockState_1, World world_1, BlockPos blockPos_1, Direction direction_1, boolean allowDestroy, Direction direction_2, CallbackInfoReturnable<Boolean> cir) {
         if(quickcarpet.settings.Settings.movableBlockOverrides){
 
@@ -75,20 +75,20 @@ public class PistonBlockMixin extends FacingBlock {
                 return; //return false
             }
 
-            PistonBehavior override = PistonBehaviors.getOverridePistonBehavior(blockState_1);
+            PistonBehavior override = PistonHelper.getOverridePistonBehavior(blockState_1);
             if(override != null){
                 boolean ret = (override == PistonBehavior.NORMAL) ||
                                 (override == PistonBehavior.PUSH_ONLY && direction_1 == direction_2) ||
                                 (override == PistonBehavior.DESTROY && allowDestroy) ||
-                                (override == PistonBehaviors.WEAK_STICKY) ||
-                                (override == PistonBehaviors.WEAK_STICKY_BREAKABLE);// && allowDestroy);
+                                (override == PistonHelper.WEAK_STICKY) ||
+                                (override == PistonHelper.WEAK_STICKY_BREAKABLE);// && allowDestroy);
                 cir.setReturnValue(ret);
                 cir.cancel();
             }
         }
     }
 
-    @Inject(method = "isMovable", at = @At(value = "RETURN", ordinal = 3, shift = At.Shift.BEFORE))
+    @Inject(method = "isMovable", at = @At(value = "RETURN", ordinal = 3, shift = At.Shift.BEFORE), cancellable = true)
     private static void movableCMD(BlockState blockState_1, World world_1, BlockPos blockPos_1,
                                    Direction direction_1, boolean boolean_1, Direction direction_2, CallbackInfoReturnable<Boolean> cir) {
         Block block_1 = blockState_1.getBlock();
@@ -180,7 +180,7 @@ public class PistonBlockMixin extends FacingBlock {
     @Redirect(method = "onSyncedBlockEvent", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getPistonBehavior()Lnet/minecraft/block/piston/PistonBehavior;"))
     private PistonBehavior returnNormalWhenMovable(BlockState blockState){
         PistonBehavior pistonBehavior = blockState.getPistonBehavior();
-        if(pistonBehavior == PistonBehaviors.WEAK_STICKY_BREAKABLE || pistonBehavior == PistonBehaviors.WEAK_STICKY)
+        if(pistonBehavior == PistonHelper.WEAK_STICKY_BREAKABLE || pistonBehavior == PistonHelper.WEAK_STICKY)
             return PistonBehavior.NORMAL;
         return pistonBehavior;
     }
