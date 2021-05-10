@@ -17,7 +17,7 @@ import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import quickcarpet.settings.Settings;
-import quickcarpet.utils.PistonBehaviors;
+import quickcarpet.utils.PistonHelper;
 
 import java.util.List;
 
@@ -188,11 +188,11 @@ public abstract class PistonHandlerMixin {
     private void doOnlyWeakSticking(BlockPos blockPos_1, Direction arg1, CallbackInfoReturnable<Boolean> cir, BlockState blockState_1, World var13, BlockPos var14){
         if(Settings.movableBlockOverrides){
             PistonBehavior pistonBehavior = blockState_1.getPistonBehavior();
-            if ((pistonBehavior == PistonBehaviors.WEAK_STICKY || pistonBehavior == PistonBehaviors.WEAK_STICKY_BREAKABLE) && !movedBlocks.contains(blockPos_1)) {
+            if ((pistonBehavior == PistonHelper.WEAK_STICKY || pistonBehavior == PistonHelper.WEAK_STICKY_BREAKABLE) && !movedBlocks.contains(blockPos_1)) {
                 //block is being pushed: either move the block or crush it.
                 BlockPos brokenBefore = null;
                 if(arg1 == this.motionDirection){
-                    if(pistonBehavior == PistonBehaviors.WEAK_STICKY_BREAKABLE)
+                    if(pistonBehavior == PistonHelper.WEAK_STICKY_BREAKABLE)
                         if(brokenBlocks.size()>0)
                             brokenBefore = brokenBlocks.get(brokenBlocks.size()-1);
                         else

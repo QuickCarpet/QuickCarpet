@@ -57,11 +57,13 @@ public class CraftingTableBlockMixin extends Block implements DynamicBlockEntity
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public boolean hasComparatorOutput(BlockState blockState) {
         return hasBlockEntity();
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public int getComparatorOutput(BlockState blockState, World world, BlockPos pos) {
         CraftingTableBlockEntity blockEntity = getBlockEntity(world, pos);
         if (blockEntity != null) {
@@ -75,6 +77,7 @@ public class CraftingTableBlockMixin extends Block implements DynamicBlockEntity
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void onStateReplaced(BlockState state1, World world, BlockPos pos, BlockState state2, boolean boolean_1) {
         if (state1.getBlock() != state2.getBlock()) {
             CraftingTableBlockEntity blockEntity = getBlockEntity(world, pos);

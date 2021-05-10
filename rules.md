@@ -92,6 +92,14 @@ Default: `true`
 Options: `true`, `false`  
 Categories: commands  
 
+## carpetDuplicationFix
+Fix carpet duplication using pistons
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: fix  
+
 ## commandBlockInfo
 Enables /blockinfo command to get info about blocks
 
@@ -101,7 +109,15 @@ Categories: commands
 Validator: `OP Level (0-4)`  
 
 ## commandCameramode
-Enables /c and /s commands to quickly switch between camera and survival modes for players with this permission level
+Enables /c, /s and /cs commands to quickly switch between camera and survival modes for players with this permission level
+
+Type: `int`  
+Default: `2`  
+Categories: commands  
+Validator: `OP Level (0-4)`  
+
+## commandDataTracker
+Enables /datatracker for viewing tracked entity data
 
 Type: `int`  
 Default: `2`  
@@ -430,6 +446,14 @@ Options: `10`, `12`, `14`, `100`
 Categories: creative  
 Validator: `>= 0`  
 
+## railDuplicationFix
+Fix rail duplication using pistons
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: fix  
+
 ## railPowerLimit
 Rail power limit
 
@@ -550,6 +574,14 @@ Default: `false`
 Options: `true`, `false`  
 Categories: feature, creative  
 
+## tntDuplicationFix
+Fix tnt duplication using pistons
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: fix, tnt  
+
 ## tntHardcodeAngle
 Sets the horizontal random angle on TNT for debugging of TNT contraptions
 
@@ -582,6 +614,15 @@ Type: `boolean`
 Default: `false`  
 Options: `true`, `false`  
 Categories: fix, experimental  
+
+## viewDistance
+View distance of the dedicated server
+
+Use the vanilla client setting for integrated servers  
+
+Type: `int`  
+Default: `-1`  
+Validator: `quickcarpet.settings.Settings$ViewDistance`  
 
 ## xpCoolDown
 Delay before players can absorb the next Experience Orb

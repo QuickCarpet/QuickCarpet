@@ -21,6 +21,9 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.registry.Registry;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import quickcarpet.mixin.accessor.CraftingInventoryAccessor;
 import quickcarpet.utils.CarpetRegistry;
 
@@ -31,6 +34,7 @@ import java.util.Optional;
 
 @SuppressWarnings("OptionalAssignedToNull")
 public class CraftingTableBlockEntity extends LockableContainerBlockEntity implements SidedInventory, RecipeUnlocker, RecipeInputProvider {
+    private static final Logger LOGGER = LogManager.getLogger("QuickCarpet|CraftingTableBlockEntity");
     private static final int[] OUTPUT_SLOTS = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     private static final int[] INPUT_SLOTS = {1, 2, 3, 4, 5, 6, 7, 8, 9};
     public DefaultedList<ItemStack> inventory;
@@ -58,8 +62,14 @@ public class CraftingTableBlockEntity extends LockableContainerBlockEntity imple
         ).toSimpleType();
     }
 
+    public static void addBackMapping() {
+        LOGGER.info("Adding back removed crafting table block entity mapping");
+        Registry.register(Registry.BLOCK_ENTITY_TYPE, "carpet:crafting_table", CarpetRegistry.CRAFTING_TABLE_BLOCK_ENTITY_TYPE);
+    }
+
     @Override
     public CompoundTag toTag(CompoundTag tag) {
+        if (BlockEntityType.getId(this.getType()) == null) addBackMapping();
         super.toTag(tag);
         Inventories.toTag(tag, inventory);
         tag.put("Output", output.toTag(new CompoundTag()));
@@ -156,6 +166,7 @@ public class CraftingTableBlockEntity extends LockableContainerBlockEntity imple
             return;
         }
         inventory.set(slot - 1, stack);
+        markDirty();
     }
 
     @Override
@@ -191,6 +202,7 @@ public class CraftingTableBlockEntity extends LockableContainerBlockEntity imple
     @Override
     public void clear() {
         this.inventory.clear();
+        markDirty();
     }
 
     private Optional<CraftingRecipe> getCurrentRecipe() {

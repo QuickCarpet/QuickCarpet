@@ -1,61 +1,20 @@
 package quickcarpet.utils;
 
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.MappingResolver;
+import com.google.common.collect.AbstractIterator;
 import net.minecraft.server.world.ServerChunkManager;
-import net.minecraft.util.Lazy;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.HashMap;
+import java.lang.reflect.Modifier;
 import java.util.function.BooleanSupplier;
 
 public class Reflection {
-    public static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
-    private static HashMap<String, String> PRIMITIVE_TYPE_DESCRIPTORS = new HashMap<>();
-    static {
-        PRIMITIVE_TYPE_DESCRIPTORS.put("void", "V");
-        PRIMITIVE_TYPE_DESCRIPTORS.put("byte", "B");
-        PRIMITIVE_TYPE_DESCRIPTORS.put("char", "C");
-        PRIMITIVE_TYPE_DESCRIPTORS.put("double", "D");
-        PRIMITIVE_TYPE_DESCRIPTORS.put("float", "F");
-        PRIMITIVE_TYPE_DESCRIPTORS.put("int", "I");
-        PRIMITIVE_TYPE_DESCRIPTORS.put("long", "J");
-        PRIMITIVE_TYPE_DESCRIPTORS.put("short", "S");
-        PRIMITIVE_TYPE_DESCRIPTORS.put("boolean", "Z");
-    }
-
-    private static Lazy<MappingResolver> MAPPINGS = new Lazy<>(() -> FabricLoader.getInstance().getMappingResolver());
-
-    private static String unmapToIntermediary(Class<?> cls) {
-        return MAPPINGS.get().unmapClassName("intermediary", cls.getName());
-    }
-
-    private static Class<?> classForName(String intermediary) throws ClassNotFoundException {
-        return Class.forName(MAPPINGS.get().mapClassName("intermediary", intermediary));
-    }
-
-    private static MethodHandle getMappedMethod(Class<?> owner, String intermediary, Class<?> retType, Class<?> ...args) throws IllegalAccessException, NoSuchMethodException {
-        StringBuilder descriptor = new StringBuilder("(");
-        for (Class<?> arg : args) {
-            if (arg.isPrimitive()) {
-                descriptor.append(PRIMITIVE_TYPE_DESCRIPTORS.get(arg.getName()));
-            } else {
-                descriptor.append("L").append(unmapToIntermediary(arg).replace('.', '/')).append(";");
-            }
-        }
-        descriptor.append(')');
-        if (retType.isPrimitive()) {
-            descriptor.append(PRIMITIVE_TYPE_DESCRIPTORS.get(retType.getName()));
-        } else {
-            descriptor.append("L").append(unmapToIntermediary(retType).replace('.', '/')).append(";");
-        }
-        String obf = MAPPINGS.get().mapMethodName("intermediary", unmapToIntermediary(owner), intermediary, descriptor.toString());
-        return getMethod(owner, obf, retType, args);
-    }
+    private static final Logger LOGGER = LogManager.getLogger();
+    private static final MethodHandles.Lookup LOOKUP = MethodHandles.lookup();
 
     private static MethodHandle getMethod(Class<?> owner, String name, Class<?> retType, Class<?> ...args) throws IllegalAccessException, NoSuchMethodException {
         Method m = owner.getDeclaredMethod(name, args);
@@ -77,24 +36,14 @@ public class Reflection {
         throw ex;
     }
 
-    public static <T> T callPrivateConstructor(Class<T> cls) {
+    public static <T> T callDeprecatedPrivateConstructor(Class<T> cls) {
         try {
             Constructor<T> constr = cls.getDeclaredConstructor();
-            constr.setAccessible(true);
+            if ((constr.getModifiers() & Modifier.PUBLIC) == 0) {
+                LOGGER.warn("Deprecated: making " + constr + " accessible, please use a public constructor instead");
+                constr.setAccessible(true);
+            }
             return constr.newInstance();
-        } catch (ReflectiveOperationException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static void setFinalField(Object target, String name, Class<?> type, Object value) {
-        Class<?> targetType = target.getClass();
-        String desc = type.isPrimitive() ? PRIMITIVE_TYPE_DESCRIPTORS.get(type.getName()) : "L" + type.getName().replace('.', '/') + ";";
-        String fieldName = MAPPINGS.get().mapFieldName("intermediary", unmapToIntermediary(target.getClass()), name, desc);
-        try {
-            Field f = targetType.getField(fieldName);
-            f.setAccessible(true);
-            f.set(target, value);
         } catch (ReflectiveOperationException e) {
             throw new RuntimeException(e);
         }
@@ -124,5 +73,23 @@ public class Reflection {
         } catch (Throwable throwable) {
             throw new RuntimeException(throwable);
         }
+    }
+
+    public static <B, S extends B> Iterable<Class<? extends B>> iterateSuperClasses(Class<S> start, Class<B> base) {
+        return () -> new AbstractIterator<Class<? extends B>>() {
+            private Class<? extends B> cls;
+            @Override
+            protected Class<? extends B> computeNext() {
+                if (cls == null) {
+                    cls = start;
+                    return start;
+                }
+                if (cls == base) {
+                    return endOfData();
+                }
+                cls = (Class<? extends B>) cls.getSuperclass();
+                return cls;
+            }
+        };
     }
 }

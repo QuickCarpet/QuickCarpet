@@ -22,6 +22,7 @@ public class ObsidianBlock extends Block {
     }
 
     @Override
+    @SuppressWarnings("deprecation")
     public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         for (Direction dir : Direction.values()) {
             FluidState neighbor = world.getFluidState(pos.offset(dir));
