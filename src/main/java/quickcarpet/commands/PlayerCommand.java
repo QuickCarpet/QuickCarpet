@@ -65,7 +65,7 @@ public class PlayerCommand {
                 .then(makeActionCommand("drop", ActionType.DROP_ITEM))
                 .then(makeActionCommand("dropStack", ActionType.DROP_STACK))
                 .then(makeActionCommand("swapHands", ActionType.SWAP_HANDS))
-                .then(literal("reach").then(argument("reach", floatArg(0,10)).executes(c -> reach(c,getFloat(c, "reach")))))
+                .then(literal("reach").then(argument("reach", floatArg(0,5)).executes(c -> reach(c,getFloat(c, "reach")))))
                 .then(literal("dropAll").executes(PlayerCommand::dropAll))
                 .then(literal("kill").executes(PlayerCommand::kill))
                 .then(literal("shadow"). executes(PlayerCommand::shadow))
@@ -244,7 +244,7 @@ public class PlayerCommand {
     private static int reach(CommandContext<ServerCommandSource> context, float dist) {
         if (cantManipulate(context)) return 0;
         ServerPlayerEntity player = getPlayer(context);
-        PlayerActionPack.reach.put(player.getUuid(),dist);
+        ((ActionPackOwner) player).getActionPack().reach = dist;
         return 1;
     }
 

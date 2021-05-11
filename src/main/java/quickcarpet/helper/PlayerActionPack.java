@@ -21,7 +21,6 @@ import java.util.*;
 public class PlayerActionPack {
     private ServerPlayerEntity player;
     private EnumMap<ActionType, Action> actions = new EnumMap<>(ActionType.class);
-    public static HashMap<UUID,Float> reach = new HashMap<>();
 
     private BlockPos currentBlock;
     private int blockHitDelay;
@@ -32,6 +31,8 @@ public class PlayerActionPack {
     private boolean sprinting;
     private float forward;
     private float sideways;
+
+    public float reach;
 
     public PlayerActionPack(ServerPlayerEntity player) {
         this.player = player;
@@ -166,7 +167,9 @@ public class PlayerActionPack {
     }
 
     static HitResult getTarget(ServerPlayerEntity player) {
-        double distance = reach.containsKey(player.getUuid()) ? reach.get(player.getUuid()) : (player.interactionManager.isCreative() ? 5 : 4.5f);
+        float reach = ((ActionPackOwner) player).getActionPack().reach;
+        float maxReach = (player.interactionManager.isCreative() ? 5 : 4.5f);
+        double distance = reach != 0 ? Math.min(reach,maxReach) : maxReach;
         return RayTracing.rayTrace(player, 1, distance, false);
     }
 
