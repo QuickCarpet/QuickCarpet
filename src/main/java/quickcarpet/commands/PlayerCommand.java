@@ -37,6 +37,8 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
+import static com.mojang.brigadier.arguments.FloatArgumentType.floatArg;
+import static com.mojang.brigadier.arguments.FloatArgumentType.getFloat;
 import static com.mojang.brigadier.arguments.IntegerArgumentType.getInteger;
 import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
 import static com.mojang.brigadier.arguments.StringArgumentType.getString;
@@ -63,6 +65,7 @@ public class PlayerCommand {
                 .then(makeActionCommand("drop", ActionType.DROP_ITEM))
                 .then(makeActionCommand("dropStack", ActionType.DROP_STACK))
                 .then(makeActionCommand("swapHands", ActionType.SWAP_HANDS))
+                .then(literal("reach").then(argument("reach", floatArg(0,5)).executes(c -> reach(c,getFloat(c, "reach")))))
                 .then(literal("dropAll").executes(PlayerCommand::dropAll))
                 .then(literal("kill").executes(PlayerCommand::kill))
                 .then(literal("shadow"). executes(PlayerCommand::shadow))
@@ -109,7 +112,9 @@ public class PlayerCommand {
             .then(literal("once").executes(c -> action(c, type, Action.once())))
             .then(literal("continuous").executes(c -> action(c, type, Action.continuous())))
             .then(literal("interval").then(argument("ticks", integer(2))
-                .executes(c -> action(c, type, Action.interval(getInteger(c, "ticks"))))));
+                    .executes(c -> action(c, type, Action.interval(getInteger(c, "ticks"))))))
+            .then(literal("perTick").then(argument("times", integer(1,10))
+                    .executes(c -> action(c, type, Action.perTick(getInteger(c, "times"))))));
     }
 
     private static Collection<String> getPlayers(ServerCommandSource source) {
@@ -233,6 +238,13 @@ public class PlayerCommand {
         if (cantManipulate(context)) return 0;
         ServerPlayerEntity player = getPlayer(context);
         ((ActionPackOwner) player).getActionPack().stop();
+        return 1;
+    }
+
+    private static int reach(CommandContext<ServerCommandSource> context, float dist) {
+        if (cantManipulate(context)) return 0;
+        ServerPlayerEntity player = getPlayer(context);
+        ((ActionPackOwner) player).getActionPack().reach = dist;
         return 1;
     }
 
