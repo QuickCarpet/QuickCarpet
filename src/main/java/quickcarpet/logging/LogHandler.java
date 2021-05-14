@@ -9,9 +9,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableText;
 import quickcarpet.QuickCarpetServer;
 import quickcarpet.utils.HUDController;
-import quickcarpet.utils.Messenger;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -38,7 +36,9 @@ public interface LogHandler {
             if (player != null)
                 HUDController.clearPlayerHUD(player);
         }
-    };    LogHandler ACTION_BAR = (logger, player, message, commandParams) -> player.networkHandler.sendPacket(new TitleS2CPacket(TitleS2CPacket.Action.ACTIONBAR, message));
+    };
+
+    LogHandler ACTION_BAR = (logger, player, message, commandParams) -> player.networkHandler.sendPacket(new TitleS2CPacket(TitleS2CPacket.Action.ACTIONBAR, message));
 
     @FunctionalInterface
     interface LogHandlerCreator {

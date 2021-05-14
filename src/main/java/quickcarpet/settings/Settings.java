@@ -87,6 +87,9 @@ public class Settings {
     @Rule(category = {EXPERIMENTAL, OPTIMIZATIONS}, validator = Validator.NonNegative.class)
     public static int calmNetherFires = 1;
 
+    @Rule(category = {FEATURE, SURVIVAL})
+    public static boolean carefulBreak = false;
+
     @Rule(category = FIX)
     public static boolean carpetDuplicationFix = false;
 

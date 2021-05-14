@@ -92,6 +92,14 @@ Default: `true`
 Options: `true`, `false`  
 Categories: commands  
 
+## carefulBreak
+Places the mined block in the player inventory when sneaking and subsribed to /log careful_break
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: feature, survival  
+
 ## carpetDuplicationFix
 Fix carpet duplication using pistons
 

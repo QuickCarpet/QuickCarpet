@@ -41,6 +41,7 @@
   "carpet.rule.blockEntityFix.description": "Fixes a crash when activating droppers or dispensers with invalid block entities",
   "carpet.rule.calmNetherFires.description": "Make infinite fires calmer to cause less lag",
   "carpet.rule.calmNetherFires.extra": "0: disable ticking, 1: vanilla, 2+: multiply the ticking interval",
+  "carpet.rule.carefulBreak.description": "Places the mined block in the player inventory when sneaking and subsribed to /log careful_break",
   "carpet.rule.carpetDuplicationFix.description": "Fix carpet duplication using pistons",
   "carpet.rule.cameraModeRestoreLocation.description": "/s restores the player to the location they used /c at",
   "carpet.rule.commandBlockInfo.description": "Enables /blockinfo command to get info about blocks",

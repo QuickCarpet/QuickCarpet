@@ -39,6 +39,7 @@ public class MixinConfig {
         .putAll("blockEntityFix", "blockEntityFix")
         .putAll("blockPlacement", "accurateBlockPlacement", "flippinCactus")
         .putAll("calmNetherFires", "calmNetherFires")
+        .putAll("carefulBreak", "carefulBreak")
         .putAll("commands", "fillLimit")
         .putAll("creativeNoClip", "creativeNoClip")
         .putAll("dispenser", "dispensersBreakBlocks", "dispensersPlaceBlocks", "dispensersShearVines", "dispensersStripLogs", "dispensersTillSoil", "renewableNetherrack")

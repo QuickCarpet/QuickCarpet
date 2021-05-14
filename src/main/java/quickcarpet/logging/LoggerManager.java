@@ -49,7 +49,7 @@ public class LoggerManager {
 
         public final Logger logger;
         public final String option;
-        public final LogHandler handler;
+        public final @Nullable LogHandler handler;
 
         public LoggerOptions(Logger logger, String option, LogHandler handler) {
             this.logger = logger;
@@ -112,7 +112,7 @@ public class LoggerManager {
             subscribedOnlinePlayers.put(logger, playerName);
             logger.active = true;
         }
-        options.handler.onAddPlayer(playerName);
+        if (options.handler != null) options.handler.onAddPlayer(playerName);
     }
 
     /**
@@ -126,7 +126,7 @@ public class LoggerManager {
         PlayerSubscriptions subs = playerSubscriptions.get(playerName);
         if (subs == null) return;
         LogHandler handler = subs.subscriptions.remove(logger).handler;
-        handler.onRemovePlayer(playerName);
+        if (handler != null) handler.onRemovePlayer(playerName);
         if (subs.subscriptions.isEmpty()) playerSubscriptions.remove(playerName);
         subscribedOnlinePlayers.remove(logger, playerName);
         logger.active = hasOnlineSubscribers(logger);
@@ -157,6 +157,10 @@ public class LoggerManager {
 
     public Stream<ServerPlayerEntity> getOnlineSubscribers(Logger logger) {
         return subscribedOnlinePlayers.get(logger).stream().map(this::playerFromName);
+    }
+
+    public boolean isSubscribed(ServerPlayerEntity player, Logger logger) {
+        return subscribedOnlinePlayers.get(logger).contains(player.getEntityName());
     }
 
     public boolean hasOnlineSubscribers(Logger logger) {

@@ -1,9 +1,13 @@
 package quickcarpet.logging;
 
 import com.mojang.serialization.DataResult;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.DyeColor;
+import quickcarpet.settings.Settings;
 import quickcarpet.utils.Translations;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,6 +25,18 @@ public final class Loggers {
     public static final Logger MOBCAPS = registerLogger("mobcaps", "dynamic", new String[]{"dynamic", "overworld", "nether", "end"}, LogHandler.HUD);
     public static final Logger GC = registerLogger("gc", null, null, LogHandler.CHAT);
     public static final Logger COMMAND_BLOCKS = registerLogger("command_blocks", "brief", new String[]{"brief", "full"}, LogHandler.CHAT);
+    public static final Logger CAREFUL_BREAK = registerLogger(new Logger("careful_break", null, null, null) {
+        @Override
+        public boolean isAvailable() {
+            return Settings.carefulBreak;
+        }
+
+        @Nullable
+        @Override
+        public MutableText getUnavailabilityReason() {
+            return isAvailable() ? null : new TranslatableText("command.carpet.option.disabled", "carefulBreak");
+        }
+    });
 
 //    public static final Logger PROJECTILES<Logger.EmptyCommandParameters> = registerLogger("projectiles", "full",  new String[]{"brief", "full"}, LogHandler.CHAT);
 //    public static final Logger FALLING_BLOCKS<Logger.EmptyCommandParameters> = registerLogger("fallingBlocks", "brief", new String[]{"brief", "full"}, LogHandler.CHAT);
