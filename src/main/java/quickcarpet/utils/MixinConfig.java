@@ -68,6 +68,7 @@ public class MixinConfig {
         .putAll("spawning", "shulkerSpawningInEndCities", "phantomsRespectMobcap")
         .putAll("stackableShulkerBoxes", "stackableShulkerBoxes")
         .putAll("terracottaRepeaters", "terracottaRepeaters")
+        .putAll("tileTickLimit", "tileTickLimit")
         .putAll("tnt", "explosionNoBlockDamage", "tntUpdateOnPlace", "tntPrimeMomentum", "tntHardcodeAngle")
         .putAll("updateSuppressionCrashFix", "updateSuppressionCrashFix")
         .putAll("xp", "xpCoolDown", "xpMerging")

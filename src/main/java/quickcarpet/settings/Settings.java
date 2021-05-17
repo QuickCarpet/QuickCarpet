@@ -305,6 +305,9 @@ public class Settings {
     @Rule(category = {FEATURE, CREATIVE})
     public static boolean terracottaRepeaters = false;
 
+    @Rule(category = CREATIVE, validator = Validator.NonNegative.class)
+    public static int tileTickLimit = 65536;
+
     @Rule(category = {FIX, TNT})
     public static boolean tntDuplicationFix = false;
 

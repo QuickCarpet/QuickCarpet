@@ -582,6 +582,14 @@ Default: `false`
 Options: `true`, `false`  
 Categories: feature, creative  
 
+## tileTickLimit
+Maximum number of tile-ticks executed per tick
+
+Type: `int`  
+Default: `65536`  
+Categories: creative  
+Validator: `>= 0`  
+
 ## tntDuplicationFix
 Fix tnt duplication using pistons
 

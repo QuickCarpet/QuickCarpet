@@ -116,6 +116,8 @@
     "tickSpeed.MinecraftServerMixin",
     "tickSpeed.ServerChunkManagerMixin",
     "tickSpeed.ServerWorldMixin",
+    "tileTickLimit.ServerTickSchedulerMixin",
+    "tileTickLimit.compat.lithium.LithiumServerTickSchedulerMixin",
     "tnt.ExplosionMixin",
     "tnt.TntBlockMixin",
     "tnt.TntEntityMixin",

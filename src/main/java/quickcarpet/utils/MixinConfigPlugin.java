@@ -63,6 +63,9 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
                 }
                 return false;
             }
+            case "quickcarpet.mixin.tileTickLimit.compat.lithium.LithiumServerTickSchedulerMixin": {
+                return FabricLoader.getInstance().isModLoaded("lithium");
+            }
         }
         return true;
     }
