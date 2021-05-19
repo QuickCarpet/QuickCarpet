@@ -306,6 +306,14 @@ Default: `false`
 Options: `true`, `false`  
 Categories: tnt  
 
+## fallingBlockDuplicationFix
+Fix duplicating falling blocks using end portals
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: fix  
+
 ## fillLimit
 Customizable fill/clone volume limit
 

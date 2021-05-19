@@ -44,6 +44,7 @@ public class MixinConfig {
         .putAll("creativeNoClip", "creativeNoClip")
         .putAll("dispenser", "dispensersBreakBlocks", "dispensersPlaceBlocks", "dispensersShearVines", "dispensersStripLogs", "dispensersTillSoil", "renewableNetherrack")
         .putAll("drownedEnchantedTridentsFix", "drownedEnchantedTridentsFix")
+        .putAll("fallingBlockDuplicationFix", "fallingBlockDuplicationFix")
         .putAll("fillUpdates", "fillUpdates", "fillUpdatesPostProcessing")
         .putAll("hopperCounters", "hopperCounters")
         .putAll("hopperMinecartCooldown", "hopperMinecartCooldown")

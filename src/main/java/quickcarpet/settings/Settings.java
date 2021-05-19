@@ -175,6 +175,9 @@ public class Settings {
     )
     public static int fillLimit = 32768;
 
+    @Rule(category = FIX)
+    public static boolean fallingBlockDuplicationFix = false;
+
     @Rule(category = CREATIVE)
     public static boolean fillUpdates = true;
 

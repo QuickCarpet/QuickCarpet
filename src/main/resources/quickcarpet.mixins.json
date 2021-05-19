@@ -59,6 +59,7 @@
     "drownedNavigationFix.MobEntityMixin",
     "drownedNavigationFix.ServerWorldMixin",
     "fabricApi.RegistrySyncManagerMixin",
+    "fallingBlockDuplicationFix.FallingBlockEntityMixin",
     "fillUpdates.BlockStateArgumentMixin",
     "fillUpdates.StructureMixin",
     "fillUpdates.WorldMixin",

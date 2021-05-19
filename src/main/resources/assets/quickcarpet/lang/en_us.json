@@ -70,6 +70,7 @@
   "carpet.rule.drownedEnchantedTridentsFix.description": "Makes enchantments work on tridents thrown by drowned",
   "carpet.rule.dustOnPistons.description": "Makes redstone dust not pop off pistons",
   "carpet.rule.explosionNoBlockDamage.description": "Explosions won't destroy blocks",
+  "carpet.rule.fallingBlockDuplicationFix.description": "Fix duplicating falling blocks using end portals",
   "carpet.rule.fillLimit.description": "Customizable fill/clone volume limit",
   "carpet.rule.fillUpdates.description": "fill/clone/setblock and structure blocks cause block updates",
   "carpet.rule.fillUpdatesPostProcessing.description": "Whether fillUpdates=false post-processes the block state (like when upgrading a world)",
