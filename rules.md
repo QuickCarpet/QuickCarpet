@@ -22,7 +22,7 @@ Value is the number of packed ice blocks required, 0 is disabled
 
 Type: `int`  
 Default: `0`  
-Categories: feature, experimental  
+Categories: feature, renewable  
 
 ## anvilledIce
 Drop an anvil on frosted ice blocks to get ice
@@ -31,7 +31,7 @@ Value is the number of forsted ice blocks required, 0 is disabled
 
 Type: `int`  
 Default: `0`  
-Categories: feature, experimental  
+Categories: feature, renewable  
 
 ## anvilledPackedIce
 Drop an anvil on ice blocks to get packed ice
@@ -40,7 +40,7 @@ Value is the number of ice blocks required, 0 is disabled
 
 Type: `int`  
 Default: `0`  
-Categories: feature, experimental  
+Categories: feature, renewable  
 
 ## autoCraftingTable
 Automatic crafting table
@@ -48,7 +48,7 @@ Automatic crafting table
 Type: `boolean`  
 Default: `false`  
 Options: `true`, `false`  
-Categories: feature, experimental  
+Categories: feature  
 
 ## betterChunkLoading
 Makes things load chunks again
@@ -64,7 +64,7 @@ Scoreboards initialize to the statistic values
 Type: `boolean`  
 Default: `true`  
 Options: `true`, `false`  
-Categories: feature, experimental  
+Categories: feature  
 
 ## blockEntityFix
 Fixes a crash when activating droppers or dispensers with invalid block entities
@@ -236,7 +236,7 @@ Gives dispensers the ability to break blocks using gunpowder
 Type: `Option`  
 Default: `false`  
 Options: `false`, `normal`, `silk_touch`  
-Categories: feature, experimental  
+Categories: feature  
 
 ## dispensersPlaceBlocks
 Dispensers can place most blocks
@@ -278,7 +278,7 @@ Gives pistons the ability to double retract without side effects.
 Type: `boolean`  
 Default: `false`  
 Options: `true`, `false`  
-Categories: experimental  
+Categories: fix  
 Fixes: [MC-88959](https://bugs.mojang.com/browse/MC-88959)  
 
 ## drownedEnchantedTridentsFix
@@ -287,7 +287,7 @@ Makes enchantments work on tridents thrown by drowned
 Type: `boolean`  
 Default: `false`  
 Options: `true`, `false`  
-Categories: fix, experimental  
+Categories: fix  
 Fixes: [MC-127321](https://bugs.mojang.com/browse/MC-127321)  
 
 ## dustOnPistons
@@ -369,7 +369,7 @@ carpet.rule.hopperMinecartCooldown.description
 Type: `int`  
 Default: `0`  
 Options: `0`, `4`, `8`  
-Categories: fix, experimental  
+Categories: fix  
 Validator: `>= 0`  
 
 ## hopperMinecartItemTransfer
@@ -378,7 +378,7 @@ Hopper minecarts can push out items like normal hoppers
 Type: `boolean`  
 Default: `false`  
 Options: `true`, `false`  
-Categories: feature, experimental  
+Categories: feature  
 
 ## isDevelopment
 Sets the isDevelopment constant
@@ -405,7 +405,7 @@ Pistons can push block entities, like hoppers, chests etc.
 Type: `boolean`  
 Default: `false`  
 Options: `true`, `false`  
-Categories: feature, experimental  
+Categories: feature  
 
 ## movableBlockOverrides
 Override how pistons interact with any block. Adds weak stickiness behavior used by default for redstone components, flowerpots, etc.
@@ -441,7 +441,7 @@ Phantoms don't ignore the mobcap.
 Type: `boolean`  
 Default: `false`  
 Options: `true`, `false`  
-Categories: survival, fix, experimental  
+Categories: survival, fix  
 
 ## portalCreativeDelay
 Portals won't let a creative player go through instantly
@@ -654,7 +654,7 @@ Delay before players can absorb the next Experience Orb
 Type: `int`  
 Default: `2`  
 Options: `0`, `2`  
-Categories: survival, experimental  
+Categories: survival  
 Validator: `>= 0`  
 
 ## xpMerging
@@ -663,5 +663,5 @@ Experience Orbs can merge like items
 Type: `boolean`  
 Default: `false`  
 Options: `true`, `false`  
-Categories: survival, experimental  
+Categories: survival  
 

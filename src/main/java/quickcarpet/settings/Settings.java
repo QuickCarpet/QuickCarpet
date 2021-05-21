@@ -63,22 +63,22 @@ public class Settings {
     @Rule(category = FIX)
     public static boolean antiCheat = true;
 
-    @Rule(category = {FEATURE, EXPERIMENTAL})
+    @Rule(category = {FEATURE, RENEWABLE})
     public static int anvilledBlueIce = 0;
 
-    @Rule(category = {FEATURE, EXPERIMENTAL})
+    @Rule(category = {FEATURE, RENEWABLE})
     public static int anvilledIce = 0;
 
-    @Rule(category = {FEATURE, EXPERIMENTAL})
+    @Rule(category = {FEATURE, RENEWABLE})
     public static int anvilledPackedIce = 0;
 
-    @Rule(category = {FEATURE, EXPERIMENTAL})
+    @Rule(category = FEATURE)
     public static boolean autoCraftingTable = false;
 
     @Rule(category = {FEATURE, EXPERIMENTAL})
     public static boolean betterChunkLoading = false;
 
-    @Rule(category = {FEATURE, EXPERIMENTAL})
+    @Rule(category = FEATURE)
     public static boolean betterStatistics = true;
 
     @Rule(category = FIX)
@@ -141,7 +141,7 @@ public class Settings {
     @Rule(category = CREATIVE)
     public static boolean creativeNoClip = false;
 
-    @Rule(category = {FEATURE, EXPERIMENTAL})
+    @Rule(category = FEATURE)
     public static BreakBlockDispenserBehavior.Option dispensersBreakBlocks = BreakBlockDispenserBehavior.Option.FALSE;
 
     @Rule(category = FEATURE)
@@ -156,10 +156,10 @@ public class Settings {
     @Rule(category = FEATURE)
     public static boolean dispensersTillSoil = false;
 
-    @Rule(category = EXPERIMENTAL, bug = @BugFix("MC-88959"))
+    @Rule(category = FIX, bug = @BugFix("MC-88959"))
     public static boolean doubleRetraction = false;
 
-    @Rule(category = {FIX, EXPERIMENTAL}, bug = @BugFix("MC-127321"))
+    @Rule(category = FIX, bug = @BugFix("MC-127321"))
     public static boolean drownedEnchantedTridentsFix;
 
     @Rule(category = EXPERIMENTAL)
@@ -190,10 +190,10 @@ public class Settings {
     @Rule(category = COMMANDS)
     public static boolean hopperCounters = false;
 
-    @Rule(category = {FIX, EXPERIMENTAL}, options = {"0", "4", "8"}, validator = Validator.NonNegative.class)
+    @Rule(category = FIX, options = {"0", "4", "8"}, validator = Validator.NonNegative.class)
     public static int hopperMinecartCooldown = 0;
 
-    @Rule(category = {FEATURE, EXPERIMENTAL})
+    @Rule(category = FEATURE)
     public static boolean hopperMinecartItemTransfer = false;
 
     @Rule(category = EXPERIMENTAL, onChange = IsDevelopmentListener.class)
@@ -207,10 +207,10 @@ public class Settings {
         }
     }
 
-    @Rule(category = {FIX}, bug = @BugFix("MC-206922"))
+    @Rule(category = FIX, bug = @BugFix("MC-206922"))
     public static boolean lightningKillsDropsFix = false;
 
-    @Rule(category = {FEATURE, EXPERIMENTAL})
+    @Rule(category = FEATURE)
     public static boolean movableBlockEntities = false;
 
     @Rule(category = {FEATURE, EXPERIMENTAL})
@@ -222,7 +222,7 @@ public class Settings {
     @Rule(category = FEATURE)
     public static boolean netherMaps = false;
 
-    @Rule(category = {SURVIVAL, FIX, EXPERIMENTAL})
+    @Rule(category = {SURVIVAL, FIX})
     public static boolean phantomsRespectMobcap = false;
 
     @Rule(category = CREATIVE)
@@ -363,10 +363,10 @@ public class Settings {
         }
     }
 
-    @Rule(category = {SURVIVAL, EXPERIMENTAL}, options = {"0", "2"}, validator = Validator.NonNegative.class)
+    @Rule(category = SURVIVAL, options = {"0", "2"}, validator = Validator.NonNegative.class)
     public static int xpCoolDown = 2;
 
-    @Rule(category = {SURVIVAL, EXPERIMENTAL})
+    @Rule(category = SURVIVAL)
     public static boolean xpMerging = false;
 
     public static void main(String[] args) throws IOException {
