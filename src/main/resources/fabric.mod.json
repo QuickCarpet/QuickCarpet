@@ -24,7 +24,7 @@
   ],
   "accessWidener": "quickcarpet.accesswidener",
   "depends": {
-    "minecraft": ">=1.17-alpha.21.3.a"
+    "minecraft": ">=1.17-alpha.21.19.a"
   },
   "recommends": {
     "malilib": "${malilib_version}",

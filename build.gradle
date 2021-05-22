@@ -1,7 +1,7 @@
 import java.text.SimpleDateFormat
 
 plugins {
-	id 'fabric-loom' version '0.6-SNAPSHOT'
+	id 'fabric-loom' version '0.8-SNAPSHOT'
 }
 
 minecraft {
@@ -29,8 +29,8 @@ version = project.mod_version
 allprojects {
 	apply plugin: 'fabric-loom'
 
-	sourceCompatibility = JavaVersion.VERSION_1_8
-	targetCompatibility = JavaVersion.VERSION_1_8
+	sourceCompatibility = JavaVersion.VERSION_16
+	targetCompatibility = JavaVersion.VERSION_16
 
 	archivesBaseName = project.name
 	group = project.maven_group
@@ -39,7 +39,7 @@ allprojects {
 		//to change the versions see the gradle.properties file
 		minecraft "com.mojang:minecraft:${project.minecraft_version}"
 		mappings "net.fabricmc:yarn:${project.yarn_mappings}"
-		modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
+		modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 		// javax.annotation.Nullable/Nonnull
 		compileOnly "com.google.code.findbugs:jsr305:3.0.1"
@@ -58,6 +58,7 @@ allprojects {
 
 	tasks.withType(JavaCompile) {
 		options.encoding = "UTF-8"
+		it.options.release = 16
 	}
 
 	processResources {
@@ -68,13 +69,8 @@ allprojects {
 		]
 		inputs.properties properties
 
-		from(sourceSets.main.resources.srcDirs) {
-			include "fabric.mod.json"
+		filesMatching("fabric.mod.json") {
 			expand properties
-		}
-
-		from(sourceSets.main.resources.srcDirs) {
-			exclude "fabric.mod.json"
 		}
 	}
 
@@ -111,7 +107,7 @@ dependencies {
 		include project(":quickcarpet-api")
 	}
 
-	modImplementation("fi.dy.masa.malilib:malilib-fabric-${malilib_mc_version}:${project.malilib_version}") {
+	modCompileOnly("fi.dy.masa.malilib:malilib-fabric-${malilib_mc_version}:${project.malilib_version}") {
 		exclude module: "modmenu"
 	}
 }

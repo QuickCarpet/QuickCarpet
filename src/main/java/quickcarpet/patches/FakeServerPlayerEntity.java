@@ -68,7 +68,7 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
         server.getPlayerManager().onPlayerConnect(connection, shadow);
 
         shadow.setHealth(real.getHealth());
-        shadow.networkHandler.requestTeleport(real.getX(), real.getY(), real.getZ(), real.yaw, real.pitch);
+        shadow.networkHandler.requestTeleport(real.getX(), real.getY(), real.getZ(), real.getYaw(), real.getPitch());
         interactionManager.changeGameMode(real.interactionManager.getGameMode());
         ((ActionPackOwner) shadow).getActionPack().copyFrom(((ActionPackOwner) real).getActionPack());
         shadow.stepHeight = 0.6F;

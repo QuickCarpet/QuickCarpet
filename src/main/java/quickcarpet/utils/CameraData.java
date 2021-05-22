@@ -61,7 +61,7 @@ public class CameraData {
         if (server == null) return false;
         ServerWorld world = server.getWorld(dimension);
         try {
-            TeleportCommandAccessor.invokeTeleport(entity.getCommandSource(), entity, world, position.x, position.y, position.z, Collections.emptySet(), entity.yaw, entity.pitch, null);
+            TeleportCommandAccessor.invokeTeleport(entity.getCommandSource(), entity, world, position.x, position.y, position.z, Collections.emptySet(), entity.getYaw(), entity.getPitch(), null);
         } catch (CommandSyntaxException e) {
             return false;
         }
