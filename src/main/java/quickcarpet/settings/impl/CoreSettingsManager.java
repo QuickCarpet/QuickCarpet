@@ -56,6 +56,7 @@ public class CoreSettingsManager extends SettingsManager implements quickcarpet.
     }
 
     @Nullable
+    @Override
     public ModuleSettingsManager getModuleSettings(QuickCarpetModule module) {
         return moduleSettings.get(module);
     }
@@ -189,6 +190,7 @@ public class CoreSettingsManager extends SettingsManager implements quickcarpet.
         resendCommandTree();
     }
 
+    @Override
     public void dump(OutputStream out) {
         PrintStream ps = new PrintStream(out);
         ps.println("# " + Build.NAME + " Rules");

@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.Messenger;
+import quickcarpet.utils.PistonHelper;
 import quickcarpet.utils.ThrowableUpdateSuppression;
 
 import java.util.function.BooleanSupplier;
@@ -31,6 +32,7 @@ public class MinecraftServerMixin {
     }
 
     private void logUpdateSuppression(String phase) {
+        PistonHelper.finishPush();
         Messenger.broadcast((MinecraftServer) (Object) this, "You just caused a server crash in " + phase + ".");
     }
 }

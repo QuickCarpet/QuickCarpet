@@ -31,7 +31,6 @@ import java.util.Map;
 
 public class CarpetRegistry {
     private static final Schema SCHEMA = Schemas.getFixer().getSchema(DataFixUtils.makeKey(SharedConstants.getGameVersion().getWorldVersion()));
-    // Initializes Reflection
     public static final BlockEntityType<CraftingTableBlockEntity> CRAFTING_TABLE_BLOCK_ENTITY_TYPE = registerBlockEntity("carpet:crafting_table", CraftingTableBlockEntity::new, CraftingTableBlockEntity.getType(SCHEMA), Blocks.CRAFTING_TABLE);
 
     static { BlockTags.getTagGroup(); } // load BlockTags class

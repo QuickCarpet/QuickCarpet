@@ -39,10 +39,12 @@ public final class PubSubManager {
      */
     public PubSubNode getOrCreateNode(String name) {
         synchronized (knownNodes) {
-            return knownNodes.computeIfAbsent(name, name1 -> {
-                String[] path = name1.split("\\.");
-                return addKnownNode(ROOT.getOrCreateChildNode(path));
-            });
+            PubSubNode node = knownNodes.get(name);
+            if (node == null) {
+                String[] path = name.split("\\.");
+                node = addKnownNode(ROOT.getOrCreateChildNode(path));
+            }
+            return node;
         }
     }
 

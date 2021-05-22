@@ -14,8 +14,8 @@ import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.tuple.Pair;
 import quickcarpet.mixin.accessor.CustomPayloadC2SPacketAccessor;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 public class PacketSplitter {
@@ -26,7 +26,7 @@ public class PacketSplitter {
     public static final int DEFAULT_MAX_RECEIVE_SIZE_C2S = 1048576;
     public static final int DEFAULT_MAX_RECEIVE_SIZE_S2C = 67108864;
 
-    private static final Map<Pair<PacketListener, Identifier>, ReadingSession> readingSessions = new HashMap<>();
+    private static final Map<Pair<PacketListener, Identifier>, ReadingSession> readingSessions = new ConcurrentHashMap<>();
 
     public static void send(ServerPlayNetworkHandler networkHandler, Identifier channel, PacketByteBuf packet) {
         send(packet, MAX_PAYLOAD_PER_PACKET_S2C, buf -> networkHandler.sendPacket(new CustomPayloadS2CPacket(channel, buf)));

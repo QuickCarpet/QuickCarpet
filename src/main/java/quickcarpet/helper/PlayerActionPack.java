@@ -16,9 +16,7 @@ import net.minecraft.util.math.*;
 import quickcarpet.utils.RayTracing;
 import quickcarpet.utils.extensions.ActionPackOwner;
 
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class PlayerActionPack {
     private ServerPlayerEntity player;
@@ -33,6 +31,8 @@ public class PlayerActionPack {
     private boolean sprinting;
     private float forward;
     private float sideways;
+
+    public float reach;
 
     public PlayerActionPack(ServerPlayerEntity player) {
         this.player = player;
@@ -167,8 +167,10 @@ public class PlayerActionPack {
     }
 
     static HitResult getTarget(ServerPlayerEntity player) {
-        double reach = player.interactionManager.isCreative() ? 5 : 4.5f;
-        return RayTracing.rayTrace(player, 1, reach, false);
+        float reach = ((ActionPackOwner) player).getActionPack().reach;
+        float maxReach = (player.interactionManager.isCreative() ? 5 : 4.5f);
+        double distance = reach != 0 ? Math.min(reach,maxReach) : maxReach;
+        return RayTracing.rayTrace(player, 1, distance, false);
     }
 
     public enum ActionType {
@@ -348,37 +350,43 @@ public class PlayerActionPack {
         public final int limit;
         public final int interval;
         public final int offset;
+        private int perTick;
         private int count;
         private int next;
 
-        private Action(int limit, int interval, int offset) {
+        private Action(int limit, int interval, int offset, int perTick) {
             this.limit = limit;
             this.interval = interval;
             this.offset = offset;
+            this.perTick = perTick;
             next = interval + offset;
         }
 
         public static Action once() {
-            return new Action(1, 1, 0);
+            return new Action(1, 1, 0, 1);
         }
 
         public static Action continuous() {
-            return new Action(-1, 1, 0);
+            return new Action(-1, 1, 0, 1);
         }
 
         public static Action interval(int interval) {
-            return new Action(-1, interval, 0);
+            return new Action(-1, interval, 0, 1);
         }
 
         public static Action interval(int interval, int offset) {
-            return new Action(-1, interval, offset);
+            return new Action(-1, interval, offset, 1);
         }
+
+        public static Action perTick(int amount) { return new Action(-1, 1, 0, amount); }
 
         boolean tick(PlayerActionPack actionPack, ActionType type) {
             next--;
             if (next <= 0) {
                 if (!type.preventSpectator || !actionPack.player.isSpectator()) {
-                    type.execute(actionPack.player, this);
+                    for (int i = 0; i < perTick; i++) {
+                        type.execute(actionPack.player, this);
+                    }
                 }
                 count++;
                 if (count == limit) return false;

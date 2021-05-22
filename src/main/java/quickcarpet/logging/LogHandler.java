@@ -36,7 +36,9 @@ public interface LogHandler {
             if (player != null)
                 HUDController.clearPlayerHUD(player);
         }
-    };    LogHandler ACTION_BAR = (logger, player, message, commandParams) -> player.networkHandler.sendPacket(new OverlayMessageS2CPacket(message));
+    };
+
+    LogHandler ACTION_BAR = (logger, player, message, commandParams) -> player.networkHandler.sendPacket(new OverlayMessageS2CPacket(message));
 
     @FunctionalInterface
     interface LogHandlerCreator {

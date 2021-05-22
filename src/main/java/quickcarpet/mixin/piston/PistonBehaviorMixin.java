@@ -5,7 +5,7 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Unique;
-import quickcarpet.utils.PistonBehaviors;
+import quickcarpet.utils.PistonHelper;
 
 import java.util.Arrays;
 
@@ -22,8 +22,8 @@ class PistonBehaviorMixin {
         @SuppressWarnings("ConstantConditions")
         int i = field_15973.length;
         field_15973 = Arrays.copyOf(field_15973, i + 2);
-        PistonBehaviors.WEAK_STICKY = add(new PistonBehaviorMixin("WEAK_STICKY", i));
-        PistonBehaviors.WEAK_STICKY_BREAKABLE = add(new PistonBehaviorMixin("WEAK_STICKY_BREAKABLE", i + 1));
+        PistonHelper.WEAK_STICKY = add(new PistonBehaviorMixin("WEAK_STICKY", i));
+        PistonHelper.WEAK_STICKY_BREAKABLE = add(new PistonBehaviorMixin("WEAK_STICKY_BREAKABLE", i + 1));
     }
 
     @Unique
