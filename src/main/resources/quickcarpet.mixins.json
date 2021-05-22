@@ -5,6 +5,7 @@
   "plugin": "quickcarpet.utils.MixinConfigPlugin",
   "mixins": [
     "accessor.AxeItemAccessor",
+    "accessor.BlockStateFlatteningAccessor",
     "accessor.BlockTagsAccessor",
     "accessor.ClientSettingsC2SPacketAccessor",
     "accessor.CraftingInventoryAccessor",
@@ -28,6 +29,7 @@
     "betterChunkLoading.MinecraftServerMixin",
     "betterChunkLoading.ServerChunkManagerMixin",
     "betterStatistics.ScoreboardCommandMixin",
+    "betterStatistics.StatsCounterFixMixin",
     "blockEntityFix.DispenserBlockMixin",
     "blockPlacement.BlockItemMixin",
     "blockPlacement.ServerPlayInteractionManagerMixin",
