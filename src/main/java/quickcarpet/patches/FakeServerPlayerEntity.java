@@ -1,7 +1,6 @@
 package quickcarpet.patches;
 
 import com.mojang.authlib.GameProfile;
-import net.minecraft.block.entity.SkullBlockEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.HungerManager;
 import net.minecraft.network.NetworkSide;
@@ -27,7 +26,8 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
 
     public static FakeServerPlayerEntity createFake(GameProfile profile, MinecraftServer server, double x, double y, double z, double yaw, double pitch, ServerWorld dimension, GameMode gamemode) {
         if (profile.getProperties().containsKey("textures")) {
-            profile = SkullBlockEntity.loadProperties(profile);
+            profile = server.getSessionService().fillProfileProperties(profile, false);
+            server.getUserCache().add(profile);
         }
         FakeServerPlayerEntity instance = new FakeServerPlayerEntity(server, dimension, profile, x, y, z, (float) yaw, (float) pitch);
         ServerPlayerInteractionManager interactionManagerIn = new ServerPlayerInteractionManager(instance);

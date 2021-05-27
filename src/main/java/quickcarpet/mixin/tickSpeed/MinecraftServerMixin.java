@@ -1,10 +1,10 @@
 package quickcarpet.mixin.tickSpeed;
 
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.TickDurationMonitor;
 import net.minecraft.util.Util;
 import net.minecraft.util.profiler.Profiler;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -14,7 +14,6 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import quickcarpet.helper.TickSpeed;
 
-import javax.annotation.Nullable;
 import java.util.function.BooleanSupplier;
 
 @Mixin(MinecraftServer.class)
@@ -23,19 +22,20 @@ public abstract class MinecraftServerMixin {
     @Shadow private volatile boolean running;
     @Shadow private long timeReference;
     @Shadow private long lastTimeReference;
-    @Shadow private boolean profilerStartQueued;
     @Shadow private Profiler profiler;
     @Shadow private volatile boolean loading;
     @Shadow private boolean waitingForNextTick;
     @Shadow private long nextTickTimestamp;
+    @Shadow private boolean field_33979;
+    @Shadow private int ticks;
+    @Shadow @Nullable private MinecraftServer.a field_33978;
 
     @Shadow protected abstract boolean shouldKeepTicking();
     @Shadow protected abstract void method_16208();
     @Shadow protected abstract void tick(BooleanSupplier booleanSupplier);
 
-    @Shadow protected abstract void startMonitor(@Nullable TickDurationMonitor arg);
-
-    @Shadow protected abstract void endMonitor(@Nullable TickDurationMonitor arg);
+    @Shadow protected abstract void startMonitor();
+    @Shadow protected abstract void endMonitor();
 
     // Cancel a while statement
     @Redirect(method = "runServer", at = @At(value = "FIELD", target = "Lnet/minecraft/server/MinecraftServer;running:Z"))
@@ -72,15 +72,18 @@ public abstract class MinecraftServerMixin {
                 this.lastTimeReference = this.timeReference;
             }
 
+            if (this.field_33979) {
+                this.field_33979 = false;
+                this.field_33978 = new MinecraftServer.a(Util.getMeasuringTimeNano(), this.ticks);
+            }
+
             partialTimeReference += mspt - (long) mspt;
             this.timeReference += (long) mspt;//50L;
             if (partialTimeReference > 1) {
                 partialTimeReference--;
                 timeReference++;
             }
-            TickDurationMonitor monitor = TickDurationMonitor.create("Server");
-            this.startMonitor(monitor);
-            this.profiler.startTick();
+            this.startMonitor();
             this.profiler.push("tick");
             this.tick(this::shouldKeepTicking);
             this.profiler.swap("nextTickWait");
@@ -88,8 +91,7 @@ public abstract class MinecraftServerMixin {
             this.nextTickTimestamp = Math.max(Util.getMeasuringTimeMs() + (long) mspt, this.timeReference);
             this.method_16208();
             this.profiler.pop();
-            this.profiler.endTick();
-            this.endMonitor(monitor);
+            this.endMonitor();
             this.loading = true;
         }
 
