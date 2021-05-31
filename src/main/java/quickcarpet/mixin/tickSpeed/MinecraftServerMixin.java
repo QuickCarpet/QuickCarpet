@@ -28,7 +28,7 @@ public abstract class MinecraftServerMixin {
     @Shadow private long nextTickTimestamp;
     @Shadow private boolean field_33979;
     @Shadow private int ticks;
-    @Shadow @Nullable private MinecraftServer.a field_33978;
+    @Shadow @Nullable private MinecraftServer.class_6414 field_33978;
 
     @Shadow protected abstract boolean shouldKeepTicking();
     @Shadow protected abstract void method_16208();
@@ -74,7 +74,7 @@ public abstract class MinecraftServerMixin {
 
             if (this.field_33979) {
                 this.field_33979 = false;
-                this.field_33978 = new MinecraftServer.a(Util.getMeasuringTimeNano(), this.ticks);
+                this.field_33978 = new MinecraftServer.class_6414(Util.getMeasuringTimeNano(), this.ticks);
             }
 
             partialTimeReference += mspt - (long) mspt;
