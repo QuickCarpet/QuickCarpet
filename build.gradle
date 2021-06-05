@@ -9,22 +9,17 @@ minecraft {
 }
 
 def buildDate = new Date()
-def branch = GitHelper.branch
+def branch = GitHelper.getBranch(rootDir)
 def ci = System.getenv("CI") != null
-def isDev = project.mod_version.endsWith('-dev')
+def ver = GitHelper.getVersion(rootDir, project.mod_version)
 
-if (isDev && !ci) {
-	def df = new SimpleDateFormat(".yyyyMMdd.HHmmss")
-	df.setTimeZone(TimeZone.getTimeZone("UTC"))
-	project.mod_version += df.format(buildDate)
+if (branch != "master" && branch != "HEAD" && !ver.pre.isEmpty()) {
+	ver.pre.add(0, branch.replaceAll("[+-]", '_'))
 }
-if (branch != "master" && branch != "HEAD") {
-	project.mod_version += "+" + branch.replaceAll("[+-]", '_')
-}
-if (isDev && ci) {
-	project.mod_version += "+" + GitHelper.commit.substring(0, 7)
-}
-version = project.mod_version
+
+println ver
+
+version = ver.toString()
 
 allprojects {
 	apply plugin: 'fabric-loom'
@@ -127,9 +122,9 @@ task generateJava(type: Copy) {
 	def templateContext = [
 			version: project.version,
 			timestamp: df.format(buildDate),
-			branch: GitHelper.branch,
-			commit: GitHelper.commit,
-			working_dir_clean: GitHelper.status,
+			branch: GitHelper.getBranch(rootDir),
+			commit: GitHelper.getCommit(rootDir),
+			working_dir_clean: GitHelper.getStatus(rootDir),
 			minecraft_version: project.minecraft_version,
 			yarn_mappings: project.yarn_mappings
 	]
