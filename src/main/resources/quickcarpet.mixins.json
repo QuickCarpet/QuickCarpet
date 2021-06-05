@@ -15,7 +15,6 @@
     "accessor.ItemDispenserBehaviorAccessor",
     "accessor.ItemUsageContextAccessor",
     "accessor.KeepAliveS2CPacketAccessor",
-    "accessor.PlayerListHeaderS2CPacketAccessor",
     "accessor.RegistryKeyAccessor",
     "accessor.ServerChunkManagerAccessor",
     "accessor.ServerCommandSourceAccessor",

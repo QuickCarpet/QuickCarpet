@@ -16,7 +16,9 @@ import net.minecraft.util.math.*;
 import quickcarpet.utils.RayTracing;
 import quickcarpet.utils.extensions.ActionPackOwner;
 
-import java.util.*;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 
 public class PlayerActionPack {
     private ServerPlayerEntity player;
@@ -92,8 +94,8 @@ public class PlayerActionPack {
             case SOUTH: return look(0, 0);
             case EAST: return look(-90, 0);
             case WEST: return look(90, 0);
-            case UP: return look(player.yaw, -90);
-            case DOWN: return look(player.yaw, 90);
+            case UP: return look(player.getYaw(), -90);
+            case DOWN: return look(player.getYaw(), 90);
         }
         return this;
     }
@@ -103,8 +105,8 @@ public class PlayerActionPack {
     }
 
     public PlayerActionPack look(float yaw, float pitch) {
-        player.yaw = yaw % 360;
-        player.pitch = MathHelper.clamp(pitch, -90, 90);
+        player.setYaw(yaw % 360);
+        player.setPitch(MathHelper.clamp(pitch, -90, 90));
         return this;
     }
 
@@ -113,7 +115,7 @@ public class PlayerActionPack {
     }
 
     public PlayerActionPack turn(float yaw, float pitch) {
-        return look(player.yaw + yaw, player.pitch + pitch);
+        return look(player.getYaw() + yaw, player.getPitch() + pitch);
     }
 
     public PlayerActionPack mount() {
