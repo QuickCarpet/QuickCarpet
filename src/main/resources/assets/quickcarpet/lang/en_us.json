@@ -154,6 +154,8 @@
   "command.log.unavailable": "Logger %s unavailable: %s",
   "command.log.unknown": "Unknown logger: %s",
   "logger.gc.unavailable": "Requires HotSpot based JVM (You are running %s)",
+  "logger.tileTickLimit.message": "Reached tile tick limit (%s > %s)",
+  "logger.tileTickLimit.message.lithium": "Reached tile tick limit: %s",
   "command.ping.result": "Your ping is %sms",
   "command.player.onlyExisting": "Can only manipulate existing players",
   "command.player.notOperator": "Non OP players can't control other real players",

@@ -37,13 +37,13 @@ public final class Loggers {
             return isAvailable() ? null : new TranslatableText("command.carpet.option.disabled", "carefulBreak");
         }
     });
+    public static final Logger TILE_TICK_LIMIT = registerLogger("tileTickLimit", null, null, LogHandler.CHAT);
 
 //    public static final Logger PROJECTILES<Logger.EmptyCommandParameters> = registerLogger("projectiles", "full",  new String[]{"brief", "full"}, LogHandler.CHAT);
 //    public static final Logger FALLING_BLOCKS<Logger.EmptyCommandParameters> = registerLogger("fallingBlocks", "brief", new String[]{"brief", "full"}, LogHandler.CHAT);
 //    public static final Logger KILLS<Logger.EmptyCommandParameters> = registerLogger("kills", null, null, LogHandler.CHAT);
 //    public static final Logger DAMAGE<Logger.EmptyCommandParameters> = registerLogger("damage", "all", new String[]{"all","players","me"}, LogHandler.CHAT);
 //    public static final Logger WEATHER<Logger.EmptyCommandParameters> = registerLogger("weather", null, null, LogHandler.CHAT);
-//    public static final Logger TILE_TICK_LIMIT<Logger.EmptyCommandParameters> = registerLogger("tileTickLimit", null, null, LogHandler.CHAT);
 
     private Loggers() {}
 
