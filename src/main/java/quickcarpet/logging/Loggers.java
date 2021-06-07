@@ -3,7 +3,7 @@ package quickcarpet.logging;
 import com.mojang.serialization.DataResult;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.DyeColor;
+import quickcarpet.helper.HopperCounter;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.Translations;
 
@@ -21,7 +21,7 @@ public final class Loggers {
     public static final Logger TNT = registerLogger("tnt", "brief", new String[]{"brief", "full"}, LogHandler.CHAT);
     public static final Logger TPS = registerLogger("tps", null, null, LogHandler.HUD);
     public static final Logger PACKETS = registerLogger("packets", null, null, LogHandler.HUD);
-    public static final Logger COUNTER = registerLogger("counter", "white", Arrays.stream(DyeColor.values()).map(Object::toString).toArray(String[]::new), LogHandler.HUD);
+    public static final Logger COUNTER = registerLogger("counter", "white", Arrays.stream(HopperCounter.Key.values()).map(k -> k.name).toArray(String[]::new), LogHandler.HUD);
     public static final Logger MOBCAPS = registerLogger("mobcaps", "dynamic", new String[]{"dynamic", "overworld", "nether", "end"}, LogHandler.HUD);
     public static final Logger GC = registerLogger("gc", null, null, LogHandler.CHAT);
     public static final Logger COMMAND_BLOCKS = registerLogger("command_blocks", "brief", new String[]{"brief", "full"}, LogHandler.CHAT);
