@@ -122,8 +122,8 @@ public class HUDController {
     }
 
     private static void logCounter(Logger logger) {
-        logger.log(color -> {
-            HopperCounter counter = HopperCounter.getCounter(color);
+        logger.log(key -> {
+            HopperCounter counter = HopperCounter.getCounter(key);
             List<MutableText> res = counter == null ? Collections.emptyList() : counter.format(QuickCarpetServer.getMinecraftServer(), false, true);
             return c(res.toArray(new MutableText[0]));
         }, () -> HopperCounter.COMMAND_PARAMETERS);

@@ -3,7 +3,7 @@ package quickcarpet.logging;
 import com.mojang.serialization.DataResult;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.DyeColor;
+import quickcarpet.helper.HopperCounter;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.Translations;
 
@@ -21,7 +21,7 @@ public final class Loggers {
     public static final Logger TNT = registerLogger("tnt", "brief", new String[]{"brief", "full"}, LogHandler.CHAT);
     public static final Logger TPS = registerLogger("tps", null, null, LogHandler.HUD);
     public static final Logger PACKETS = registerLogger("packets", null, null, LogHandler.HUD);
-    public static final Logger COUNTER = registerLogger("counter", "white", Arrays.stream(DyeColor.values()).map(Object::toString).toArray(String[]::new), LogHandler.HUD);
+    public static final Logger COUNTER = registerLogger("counter", "white", Arrays.stream(HopperCounter.Key.values()).map(k -> k.name).toArray(String[]::new), LogHandler.HUD);
     public static final Logger MOBCAPS = registerLogger("mobcaps", "dynamic", new String[]{"dynamic", "overworld", "nether", "end"}, LogHandler.HUD);
     public static final Logger GC = registerLogger("gc", null, null, LogHandler.CHAT);
     public static final Logger COMMAND_BLOCKS = registerLogger("command_blocks", "brief", new String[]{"brief", "full"}, LogHandler.CHAT);
@@ -37,13 +37,13 @@ public final class Loggers {
             return isAvailable() ? null : new TranslatableText("command.carpet.option.disabled", "carefulBreak");
         }
     });
+    public static final Logger TILE_TICK_LIMIT = registerLogger("tileTickLimit", null, null, LogHandler.CHAT);
 
 //    public static final Logger PROJECTILES<Logger.EmptyCommandParameters> = registerLogger("projectiles", "full",  new String[]{"brief", "full"}, LogHandler.CHAT);
 //    public static final Logger FALLING_BLOCKS<Logger.EmptyCommandParameters> = registerLogger("fallingBlocks", "brief", new String[]{"brief", "full"}, LogHandler.CHAT);
 //    public static final Logger KILLS<Logger.EmptyCommandParameters> = registerLogger("kills", null, null, LogHandler.CHAT);
 //    public static final Logger DAMAGE<Logger.EmptyCommandParameters> = registerLogger("damage", "all", new String[]{"all","players","me"}, LogHandler.CHAT);
 //    public static final Logger WEATHER<Logger.EmptyCommandParameters> = registerLogger("weather", null, null, LogHandler.CHAT);
-//    public static final Logger TILE_TICK_LIMIT<Logger.EmptyCommandParameters> = registerLogger("tileTickLimit", null, null, LogHandler.CHAT);
 
     private Loggers() {}
 

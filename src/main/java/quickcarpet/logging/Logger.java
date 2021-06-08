@@ -57,7 +57,7 @@ public class Logger implements Comparable<Logger> {
     }
 
     public boolean isActive() {
-        return active;
+        return active && isAvailable();
     }
 
     public Text getDisplayName() {
