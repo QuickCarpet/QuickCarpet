@@ -212,8 +212,8 @@ public class LoggerManager {
     }
 
     private void readPlayers(JsonObject players, Consumer<String> onError) {
-        DataResult<Map<String, PlayerSubscriptions>> result = PlayerSubscriptions.CODEC.parse(JsonOps.INSTANCE, players);
-        result.resultOrPartial(onError).ifPresent(map -> {
+        // TODO: this doesn't give a partial result for each player, but it gives us all players without errors
+        PlayerSubscriptions.CODEC.promotePartial(onError).parse(JsonOps.INSTANCE, players).result().ifPresent(map -> {
             playerSubscriptions.putAll(map);
             for (Map.Entry<String, PlayerSubscriptions> e : map.entrySet()) {
                 String name = e.getKey();
