@@ -102,7 +102,7 @@ dependencies {
 		include project(":quickcarpet-api")
 	}
 
-	modCompileOnly("fi.dy.masa.malilib:malilib-fabric-${malilib_mc_version}:${project.malilib_version}") {
+	modImplementation("fi.dy.masa.malilib:malilib-fabric-${malilib_mc_version}:${project.malilib_version}") {
 		exclude module: "modmenu"
 	}
 }
