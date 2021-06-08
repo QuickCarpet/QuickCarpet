@@ -237,8 +237,12 @@ public final class QuickCarpet implements QuickCarpetAPI, ServerEventListener, T
     }
 
     public static boolean isDevelopment() {
-        //noinspection ConstantConditions
-        return Build.VERSION.contains("dev") || FabricLoader.getInstance().isDevelopmentEnvironment();
+        try {
+            //noinspection ConstantConditions
+            return Build.VERSION.contains("dev") || FabricLoader.getInstance().isDevelopmentEnvironment();
+        } catch (NullPointerException e) {
+            return true;
+        }
     }
 
     @Override
