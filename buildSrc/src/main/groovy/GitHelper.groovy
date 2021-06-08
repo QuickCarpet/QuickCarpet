@@ -27,7 +27,7 @@ class GitHelper {
 
     static SemVer getVersion(File dir, String next) {
         def description = run(dir, "describe --tags --dirty --match v*.*.*").split("-")
-        if (description.length == 1) return description[0].substring(1)
+        if (description.length == 1) return new SemVer(description[0].substring(1))
         def semver = new SemVer(next)
         if (semver.pre.isEmpty()) semver.pre.add("dev")
         semver.pre.add(description[1])
