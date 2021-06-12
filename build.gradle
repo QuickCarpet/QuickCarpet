@@ -34,7 +34,7 @@ allprojects {
 		//to change the versions see the gradle.properties file
 		minecraft "com.mojang:minecraft:${project.minecraft_version}"
 		mappings "net.fabricmc:yarn:${project.yarn_mappings}"
-		modCompile "net.fabricmc:fabric-loader:${project.loader_version}"
+		modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 		// javax.annotation.Nullable/Nonnull
 		compileOnly "com.google.code.findbugs:jsr305:3.0.1"
@@ -63,13 +63,8 @@ allprojects {
 		]
 		inputs.properties properties
 
-		from(sourceSets.main.resources.srcDirs) {
-			include "fabric.mod.json"
+		filesMatching("fabric.mod.json") {
 			expand properties
-		}
-
-		from(sourceSets.main.resources.srcDirs) {
-			exclude "fabric.mod.json"
 		}
 	}
 
