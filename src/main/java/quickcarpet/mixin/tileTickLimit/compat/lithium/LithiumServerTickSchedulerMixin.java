@@ -25,19 +25,19 @@ public class LithiumServerTickSchedulerMixin {
     @Unique
     private boolean logged;
 
-    @ModifyConstant(method = "selectTicks(Lnet/minecraft/server/world/ServerChunkManager;J)V", constant = @Constant(intValue = 65536))
+    @ModifyConstant(method = "selectTicks(Lnet/minecraft/server/world/ServerChunkManager;J)V", remap = true, constant = @Constant(intValue = 65536))
     private int tileTickLimit(int vanilla) {
         logged = false;
         return Settings.tileTickLimit;
     }
 
-    @Inject(method = "selectTicks(Lnet/minecraft/server/world/ServerChunkManager;J)V", at = @At(value = "INVOKE", target = "Ljava/util/ArrayList;add(Ljava/lang/Object;)Z", remap = false, opcode = Opcodes.PUTFIELD, shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILSOFT, require = 0)
+    @Inject(method = "selectTicks(Lnet/minecraft/server/world/ServerChunkManager;J)V", remap = true, at = @At(value = "INVOKE", target = "Ljava/util/ArrayList;add(Ljava/lang/Object;)Z", remap = false, opcode = Opcodes.PUTFIELD, shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILSOFT, require = 0)
     private void logTileTickLimit(ServerChunkManager chunkManager, long time, CallbackInfo ci,
                                   long headKey, int limit, boolean canTick, long prevChunk, Iterator<?> it) {
         if (limit == 1 && it.hasNext()) log();
     }
 
-    @Inject(method = "selectTicks(Lnet/minecraft/server/world/ServerChunkManager;J)V",
+    @Inject(method = "selectTicks(Lnet/minecraft/server/world/ServerChunkManager;J)V", remap = true,
             at = @At(value = "INVOKE", target = "Lme/jellysquid/mods/lithium/common/world/scheduler/TickEntryQueue;setTickAtIndex(ILme/jellysquid/mods/lithium/common/world/scheduler/TickEntry;)V", remap = false),
             locals = LocalCapture.CAPTURE_FAILSOFT, require = 0)
     private void logTileTickLimit(ServerChunkManager chunkManager, long time, CallbackInfo ci, long headKey, int limit) {
