@@ -35,7 +35,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 public final class QuickCarpet implements QuickCarpetAPI, ServerEventListener, TelemetryProvider {
-    private static final Logger LOG = LogManager.getLogger();
+    public static final Logger LOG = LogManager.getLogger();
     public static final PubSubManager PUBSUB = new PubSubManager();
 
     private static QuickCarpet instance = new QuickCarpet();
