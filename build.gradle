@@ -13,7 +13,7 @@ def branch = GitHelper.getBranch(rootDir)
 def ci = System.getenv("CI") != null
 def ver = GitHelper.getVersion(rootDir, project.mod_version)
 
-if (branch != "master" && branch != "HEAD" && !ver.pre.isEmpty()) {
+if (branch != "master" && branch != "main" && branch != "HEAD" && !ver.pre.isEmpty()) {
 	ver.pre.add(0, branch.replaceAll("[+-]", '_'))
 }
 
