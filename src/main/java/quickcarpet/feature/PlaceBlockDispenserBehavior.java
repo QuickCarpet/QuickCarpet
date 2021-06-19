@@ -23,6 +23,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
+import quickcarpet.QuickCarpet;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.CarpetRegistry;
 
@@ -109,21 +110,25 @@ public class PlaceBlockDispenserBehavior extends FallibleItemDispenserBehavior {
         BlockState currentBlockState = world.getBlockState(pos);
         FluidState currentFluidState = world.getFluidState(pos);
         if ((world.isAir(pos) || currentBlockState.getMaterial().isReplaceable()) && currentBlockState.getBlock() != block && state.canPlaceAt(world, pos)) {
-            NbtCompound blockEntityTag = itemStack.getSubTag("BlockEntityTag");
-            if (blockEntityTag != null && block instanceof BlockEntityProvider) {
-                BlockEntity be = world.getBlockEntity(pos);
-                blockEntityTag = new NbtCompound().copyFrom(blockEntityTag);
-                blockEntityTag.putInt("x", pos.getX());
-                blockEntityTag.putInt("y", pos.getY());
-                blockEntityTag.putInt("z", pos.getZ());
-                be.readNbt(blockEntityTag);
-            }
             if (currentFluidState.isStill() && block instanceof FluidFillable) {
                 if (!((FluidFillable) block).tryFillWithFluid(world, pos, state, currentFluidState)) {
                     world.setBlockState(pos, state);
                 }
             } else {
                 world.setBlockState(pos, state);
+            }
+            NbtCompound blockEntityTag = itemStack.getSubTag("BlockEntityTag");
+            if (blockEntityTag != null && block instanceof BlockEntityProvider) {
+                BlockEntity be = world.getBlockEntity(pos);
+                if (be != null) {
+                    blockEntityTag = new NbtCompound().copyFrom(blockEntityTag);
+                    blockEntityTag.putInt("x", pos.getX());
+                    blockEntityTag.putInt("y", pos.getY());
+                    blockEntityTag.putInt("z", pos.getZ());
+                    be.readNbt(blockEntityTag);
+                } else {
+                    QuickCarpet.LOG.warn("Expected a BlockEntity for {} at {},{},{}", state, pos.getX(), pos.getY(), pos.getZ());
+                }
             }
             BlockSoundGroup soundType = state.getSoundGroup();
             world.playSound(null, pos, soundType.getPlaceSound(), SoundCategory.BLOCKS, (soundType.getVolume() + 1.0F / 2.0F), soundType.getPitch() * 0.8F);
