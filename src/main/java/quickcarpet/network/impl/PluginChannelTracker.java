@@ -14,10 +14,10 @@ public class PluginChannelTracker {
     private final MinecraftServer server;
 
     // A multimap from player names to the channels they are registered on
-    private SetMultimap<String, Identifier> name2channels = MultimapBuilder.hashKeys().hashSetValues().build();
+    private final SetMultimap<String, Identifier> name2channels = MultimapBuilder.hashKeys().hashSetValues().build();
 
     // A multimap from channel names to the names of players registered to that channel
-    private SetMultimap<Identifier, String> channel2names = MultimapBuilder.hashKeys().hashSetValues().build();
+    private final SetMultimap<Identifier, String> channel2names = MultimapBuilder.hashKeys().hashSetValues().build();
 
     public PluginChannelTracker(MinecraftServer server) {
         this.server = server;
@@ -67,8 +67,8 @@ public class PluginChannelTracker {
      * Unregisters {@code player} from {@code channel}.
      */
     public void unregister(ServerPlayerEntity player, Identifier channel) {
-        name2channels.remove(player.getName(), channel);
-        channel2names.remove(channel, player.getName());
+        name2channels.remove(player.getEntityName(), channel);
+        channel2names.remove(channel, player.getEntityName());
     }
 
     /**
@@ -76,9 +76,9 @@ public class PluginChannelTracker {
      */
     public void unregisterAll(ServerPlayerEntity player) {
         for (Identifier channel : getChannels(player)) {
-            channel2names.remove(channel, player.getName());
+            channel2names.remove(channel, player.getEntityName());
         }
-        name2channels.removeAll(player.getName());
+        name2channels.removeAll(player.getEntityName());
     }
 
 }
