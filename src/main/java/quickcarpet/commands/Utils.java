@@ -135,7 +135,7 @@ public class Utils {
     static <E extends Enum<E>> List<String> getOptions(Class<E> type) {
         return Arrays.stream(type.getEnumConstants())
                 .map(e -> e.name().toLowerCase(Locale.ROOT))
-                .collect(ImmutableList.toImmutableList());
+                .toList();
     }
 
     static <E extends Enum<E>> RequiredArgumentBuilder<ServerCommandSource, String> argument(String name, Class<E> type) {

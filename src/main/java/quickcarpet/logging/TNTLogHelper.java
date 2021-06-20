@@ -35,20 +35,16 @@ public class TNTLogHelper {
     public void onExploded() {
         Vec3d primed = this.primedPos;
         Vec3d exploded = tnt.getPos();
-        Loggers.TNT.log(option -> {
-            switch (option) {
-                case "brief":
-                    return c(
-                        style(c(s("P "), dblt(primed.x, primed.y, primed.z, primedAngle)), Formatting.GREEN),
-                        style(c(s("E "), dblt(exploded.x, exploded.y, exploded.z)), Formatting.RED)
-                    );
-                case "full":
-                    return c(
-                        style(c(s("P "), dblf(primed.x, primed.y, primed.z, primedAngle)), Formatting.GREEN),
-                        style(c(s("E "), dblf(exploded.x, exploded.y, exploded.z)), Formatting.RED)
-                    );
-            }
-            return null;
+        Loggers.TNT.log(option -> switch (option) {
+            case "brief" -> c(
+                style(c(s("P "), dblt(primed.x, primed.y, primed.z, primedAngle)), Formatting.GREEN),
+                style(c(s("E "), dblt(exploded.x, exploded.y, exploded.z)), Formatting.RED)
+            );
+            case "full" -> c(
+                style(c(s("P "), dblf(primed.x, primed.y, primed.z, primedAngle)), Formatting.GREEN),
+                style(c(s("E "), dblf(exploded.x, exploded.y, exploded.z)), Formatting.RED)
+            );
+            default -> null;
         }, () -> Arrays.asList(
             new LogParameter("primed.x", primed.x),
             new LogParameter("primed.x", primed.y),

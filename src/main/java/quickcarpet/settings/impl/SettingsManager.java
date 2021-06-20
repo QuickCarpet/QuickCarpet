@@ -107,13 +107,14 @@ abstract class SettingsManager implements quickcarpet.api.settings.SettingsManag
 
     @Override
     public Collection<ParsedRule<?>> getNonDefault() {
-        return getRules().stream().filter(r -> !r.isDefault()).collect(ImmutableList.toImmutableList());
+        return getRules().stream().filter(r -> !r.isDefault()).toList();
     }
 
     @Override
     public void disableAll(RuleCategory category, boolean sync) {
         for (ParsedRule<?> rule : getRules()) {
             if (rule.getType() != boolean.class || !rule.getCategories().contains(category)) continue;
+            //noinspection unchecked
             ((ParsedRule<Boolean>) rule).set(false, sync);
         }
     }

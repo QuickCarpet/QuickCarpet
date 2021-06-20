@@ -18,7 +18,7 @@ import java.util.function.BooleanSupplier;
 
 @Mixin(MinecraftServer.class)
 public abstract class MinecraftServerMixin {
-    @Shadow @Final private static Logger LOGGER;
+    @Shadow @Final static Logger LOGGER;
     @Shadow private volatile boolean running;
     @Shadow private long timeReference;
     @Shadow private long lastTimeReference;
@@ -26,13 +26,13 @@ public abstract class MinecraftServerMixin {
     @Shadow private volatile boolean loading;
     @Shadow private boolean waitingForNextTick;
     @Shadow private long nextTickTimestamp;
-    @Shadow private boolean field_33979;
+    @Shadow private boolean profilerEnabled;
     @Shadow private int ticks;
     @Shadow @Nullable private MinecraftServer.class_6414 field_33978;
 
     @Shadow protected abstract boolean shouldKeepTicking();
     @Shadow protected abstract void method_16208();
-    @Shadow protected abstract void tick(BooleanSupplier booleanSupplier);
+    @Shadow public abstract void tick(BooleanSupplier booleanSupplier);
 
     @Shadow protected abstract void startMonitor();
     @Shadow protected abstract void endMonitor();
@@ -72,8 +72,8 @@ public abstract class MinecraftServerMixin {
                 this.lastTimeReference = this.timeReference;
             }
 
-            if (this.field_33979) {
-                this.field_33979 = false;
+            if (this.profilerEnabled) {
+                this.profilerEnabled = false;
                 this.field_33978 = new MinecraftServer.class_6414(Util.getMeasuringTimeNano(), this.ticks);
             }
 

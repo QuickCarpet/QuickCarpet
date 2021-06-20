@@ -36,13 +36,15 @@ public class FixCommand {
         ServerWorld world = source.getWorld();
         ChunkPos cPos = new ChunkPos(pos.x >> 4, pos.z >> 4);
         BlockView chunk = world.getChunkAsView(cPos.x, cPos.z);
-        if (!(chunk instanceof WorldChunk)) throw BlockPosArgumentType.UNLOADED_EXCEPTION.create();
-        WorldChunk worldChunk = (WorldChunk) chunk;
-        m(source, t("command.fix.fixing", cPos.x, cPos.z));
-        Heightmap.populateHeightmaps(worldChunk, EnumSet.allOf(Heightmap.Type.class));
-        ((ServerLightingProvider) world.getLightingProvider()).light(worldChunk, false).thenRun(() -> {
-            m(source, t("command.fix.fixed", cPos.x, cPos.z));
-        });
-        return 1;
+        if (chunk instanceof WorldChunk worldChunk) {
+            m(source, t("command.fix.fixing", cPos.x, cPos.z));
+            Heightmap.populateHeightmaps(worldChunk, EnumSet.allOf(Heightmap.Type.class));
+            ((ServerLightingProvider) world.getLightingProvider()).light(worldChunk, false).thenRun(() -> {
+                m(source, t("command.fix.fixed", cPos.x, cPos.z));
+            });
+            return 1;
+        } else {
+            throw BlockPosArgumentType.UNLOADED_EXCEPTION.create();
+        }
     }
 }

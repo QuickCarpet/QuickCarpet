@@ -60,45 +60,23 @@ public class ClientPubSubListener implements ClientPluginChannelHandler {
         for (int i = 0; i < numUpdates; i++) {
             String name = buf.readString();
             int valueType = buf.readVarInt();
-            switch (valueType) {
-                case TYPE_NBT: {
-                    NbtCompound compound = buf.readNbt();
-                    if (compound == null) break;
-                    if (compound.contains("")) {
-                        values.put(name, compound.get(""));
-                    } else {
-                        values.put(name, compound);
+            try {
+                values.put(name, switch (valueType) {
+                    case TYPE_NBT -> {
+                        NbtCompound compound = buf.readNbt();
+                        yield compound != null && compound.contains("") ? compound.get("") : compound;
                     }
-                    break;
-                }
-                case TYPE_STRING: {
-                    values.put(name, buf.readString());
-                    break;
-                }
-                case TYPE_INT: {
-                    values.put(name, buf.readInt());
-                    break;
-                }
-                case TYPE_FLOAT: {
-                    values.put(name, buf.readFloat());
-                    break;
-                }
-                case TYPE_LONG: {
-                    values.put(name, buf.readLong());
-                    break;
-                }
-                case TYPE_DOUBLE: {
-                    values.put(name, buf.readDouble());
-                    break;
-                }
-                case TYPE_BOOLEAN: {
-                    values.put(name, buf.readBoolean());
-                    break;
-                }
-                default: {
-                    LOG.warn("Could not parse pubsub update {} of type {}", name, valueType);
-                    return values;
-                }
+                    case TYPE_STRING -> buf.readString();
+                    case TYPE_INT -> buf.readInt();
+                    case TYPE_FLOAT -> buf.readFloat();
+                    case TYPE_LONG -> buf.readLong();
+                    case TYPE_DOUBLE -> buf.readDouble();
+                    case TYPE_BOOLEAN -> buf.readBoolean();
+                    default -> throw new IllegalArgumentException();
+                });
+            } catch (IllegalArgumentException ignored) {
+                LOG.warn("Could not parse pubsub update {} of type {}", name, valueType);
+                return values;
             }
         }
         return values;

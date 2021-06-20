@@ -89,18 +89,13 @@ public class HUDController {
         logger.log((option, player) -> {
             ServerWorld world = (ServerWorld) player.world;
             MinecraftServer server = world.getServer();
-            RegistryKey<World> dim = world.getRegistryKey();
-            switch (option) {
-                case "overworld":
-                    dim = World.OVERWORLD;
-                    break;
-                case "nether":
-                    dim = World.NETHER;
-                    break;
-                case "end":
-                    dim = World.END;
-                    break;
-            }
+            world.getRegistryKey();
+            RegistryKey<World> dim = switch (option) {
+                case "overworld" -> World.OVERWORLD;
+                case "nether" -> World.NETHER;
+                case "end" -> World.END;
+                default -> world.getRegistryKey();
+            };
             List<MutableText> components = new ArrayList<>();
             Map<SpawnGroup, Pair<Integer, Integer>> mobcaps = Mobcaps.getMobcaps(server.getWorld(dim));
             for (Map.Entry<SpawnGroup, Pair<Integer, Integer>> e : mobcaps.entrySet()) {
@@ -133,7 +128,7 @@ public class HUDController {
         logger.log(() -> {
             PacketCounter.reset();
             return s("I/" + PacketCounter.getPreviousIn() + " O/" + PacketCounter.getPreviousOut());
-        }, () -> Arrays.asList(
+        }, () -> List.of(
             new LogParameter("in", PacketCounter::getPreviousIn),
             new LogParameter("out", PacketCounter::getPreviousOut)
         ));

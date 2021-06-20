@@ -56,11 +56,11 @@ public interface StateInfoProvider<S extends State<?, S>, T extends Comparable<T
             for (Direction d : Direction.values()) values.put(get(state, world, pos, d), d);
             Set<T> keys = values.keySet();
             switch (keys.size()) {
-                case 1: {
+                case 1 -> {
                     T value = keys.iterator().next();
                     return format(value);
                 }
-                case 2: {
+                case 2 -> {
                     Iterator<T> it = keys.iterator();
                     T value1 = it.next();
                     T value2 = it.next();
@@ -77,7 +77,7 @@ public interface StateInfoProvider<S extends State<?, S>, T extends Comparable<T
                     MutableText directions = directions1.stream().map(Messenger::format).collect(joining(s(",")));
                     return t("state_info_provider.2", directions, format1, format2);
                 }
-                default: {
+                default -> {
                     List<Text> parts = new ArrayList<>(keys.size());
                     for (T key : keys) {
                         MutableText part = values.get(key).stream().map(Messenger::format).collect(joining(s(",")));

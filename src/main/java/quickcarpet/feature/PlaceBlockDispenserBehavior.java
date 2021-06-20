@@ -147,12 +147,12 @@ public class PlaceBlockDispenserBehavior extends FallibleItemDispenserBehavior {
     }
 
     public static boolean canPlace(Block block) {
-        switch (Settings.dispensersPlaceBlocks) {
-            case WHITELIST: return CarpetRegistry.DISPENSER_BLOCK_WHITELIST.contains(block);
-            case BLACKLIST: return !CarpetRegistry.DISPENSER_BLOCK_BLACKLIST.contains(block);
-            case ALL: return true;
-        }
-        return false;
+        return switch (Settings.dispensersPlaceBlocks) {
+            case WHITELIST -> CarpetRegistry.DISPENSER_BLOCK_WHITELIST.contains(block);
+            case BLACKLIST -> !CarpetRegistry.DISPENSER_BLOCK_BLACKLIST.contains(block);
+            case ALL -> true;
+            default -> false;
+        };
     }
 
     private static boolean usePlacementContext(Item item, Block block) {

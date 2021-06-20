@@ -76,18 +76,16 @@ public class MixinConfigTest {
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
-        switch (uri.getScheme()) {
-            case "file": {
-                return fn.apply(Paths.get(uri).getParent().getParent());
-            }
-            case "jar": {
+        return switch (uri.getScheme()) {
+            case "file" -> fn.apply(Paths.get(uri).getParent().getParent());
+            case "jar" -> {
                 try (FileSystem fs = FileSystems.newFileSystem(uri, ImmutableMap.of())) {
-                    return fn.apply(fs.getPath("/"));
+                    yield fn.apply(fs.getPath("/"));
                 } catch (IOException e) {
                     throw new UncheckedIOException(e);
                 }
             }
-            default: throw new IllegalStateException("Cannot get file system for scheme '${uri.scheme}'");
-        }
+            default -> throw new IllegalStateException("Cannot get file system for scheme '${uri.scheme}'");
+        };
     }
 }

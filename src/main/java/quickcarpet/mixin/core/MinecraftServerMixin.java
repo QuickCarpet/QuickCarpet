@@ -28,8 +28,7 @@ import java.util.function.BooleanSupplier;
 
 @Mixin(MinecraftServer.class)
 public abstract class MinecraftServerMixin {
-
-    @Shadow protected abstract void tick(BooleanSupplier booleanSupplier_1);
+    @Shadow public abstract void tick(BooleanSupplier booleanSupplier_1);
 
     // Called during game start
     @Inject(method = "<init>", at = @At(value = "RETURN"))

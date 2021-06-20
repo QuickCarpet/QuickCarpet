@@ -71,13 +71,13 @@ public abstract class HopperMinecartEntityMixin extends StorageMinecartEntity im
         BlockState railState = this.world.getBlockState(new BlockPos(MathHelper.floor(this.getX()), MathHelper.floor(this.getY()), MathHelper.floor(this.getZ())));
         if (!railState.isIn(BlockTags.RAILS)) return Direction.DOWN;
         RailShape shape = railState.get(((AbstractRailBlock) railState.getBlock()).getShapeProperty());
-        switch (shape) {
-            case ASCENDING_EAST: return Direction.EAST;
-            case ASCENDING_WEST: return Direction.WEST;
-            case ASCENDING_NORTH: return Direction.NORTH;
-            case ASCENDING_SOUTH: return Direction.SOUTH;
-            default: return Direction.DOWN;
-        }
+        return switch (shape) {
+            case ASCENDING_EAST -> Direction.EAST;
+            case ASCENDING_WEST -> Direction.WEST;
+            case ASCENDING_NORTH -> Direction.NORTH;
+            case ASCENDING_SOUTH -> Direction.SOUTH;
+            default -> Direction.DOWN;
+        };
     }
 
     @Unique
@@ -95,7 +95,7 @@ public abstract class HopperMinecartEntityMixin extends StorageMinecartEntity im
         Block block = blockState.getBlock();
         if (block instanceof InventoryProvider) {
             inventory = ((InventoryProvider)block).getInventory(blockState, world, blockPos);
-        } else if (blockState.hasBlockEntity()) { // hasBlockEntity
+        } else if (blockState.hasBlockEntity()) {
             BlockEntity blockEntity = world.getBlockEntity(blockPos);
             if (blockEntity instanceof Inventory) {
                 inventory = (Inventory)blockEntity;

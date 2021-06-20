@@ -143,14 +143,14 @@ public class Messenger {
     }
 
     public static Formatting creatureTypeColor(SpawnGroup type) {
-        switch (type) {
-            case MONSTER: return Formatting.DARK_RED;
-            case CREATURE: return Formatting.DARK_GREEN;
-            case AMBIENT: return Formatting.DARK_GRAY;
-            case WATER_CREATURE: return Formatting.BLUE;
-            case WATER_AMBIENT: return Formatting.DARK_AQUA;
-        }
-        return Formatting.WHITE;
+        return switch (type) {
+            case MONSTER -> Formatting.DARK_RED;
+            case CREATURE -> Formatting.DARK_GREEN;
+            case AMBIENT -> Formatting.DARK_GRAY;
+            case WATER_CREATURE -> Formatting.BLUE;
+            case WATER_AMBIENT -> Formatting.DARK_AQUA;
+            default -> Formatting.WHITE;
+        };
     }
 
     public static MutableText tp(Vec3d pos, Formatting... style) {
@@ -437,30 +437,30 @@ public class Messenger {
 
     @Deprecated
     private static Style applyStyle(Style style, char styleCode) {
-        switch (styleCode) {
-            case ITALIC: return style.withFormatting(Formatting.ITALIC);
-            case STRIKETHROUGH: return style.withFormatting(Formatting.STRIKETHROUGH);
-            case UNDERLINE: return style.withFormatting(Formatting.UNDERLINE);
-            case BOLD: return style.withFormatting(Formatting.BOLD);
-            case OBFUSCATED: return style.withFormatting(Formatting.OBFUSCATED);
-            case WHITE: return style.withColor(Formatting.WHITE);
-            case YELLOW: return style.withColor(Formatting.YELLOW);
-            case LIGHT_PURPLE: return style.withColor(Formatting.LIGHT_PURPLE);
-            case RED: return style.withColor(Formatting.RED);
-            case CYAN: return style.withColor(Formatting.AQUA);
-            case LIME: return style.withColor(Formatting.GREEN);
-            case BLUE: return style.withColor(Formatting.BLUE);
-            case DARK_GRAY: return style.withColor(Formatting.DARK_GRAY);
-            case GRAY: return style.withColor(Formatting.GRAY);
-            case GOLD: return style.withColor(Formatting.GOLD);
-            case DARK_PURPLE: return style.withColor(Formatting.DARK_PURPLE);
-            case DARK_RED: return style.withColor(Formatting.DARK_RED);
-            case DARK_AQUA: return style.withColor(Formatting.DARK_AQUA);
-            case DARK_GREEN: return style.withColor(Formatting.DARK_GREEN);
-            case DARK_BLUE: return style.withColor(Formatting.DARK_BLUE);
-            case BLACK: return style.withColor(Formatting.BLACK);
-            default: throw new IllegalArgumentException("Unknown formatting code " + styleCode);
-        }
+        return switch (styleCode) {
+            case ITALIC -> style.withFormatting(Formatting.ITALIC);
+            case STRIKETHROUGH -> style.withFormatting(Formatting.STRIKETHROUGH);
+            case UNDERLINE -> style.withFormatting(Formatting.UNDERLINE);
+            case BOLD -> style.withFormatting(Formatting.BOLD);
+            case OBFUSCATED -> style.withFormatting(Formatting.OBFUSCATED);
+            case WHITE -> style.withColor(Formatting.WHITE);
+            case YELLOW -> style.withColor(Formatting.YELLOW);
+            case LIGHT_PURPLE -> style.withColor(Formatting.LIGHT_PURPLE);
+            case RED -> style.withColor(Formatting.RED);
+            case CYAN -> style.withColor(Formatting.AQUA);
+            case LIME -> style.withColor(Formatting.GREEN);
+            case BLUE -> style.withColor(Formatting.BLUE);
+            case DARK_GRAY -> style.withColor(Formatting.DARK_GRAY);
+            case GRAY -> style.withColor(Formatting.GRAY);
+            case GOLD -> style.withColor(Formatting.GOLD);
+            case DARK_PURPLE -> style.withColor(Formatting.DARK_PURPLE);
+            case DARK_RED -> style.withColor(Formatting.DARK_RED);
+            case DARK_AQUA -> style.withColor(Formatting.DARK_AQUA);
+            case DARK_GREEN -> style.withColor(Formatting.DARK_GREEN);
+            case DARK_BLUE -> style.withColor(Formatting.DARK_BLUE);
+            case BLACK -> style.withColor(Formatting.BLACK);
+            default -> throw new IllegalArgumentException("Unknown formatting code " + styleCode);
+        };
     }
 
     @Deprecated

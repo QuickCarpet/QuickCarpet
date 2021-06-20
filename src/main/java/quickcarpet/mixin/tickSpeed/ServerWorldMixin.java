@@ -23,7 +23,7 @@ import java.util.function.Supplier;
 
 @Mixin(ServerWorld.class)
 public abstract class ServerWorldMixin extends World {
-    @Shadow @Final private List<ServerPlayerEntity> players;
+    @Shadow @Final List<ServerPlayerEntity> players;
 
     @Shadow public abstract ServerChunkManager getChunkManager();
 

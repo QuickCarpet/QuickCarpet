@@ -22,7 +22,6 @@ import org.apache.logging.log4j.Logger;
 import quickcarpet.QuickCarpetServer;
 import quickcarpet.mixin.accessor.TeleportCommandAccessor;
 
-import javax.annotation.Nonnull;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -33,24 +32,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class CameraData {
+public record CameraData(RegistryKey<World> dimension, Vec3d position) {
     public static final MapCodec<CameraData> CODEC = RecordCodecBuilder.mapCodec(it -> it.group(
-            Identifier.CODEC.fieldOf("dimension").forGetter(d -> d.dimension.getValue()),
-            Codec.DOUBLE.fieldOf("x").forGetter(d -> d.position.x),
-            Codec.DOUBLE.fieldOf("y").forGetter(d -> d.position.y),
-            Codec.DOUBLE.fieldOf("z").forGetter(d -> d.position.z)
+            Identifier.CODEC.fieldOf("dimension").forGetter(d -> d.dimension().getValue()),
+            Codec.DOUBLE.fieldOf("x").forGetter(d -> d.position().x),
+            Codec.DOUBLE.fieldOf("y").forGetter(d -> d.position().y),
+            Codec.DOUBLE.fieldOf("z").forGetter(d -> d.position().z)
     ).apply(it, (dim, x, y, z) -> new CameraData(RegistryKey.of(Registry.WORLD_KEY, dim), new Vec3d(x, y, z))));
     public static final Codec<Map<UUID, CameraData>> MAP_CODEC = Codec.unboundedMap(Codec.STRING.xmap(UUID::fromString, UUID::toString), CODEC.codec());
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
     private static final Logger LOGGER = LogManager.getLogger("QuickCarpet|CameraData");
-
-    public final @Nonnull RegistryKey<World> dimension;
-    public final @Nonnull Vec3d position;
-
-    public CameraData(@Nonnull RegistryKey<World> dimension, @Nonnull Vec3d position) {
-        this.dimension = dimension;
-        this.position = position;
-    }
 
     public CameraData(Entity entity) {
         this(entity.world.getRegistryKey(), entity.getPos());
@@ -59,9 +50,9 @@ public class CameraData {
     public boolean restore(Entity entity) {
         MinecraftServer server = entity.world.getServer();
         if (server == null) return false;
-        ServerWorld world = server.getWorld(dimension);
+        ServerWorld world = server.getWorld(dimension());
         try {
-            TeleportCommandAccessor.invokeTeleport(entity.getCommandSource(), entity, world, position.x, position.y, position.z, Collections.emptySet(), entity.getYaw(), entity.getPitch(), null);
+            TeleportCommandAccessor.invokeTeleport(entity.getCommandSource(), entity, world, position().x, position().y, position().z, Collections.emptySet(), entity.getYaw(), entity.getPitch(), null);
         } catch (CommandSyntaxException e) {
             return false;
         }

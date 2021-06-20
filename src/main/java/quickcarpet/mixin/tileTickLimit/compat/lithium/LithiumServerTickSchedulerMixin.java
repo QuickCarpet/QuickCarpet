@@ -16,7 +16,7 @@ import quickcarpet.logging.Loggers;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.Messenger;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 
 @Pseudo
@@ -48,10 +48,9 @@ public class LithiumServerTickSchedulerMixin {
     private void log() {
         if (logged) return;
         logged = true;
-        Loggers.TILE_TICK_LIMIT.log(() -> {
-            return Messenger.t("logger.tileTickLimit.message.lithium", Settings.tileTickLimit);
-        }, () -> Arrays.asList(
-                new LogParameter("LIMIT", Settings.tileTickLimit)
-        ));
+        Loggers.TILE_TICK_LIMIT.log(
+            () -> Messenger.t("logger.tileTickLimit.message.lithium", Settings.tileTickLimit),
+            () -> Collections.singletonList(new LogParameter("LIMIT", Settings.tileTickLimit))
+        );
     }
 }

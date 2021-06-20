@@ -76,8 +76,9 @@ public class Reflection {
     }
 
     public static <B, S extends B> Iterable<Class<? extends B>> iterateSuperClasses(Class<S> start, Class<B> base) {
-        return () -> new AbstractIterator<Class<? extends B>>() {
+        return () -> new AbstractIterator<>() {
             private Class<? extends B> cls;
+
             @Override
             protected Class<? extends B> computeNext() {
                 if (cls == null) {

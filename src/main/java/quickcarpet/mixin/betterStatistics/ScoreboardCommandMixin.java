@@ -35,10 +35,9 @@ public class ScoreboardCommandMixin {
     @Redirect(method = "register", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/command/CommandManager;literal(Ljava/lang/String;)Lcom/mojang/brigadier/builder/LiteralArgumentBuilder;"))
     private static LiteralArgumentBuilder<ServerCommandSource> addRequirements(String literal) {
         LiteralArgumentBuilder<ServerCommandSource> builder = CommandManager.literal(literal);
-        switch (literal) {
-            case "players": case "teams":
-            case "remove": case "modify": return builder.requires(s -> s.hasPermissionLevel(2));
-            default: return builder;
-        }
+        return switch (literal) {
+            case "players", "teams", "remove", "modify" -> builder.requires(s -> s.hasPermissionLevel(2));
+            default -> builder;
+        };
     }
 }

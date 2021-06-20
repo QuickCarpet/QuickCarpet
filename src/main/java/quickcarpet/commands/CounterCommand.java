@@ -4,7 +4,6 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.command.CommandException;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import quickcarpet.helper.HopperCounter;
@@ -35,7 +34,6 @@ public class CounterCommand {
 
     private static int displayCounter(ServerCommandSource source, HopperCounter.Key key, boolean realtime) {
         HopperCounter counter = HopperCounter.getCounter(key);
-        if (counter == null) throw new CommandException(t("command.counter.unknown"));
         for (Text message : counter.format(source.getMinecraftServer(), realtime, false)) {
             m(source, message);
         }
@@ -48,7 +46,6 @@ public class CounterCommand {
             m(source, t("command.counter.reset.success"));
         } else {
             HopperCounter counter = HopperCounter.getCounter(color);
-            if (counter == null) throw new CommandException(t("command.counter.unknown"));
             counter.reset(source.getMinecraftServer());
             m(source, t("command.counter.reset.one.success", counter.key.getText()));
         }

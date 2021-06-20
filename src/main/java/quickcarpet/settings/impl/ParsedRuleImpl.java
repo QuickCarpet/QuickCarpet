@@ -35,8 +35,8 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
     @Nullable
     private final TranslatableText deprecated;
     private final ImmutableList<RuleCategory> categories;
-    private final ImmutableList<String> options;
-    private final ImmutableList<String> enabledOptions;
+    private final List<String> options;
+    private final List<String> enabledOptions;
     private final Class<T> type;
     private final TypeAdapter<T, ?> typeAdapter;
     private final Validator<T> validator;
@@ -69,13 +69,13 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
         this.defaultValue = get();
         this.defaultAsString = typeAdapter.toString(this.defaultValue);
         boolean disabled = !MixinConfig.getInstance().isRuleEnabled(this);
-        ImmutableList<String> options = typeAdapter.getOptions();
+        List<String> options = typeAdapter.getOptions();
         if (options == null) options = ImmutableList.copyOf(rule.options());
         this.options = options;
         if (!disabled) {
             this.enabledOptions = options.stream()
                 .filter(option -> MixinConfig.getInstance().isOptionEnabled(this, option))
-                .collect(ImmutableList.toImmutableList());
+                .toList();
             if (!options.isEmpty() && enabledOptions.size() <= 1) disabled = true;
         } else {
             this.enabledOptions = ImmutableList.of(defaultAsString);
@@ -161,7 +161,7 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
         return defaultAsString;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({"unchecked", "rawtypes"})
     private static <T> TypeAdapter<T, ?> getTypeAdapter(Class<T> type) {
         if (type == String.class) return (TypeAdapter<T, ?>) TypeAdapter.STRING;
         if (type == boolean.class) return (TypeAdapter<T, ?>) TypeAdapter.BOOLEAN;
@@ -212,6 +212,7 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
         try {
             this.field.set(null, value);
             this.onChange.onChange(this, previousValue);
+            //noinspection unchecked
             this.categories.forEach(c -> c.onChange((ParsedRuleImpl<Object>) this, previousValue));
             if (sync) RulesChannel.instance.sendRuleUpdate(Collections.singleton(this));
         } catch (IllegalAccessException e) {
@@ -311,7 +312,7 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
             return context.getArgument(argument, type);
         }
 
-        default ImmutableList<String> getOptions() {
+        default List<String> getOptions() {
             return null;
         }
 
@@ -339,13 +340,7 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
             }
         }
 
-        class EnumTypeAdapter<T extends Enum<T>> implements TypeAdapter<Enum<T>, String> {
-            public final Class<T> enumClass;
-
-            public EnumTypeAdapter(Class<T> enumClass) {
-                this.enumClass = enumClass;
-            }
-
+        record EnumTypeAdapter<T extends Enum<T>>(Class<T> enumClass) implements TypeAdapter<Enum<T>, String> {
             @Override
             public Enum<T> parse(String s) {
                 return Enum.valueOf(enumClass, s.toUpperCase(Locale.ROOT));
@@ -371,15 +366,15 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
             }
 
             @Override
-            public ImmutableList<String> getOptions() {
-                return Arrays.stream(enumClass.getEnumConstants()).map(e -> e.name().toLowerCase(Locale.ROOT)).collect(ImmutableList.toImmutableList());
+            public List<String> getOptions() {
+                return Arrays.stream(enumClass.getEnumConstants()).map(e -> e.name().toLowerCase(Locale.ROOT)).toList();
             }
         }
 
         TypeAdapter.Simple<String> STRING = new Simple<>(s -> s, StringArgumentType::greedyString);
-        TypeAdapter.Simple<Boolean> BOOLEAN = new Simple<Boolean>(Boolean::parseBoolean, BoolArgumentType::bool) {
+        TypeAdapter.Simple<Boolean> BOOLEAN = new Simple<>(Boolean::parseBoolean, BoolArgumentType::bool) {
             @Override
-            public ImmutableList<String> getOptions() {
+            public List<String> getOptions() {
                 return ImmutableList.of("true", "false");
             }
         };

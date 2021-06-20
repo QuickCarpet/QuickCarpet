@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class PluginChannelManager implements ServerPluginChannelManager {
     private final MinecraftServer server;
     public final PluginChannelTracker tracker;
-    private Map<Identifier, ServerPluginChannelHandler> channelHandlers = new HashMap<>();
+    private final Map<Identifier, ServerPluginChannelHandler> channelHandlers = new HashMap<>();
 
     public PluginChannelManager(MinecraftServer server) {
         this.server = server;

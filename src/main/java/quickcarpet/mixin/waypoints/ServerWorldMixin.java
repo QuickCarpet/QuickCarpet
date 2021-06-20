@@ -37,8 +37,4 @@ public abstract class ServerWorldMixin extends World implements WaypointContaine
         return this.getRegistryKey();
     }
 
-    @Override
-    public DimensionType getWaypointDimensionType() {
-        return this.getDimension();
-    }
 }

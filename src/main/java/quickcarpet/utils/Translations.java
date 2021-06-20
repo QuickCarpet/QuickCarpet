@@ -83,8 +83,7 @@ public class Translations {
     }
 
     private static MutableText translatedCopy(Text text, String locale) {
-        if (!(text instanceof TranslatableText)) return text.copy();
-        TranslatableText translatable = (TranslatableText) text;
+        if (!(text instanceof TranslatableText translatable)) return text.copy();
         String key = translatable.getKey();
         if (!DEFAULT.containsKey(key)) return text.copy();
         locale = locale.toLowerCase(Locale.ROOT);

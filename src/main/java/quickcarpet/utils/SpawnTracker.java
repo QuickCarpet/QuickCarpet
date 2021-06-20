@@ -30,10 +30,10 @@ public class SpawnTracker {
     private int tickStarted = -1;
     private int tickStopped = -1;
 
-    private Object2IntMap<EntityType<?>> successfulSpawns = new Object2IntOpenHashMap<>();
-    private Object2IntMap<SpawnGroup> mobcapFull = new Object2IntOpenHashMap<>();
-    private Object2IntMap<SpawnGroup> mobcapNotFull = new Object2IntOpenHashMap<>();
-    private Object2IntMap<EntityType<?>> attempts = new Object2IntOpenHashMap<>();
+    private final Object2IntMap<EntityType<?>> successfulSpawns = new Object2IntOpenHashMap<>();
+    private final Object2IntMap<SpawnGroup> mobcapFull = new Object2IntOpenHashMap<>();
+    private final Object2IntMap<SpawnGroup> mobcapNotFull = new Object2IntOpenHashMap<>();
+    private final Object2IntMap<EntityType<?>> attempts = new Object2IntOpenHashMap<>();
 
     private SpawnTracker(ServerCommandSource source, BlockPos min, BlockPos max) {
         this.source = source;

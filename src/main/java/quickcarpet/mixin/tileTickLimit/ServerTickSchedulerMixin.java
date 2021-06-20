@@ -15,7 +15,7 @@ import quickcarpet.logging.Loggers;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.Messenger;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 @Mixin(ServerTickScheduler.class)
@@ -25,12 +25,12 @@ public class ServerTickSchedulerMixin {
     @Inject(method = "tick", at = @At(value = "CONSTANT", args = "intValue=65536", ordinal = 1))
     private void logTileTickLimit(CallbackInfo ci) {
         int scheduled = this.scheduledTickActionsInOrder.size();
-        Loggers.TILE_TICK_LIMIT.log(() -> {
-            return Messenger.t("logger.tileTickLimit.message", scheduled, Settings.tileTickLimit);
-        }, () -> Arrays.asList(
-            new LogParameter("NUMBER", scheduled),
-            new LogParameter("LIMIT", Settings.tileTickLimit)
-        ));
+        Loggers.TILE_TICK_LIMIT.log(
+            () -> Messenger.t("logger.tileTickLimit.message", scheduled, Settings.tileTickLimit),
+            () -> List.of(
+                new LogParameter("NUMBER", scheduled),
+                new LogParameter("LIMIT", Settings.tileTickLimit)
+            ));
     }
 
     @ModifyConstant(method = "tick", constant = @Constant(intValue = 65536))

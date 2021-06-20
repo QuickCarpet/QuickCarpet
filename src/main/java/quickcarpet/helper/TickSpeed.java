@@ -120,7 +120,7 @@ public class TickSpeed implements TelemetryProvider {
         }
         timeRunning /= 1000000.0;
         int tps = (int) (1000.0D * completedTicks / timeRunning);
-        double mspt = (1.0 * timeRunning) / completedTicks;
+        double mspt = timeRunning / completedTicks;
         tickWarpScheduledTicks = 0;
         tickWarpStartTime = 0;
         MinecraftServer server = QuickCarpetServer.getMinecraftServer();
@@ -273,7 +273,7 @@ public class TickSpeed implements TelemetryProvider {
     }
 
     private static class Measurement {
-        private static Map<ServerCommandSource, Measurement> measurements = new HashMap<>();
+        private static final Map<ServerCommandSource, Measurement> MEASUREMENTS = new HashMap<>();
         public final ServerCommandSource source;
         private final MinecraftServer server;
         public final int length;
@@ -285,13 +285,13 @@ public class TickSpeed implements TelemetryProvider {
             this.server = source.getMinecraftServer();
             this.length = length;
             this.tickLengths = new long[length];
-            measurements.put(source, this);
+            MEASUREMENTS.put(source, this);
         }
 
         private void tick() {
             if (ticksRecorded >= length) {
                 TickCommand.printMSPTStats(source, new MSPTStatistics(tickLengths));
-                measurements.remove(source);
+                MEASUREMENTS.remove(source);
                 return;
             }
             int previous = (server.getTicks() - 1) % 100;
@@ -299,12 +299,12 @@ public class TickSpeed implements TelemetryProvider {
         }
 
         private static void tickAll() {
-            for (Measurement m : measurements.values()) m.tick();
+            for (Measurement m : MEASUREMENTS.values()) m.tick();
         }
     }
 
     public static void startMeasurement(ServerCommandSource source, int ticks) {
-        if (Measurement.measurements.containsKey(source)) return;
+        if (Measurement.MEASUREMENTS.containsKey(source)) return;
         new Measurement(source, ticks);
     }
 

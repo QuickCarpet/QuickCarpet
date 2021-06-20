@@ -13,8 +13,8 @@ public final class PubSubNode {
 
     public final @Nullable PubSubNode parent;
     public final Map<String, PubSubNode> children = new HashMap<>();
-    private Set<PubSubSubscriber> subscribers = new LinkedHashSet<>();
-    private Set<PubSubCallback> callbacks = new LinkedHashSet<>();
+    private final Set<PubSubSubscriber> subscribers = new LinkedHashSet<>();
+    private final Set<PubSubCallback> callbacks = new LinkedHashSet<>();
 
     /**
         Keeps track of the number of subscribers in this branch of the tree (root -> subscriber)

@@ -9,7 +9,6 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resource.language.I18n;
 import quickcarpet.Build;
 
-import java.util.Collections;
 import java.util.List;
 
 public class ConfigsGui extends GuiConfigsBase {
@@ -58,13 +57,12 @@ public class ConfigsGui extends GuiConfigsBase {
 
     @SuppressWarnings("unchecked")
     private static List<IConfigBase> getConfigsForTab(ConfigGuiTab tab) {
-        switch (selectedTab) {
-            case GENERIC: return (List) ConfigUtils.createConfigWrapperForType(ConfigType.BOOLEAN, Configs.Generic.TOGGLEABLE);
-            case GENERIC_HOTKEYS: return (List) Configs.Generic.getHotkeys();
-            case RENDERING: return (List) ConfigUtils.createConfigWrapperForType(ConfigType.BOOLEAN, Configs.Rendering.OPTIONS);
-            case RENDERING_HOTKEYS: return (List) ConfigUtils.createConfigWrapperForType(ConfigType.HOTKEY, Configs.Rendering.OPTIONS);
-        }
-        return Collections.emptyList();
+        return switch (selectedTab) {
+            case GENERIC -> (List) ConfigUtils.createConfigWrapperForType(ConfigType.BOOLEAN, Configs.Generic.TOGGLEABLE);
+            case GENERIC_HOTKEYS -> (List) Configs.Generic.getHotkeys();
+            case RENDERING -> (List) ConfigUtils.createConfigWrapperForType(ConfigType.BOOLEAN, Configs.Rendering.OPTIONS);
+            case RENDERING_HOTKEYS -> (List) ConfigUtils.createConfigWrapperForType(ConfigType.HOTKEY, Configs.Rendering.OPTIONS);
+        };
     }
 
     public enum ConfigGuiTab {

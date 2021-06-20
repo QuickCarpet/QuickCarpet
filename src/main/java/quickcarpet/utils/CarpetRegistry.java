@@ -12,7 +12,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.dispenser.DispenserBehavior;
-import net.minecraft.block.dispenser.ItemDispenserBehavior;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.datafixer.Schemas;
@@ -121,13 +120,13 @@ public class CarpetRegistry {
         }
         if (Settings.renewableNetherrack && item == Items.FIRE_CHARGE) {
             if (fireChargeBehavior == null) {
-                fireChargeBehavior = new MultiDispenserBehavior(new FireChargeConvertsToNetherrackBehavior(), (ItemDispenserBehavior) behaviors.get(item));
+                fireChargeBehavior = new MultiDispenserBehavior(new FireChargeConvertsToNetherrackBehavior(), behaviors.get(item));
             }
             return fireChargeBehavior;
         }
         if (Settings.dispensersShearVines && item == Items.SHEARS) {
             if (shearsBehavior == null) {
-                shearsBehavior = new MultiDispenserBehavior((ItemDispenserBehavior) behaviors.get(item), new ShearVinesBehavior());
+                shearsBehavior = new MultiDispenserBehavior(behaviors.get(item), new ShearVinesBehavior());
             }
             return shearsBehavior;
         }

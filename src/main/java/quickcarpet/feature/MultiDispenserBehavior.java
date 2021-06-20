@@ -8,7 +8,7 @@ import quickcarpet.mixin.accessor.FallibleItemDispenserBehaviorAccessor;
 import quickcarpet.mixin.accessor.ItemDispenserBehaviorAccessor;
 
 public class MultiDispenserBehavior extends FallibleItemDispenserBehavior {
-    private DispenserBehavior[] behaviors;
+    private final DispenserBehavior[] behaviors;
 
     public MultiDispenserBehavior(DispenserBehavior...behaviors) {
         this.behaviors = behaviors;

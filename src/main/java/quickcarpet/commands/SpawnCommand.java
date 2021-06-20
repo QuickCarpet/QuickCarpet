@@ -2,7 +2,6 @@ package quickcarpet.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
@@ -48,7 +47,7 @@ public class SpawnCommand {
         dispatcher.register(builder);
     }
 
-    private static int sendTrackingReport(ServerCommandSource source) throws CommandSyntaxException {
+    private static int sendTrackingReport(ServerCommandSource source) {
         SpawnTracker tracker = SpawnTracker.getTracker(source);
         if (tracker == null) {
             m(source, ts("command.spawn.tracking.inactive", Formatting.GOLD));
@@ -58,7 +57,7 @@ public class SpawnCommand {
         return 1;
     }
 
-    private static int startTracking(ServerCommandSource source, BlockPos min, BlockPos max) throws CommandSyntaxException {
+    private static int startTracking(ServerCommandSource source, BlockPos min, BlockPos max) {
         SpawnTracker tracker = SpawnTracker.getOrCreateTracker(source, min, max);
         if (tracker.isActive()) {
             m(source, ts("command.spawn.tracking.active", Formatting.GOLD));
@@ -69,7 +68,7 @@ public class SpawnCommand {
         return 1;
     }
 
-    private static int stopTracking(ServerCommandSource source) throws CommandSyntaxException {
+    private static int stopTracking(ServerCommandSource source) {
         SpawnTracker tracker = SpawnTracker.getTracker(source);
         if (tracker == null) {
             m(source, ts("command.spawn.tracking.active", Formatting.GOLD));

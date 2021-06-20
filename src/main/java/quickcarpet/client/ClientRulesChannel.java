@@ -9,7 +9,6 @@ import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
 import net.minecraft.util.Identifier;
 import quickcarpet.api.network.client.ClientPluginChannelHandler;
 import quickcarpet.api.settings.ParsedRule;
-import quickcarpet.helper.NBTHelper;
 import quickcarpet.network.channels.RulesChannel;
 import quickcarpet.network.impl.PacketSplitter;
 import quickcarpet.settings.Settings;
@@ -30,7 +29,7 @@ public class ClientRulesChannel implements ClientPluginChannelHandler {
             if (data == null) return;
             int version = data.getInt("Version");
             if (version == 0 || version > RulesChannel.VERSION) return;
-            NbtList rulesList = data.getList("Rules", NBTHelper.TAG_COMPOUND);
+            NbtList rulesList = data.getList("Rules", NbtElement.COMPOUND_TYPE);
             for (NbtElement tag : rulesList) {
                 NbtCompound ruleTag = (NbtCompound) tag;
                 String id = ruleTag.getString("Id");

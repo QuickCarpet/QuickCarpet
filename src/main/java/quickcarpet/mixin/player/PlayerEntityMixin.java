@@ -19,7 +19,10 @@ public abstract class PlayerEntityMixin {
         if (!Settings.portalCreativeDelay) return;
         int delay = 80;
         for (ItemStack heldItem : this.getItemsHand()) {
-            if (heldItem.getItem() == Items.OBSIDIAN) delay = Integer.MAX_VALUE;
+            if (heldItem.getItem() == Items.OBSIDIAN) {
+                delay = Integer.MAX_VALUE;
+                break;
+            }
         }
         cir.setReturnValue(delay);
         cir.cancel();

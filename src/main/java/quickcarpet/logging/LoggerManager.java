@@ -40,16 +40,12 @@ public class LoggerManager {
         this.server = server;
     }
 
-    public static final class LoggerOptions {
+    public record LoggerOptions(Logger logger, String option, @Nullable LogHandler handler) {
         public static final MapCodec<LoggerOptions> CODEC = RecordCodecBuilder.mapCodec(it -> it.group(
-            Logger.NAME_CODEC.fieldOf("logger").forGetter(o -> o.logger),
-            Codec.STRING.optionalFieldOf("option").forGetter(o -> Optional.ofNullable(o.option)),
-            LogHandler.CODEC.codec().optionalFieldOf("handler").forGetter(o -> Optional.ofNullable(o.handler))
+                Logger.NAME_CODEC.fieldOf("logger").forGetter(o -> o.logger),
+                Codec.STRING.optionalFieldOf("option").forGetter(o -> Optional.ofNullable(o.option)),
+                LogHandler.CODEC.codec().optionalFieldOf("handler").forGetter(o -> Optional.ofNullable(o.handler))
         ).apply(it, (logger, option, handler) -> LoggerOptions.create(logger, option.orElse(null), handler.orElse(null))));
-
-        public final Logger logger;
-        public final String option;
-        public final @Nullable LogHandler handler;
 
         public LoggerOptions(Logger logger, String option, LogHandler handler) {
             this.logger = logger;

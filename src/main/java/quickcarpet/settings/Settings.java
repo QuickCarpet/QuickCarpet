@@ -32,12 +32,12 @@ public class Settings {
     public static final RuleUpgrader RULE_UPGRADER = new RuleUpgrader() {
         @Override
         public Pair<String, String> upgrade(String key, String value) {
-            switch (key) {
-                case "silverFishDropGravel": return new Pair<>("renewableGravel", "true".equals(value) ? "silverfish" : "none");
-                case "mobInFireConvertsSandToSoulsand": return new Pair<>("renewableSoulSand", value);
-                case "fireChargeConvertsToNetherrack": return new Pair<>("renewableNetherrack", value);
-            }
-            return null;
+            return switch (key) {
+                case "silverFishDropGravel" -> new Pair<>("renewableGravel", "true".equals(value) ? "silverfish" : "none");
+                case "mobInFireConvertsSandToSoulsand" -> new Pair<>("renewableSoulSand", value);
+                case "fireChargeConvertsToNetherrack" -> new Pair<>("renewableNetherrack", value);
+                default -> null;
+            };
         }
 
         @Override
@@ -47,7 +47,7 @@ public class Settings {
                 if ("false".equals(value)) return "4";
             }
             switch (rule.getShortName()) {
-                case "renewableSand": {
+                case "renewableSand" -> {
                     if ("true".equals(value)) return "anvil";
                     if ("false".equals(value)) return "none";
                 }

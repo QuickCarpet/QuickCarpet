@@ -22,10 +22,8 @@ public class FakeServerPlayNetworkHandler extends ServerPlayNetworkHandler {
 
     @Override
     public void sendPacket(final Packet<?> packet) {
-        if (packet instanceof KeepAliveS2CPacket) {
-            KeepAliveS2CPacket ping = (KeepAliveS2CPacket) packet;
-            KeepAliveC2SPacket pong = new KeepAliveC2SPacket(((KeepAliveS2CPacketAccessor) ping).getId());
-            this.onKeepAlive(pong);
+        if (packet instanceof KeepAliveS2CPacket ping) {
+            this.onKeepAlive(new KeepAliveC2SPacket(((KeepAliveS2CPacketAccessor) ping).getId()));
         }
     }
 

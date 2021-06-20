@@ -19,11 +19,6 @@ public class BlockPropertyTag implements Tag.Identified<Block> {
     public final Identifier id;
     private final Predicate<BlockState> property;
 
-    public BlockPropertyTag(Identifier id, Predicate<BlockState> property) {
-        this.id = id;
-        this.property = property;
-    }
-
     public BlockPropertyTag(Identifier id, BlockPropertyPredicate function) {
         this.id = id;
         this.property = state -> function.test(state, new SingleBlockView(state), BlockPos.ORIGIN);
@@ -49,12 +44,7 @@ public class BlockPropertyTag implements Tag.Identified<Block> {
         boolean test(BlockState state, BlockView world, BlockPos pos);
     }
 
-    public static class SingleBlockView implements BlockView {
-        private final BlockState state;
-        public SingleBlockView(BlockState state) {
-            this.state = state;
-        }
-
+    public record SingleBlockView(BlockState state) implements BlockView {
         @Nullable
         @Override
         public BlockEntity getBlockEntity(BlockPos pos) {

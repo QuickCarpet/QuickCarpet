@@ -83,8 +83,7 @@ public class StatHelper {
     public static void initialize(Scoreboard scoreboard, MinecraftServer server, ScoreboardObjective objective) {
         LOGGER.debug("Initializing " + objective);
         ScoreboardCriterion criterion = objective.getCriterion();
-        if (!(criterion instanceof Stat)) return;
-        Stat<?> stat = ((Stat<?>) criterion);
+        if (!(criterion instanceof Stat<?> stat)) return;
         Map<UUID, StatHandler> allStats = getAllStatistics(server);
         for (Map.Entry<UUID, StatHandler> statEntry : allStats.entrySet()) {
             StatHandler stats = statEntry.getValue();

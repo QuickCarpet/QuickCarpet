@@ -14,8 +14,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import quickcarpet.QuickCarpetServer;
 import quickcarpet.commands.Utils;
-import quickcarpet.logging.Loggers;
 import quickcarpet.logging.LogParameter;
+import quickcarpet.logging.Loggers;
 
 import java.util.Arrays;
 
@@ -37,22 +37,22 @@ public class CommandBlockExecutorMixin {
         String commandWithoutSlash = command.startsWith("/") ? command.substring(1) : command;
         Loggers.COMMAND_BLOCKS.log(option -> {
             boolean isCentered = pos.squaredDistanceTo(center) < 0.01;
-            switch (option) {
-                case "brief":
-                    return isCentered ? tp(blockPos, Formatting.AQUA) : tp(pos, Formatting.AQUA);
-                case "full":
+            return switch (option) {
+                case "brief" -> isCentered ? tp(blockPos, Formatting.AQUA) : tp(pos, Formatting.AQUA);
+                case "full" -> {
                     CommandDispatcher<ServerCommandSource> dispatcher = QuickCarpetServer.getMinecraftServer().getCommandManager().getDispatcher();
                     ParseResults<ServerCommandSource> parsed = dispatcher.parse(commandWithoutSlash, source);
                     MutableText highlightedCommand = parsed.getReader().canRead() ? s(commandWithoutSlash, Formatting.RED) : Utils.highlight(parsed, commandWithoutSlash, 0);
-                    return c(
+                    yield c(
                         isCentered ? tp(blockPos, Formatting.AQUA) : tp(pos, Formatting.AQUA),
                         s(" ", Formatting.WHITE),
                         highlightedCommand,
                         s(" = ", Formatting.GRAY),
                         s(Integer.toString(result), Formatting.GREEN)
                     );
-            }
-            return null;
+                }
+                default -> null;
+            };
         }, () -> Arrays.asList(
             new LogParameter("x", pos.x),
             new LogParameter("y", pos.y),

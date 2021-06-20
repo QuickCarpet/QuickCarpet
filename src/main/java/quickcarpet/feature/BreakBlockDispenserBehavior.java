@@ -18,7 +18,7 @@ import net.minecraft.util.math.Vec3d;
 import quickcarpet.settings.Settings;
 
 public class BreakBlockDispenserBehavior extends ItemDispenserBehavior {
-    private static ItemStack SILK_TOUCH_TOOL = new ItemStack(Items.DIAMOND_PICKAXE);
+    private static final ItemStack SILK_TOUCH_TOOL = new ItemStack(Items.DIAMOND_PICKAXE);
 
     static {
         SILK_TOUCH_TOOL.addEnchantment(Enchantments.SILK_TOUCH, 1);
@@ -27,21 +27,19 @@ public class BreakBlockDispenserBehavior extends ItemDispenserBehavior {
     @Override
     public ItemStack dispenseSilently(BlockPointer blockPointer, ItemStack itemStack) {
         switch (Settings.dispensersBreakBlocks) {
-            case NORMAL: {
+            case NORMAL -> {
                 if (breakBlock(blockPointer, false)) {
                     spawnParticles(blockPointer, blockPointer.getBlockState().get(DispenserBlock.FACING));
                     itemStack.decrement(1);
                     return itemStack;
                 }
-                break;
             }
-            case SILK_TOUCH: {
+            case SILK_TOUCH -> {
                 if (breakBlock(blockPointer, true)) {
                     spawnParticles(blockPointer, blockPointer.getBlockState().get(DispenserBlock.FACING));
                     itemStack.decrement(1);
                     return itemStack;
                 }
-                break;
             }
         }
         return super.dispenseSilently(blockPointer, itemStack);

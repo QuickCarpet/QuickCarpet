@@ -102,31 +102,24 @@ public class PubSubMessenger implements ServerPluginChannelHandler {
             String nodeName = update.getKey().fullName;
             Object value = update.getValue();
             buf.writeString(nodeName);
-            if (value instanceof NbtElement) {
-                NbtCompound tag = makeCompound((NbtElement) value);
+            if (value instanceof NbtElement el) {
                 buf.writeVarInt(TYPE_NBT);
                 ByteBufOutputStream out = new ByteBufOutputStream(buf);
                 try {
-                    NbtIo.write(tag, out);
+                    NbtIo.write(makeCompound(el), out);
                 } catch (IOException ignored) {} // ByteBufOutputStream doesn't throw IOExceptions
-            } else if (value instanceof String) {
-                buf.writeVarInt(TYPE_STRING);
-                buf.writeString((String) value);
-            } else if (value instanceof Integer) {
-                buf.writeVarInt(TYPE_INT);
-                buf.writeInt((Integer) value);
-            } else if (value instanceof Float) {
-                buf.writeVarInt(TYPE_FLOAT);
-                buf.writeFloat((Float) value);
-            } else if (value instanceof Long) {
-                buf.writeVarInt(TYPE_LONG);
-                buf.writeLong((Long) value);
-            } else if (value instanceof Double) {
-                buf.writeVarInt(TYPE_DOUBLE);
-                buf.writeDouble((Double) value);
-            } else if (value instanceof Boolean) {
-                buf.writeVarInt(TYPE_BOOLEAN);
-                buf.writeBoolean((Boolean) value);
+            } else if (value instanceof String s) {
+                buf.writeVarInt(TYPE_STRING).writeString(s);
+            } else if (value instanceof Integer i) {
+                buf.writeVarInt(TYPE_INT).writeInt(i);
+            } else if (value instanceof Float f) {
+                buf.writeVarInt(TYPE_FLOAT).writeFloat(f);
+            } else if (value instanceof Long l) {
+                buf.writeVarInt(TYPE_LONG).writeLong(l);
+            } else if (value instanceof Double d) {
+                buf.writeVarInt(TYPE_DOUBLE).writeDouble(d);
+            } else if (value instanceof Boolean b) {
+                buf.writeVarInt(TYPE_BOOLEAN).writeBoolean(b);
             } else {
                 throw new IllegalArgumentException("Can't serialize " + nodeName + ": " + value.getClass().getSimpleName());
             }
@@ -156,11 +149,11 @@ public class PubSubMessenger implements ServerPluginChannelHandler {
         if (payload == null) return;
         int id = payload.readVarInt();
         switch (id) {
-            case PACKET_C2S_SUBSCRIBE: {
+            case PACKET_C2S_SUBSCRIBE -> {
                 subscribe(player, readNames(payload));
                 return;
             }
-            case PACKET_C2S_UNSUBSCRIBE: {
+            case PACKET_C2S_UNSUBSCRIBE -> {
                 unsubscribe(player, readNames(payload));
                 return;
             }

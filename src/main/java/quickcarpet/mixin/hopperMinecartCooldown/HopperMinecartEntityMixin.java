@@ -34,7 +34,7 @@ public abstract class HopperMinecartEntityMixin extends StorageMinecartEntity im
         super(entityType, world);
     }
 
-    //Bugfix 0: Make the cart remember its last Blockpos, otherwise it will always compare to BlockPos.ORIGIN
+    //Bugfix 0: Make the cart remember its last BlockPos, otherwise it will always compare to BlockPos.ORIGIN
     @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/vehicle/HopperMinecartEntity;setTransferCooldown(I)V", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD)
     private void rememberBlockPos(CallbackInfo ci) {
         if (Settings.hopperMinecartCooldown != 0) {

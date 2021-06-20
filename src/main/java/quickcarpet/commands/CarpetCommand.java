@@ -154,7 +154,7 @@ public class CarpetCommand {
             style(changePermanently, Formatting.AQUA);
             hoverText(changePermanently, t("command.carpet.changePermanently.hover"));
             suggestCommand(changePermanently, "/carpet setDefault " + rule.getName() + " " + rule.getAsString());
-            m(source, s(rule.toString() + " "), changePermanently);
+            m(source, s(rule + " "), changePermanently);
         } catch (ParsedRule.ValueException e) {
             throw new CommandException(ts("command.carpet.rule.invalidValue", Formatting.RED, e.message));
         } catch (IllegalArgumentException e) {

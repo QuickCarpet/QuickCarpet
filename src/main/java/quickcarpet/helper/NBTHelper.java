@@ -11,24 +11,10 @@ import net.minecraft.nbt.NbtList;
 import javax.annotation.Nullable;
 
 public class NBTHelper {
-    public static final int TAG_END = NbtElement.NULL_TYPE;
-    public static final int TAG_BYTE = NbtElement.BYTE_TYPE;
-    public static final int TAG_SHORT = NbtElement.SHORT_TYPE;
-    public static final int TAG_INT = NbtElement.INT_TYPE;
-    public static final int TAG_LONG = NbtElement.LONG_TYPE;
-    public static final int TAG_FLOAT = NbtElement.FLOAT_TYPE;
-    public static final int TAG_DOUBLE = NbtElement.DOUBLE_TYPE;
-    public static final int TAG_BYTEARRAY = NbtElement.BYTE_ARRAY_TYPE;
-    public static final int TAG_STRING = NbtElement.STRING_TYPE;
-    public static final int TAG_LIST = NbtElement.LIST_TYPE;
-    public static final int TAG_COMPOUND = NbtElement.COMPOUND_TYPE;
-    public static final int TAG_INTARRAY = NbtElement.INT_ARRAY_TYPE;
-    public static final int TAG_LONGARRAY = NbtElement.LONG_ARRAY_TYPE;
-
     @Nullable
     public static NbtCompound getBlockEntityTag(ItemStack stack) {
         NbtCompound tag = stack.getTag();
-        return tag == null ? null : getTagOrNull(tag, "BlockEntityTag", TAG_COMPOUND);
+        return tag == null ? null : getTagOrNull(tag, "BlockEntityTag", (int) NbtElement.COMPOUND_TYPE);
     }
 
     @Nullable
@@ -43,7 +29,7 @@ public class NBTHelper {
 
         NbtCompound bet = getBlockEntityTag(stack);
         if (bet == null) return false;
-        NbtList items = getTagOrNull(bet, "Items", TAG_LIST);
+        NbtList items = getTagOrNull(bet, "Items", NbtElement.LIST_TYPE);
         if (items != null && items.isEmpty()) {
             bet.remove("Items");
             changed = true;
@@ -60,7 +46,7 @@ public class NBTHelper {
     public static boolean hasShulkerBoxItems(ItemStack stack) {
         NbtCompound bet = getBlockEntityTag(stack);
         if (bet == null) return false;
-        NbtList items = getTagOrNull(bet, "Items", TAG_LIST);
+        NbtList items = getTagOrNull(bet, "Items", NbtElement.LIST_TYPE);
         return items != null && !items.isEmpty();
     }
 

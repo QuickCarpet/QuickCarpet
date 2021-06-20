@@ -27,7 +27,7 @@ public abstract class WorldChunkMixin implements ExtendedWorldChunk, Chunk {
     @Shadow @Final private ChunkSection[] sections;
     @Shadow @Final private Map<Heightmap.Type, Heightmap> heightmaps;
     @Shadow private boolean shouldSave;
-    @Shadow @Final private World world;
+    @Shadow @Final World world;
     @Nullable @Shadow public abstract BlockEntity getBlockEntity(BlockPos blockPos_1, WorldChunk.CreationType worldChunk$CreationType_1);
     @Shadow public abstract void addBlockEntity(BlockEntity blockEntity);
 

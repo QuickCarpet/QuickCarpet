@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Map;
 
 public class PlayerActionPack {
-    private ServerPlayerEntity player;
-    private EnumMap<ActionType, Action> actions = new EnumMap<>(ActionType.class);
+    private final ServerPlayerEntity player;
+    private final EnumMap<ActionType, Action> actions = new EnumMap<>(ActionType.class);
 
     private BlockPos currentBlock;
     private int blockHitDelay;
@@ -182,7 +182,7 @@ public class PlayerActionPack {
                 HitResult hit = getTarget(player);
                 for (Hand hand : Hand.values()) {
                     switch (hit.getType()) {
-                        case BLOCK: {
+                        case BLOCK -> {
                             player.updateLastActionTime();
                             ServerWorld world = player.getServerWorld();
                             BlockHitResult blockHit = (BlockHitResult) hit;
@@ -193,9 +193,8 @@ public class PlayerActionPack {
                                 if (result.shouldSwingHand()) player.swingHand(hand);
                                 if (result != ActionResult.PASS) return;
                             }
-                            break;
                         }
-                        case ENTITY: {
+                        case ENTITY -> {
                             player.updateLastActionTime();
                             EntityHitResult entityHit = (EntityHitResult) hit;
                             Entity entity = entityHit.getEntity();
@@ -206,7 +205,6 @@ public class PlayerActionPack {
                             result = player.interact(entity, hand);
                             if (result.shouldSwingHand()) player.swingHand(hand);
                             if (result != ActionResult.PASS) return;
-                            break;
                         }
                     }
                     ActionResult result = player.interactionManager.interactItem(player, player.getServerWorld(), player.getStackInHand(hand), hand);
@@ -225,15 +223,14 @@ public class PlayerActionPack {
             void execute(ServerPlayerEntity player, Action action) {
                 HitResult hit = getTarget(player);
                 switch (hit.getType()) {
-                    case ENTITY: {
+                    case ENTITY -> {
                         EntityHitResult entityHit = (EntityHitResult) hit;
                         player.attack(entityHit.getEntity());
                         player.resetLastAttackedTicks();
                         player.updateLastActionTime();
                         player.swingHand(Hand.MAIN_HAND);
-                        break;
                     }
-                    case BLOCK: {
+                    case BLOCK -> {
                         PlayerActionPack ap = ((ActionPackOwner) player).getActionPack();
                         if (ap.blockHitDelay > 0) {
                             ap.blockHitDelay--;
@@ -242,7 +239,8 @@ public class PlayerActionPack {
                         BlockHitResult blockHit = (BlockHitResult) hit;
                         BlockPos pos = blockHit.getBlockPos();
                         Direction side = blockHit.getSide();
-                        if (player.isBlockBreakingRestricted(player.world, pos, player.interactionManager.getGameMode())) return;
+                        if (player.isBlockBreakingRestricted(player.world, pos, player.interactionManager.getGameMode()))
+                            return;
                         if (ap.currentBlock != null && player.world.isAir(ap.currentBlock)) {
                             ap.currentBlock = null;
                             return;
@@ -273,7 +271,6 @@ public class PlayerActionPack {
                         }
                         player.updateLastActionTime();
                         player.swingHand(Hand.MAIN_HAND);
-                        break;
                     }
                 }
             }
@@ -352,7 +349,7 @@ public class PlayerActionPack {
         public final int limit;
         public final int interval;
         public final int offset;
-        private int perTick;
+        public final int perTick;
         private int count;
         private int next;
 

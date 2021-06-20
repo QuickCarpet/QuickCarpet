@@ -181,8 +181,7 @@ public class MixinConfig {
     }
 
     static {
-        Stream.concat(MIXIN_TO_RULES.keySet().stream(), MIXINS_WITHOUT_RULES.stream()).forEach(pkg -> {
-            DEFAULT_PROPERTIES.put("mixin." + pkg, "true");
-        });
+        Stream.concat(MIXIN_TO_RULES.keySet().stream(), MIXINS_WITHOUT_RULES.stream())
+            .forEach(pkg -> DEFAULT_PROPERTIES.put("mixin." + pkg, "true"));
     }
 }

@@ -33,7 +33,7 @@ public class StructureChannel implements ServerPluginChannelHandler {
     public static StructureChannel instance;
 
     private final NbtCompound metadata = new NbtCompound();
-    private Map<ServerPlayerEntity, Object2IntMap<ChunkPos>> playerMap = new WeakHashMap<>();
+    private final Map<ServerPlayerEntity, Object2IntMap<ChunkPos>> playerMap = new WeakHashMap<>();
 
     public StructureChannel() {
         instance = this;

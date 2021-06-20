@@ -34,8 +34,7 @@ public abstract class RedstoneWireBlockMixin {
         Block block = blockState.getBlock();
         if (Settings.dustOnPistons && block instanceof PistonExtensionBlock) {
             BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof PistonBlockEntity) {
-                PistonBlockEntity pistonBlockEntity = ((PistonBlockEntity) blockEntity);
+            if (blockEntity instanceof PistonBlockEntity pistonBlockEntity) {
                 if (pistonBlockEntity.getPushedBlock().getBlock() instanceof PistonBlock) return true;
             }
         }
