@@ -1,9 +1,6 @@
 package quickcarpet.utils;
 
 import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.ModContainer;
-import net.fabricmc.loader.api.SemanticVersion;
-import net.fabricmc.loader.api.Version;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.tree.ClassNode;
@@ -11,17 +8,14 @@ import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 public class MixinConfigPlugin implements IMixinConfigPlugin {
     private static final Logger LOGGER = LogManager.getLogger("QuickCarpet|MixinConfig");
-    private boolean incompatibleWorldEdit;
     private boolean multiconnect;
 
     @Override
     public void onLoad(String mixinPackage) {
-        incompatibleWorldEdit = hasIncompatibleWorldEdit();
         multiconnect = FabricLoader.getInstance().isModLoaded("multiconnect");
     }
 
@@ -41,18 +35,6 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
             return false;
         }
         switch (mixinClassName) {
-            case "quickcarpet.mixin.fillUpdates.compat.worldedit.WorldChunkMixin" -> {
-                if (incompatibleWorldEdit) {
-                    LOGGER.info("Applying workaround for WorldEdit 7.2.1 - 7.2.2");
-                }
-                return incompatibleWorldEdit;
-            }
-            case "quickcarpet.mixin.fillUpdates.compat.WorldChunkMixin" -> {
-                if (!incompatibleWorldEdit) {
-                    LOGGER.debug("Not applying WorldEdit workaround");
-                }
-                return !incompatibleWorldEdit;
-            }
             case "quickcarpet.mixin.autoCraftingTable.compat.multiconnect.BlockEntityMixin" -> {
                 return multiconnect;
             }
@@ -68,20 +50,6 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
             }
         }
         return true;
-    }
-
-    private boolean hasIncompatibleWorldEdit() {
-        Optional<ModContainer> container = FabricLoader.getInstance().getModContainer("worldedit");
-        if (container.isEmpty()) return false;
-        Version worldEditVersion = container.get().getMetadata().getVersion();
-        if (worldEditVersion instanceof SemanticVersion semanticVersion) {
-            if (semanticVersion.getVersionComponentCount() < 3) return false;
-            int major = semanticVersion.getVersionComponent(0);
-            int minor = semanticVersion.getVersionComponent(1);
-            int patch = semanticVersion.getVersionComponent(2);
-            return major == 7 && minor == 2 && patch > 0 && patch < 3;
-        }
-        return false;
     }
 
     @Override

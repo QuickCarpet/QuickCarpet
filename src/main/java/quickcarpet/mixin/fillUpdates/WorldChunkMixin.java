@@ -1,4 +1,4 @@
-package quickcarpet.mixin.fillUpdates.compat;
+package quickcarpet.mixin.fillUpdates;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
