@@ -15,7 +15,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import quickcarpet.helper.TickSpeed;
-import quickcarpet.utils.Reflection;
 
 import java.util.List;
 import java.util.function.BooleanSupplier;
@@ -35,7 +34,7 @@ public abstract class ServerWorldMixin extends World {
     private void tickFreeze(BooleanSupplier shouldContinueTicking, CallbackInfo ci) {
         if (TickSpeed.getServerTickSpeed().isPaused()) {
             for (ServerPlayerEntity p : this.players) p.tick();
-            Reflection.tickChunkManager(this.getChunkManager(), shouldContinueTicking);
+            this.getChunkManager().tick(shouldContinueTicking);
             ci.cancel();
         }
     }
