@@ -4,6 +4,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.MutableWorldProperties;
@@ -32,7 +33,7 @@ public abstract class ClientWorldMixin extends World {
 
     @Inject(method = "tickEntity", at = @At("HEAD"), cancellable = true)
     private void tickFreezeEntities(Entity entity, CallbackInfo ci) {
-        if (QuickCarpetClient.getInstance().tickSpeed.isPaused()) {
+        if (!(entity instanceof PlayerEntity) && QuickCarpetClient.getInstance().tickSpeed.isPaused()) {
             ci.cancel();
         }
     }
