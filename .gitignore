@@ -2,6 +2,7 @@
 
 .gradle/
 build/
+!buildSrc/src/**
 out/
 
 # idea
