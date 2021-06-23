@@ -41,6 +41,7 @@
     "commands.CloneCommandMixin",
     "commands.FillCommandMixin",
     "commands.SetBlockCommandMixin",
+    "connectionTimeout.ServerLoginNetworkHandlerMixin",
     "core.AbstractBlockMixin",
     "core.ArgumentTypesMixin",
     "core.CommandManagerMixin",

@@ -222,6 +222,16 @@ Default: `0`
 Categories: commands  
 Validator: `OP Level (0-4)`  
 
+## connectionTimeout
+Set the timeout players trying to connect, 0 to disable timeout
+
+Also fixes timeout to be time-based instead of tick-based, avoiding issues while tick-warping  
+
+Type: `int`  
+Default: `30`  
+Categories: fix  
+Validator: `>= 0`  
+
 ## creativeNoClip
 Enables players to noclip while in creative mode if they have the client-side setting enabled
 

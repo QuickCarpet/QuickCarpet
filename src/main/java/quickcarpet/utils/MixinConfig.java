@@ -41,6 +41,7 @@ public class MixinConfig {
         .putAll("calmNetherFires", "calmNetherFires")
         .putAll("carefulBreak", "carefulBreak")
         .putAll("commands", "fillLimit")
+        .putAll("connectionTimeout", "connectionTimeout")
         .putAll("creativeNoClip", "creativeNoClip")
         .putAll("dispenser", "dispensersBreakBlocks", "dispensersPlaceBlocks", "dispensersShearVines", "dispensersStripLogs", "dispensersTillSoil", "renewableNetherrack")
         .putAll("drownedEnchantedTridentsFix", "drownedEnchantedTridentsFix")
