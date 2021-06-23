@@ -10,7 +10,6 @@ minecraft {
 
 def buildDate = new Date()
 def branch = GitHelper.getBranch(rootDir)
-def ci = System.getenv("CI") != null
 def ver = GitHelper.getVersion(rootDir, project.mod_version)
 
 if (branch != "master" && branch != "main" && branch != "HEAD" && !ver.pre.isEmpty()) {
@@ -133,14 +132,18 @@ task generateJava(type: Copy) {
 sourceSets.main.java.srcDir "$buildDir/generated/java"
 compileJava.dependsOn generateJava
 
-task dumpRules(type: JavaExec, dependsOn: jar) {
+task dumpRules(type: JavaExec, dependsOn: classes) {
 	group = JavaBasePlugin.DOCUMENTATION_GROUP
 	description = 'Writes all rules to rules.md'
 
-    workingDir = "run"
+	inputs.file('src/main/java/quickcarpet/settings/Settings.java')
+	inputs.file('src/main/resources/assets/quickcarpet/lang/en_us.json')
+	outputs.file('rules.md')
+	outputs.file('run/rules.md')
+
+	workingDir = "run"
 	classpath = sourceSets.main.runtimeClasspath
-	print(classpath)
-	main = "quickcarpet.settings.Settings"
+	mainClass = "quickcarpet.settings.Settings"
 	doLast {
 		copy {
 			from "run/rules.md"
@@ -148,5 +151,10 @@ task dumpRules(type: JavaExec, dependsOn: jar) {
 		}
 	}
 }
+
+gradle.taskGraph.whenReady {
+	generateJava.enabled = !gradle.taskGraph.hasTask(dumpRules)
+}
+
 
 apply from: 'setupAuth.gradle'
