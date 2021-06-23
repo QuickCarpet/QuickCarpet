@@ -1,7 +1,6 @@
 package quickcarpet.mixin.betterStatistics;
 
 import com.mojang.serialization.Dynamic;
-import com.mojang.serialization.DynamicOps;
 import net.minecraft.datafixer.fix.BlockStateFlattening;
 import net.minecraft.datafixer.fix.ItemInstanceTheFlatteningFix;
 import net.minecraft.datafixer.fix.StatsCounterFix;
@@ -19,10 +18,14 @@ import java.util.Optional;
 
 @Mixin(StatsCounterFix.class)
 public class StatsCounterFixMixin {
-    // Subtract sub item values from their base items since they are counted for both in 1.12 carpet
-    @SuppressWarnings("UnresolvedMixinReference")
-    @Redirect(method = "method_5169", at = @At(value = "INVOKE", target = "Ljava/util/Optional;get()Ljava/lang/Object;", remap = false))
+    /**
+     * Subtract sub item values from their base items since they are counted for both in 1.12 carpet
+     */
+    @org.spongepowered.asm.mixin.Dynamic("lambda in makeRule")
+    @SuppressWarnings({"target", "OptionalUsedAsFieldOrParameterType"})
+    @Redirect(method = "method_5169(Lcom/mojang/datafixers/types/Type;Lcom/mojang/datafixers/Typed;)Lcom/mojang/datafixers/Typed;", at = @At(value = "INVOKE", target = "Ljava/util/Optional;get()Ljava/lang/Object;", remap = false))
     private Object modifyInitialMap(Optional<Map<Dynamic<?>, Dynamic<?>>> opt) {
+        //noinspection OptionalGetWithoutIsPresent
         Map<Dynamic<?>, Dynamic<?>> map = new LinkedHashMap<>(opt.get());
         for (Map.Entry<Dynamic<?>, Dynamic<?>> e : map.entrySet()) {
             String key = e.getKey().asString("");
@@ -32,24 +35,24 @@ public class StatsCounterFixMixin {
             String base = key.substring(0, fourthDot);
             Dynamic<?> value = e.getValue();
             Dynamic<?> baseKey = value.createString(base);
-            map.computeIfPresent(baseKey, (k, v) -> {
-                return v.createInt(Math.max(0, v.asInt(0) - value.asInt(0)));
-            });
+            map.computeIfPresent(baseKey, (k, v) -> v.createInt(Math.max(0, v.asInt(0) - value.asInt(0))));
         }
         return map;
     }
 
-    // Sum up colliding keys, so that for example minecraft.stone and minecraft.stone.0 both get included in minecraft:stone
-    @SuppressWarnings("UnresolvedMixinReference")
-    @Redirect(method = "method_5169", at = @At(value = "INVOKE", target = "Lcom/mojang/serialization/Dynamic;set(Ljava/lang/String;Lcom/mojang/serialization/Dynamic;)Lcom/mojang/serialization/Dynamic;", ordinal = 0, remap = false))
+    /**
+     * Sum up colliding keys, so that for example minecraft.stone and minecraft.stone.0 both get included in minecraft:stone
+     */
+    @org.spongepowered.asm.mixin.Dynamic("lambda in makeRule")
+    @SuppressWarnings("target")
+    @Redirect(method = "method_5169(Lcom/mojang/datafixers/types/Type;Lcom/mojang/datafixers/Typed;)Lcom/mojang/datafixers/Typed;", at = @At(value = "INVOKE", target = "Lcom/mojang/serialization/Dynamic;set(Ljava/lang/String;Lcom/mojang/serialization/Dynamic;)Lcom/mojang/serialization/Dynamic;", ordinal = 0, remap = false))
     private Dynamic<?> sumStats(Dynamic<?> dyn, String key, Dynamic<?> value) {
         int prev = dyn.get(key).asInt(0);
-        DynamicOps<?> ops = value.getOps();
         Dynamic<?> newValue = value.createInt(prev + value.asInt(0));
         return dyn.set(key, newValue);
     }
 
-    // Use meta from <stat>.minecraft.<item>.<meta> (converted to ':'s)
+    /** Use meta from {@code <stat>.minecraft.<item>.<meta>} (converted to ':'s) */
     @Inject(method = "getItem", at = @At("HEAD"), cancellable = true)
     private void updateCarpetItem(String id, CallbackInfoReturnable<String> cir) {
         int dot = StringUtils.ordinalIndexOf(id, ":", 2);
@@ -66,7 +69,9 @@ public class StatsCounterFixMixin {
         }
     }
 
-    // Use meta from <stat>.minecraft.<block>.<meta> (converted to ':'s)
+    /**
+     * Use meta from {@code <stat>.minecraft.<block>.<meta>} (converted to ':'s)
+     */
     @Inject(method = "getBlock", at = @At("HEAD"), cancellable = true)
     private void updateCarpetBlock(String id, CallbackInfoReturnable<String> cir) {
         int dot = StringUtils.ordinalIndexOf(id, ":", 2);
