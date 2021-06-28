@@ -76,6 +76,7 @@ public class PlayerCommand {
                 .then(literal("dismount").executes(manipulation(PlayerActionPack::dismount)))
                 .then(literal("sneak").executes(manipulation(PlayerActionPack::toggleSneaking)))
                 .then(literal("sprint").executes(manipulation(PlayerActionPack::toggleSprinting)))
+                .then(literal("fly").executes(manipulation(PlayerActionPack::toggleFlying)))
                 .then(literal("look")
                     .then(literal("north").executes(manipulation(ap -> ap.look(Direction.NORTH))))
                     .then(literal("south").executes(manipulation(ap -> ap.look(Direction.SOUTH))))
@@ -227,17 +228,20 @@ public class PlayerCommand {
         ServerWorld dim = tryGetArg(
                 () -> DimensionArgumentType.getDimensionArgument(context, "dimension"),
                 source::getWorld);
-        GameMode mode = GameMode.CREATIVE;
+        GameMode mode = source.getMinecraftServer().getDefaultGameMode();
+        boolean flying = false;
         try {
             ServerPlayerEntity player = context.getSource().getPlayer();
             mode = player.interactionManager.getGameMode();
+            flying = player.getAbilities().flying;
         } catch (CommandSyntaxException ignored) {}
         if (gameMode != null) mode = gameMode;
         GameMode finalMode = mode;
+        boolean finalFlying = flying;
         getSpawnableProfile(context).thenAccept(profile -> {
             if (profile == null) return;
             MinecraftServer server = source.getMinecraftServer();
-            server.send(new ServerTask(server.getTicks(), () -> FakeServerPlayerEntity.createFake(profile, server, pos.x, pos.y, pos.z, facing.y, facing.x, dim, finalMode)));
+            server.send(new ServerTask(server.getTicks(), () -> FakeServerPlayerEntity.createFake(profile, server, pos.x, pos.y, pos.z, facing.y, facing.x, dim, finalMode, finalFlying)));
         });
         return 1;
     }

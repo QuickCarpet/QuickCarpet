@@ -3,6 +3,7 @@ package quickcarpet.helper;
 import net.minecraft.block.BlockState;
 import net.minecraft.command.argument.EntityAnchorArgumentType;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerAbilities;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.c2s.play.PlayerActionC2SPacket;
@@ -76,6 +77,12 @@ public class PlayerActionPack {
         player.setSprinting(doSprint);
         if (sneaking && sprinting)
             setSneaking(false);
+        return this;
+    }
+
+    public PlayerActionPack toggleFlying() {
+        PlayerAbilities abilities = player.getAbilities();
+        abilities.flying = abilities.allowFlying && !abilities.flying;
         return this;
     }
 

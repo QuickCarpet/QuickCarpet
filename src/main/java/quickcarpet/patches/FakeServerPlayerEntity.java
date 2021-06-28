@@ -3,6 +3,7 @@ package quickcarpet.patches;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.HungerManager;
+import net.minecraft.entity.player.PlayerAbilities;
 import net.minecraft.network.NetworkSide;
 import net.minecraft.network.packet.s2c.play.EntityPositionS2CPacket;
 import net.minecraft.network.packet.s2c.play.EntitySetHeadYawS2CPacket;
@@ -23,7 +24,7 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
     private double startingX, startingY, startingZ;
     private float startingYaw, startingPitch;
 
-    public static FakeServerPlayerEntity createFake(GameProfile profile, MinecraftServer server, double x, double y, double z, double yaw, double pitch, ServerWorld dimension, GameMode gamemode) {
+    public static FakeServerPlayerEntity createFake(GameProfile profile, MinecraftServer server, double x, double y, double z, double yaw, double pitch, ServerWorld dimension, GameMode gamemode, boolean flying) {
         if (profile.getProperties().containsKey("textures")) {
             profile = server.getSessionService().fillProfileProperties(profile, false);
             server.getUserCache().add(profile);
@@ -44,6 +45,8 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
         }
         instance.setHealth(20.0F);
         instance.unsetRemoved();
+        PlayerAbilities abilities = instance.getAbilities();
+        abilities.flying = abilities.allowFlying && flying;
         instance.networkHandler.requestTeleport(x, y, z, (float) yaw, (float) pitch);
         instance.stepHeight = 0.6F;
         instance.interactionManager.changeGameMode(gamemode);
