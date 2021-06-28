@@ -1,6 +1,7 @@
 package quickcarpet.helper;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.command.argument.EntityAnchorArgumentType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -107,6 +108,11 @@ public class PlayerActionPack {
     public PlayerActionPack look(float yaw, float pitch) {
         player.setYaw(yaw % 360);
         player.setPitch(MathHelper.clamp(pitch, -90, 90));
+        return this;
+    }
+
+    public PlayerActionPack lookAt(Vec3d position) {
+        player.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES, position);
         return this;
     }
 

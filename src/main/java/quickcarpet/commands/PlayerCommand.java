@@ -9,6 +9,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.DimensionArgumentType;
+import net.minecraft.command.argument.EntityAnchorArgumentType;
 import net.minecraft.command.argument.RotationArgumentType;
 import net.minecraft.command.argument.Vec3ArgumentType;
 import net.minecraft.entity.player.PlayerEntity;
@@ -35,7 +36,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
 
 import static com.mojang.brigadier.arguments.FloatArgumentType.floatArg;
 import static com.mojang.brigadier.arguments.FloatArgumentType.getFloat;
@@ -44,8 +44,11 @@ import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
 import static com.mojang.brigadier.arguments.StringArgumentType.getString;
 import static com.mojang.brigadier.arguments.StringArgumentType.word;
 import static net.minecraft.command.argument.DimensionArgumentType.dimension;
+import static net.minecraft.command.argument.EntityArgumentType.entity;
+import static net.minecraft.command.argument.EntityArgumentType.getEntity;
 import static net.minecraft.command.argument.RotationArgumentType.getRotation;
 import static net.minecraft.command.argument.RotationArgumentType.rotation;
+import static net.minecraft.command.argument.Vec3ArgumentType.getVec3;
 import static net.minecraft.command.argument.Vec3ArgumentType.vec3;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
@@ -80,6 +83,11 @@ public class PlayerCommand {
                     .then(literal("west").executes(manipulation(ap -> ap.look(Direction.WEST))))
                     .then(literal("up").executes(manipulation(ap -> ap.look(Direction.UP))))
                     .then(literal("down").executes(manipulation(ap -> ap.look(Direction.DOWN))))
+                    .then(literal("at")
+                        .then(argument("entity", entity()).executes(c -> manipulate(c, ap ->
+                                ap.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES.positionAt(getEntity(c, "entity"))))))
+                        .then(argument("position", vec3()).executes(c -> manipulate(c, ap ->
+                                ap.lookAt(getVec3(c, "position"))))))
                     .then(argument("direction", rotation())
                         .executes(c -> manipulate(c, ap -> ap.look(getRotation(c, "direction").toAbsoluteRotation(c.getSource())))))
                 ).then(literal("turn")
@@ -248,18 +256,23 @@ public class PlayerCommand {
         return 1;
     }
 
-    private static int manipulate(CommandContext<ServerCommandSource> context, Consumer<PlayerActionPack> action) {
+    @FunctionalInterface
+    interface PlayerAction {
+        void doAction(PlayerActionPack actionPack) throws CommandSyntaxException;
+    }
+
+    private static int manipulate(CommandContext<ServerCommandSource> context, PlayerAction action) throws CommandSyntaxException {
         if (cantManipulate(context)) return 0;
         ServerPlayerEntity player = getPlayer(context);
-        action.accept(((ActionPackOwner) player).getActionPack());
+        action.doAction(((ActionPackOwner) player).getActionPack());
         return 1;
     }
 
-    private static Command<ServerCommandSource> manipulation(Consumer<PlayerActionPack> action) {
+    private static Command<ServerCommandSource> manipulation(PlayerAction action) {
         return c -> manipulate(c, action);
     }
 
-    private static int action(CommandContext<ServerCommandSource> context, ActionType type, Action action) {
+    private static int action(CommandContext<ServerCommandSource> context, ActionType type, Action action) throws CommandSyntaxException {
         return manipulate(context, ap -> ap.start(type, action));
     }
 
