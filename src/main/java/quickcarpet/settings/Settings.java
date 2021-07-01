@@ -60,6 +60,9 @@ public class Settings {
     @Rule(category = FEATURE)
     public static boolean accurateBlockPlacement = true;
 
+    @Rule(category = FEATURE)
+    public static boolean alwaysBaby = false;
+
     @Rule(category = FIX)
     public static boolean antiCheat = true;
 
