@@ -28,6 +28,7 @@
   "carpet.rule.value.default": "Default value",
   "carpet.rule.value.modified":  "Modified value",
   "carpet.rule.accurateBlockPlacement.description": "Allows client mods to specify the orientation of placed blocks",
+  "carpet.rule.alwaysBaby.description": "Allows the player to feed a passive baby mob, a poisonous potato, which makes it a baby.. Forever!",
   "carpet.rule.antiCheat.description": "Prevents players from rubberbanding when moving too fast",
   "carpet.rule.anvilledBlueIce.description": "Drop an anvil on packed ice blocks to get blue ice",
   "carpet.rule.anvilledBlueIce.extra": "Value is the number of packed ice blocks required, 0 is disabled",

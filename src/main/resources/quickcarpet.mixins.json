@@ -21,6 +21,7 @@
     "accessor.ServerNetworkIoAccessor",
     "accessor.TeleportCommandAccessor",
     "accessor.UpgradeDataAccessor",
+    "alwaysBaby.AnimalEntityMixin",
     "antiCheat.ServerPlayNetworkHandlerMixin",
     "autoCraftingTable.CraftingTableBlockMixin",
     "autoCraftingTable.compat.multiconnect.BlockEntityMixin",

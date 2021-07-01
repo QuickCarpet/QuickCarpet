@@ -32,6 +32,7 @@ public class MixinConfig {
      * Mapping from mixin packages to rules that are disabled together with them
      */
     static final Multimap<String, String> MIXIN_TO_RULES = ImmutableMultimap.<String, String>builder()
+        .putAll("alwaysBaby", "alwaysBaby")
         .putAll("antiCheat", "antiCheat")
         .putAll("autoCraftingTable", "autoCraftingTable")
         .putAll("betterChunkLoading", "betterChunkLoading")

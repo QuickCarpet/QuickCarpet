@@ -7,6 +7,14 @@ Default: `true`
 Options: `true`, `false`  
 Categories: feature  
 
+## alwaysBaby
+Allows the player to feed a passive baby mob, a poisonous potato, which makes it a baby.. Forever!
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: feature  
+
 ## antiCheat
 Prevents players from rubberbanding when moving too fast
 
