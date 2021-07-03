@@ -106,6 +106,7 @@
   "carpet.rule.renewableSoulSand.description": "If a living entity dies on sand with fire on top the sand will convert into soul sand",
   "carpet.rule.renewableSponges.description": "Guardians struck by lightning turn into Elder Guardians",
   "carpet.rule.shulkerSpawningInEndCities.description": "Shulkers will respawn in end cities",
+  "carpet.rule.smartSaddleDispenser.description": "Keeps the saddle in the dispenser if the entity in front is already saddled",
   "carpet.rule.sparkingLighter.description": "Adds back the ability to create fire in mid-air using Flint and Steel or Fire Charges",
   "carpet.rule.spawnChunkLevel.description": "Size of the spawn chunks",
   "carpet.rule.spawnChunkLevel.extra": "Like render distance (11 -> 23x23 actively loaded).\nBe aware that a border of 11 chunks will stay loaded around that, once those chunks are loaded somehow.\nHigher levels need lots of RAM (up to 7569 chunks loaded with level 32)",

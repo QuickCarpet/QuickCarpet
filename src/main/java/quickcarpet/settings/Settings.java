@@ -268,6 +268,9 @@ public class Settings {
     @Rule(category = {FEATURE, RENEWABLE})
     public static boolean renewableSponges = false;
 
+    @Rule(category = {FEATURE})
+    public static boolean smartSaddleDispenser = false;
+
     @Rule(category = {FEATURE, RENEWABLE})
     public static boolean shulkerSpawningInEndCities = false;
 

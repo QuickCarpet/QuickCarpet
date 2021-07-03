@@ -561,6 +561,14 @@ Default: `false`
 Options: `true`, `false`  
 Categories: feature, renewable  
 
+## smartSaddleDispenser
+Keeps the saddle in the dispenser if the entity in front is already saddled
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: feature  
+
 ## sparkingLighter
 Adds back the ability to create fire in mid-air using Flint and Steel or Fire Charges
 

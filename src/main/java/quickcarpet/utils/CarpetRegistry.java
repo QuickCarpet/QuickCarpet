@@ -11,15 +11,24 @@ import net.minecraft.SharedConstants;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.dispenser.DispenserBehavior;
+import net.minecraft.block.dispenser.FallibleItemDispenserBehavior;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.datafixer.Schemas;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.Saddleable;
 import net.minecraft.item.*;
+import net.minecraft.sound.SoundCategory;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.tag.ItemTags;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPointer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
 import quickcarpet.feature.*;
 import quickcarpet.mixin.accessor.BlockTagsAccessor;
@@ -43,6 +52,20 @@ public class CarpetRegistry {
     public static final DispenserBehavior BREAK_BLOCK_DISPENSER_BEHAVIOR = new BreakBlockDispenserBehavior();
     public static final DispenserBehavior DISPENSERS_TILL_SOIL_BEHAVIOR = new TillSoilDispenserBehavior();
     public static final DispenserBehavior DISPENSERS_STRIP_LOGS_BEHAVIOR = new StripLogsDispenserBehavior();
+    public static final DispenserBehavior SMART_SADDLE_DISPENSER_BEHAVIOR = new FallibleItemDispenserBehavior() {
+        public ItemStack dispenseSilently(BlockPointer pointer, ItemStack stack) {
+            BlockPos blockPos = pointer.getBlockPos().offset(pointer.getBlockState().get(DispenserBlock.FACING));
+            List<LivingEntity> list = pointer.getWorld().getEntitiesByClass(LivingEntity.class, new Box(blockPos), entity -> entity instanceof Saddleable saddleable && !saddleable.isSaddled() && saddleable.canBeSaddled());
+            if (!list.isEmpty()) {
+                ((Saddleable)list.get(0)).saddle(SoundCategory.BLOCKS);
+                stack.decrement(1);
+                this.setSuccess(true);
+            } else {
+                this.setSuccess(false);
+            }
+            return stack;
+        }
+    };
 
     //Additional Movable Blocks
     public static final Tag.Identified<Block> PISTON_OVERRIDE_MOVABLE = BlockTagsAccessor.register("carpet:piston_movable");
@@ -129,6 +152,9 @@ public class CarpetRegistry {
                 shearsBehavior = new MultiDispenserBehavior(behaviors.get(item), new ShearVinesBehavior());
             }
             return shearsBehavior;
+        }
+        if(Settings.smartSaddleDispenser && item == Items.SADDLE) {
+            return CarpetRegistry.SMART_SADDLE_DISPENSER_BEHAVIOR;
         }
         return behaviors.get(item);
     }
