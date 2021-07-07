@@ -99,6 +99,9 @@ public class Settings {
     @Rule(category = COMMANDS)
     public static boolean cameraModeRestoreLocation = true;
 
+    @Rule(category = COMMANDS)
+    public static boolean cameraModeNightVision = true;
+
     @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
     public static int commandBlockInfo = 0;
 

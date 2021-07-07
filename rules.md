@@ -100,6 +100,14 @@ Default: `true`
 Options: `true`, `false`  
 Categories: commands  
 
+## cameraModeNightVision
+doing /c will give you night vision and conduit power
+
+Type: `boolean`  
+Default: `true`  
+Options: `true`, `false`  
+Categories: commands
+
 ## carefulBreak
 Places the mined block in the player inventory when sneaking and subsribed to /log careful_break
 
