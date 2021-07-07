@@ -53,8 +53,10 @@ public class CameraModeCommand {
         if (!(hasPermission(source, target)) || target.isSpectator()) return 0;
         QuickCarpetServer.getInstance().cameraData.put(target.getUuid(), new CameraData(target));
         target.changeGameMode(GameMode.SPECTATOR);
-        target.addStatusEffect(new StatusEffectInstance(StatusEffects.NIGHT_VISION, 999999, 0, false, false));
-        target.addStatusEffect(new StatusEffectInstance(StatusEffects.CONDUIT_POWER, 999999, 0, false, false));
+        if(quickcarpet.settings.Settings.cameraModeNightVision) {
+            target.addStatusEffect(new StatusEffectInstance(StatusEffects.NIGHT_VISION, 999999, 0, false, false));
+            target.addStatusEffect(new StatusEffectInstance(StatusEffects.CONDUIT_POWER, 999999, 0, false, false));
+        }
         return 1;
     }
 
