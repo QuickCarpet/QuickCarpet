@@ -112,6 +112,7 @@
   "carpet.rule.spawnChunkLevel.description": "Size of the spawn chunks",
   "carpet.rule.spawnChunkLevel.extra": "Like render distance (11 -> 23x23 actively loaded).\nBe aware that a border of 11 chunks will stay loaded around that, once those chunks are loaded somehow.\nHigher levels need lots of RAM (up to 7569 chunks loaded with level 32)",
   "carpet.rule.stackableShulkerBoxes.description": "Empty shulker boxes can stack to 64 when dropped on the ground",
+  "carpet.rule.stackShulkerBoxesInInventories.description": "Empty shulker boxes stack to 64 inside inventories",
   "carpet.rule.stackableShulkerBoxes.extra": "To move them around between inventories, use shift click to move entire stacks",
   "carpet.rule.terracottaRepeaters.description": "Multiplies the repeater delay by the legacy block data (1-15) of terracotta below or 100 (data value 0: white) instead of the default 2gt",
   "carpet.rule.tileTickLimit.description": "Maximum number of tile-ticks executed per tick",

@@ -607,6 +607,16 @@ Default: `false`
 Options: `true`, `false`  
 Categories: survival  
 
+## stackShulkerBoxesInInventories
+Empty shulker boxes stack to 64 inside of inventories
+
+Does not require `stackableShulkerBoxes` but will not break if enabled 
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: survival
+
 ## terracottaRepeaters
 Multiplies the repeater delay by the legacy block data (1-15) of terracotta below or 100 (data value 0: white) instead of the default 2gt
 
