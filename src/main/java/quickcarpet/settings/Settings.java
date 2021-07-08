@@ -308,6 +308,9 @@ public class Settings {
     @Rule(category = SURVIVAL)
     public static boolean stackableShulkerBoxes = false;
 
+    @Rule(category = SURVIVAL)
+    public static boolean stackableShulkerBoxesInInventories = false;
+
     @Rule(category = {FEATURE, CREATIVE})
     public static boolean terracottaRepeaters = false;
 
