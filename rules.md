@@ -92,6 +92,14 @@ Default: `1`
 Categories: experimental, optimizations  
 Validator: `>= 0`  
 
+## cameraModeNightVision
+doing /c will give you night vision and conduit power
+
+Type: `boolean`  
+Default: `true`  
+Options: `true`, `false`  
+Categories: commands  
+
 ## cameraModeRestoreLocation
 /s restores the player to the location they used /c at
 
@@ -99,14 +107,6 @@ Type: `boolean`
 Default: `true`  
 Options: `true`, `false`  
 Categories: commands  
-
-## cameraModeNightVision
-doing /c will give you night vision and conduit power
-
-Type: `boolean`  
-Default: `true`  
-Options: `true`, `false`  
-Categories: commands
 
 ## carefulBreak
 Places the mined block in the player inventory when sneaking and subsribed to /log careful_break
@@ -607,15 +607,13 @@ Default: `false`
 Options: `true`, `false`  
 Categories: survival  
 
-## stackShulkerBoxesInInventories
+## stackableShulkerBoxesInInventories
 Empty shulker boxes stack to 64 inside of inventories
-
-Does not require `stackableShulkerBoxes` but will not break if enabled 
 
 Type: `boolean`  
 Default: `false`  
 Options: `true`, `false`  
-Categories: survival
+Categories: survival  
 
 ## terracottaRepeaters
 Multiplies the repeater delay by the legacy block data (1-15) of terracotta below or 100 (data value 0: white) instead of the default 2gt

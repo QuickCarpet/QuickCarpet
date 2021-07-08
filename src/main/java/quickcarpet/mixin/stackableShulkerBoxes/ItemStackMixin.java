@@ -1,4 +1,4 @@
-package quickcarpet.mixin.stackShulkerBoxesInInventories;
+package quickcarpet.mixin.stackableShulkerBoxes;
 
 import fi.dy.masa.malilib.util.InventoryUtils;
 import net.minecraft.block.ShulkerBoxBlock;
@@ -20,7 +20,7 @@ public abstract class ItemStackMixin {
 
     @Inject(method = "getMaxCount", at = @At("HEAD"), cancellable = true)
     private void allowShulkerBoxStackingInInventory(CallbackInfoReturnable<Integer> cir) {
-        if (Settings.stackShulkerBoxesInInventories && this.getItem() instanceof BlockItem Item) {
+        if (Settings.stackableShulkerBoxesInInventories && this.getItem() instanceof BlockItem Item) {
             if (Item.getBlock() instanceof ShulkerBoxBlock && !InventoryUtils.shulkerBoxHasItems((ItemStack) (Object) this)) {
                 cir.setReturnValue(64);
             }
