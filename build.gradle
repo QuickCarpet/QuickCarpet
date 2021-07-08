@@ -79,10 +79,12 @@ def malilib_mc_version = project.hasProperty('malilib_mc_version') ? project.mal
 
 repositories {
 	maven {
-		url 'https://masa.dy.fi/maven'
+		name 'Masa'
+		url 'https://masa.dy.fi/maven/'
 	}
 	maven {
-		url 'https://maven.terraformersmc.com/releases/'
+		name 'QuiltMC'
+		url 'https://maven.quiltmc.org/repository/release/'
 	}
 	mavenLocal()
 }
