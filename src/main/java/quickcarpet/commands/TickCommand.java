@@ -112,17 +112,17 @@ public class TickCommand {
     }
 
     private static int healthReport(ServerCommandSource source, int ticks) {
-        CarpetProfiler.startTickReport(source.getMinecraftServer(), CarpetProfiler.ReportType.HEALTH, ticks);
+        CarpetProfiler.startTickReport(source.getServer(), CarpetProfiler.ReportType.HEALTH, ticks);
         return 1;
     }
 
     private static int healthEntities(ServerCommandSource source, int ticks) {
-        CarpetProfiler.startTickReport(source.getMinecraftServer(), CarpetProfiler.ReportType.ENTITIES, ticks);
+        CarpetProfiler.startTickReport(source.getServer(), CarpetProfiler.ReportType.ENTITIES, ticks);
         return 1;
     }
 
     private static int measureCurrent(ServerCommandSource source) {
-        printMSPTStats(source, TickSpeed.getMSPTStats(source.getMinecraftServer()));
+        printMSPTStats(source, TickSpeed.getMSPTStats(source.getServer()));
         return 1;
     }
 

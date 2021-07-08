@@ -62,7 +62,7 @@ public class CameraModeCommand {
 
     private static int serverMode(ServerCommandSource source, ServerPlayerEntity target) {
         if (!(hasPermission(source, target))) return 0;
-        GameMode mode = source.getMinecraftServer().getDefaultGameMode();
+        GameMode mode = source.getServer().getDefaultGameMode();
         if (mode == GameMode.SPECTATOR) mode = GameMode.SURVIVAL;
         CameraData data = QuickCarpetServer.getInstance().cameraData.remove(target.getUuid());
         if (Settings.cameraModeRestoreLocation && data != null) {

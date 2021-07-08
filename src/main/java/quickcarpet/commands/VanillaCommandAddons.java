@@ -57,7 +57,7 @@ public class VanillaCommandAddons {
             m(source, ts("command.waypoint.error.notFound", Formatting.RED, name));
             return -1;
         }
-        ServerWorld world = source.getMinecraftServer().getWorld(destination.getDimension());
+        ServerWorld world = source.getServer().getWorld(destination.getDimension());
         Vec3d pos = destination.position;
         Vec2f rot = destination.rotation;
         for (Entity e : entities) {

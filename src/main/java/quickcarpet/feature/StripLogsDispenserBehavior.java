@@ -21,7 +21,7 @@ public class StripLogsDispenserBehavior extends FallibleItemDispenserBehavior {
         if (!Settings.dispensersStripLogs) return super.dispenseSilently(pointer, stack);
         World world = pointer.getWorld();
         Direction direction = pointer.getBlockState().get(DispenserBlock.FACING);
-        BlockPos front = pointer.getBlockPos().offset(direction);
+        BlockPos front = pointer.getPos().offset(direction);
         BlockState state = world.getBlockState(front);
         Block block = AxeItemAccessor.getStrippedBlocks().get(state.getBlock());
         if (block == null) {

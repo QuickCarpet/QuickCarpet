@@ -134,7 +134,7 @@ public class PlayerCommand {
 
     private static ServerPlayerEntity getPlayer(CommandContext<ServerCommandSource> context) {
         String playerName = getString(context, "player");
-        MinecraftServer server = context.getSource().getMinecraftServer();
+        MinecraftServer server = context.getSource().getServer();
         return server.getPlayerManager().getPlayer(playerName);
     }
 
@@ -151,7 +151,7 @@ public class PlayerCommand {
             return false;
         }
 
-        if (!context.getSource().getMinecraftServer().getPlayerManager().isOperator(sendingPlayer.getGameProfile())) {
+        if (!context.getSource().getServer().getPlayerManager().isOperator(sendingPlayer.getGameProfile())) {
             if (sendingPlayer != player && !(player instanceof FakeServerPlayerEntity)) {
                 m(context.getSource(), ts("command.player.notOperator", Formatting.RED));
                 return true;
@@ -170,18 +170,19 @@ public class PlayerCommand {
 
     private static CompletableFuture<GameProfile> getSpawnableProfile(CommandContext<ServerCommandSource> context) {
         String playerName = getString(context, "player");
-        MinecraftServer server = context.getSource().getMinecraftServer();
+        MinecraftServer server = context.getSource().getServer();
         PlayerManager manager = server.getPlayerManager();
         PlayerEntity player = manager.getPlayer(playerName);
         if (player != null) {
             m(context.getSource(), ts("command.player.alreadyOnline", Formatting.RED, s(playerName, Formatting.BOLD)));
             return CompletableFuture.completedFuture(null);
         }
-        return CompletableFuture.supplyAsync(() -> server.getUserCache().findByName(playerName), Util.getIoWorkerExecutor()).thenApply(profile -> {
-            if (profile == null) {
+        return CompletableFuture.supplyAsync(() -> server.getUserCache().findByName(playerName), Util.getIoWorkerExecutor()).thenApply(optProfile -> {
+            if (optProfile.isEmpty()) {
                 m(context.getSource(), ts("command.player.doesNotExist", Formatting.RED, s(playerName, Formatting.BOLD)));
                 return null;
             }
+            GameProfile profile = optProfile.get();
             if (manager.getUserBanList().contains(profile)) {
                 m(context.getSource(), ts("command.player.banned", Formatting.RED, s(playerName, Formatting.BOLD)));
                 return null;
@@ -228,7 +229,7 @@ public class PlayerCommand {
         ServerWorld dim = tryGetArg(
                 () -> DimensionArgumentType.getDimensionArgument(context, "dimension"),
                 source::getWorld);
-        GameMode mode = source.getMinecraftServer().getDefaultGameMode();
+        GameMode mode = source.getServer().getDefaultGameMode();
         boolean flying = false;
         try {
             ServerPlayerEntity player = context.getSource().getPlayer();
@@ -240,7 +241,7 @@ public class PlayerCommand {
         boolean finalFlying = flying;
         getSpawnableProfile(context).thenAccept(profile -> {
             if (profile == null) return;
-            MinecraftServer server = source.getMinecraftServer();
+            MinecraftServer server = source.getServer();
             server.send(new ServerTask(server.getTicks(), () -> FakeServerPlayerEntity.createFake(profile, server, pos.x, pos.y, pos.z, facing.y, facing.x, dim, finalMode, finalFlying)));
         });
         return 1;

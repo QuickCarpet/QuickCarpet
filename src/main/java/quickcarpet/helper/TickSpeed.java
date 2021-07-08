@@ -282,7 +282,7 @@ public class TickSpeed implements TelemetryProvider {
 
         private Measurement(ServerCommandSource source, int length) {
             this.source = source;
-            this.server = source.getMinecraftServer();
+            this.server = source.getServer();
             this.length = length;
             this.tickLengths = new long[length];
             MEASUREMENTS.put(source, this);
