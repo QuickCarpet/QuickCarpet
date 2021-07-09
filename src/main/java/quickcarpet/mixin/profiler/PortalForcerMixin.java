@@ -26,7 +26,7 @@ public class PortalForcerMixin {
 
     @Inject(method = "getPortalRect", at = @At("RETURN"))
     private void endPortal(BlockPos blockPos, boolean bl, CallbackInfoReturnable<Optional<BlockLocating.Rectangle>> cir) {
-        CarpetProfiler.endSection(this.world);
+        CarpetProfiler.endSection(this.world, CarpetProfiler.SectionType.PORTALS);
     }
 
     @Inject(method = "createPortal", at = @At("HEAD"))
@@ -36,6 +36,6 @@ public class PortalForcerMixin {
 
     @Inject(method = "createPortal", at = @At("RETURN"))
     private void endPortal(BlockPos blockPos, Direction.Axis axis, CallbackInfoReturnable<Optional<BlockLocating.Rectangle>> cir) {
-        CarpetProfiler.endSection(this.world);
+        CarpetProfiler.endSection(this.world, CarpetProfiler.SectionType.PORTALS);
     }
 }

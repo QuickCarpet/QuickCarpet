@@ -1,8 +1,5 @@
 package quickcarpet.mixin.profiler;
 
-import net.minecraft.block.Block;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.server.world.ServerTickScheduler;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.profiler.Profiler;
 import net.minecraft.util.registry.RegistryKey;
@@ -13,7 +10,6 @@ import net.minecraft.world.dimension.DimensionType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import quickcarpet.utils.CarpetProfiler;
 
@@ -26,50 +22,68 @@ public abstract class ServerWorldMixin extends World {
         super(properties, registryKey, dimensionType, supplier, bl, bl2, l);
     }
 
-    @Redirect(
-            method = "tick",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerTickScheduler;tick()V", ordinal = 0)
-    )
-    private void tickBlocks(ServerTickScheduler<Block> blockTickScheduler) {
+    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerTickScheduler;tick()V", ordinal = 0))
+    private void startTickBlocks(BooleanSupplier b, CallbackInfo ci) {
         CarpetProfiler.startSection(this, CarpetProfiler.SectionType.BLOCKS);
-        blockTickScheduler.tick();
-        CarpetProfiler.endSection(this);
     }
 
-    @Redirect(
-            method = "tick",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerTickScheduler;tick()V", ordinal = 1)
-    )
-    private void tickFluids(ServerTickScheduler<Fluid> fluidTickScheduler) {
+    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerTickScheduler;tick()V", ordinal = 0, shift = At.Shift.AFTER))
+    private void endTickBlocks(BooleanSupplier b, CallbackInfo ci) {
+        CarpetProfiler.endSection(this, CarpetProfiler.SectionType.BLOCKS);
+    }
+
+    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerTickScheduler;tick()V", ordinal = 1))
+    private void startTickFluids(BooleanSupplier b, CallbackInfo ci) {
         CarpetProfiler.startSection(this, CarpetProfiler.SectionType.FLUIDS);
-        fluidTickScheduler.tick();
-        CarpetProfiler.endSection(this);
+    }
+
+    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerTickScheduler;tick()V", ordinal = 1, shift = At.Shift.AFTER))
+    private void endTickFluids(BooleanSupplier b, CallbackInfo ci) {
+        CarpetProfiler.endSection(this, CarpetProfiler.SectionType.FLUIDS);
+    }
+
+    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/village/raid/RaidManager;tick()V"))
+    private void startRaid(BooleanSupplier b, CallbackInfo ci) {
+        CarpetProfiler.startSection(this, CarpetProfiler.SectionType.RAIDS);
+    }
+
+    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/village/raid/RaidManager;tick()V", shift = At.Shift.AFTER))
+    private void endRaid(BooleanSupplier b, CallbackInfo ci) {
+        CarpetProfiler.endSection(this, CarpetProfiler.SectionType.RAIDS);
     }
 
     @Inject(method = "tickChunk", at = @At("HEAD"))
-    private void startTickChunk(WorldChunk worldChunk_1, int int_1, CallbackInfo ci) {
+    private void startTickChunk(WorldChunk chunk, int randomTickSpeed, CallbackInfo ci) {
         CarpetProfiler.startSection(this, CarpetProfiler.SectionType.RANDOM_TICKS);
     }
 
-    @Inject(method = "tickChunk", at = @At("TAIL"))
-    private void endTickChunk(WorldChunk worldChunk_1, int int_1, CallbackInfo ci) {
-        CarpetProfiler.endSection(this);
+    @Inject(method = "tickChunk", at = @At("RETURN"))
+    private void endTickChunk(WorldChunk chunk, int randomTickSpeed, CallbackInfo ci) {
+        CarpetProfiler.endSection(this, CarpetProfiler.SectionType.RANDOM_TICKS);
     }
 
-    @Inject(method = "tick", at = @At(value = "CONSTANT", args = "stringValue=raid"))
-    private void startRaid(BooleanSupplier booleanSupplier_1, CallbackInfo ci) {
-        CarpetProfiler.startSection(this, CarpetProfiler.SectionType.VILLAGES);
-    }
-
-    @Inject(method = "tick", at = @At(value = "CONSTANT", args = "stringValue=blockEvents"))
-    private void endRaidStartBlockEvents(BooleanSupplier booleanSupplier_1, CallbackInfo ci) {
-        CarpetProfiler.endSection(this);
+    @Inject(method = "processSyncedBlockEvents", at = @At("HEAD"))
+    private void startBlockEvents(CallbackInfo ci) {
         CarpetProfiler.startSection(this, CarpetProfiler.SectionType.BLOCK_EVENTS);
     }
 
+    @Inject(method = "processSyncedBlockEvents", at = @At("RETURN"))
+    private void endBlockEvents(CallbackInfo ci) {
+        CarpetProfiler.endSection(this, CarpetProfiler.SectionType.BLOCK_EVENTS);
+    }
+
     @Inject(method = "tick", at = @At(value = "CONSTANT", args = "stringValue=entities"))
-    private void endBlockEventsStartEntities(BooleanSupplier booleanSupplier_1, CallbackInfo ci) {
-        CarpetProfiler.endSection(this);
+    private void startEntities(BooleanSupplier b, CallbackInfo ci) {
         CarpetProfiler.startSection(this, CarpetProfiler.SectionType.ENTITIES);
+    }
+
+    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerEntityManager;tick()V"))
+    private void startEntityManager(BooleanSupplier b, CallbackInfo ci) {
+        CarpetProfiler.startSection(this, CarpetProfiler.SectionType.ENTITY_MANAGER);
+    }
+
+    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerEntityManager;tick()V", shift = At.Shift.AFTER))
+    private void endEntityManager(BooleanSupplier b, CallbackInfo ci) {
+        CarpetProfiler.endSection(this, CarpetProfiler.SectionType.ENTITY_MANAGER);
     }
 }

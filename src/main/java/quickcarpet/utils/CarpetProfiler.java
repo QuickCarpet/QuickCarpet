@@ -16,11 +16,13 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.BlockEntityTickInvoker;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import quickcarpet.QuickCarpet;
 import quickcarpet.QuickCarpetServer;
 import quickcarpet.helper.TickSpeed;
-import quickcarpet.logging.Loggers;
 import quickcarpet.logging.LogParameter;
+import quickcarpet.logging.Loggers;
 
 import javax.annotation.Nullable;
 import javax.management.Notification;
@@ -32,25 +34,22 @@ import java.util.*;
 
 import static quickcarpet.utils.Messenger.*;
 
-public class CarpetProfiler
-{
-    private static final Map<RegistryKey<World>, Measurement> MEASUREMENTS = new HashMap<>();
-    private static int ticksTotal = 0;
-    private static int ticksRemaining = 0;
-    private static ReportType reportType = null;
+public class CarpetProfiler {
+    private static final Logger LOGGER = LogManager.getLogger("QuickCarpet|Profiler");
+    @Nullable
+    private static Report scheduledReport;
+    @Nullable
+    private static Report report;
     private static long currentTickStart = 0;
-    private static long totalTickTime;
     private static boolean inTick;
-
-    public enum ReportType {
-        HEALTH, ENTITIES
-    }
 
     public enum SectionType {
         UNKNOWN(true, false),
+        COMMAND_FUNCTIONS(true, false),
         NETWORK(true, false),
         AUTOSAVE(true, true),
         GC(true, true),
+        ASYNC_TASKS(true, false, false),
         SPAWNING(false, false),
         BLOCKS(false, false),
         FLUIDS(false, false),
@@ -58,18 +57,27 @@ public class CarpetProfiler
         BLOCK_EVENTS(false, false),
         ENTITIES(false, false),
         BLOCK_ENTITIES(false, false),
-        VILLAGES(false, false),
-        PORTALS(false, false);
+        RAIDS(false, false),
+        PORTALS(false, false),
+        ENTITY_MANAGER(false, false),
+        ;
 
         public static final SectionType[] GLOBAL = Arrays.stream(values()).filter(s -> s.global).toArray(SectionType[]::new);
         public static final SectionType[] PER_DIMENSION = Arrays.stream(values()).filter(s -> !s.global).toArray(SectionType[]::new);
 
         private final boolean global;
         private final boolean customFormat;
+        private final boolean accumulate;
         private final String translationKey = "carpet.profiler.section." + this.name().toLowerCase(Locale.ROOT);
+
         SectionType(boolean global, boolean custom) {
+            this(global, custom, true);
+        }
+
+        SectionType(boolean global, boolean custom, boolean accumulate) {
             this.global = global;
             this.customFormat = custom;
+            this.accumulate = accumulate;
         }
 
         public MutableText getName() {
@@ -94,18 +102,18 @@ public class CarpetProfiler
         final @Nullable RegistryKey<World> dimension;
         final Object2LongMap<SectionType> sections;
         final Object2IntMap<SectionType> sectionCount;
-        final Object2LongMap<EntityType> entityTimes = new Object2LongOpenHashMap<>();
-        final Object2LongMap<EntityType> entityCount = new Object2LongOpenHashMap<>();
-        final Object2LongMap<BlockEntityType> blockEntityTimes = new Object2LongOpenHashMap<>();
-        final Object2LongMap<BlockEntityType> blockEntityCount = new Object2LongOpenHashMap<>();
+        final Object2LongMap<EntityType<?>> entityTimes = new Object2LongOpenHashMap<>();
+        final Object2LongMap<EntityType<?>> entityCount = new Object2LongOpenHashMap<>();
+        final Object2LongMap<BlockEntityType<?>> blockEntityTimes = new Object2LongOpenHashMap<>();
+        final Object2LongMap<BlockEntityType<?>> blockEntityCount = new Object2LongOpenHashMap<>();
 
         private SectionType currentSection;
         private long currentSectionStart;
 
-        private EntityType currentEntity;
+        private EntityType<?> currentEntity;
         private long currentEntityStart;
 
-        private BlockEntityType currentBlockEntity;
+        private BlockEntityType<?> currentBlockEntity;
         private long currentBlockEntityStart;
 
         Measurement(@Nullable RegistryKey<World> dimension) {
@@ -120,18 +128,26 @@ public class CarpetProfiler
         }
 
         void startSection(SectionType type) {
+            if (currentSectionStart != 0 && currentSection != null) {
+                LOGGER.info("Section not ended when starting " + type + ": " + currentSection, new Exception());
+                endSection(currentSection);
+            }
             this.currentSection = type;
             this.currentSectionStart = System.nanoTime();
         }
 
-        void endSection() {
-            if (currentSectionStart == 0) throw new IllegalStateException("Section not started");
+        void endSection(SectionType type) {
+            if (currentSection == null) return;
+            if (currentSectionStart == 0) {
+                LOGGER.info("Section not started, previous was: " + currentSection + ", expected " + type, new Exception());
+                return;
+            }
             sections.put(currentSection, sections.getLong(currentSection) + System.nanoTime() - currentSectionStart);
             sectionCount.put(currentSection, sectionCount.getInt(currentSection) + 1);
             currentSectionStart = 0;
         }
 
-        void startEntity(EntityType type) {
+        void startEntity(EntityType<?> type) {
             this.currentEntity = type;
             this.currentEntityStart = System.nanoTime();
         }
@@ -142,7 +158,7 @@ public class CarpetProfiler
             entityCount.put(currentEntity, entityCount.getOrDefault(currentEntity, 0) + 1);
         }
 
-        void startBlockEntity(BlockEntityType type) {
+        void startBlockEntity(BlockEntityType<?> type) {
             this.currentBlockEntity = type;
             this.currentBlockEntityStart = System.nanoTime();
         }
@@ -159,133 +175,218 @@ public class CarpetProfiler
                 sections.put(SectionType.GC, sections.getLong(SectionType.GC) + ns);
                 sectionCount.put(SectionType.GC, sectionCount.getInt(SectionType.GC) + 1);
             }
-            currentSectionStart += ns;
-            currentBlockEntityStart += ns;
-            currentEntityStart += ns;
+            if (currentSectionStart != 0) currentSectionStart += ns;
+            if (currentBlockEntityStart != 0) currentBlockEntityStart += ns;
+            if (currentEntityStart != 0) currentEntityStart += ns;
         }
     }
 
-    public static void startTickReport(MinecraftServer server, ReportType type, int ticks) {
-        //maybe add so it only spams the sending player, but honestly - all may want to see it
-        totalTickTime = 0;
-        reportType = type;
-        MEASUREMENTS.put(null, new Measurement(null));
-        for (ServerWorld world : server.getWorlds()) {
-            MEASUREMENTS.put(world.getRegistryKey(), new Measurement(world.getRegistryKey()));
+    private static abstract class Report {
+        public final int duration;
+        public int ticksRemaining;
+        protected boolean started = false;
+        protected long totalTickTime;
+        protected final Map<RegistryKey<World>, Measurement> measurements = new HashMap<>();
+
+        public Report(int duration) {
+            this.duration = duration;
+            this.ticksRemaining = duration;
         }
 
-        ticksRemaining = ticks;
-        ticksTotal = ticks;
-        currentTickStart = 0L;
+        public void start(MinecraftServer server) {
+            this.started = true;
+            measurements.put(null, new Measurement(null));
+            for (ServerWorld world : server.getWorlds()) {
+                measurements.put(world.getRegistryKey(), new Measurement(world.getRegistryKey()));
+            }
+        }
 
+        public void tick(MinecraftServer server) {
+            totalTickTime += System.nanoTime() - currentTickStart;
+            if (--ticksRemaining <= 0) {
+                report = null;
+                finalizeReport(server);
+            }
+        }
+
+        protected Measurement getMeasurement(World world) {
+            if (world == null) return measurements.get(null);
+            return measurements.get(world.getRegistryKey());
+        }
+
+        abstract void finalizeReport(MinecraftServer server);
     }
 
-    private static Measurement getMeasurement(World world) {
-        if (world == null) return MEASUREMENTS.get(null);
-        return MEASUREMENTS.get(world.getRegistryKey());
+    private static class HealthReport extends Report {
+        public HealthReport(int ticks) {
+            super(ticks);
+        }
+
+        public void startSection(World world, SectionType section) {
+            getMeasurement(world).startSection(section);
+        }
+
+        public void endSection(World world, SectionType section) {
+            getMeasurement(world).endSection(section);
+        }
+
+        @Override
+        protected void finalizeReport(MinecraftServer server) {
+            double divider = 1e-6 / duration;
+            double avgTickTime = divider * totalTickTime;
+            broadcast(server, t("carpet.profiler.title", formats("%.3f", getHeatmapColor(avgTickTime, 50), avgTickTime)));
+            long accumulated = 0L;
+
+            Measurement global = measurements.get(null);
+            for (SectionType section : SectionType.GLOBAL) {
+                long nanos = global.sections.getLong(section);
+                if (section.accumulate) accumulated += nanos;
+                double amount = divider * nanos;
+                double avgTime = nanos / (1e6 * global.sectionCount.getInt(section));
+                if (amount > 0.01 || avgTime > 0.1) {
+                    broadcast(server, section.format(amount, avgTime));
+                }
+            }
+            for (ServerWorld world : QuickCarpetServer.getMinecraftServer().getWorlds()) {
+                Measurement measurement = measurements.get(world.getRegistryKey());
+                List<MutableText> messages = new ArrayList<>();
+                for (SectionType section : SectionType.PER_DIMENSION) {
+                    long nanos = measurement.sections.getLong(section);
+                    if (section.accumulate) accumulated += nanos;
+                    double amount = divider * nanos;
+                    double avgTime = nanos / (1e6 * measurement.sectionCount.getInt(section));
+                    if (amount > 0.01 || avgTime > 0.1) {
+                        messages.add(c(s(" - "), section.format(amount, avgTime)));
+                    }
+                }
+                if (!messages.isEmpty()) {
+                    broadcast(server, String.valueOf(world.getRegistryKey().getValue()));
+                    for (MutableText m : messages) broadcast(server, m);
+                }
+            }
+
+            long rest = totalTickTime - accumulated;
+
+            broadcast(server, SectionType.UNKNOWN.format(divider * rest, 0));
+        }
+    }
+
+    private static class EntitiesReport extends Report {
+        public EntitiesReport(int ticks) {
+            super(ticks);
+        }
+
+        public void startEntity(World world, EntityType<?> type) {
+            getMeasurement(world).startEntity(type);
+        }
+
+        public void endEntity(World world) {
+            getMeasurement(world).endEntity();
+        }
+
+        public void startBlockEntity(World world, BlockEntityType<?> type) {
+            getMeasurement(world).startBlockEntity(type);
+        }
+
+        public void endBlockEntity(World world) {
+            getMeasurement(world).endBlockEntity();
+        }
+
+        @Override
+        protected void finalizeReport(MinecraftServer server) {
+            double divider = 1e-6 / duration;
+            double avgTickTime = divider * totalTickTime;
+            float msptGoal = TickSpeed.getServerTickSpeed().msptGoal;
+            broadcast(server, t("carpet.profiler.title", formats("%.3f", getHeatmapColor(avgTickTime, msptGoal), avgTickTime)));
+            Object2LongMap<Pair<Measurement, Object>> counts = new Object2LongOpenHashMap<>();
+            Object2LongMap<Pair<Measurement, Object>> times = new Object2LongOpenHashMap<>();
+            for (Measurement m : measurements.values()) {
+                for (EntityType<?> e : m.entityCount.keySet()) {
+                    counts.put(new Pair<>(m, e), m.entityCount.getLong(e));
+                    times.put(new Pair<>(m, e), m.entityTimes.getLong(e));
+                }
+                for (BlockEntityType<?> be : m.blockEntityCount.keySet()) {
+                    counts.put(new Pair<>(m, be), m.blockEntityCount.getLong(be));
+                    times.put(new Pair<>(m, be), m.blockEntityTimes.getLong(be));
+                }
+            }
+            broadcast(server, t("carpet.profiler.top_10_counts"));
+            counts.object2LongEntrySet().stream()
+                .sorted((a, b) -> Long.compare(b.getLongValue(), a.getLongValue()))
+                .limit(10)
+                .forEachOrdered(e -> broadcast(server, format(e, (double) e.getLongValue() / duration, 0)));
+            broadcast(server, t("carpet.profiler.top_10_grossing"));
+            times.object2LongEntrySet().stream()
+                .sorted((a, b) -> Long.compare(b.getLongValue(), a.getLongValue()))
+                .limit(10)
+                .forEachOrdered(e -> broadcast(server, c(format(e, e.getLongValue() * divider, msptGoal), s("ms"))));
+        }
+    }
+
+    public static void scheduleEntitiesReport(int ticks) {
+        scheduledReport = new EntitiesReport(ticks);
+    }
+
+    public static void scheduleHealthReport(int ticks) {
+        scheduledReport = new HealthReport(ticks);
     }
 
     public static void startSection(World world, SectionType section) {
-        if (!isActive(ReportType.HEALTH)) return;
-        getMeasurement(world).startSection(section);
+        if (report instanceof HealthReport r) {
+            r.startSection(world, section);
+        }
     }
 
     public static void startEntity(World world, Entity e) {
-        if (!isActive(ReportType.ENTITIES)) return;
-        getMeasurement(world).startEntity(e.getType());
+        if (report instanceof EntitiesReport r) {
+            r.startEntity(world, e.getType());
+        }
     }
 
     public static void startBlockEntity(World world, BlockEntityTickInvoker ticker) {
-        if (!isActive(ReportType.ENTITIES)) return;
         try {
-            BlockEntityType<?> type = Registry.BLOCK_ENTITY_TYPE.get(new Identifier(ticker.getName()));
-            getMeasurement(world).startBlockEntity(type);
+            if (report instanceof EntitiesReport r) {
+                BlockEntityType<?> type = Registry.BLOCK_ENTITY_TYPE.get(new Identifier(ticker.getName()));
+                r.startBlockEntity(world, type);
+            }
         } catch (RuntimeException e) {
             if (QuickCarpet.isDevelopment()) e.printStackTrace();
         }
     }
 
-    public static void endSection(World world) {
-        if (!isActive(ReportType.HEALTH)) return;
-        getMeasurement(world).endSection();
+    public static void endSection(World world, SectionType expectedType) {
+        if (report instanceof HealthReport r) {
+            r.endSection(world, expectedType);
+        }
     }
 
     public static void endEntity(World world) {
-        if (!isActive(ReportType.ENTITIES)) return;
-        getMeasurement(world).endEntity();
+        if (report instanceof EntitiesReport r) {
+            r.endEntity(world);
+        }
     }
 
     public static void endBlockEntity(World world) {
-        if (!isActive(ReportType.ENTITIES)) return;
-        getMeasurement(world).endBlockEntity();
+        if (report instanceof EntitiesReport r) {
+            r.endBlockEntity(world);
+        }
     }
 
-    public static void startTick() {
+    public static void startTick(MinecraftServer server) {
         currentTickStart = System.nanoTime();
         inTick = true;
+        if (scheduledReport != null) {
+            report = scheduledReport;
+            report.start(server);
+            scheduledReport = null;
+        }
     }
 
     public static void endTick(MinecraftServer server) {
         inTick = false;
-        if (currentTickStart == 0L || reportType == null) return;
-        totalTickTime += System.nanoTime() - currentTickStart;
-        if (--ticksRemaining <= 0) {
-            finalizeTickReport(server);
+        if (report != null) {
+            report.tick(server);
         }
-    }
-
-    public static boolean isActive() {
-        return reportType != null;
-    }
-
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public static boolean isActive(ReportType type) {
-        return reportType == type;
-    }
-
-    private static void finalizeTickReport(MinecraftServer server) {
-        if (reportType == ReportType.HEALTH) finalizeTickHealthReport(server);
-        else if (reportType == ReportType.ENTITIES) finalizeTickEntitiesReport(server);
-        reportType = null;
-    }
-
-    private static void finalizeTickHealthReport(MinecraftServer server) {
-        double divider = 1e-6 / ticksTotal;
-        double avgTickTime = divider * totalTickTime;
-        broadcast(server, t("carpet.profiler.title", formats("%.3f", getHeatmapColor(avgTickTime, 50), avgTickTime)));
-        long accumulated = 0L;
-
-        Measurement global = MEASUREMENTS.get(null);
-        for (SectionType section : SectionType.GLOBAL) {
-            long nanos = global.sections.getLong(section);
-            accumulated += nanos;
-            double amount = divider * nanos;
-            double avgTime = nanos / (1e6 * global.sectionCount.getInt(section));
-            if (amount > 0.01 || avgTime > 0.1) {
-                broadcast(server, section.format(amount, avgTime));
-            }
-        }
-        for (ServerWorld world : QuickCarpetServer.getMinecraftServer().getWorlds()) {
-            Measurement measurement = MEASUREMENTS.get(world.getRegistryKey());
-            List<MutableText> messages = new ArrayList<>();
-            for (SectionType section : SectionType.PER_DIMENSION) {
-                long nanos = measurement.sections.getLong(section);
-                accumulated += nanos;
-                double amount = divider * nanos;
-                double avgTime = nanos / (1e6 * measurement.sectionCount.getInt(section));
-                if (amount > 0.01 || avgTime > 0.1) {
-                    messages.add(c(s(" - "), section.format(amount, avgTime)));
-                }
-            }
-            if (!messages.isEmpty()) {
-                broadcast(server, String.valueOf(world.getRegistryKey().getValue()));
-                for (MutableText m : messages) broadcast(server, m);
-            }
-        }
-
-        long rest = totalTickTime - accumulated;
-
-        broadcast(server, SectionType.UNKNOWN.format(divider * rest, 0));
     }
 
     private static MutableText format(Object2LongMap.Entry<Pair<Measurement, Object>> entry, double value, double msptGoal) {
@@ -294,35 +395,6 @@ public class CarpetProfiler
         Object e = key.getRight();
         Identifier ent = e instanceof EntityType ? EntityType.getId((EntityType) e) : BlockEntityType.getId((BlockEntityType) e);
         return t("carpet.profiler.entity.line", ent, dim, formats("%.3f", msptGoal == 0 ? Formatting.WHITE : getHeatmapColor(value, msptGoal), value));
-    }
-
-    private static void finalizeTickEntitiesReport(MinecraftServer server) {
-        double divider = 1e-6 / ticksTotal;
-        double avgTickTime = divider * totalTickTime;
-        float msptGoal = TickSpeed.getServerTickSpeed().msptGoal;
-        broadcast(server, t("carpet.profiler.title", formats("%.3f", getHeatmapColor(avgTickTime, msptGoal), avgTickTime)));
-        Object2LongMap<Pair<Measurement, Object>> counts = new Object2LongOpenHashMap<>();
-        Object2LongMap<Pair<Measurement, Object>> times = new Object2LongOpenHashMap<>();
-        for (Measurement m : MEASUREMENTS.values()) {
-            for (EntityType e : m.entityCount.keySet()) {
-                counts.put(new Pair<>(m, e), m.entityCount.getLong(e));
-                times.put(new Pair<>(m, e), m.entityTimes.getLong(e));
-            }
-            for (BlockEntityType be : m.blockEntityCount.keySet()) {
-                counts.put(new Pair<>(m, be), m.blockEntityCount.getLong(be));
-                times.put(new Pair<>(m, be), m.blockEntityTimes.getLong(be));
-            }
-        }
-        broadcast(server, t("carpet.profiler.top_10_counts"));
-        counts.object2LongEntrySet().stream()
-            .sorted((a, b) -> Long.compare(b.getLongValue(), a.getLongValue()))
-            .limit(10)
-            .forEachOrdered(e -> broadcast(server, format(e, (double) e.getLongValue() / ticksTotal, 0)));
-        broadcast(server, t("carpet.profiler.top_10_grossing"));
-        times.object2LongEntrySet().stream()
-            .sorted((a, b) -> Long.compare(b.getLongValue(), a.getLongValue()))
-            .limit(10)
-            .forEachOrdered(e -> broadcast(server, c(format(e, e.getLongValue() * divider, msptGoal), s("ms"))));
     }
 
     public static void init() {
@@ -378,9 +450,8 @@ public class CarpetProfiler
                 s(" -> "), s(usedAfter / (1024 * 1024) + "MB", Formatting.AQUA)
             );
         }, () -> getCommandParameters(info));
-        if (inTick) {
-            if (!isActive(ReportType.HEALTH)) return;
-            for (Measurement m : MEASUREMENTS.values()) {
+        if (inTick && report != null) {
+            for (Measurement m : report.measurements.values()) {
                 if (m == null) continue;
                 m.gc(gcInfo.getDuration());
             }
