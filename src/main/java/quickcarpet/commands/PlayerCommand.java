@@ -7,6 +7,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.client.render.entity.PlayerModelPart;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.DimensionArgumentType;
 import net.minecraft.command.argument.EntityAnchorArgumentType;
@@ -77,7 +78,15 @@ public class PlayerCommand {
                 .then(literal("sneak").executes(manipulation(PlayerActionPack::toggleSneaking)))
                 .then(literal("sprint").executes(manipulation(PlayerActionPack::toggleSprinting)))
                 .then(literal("fly").executes(manipulation(PlayerActionPack::toggleFlying)))
-                .then(literal("look")
+                .then(literal("skin")
+                    .then(literal("cape").executes(manipulation(ap -> ap.toggleModelPart(PlayerModelPart.CAPE))))
+                    .then(literal("jacket").executes(manipulation(ap -> ap.toggleModelPart(PlayerModelPart.JACKET))))
+                    .then(literal("left_sleeve").executes(manipulation(ap -> ap.toggleModelPart(PlayerModelPart.LEFT_SLEEVE))))
+                    .then(literal("right_sleeve").executes(manipulation(ap -> ap.toggleModelPart(PlayerModelPart.RIGHT_SLEEVE))))
+                    .then(literal("left_pants_leg").executes(manipulation(ap -> ap.toggleModelPart(PlayerModelPart.LEFT_PANTS_LEG))))
+                    .then(literal("right_pants_leg").executes(manipulation(ap -> ap.toggleModelPart(PlayerModelPart.RIGHT_PANTS_LEG))))
+                    .then(literal("hat").executes(manipulation(ap -> ap.toggleModelPart(PlayerModelPart.HAT))))
+                ).then(literal("look")
                     .then(literal("north").executes(manipulation(ap -> ap.look(Direction.NORTH))))
                     .then(literal("south").executes(manipulation(ap -> ap.look(Direction.SOUTH))))
                     .then(literal("east").executes(manipulation(ap -> ap.look(Direction.EAST))))

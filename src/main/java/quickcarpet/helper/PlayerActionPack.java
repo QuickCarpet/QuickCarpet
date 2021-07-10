@@ -1,8 +1,10 @@
 package quickcarpet.helper;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.client.render.entity.PlayerModelPart;
 import net.minecraft.command.argument.EntityAnchorArgumentType;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.player.PlayerAbilities;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -21,6 +23,8 @@ import quickcarpet.utils.extensions.ActionPackOwner;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+
+import static net.minecraft.entity.player.PlayerEntity.PLAYER_MODEL_PARTS;
 
 public class PlayerActionPack {
     private final ServerPlayerEntity player;
@@ -186,6 +190,11 @@ public class PlayerActionPack {
         float maxReach = (player.interactionManager.isCreative() ? 5 : 4.5f);
         double distance = reach != 0 ? Math.min(reach,maxReach) : maxReach;
         return RayTracing.rayTrace(player, 1, distance, false);
+    }
+
+    public void toggleModelPart(PlayerModelPart part) {
+        DataTracker tracker = player.getDataTracker();
+        tracker.set(PLAYER_MODEL_PARTS, (byte) (tracker.get(PLAYER_MODEL_PARTS) ^ part.getBitFlag()));
     }
 
     public enum ActionType {
