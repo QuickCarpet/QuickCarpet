@@ -34,7 +34,7 @@ public class CounterCommand {
 
     private static int displayCounter(ServerCommandSource source, HopperCounter.Key key, boolean realtime) {
         HopperCounter counter = HopperCounter.getCounter(key);
-        for (Text message : counter.format(source.getMinecraftServer(), realtime, false)) {
+        for (Text message : counter.format(source.getServer(), realtime, false)) {
             m(source, message);
         }
         return 1;
@@ -42,18 +42,18 @@ public class CounterCommand {
 
     private static int resetCounter(ServerCommandSource source, HopperCounter.Key color) {
         if (color == null) {
-            HopperCounter.getCounter(HopperCounter.Key.ALL).reset(source.getMinecraftServer());
+            HopperCounter.getCounter(HopperCounter.Key.ALL).reset(source.getServer());
             m(source, t("command.counter.reset.success"));
         } else {
             HopperCounter counter = HopperCounter.getCounter(color);
-            counter.reset(source.getMinecraftServer());
+            counter.reset(source.getServer());
             m(source, t("command.counter.reset.one.success", counter.key.getText()));
         }
         return 1;
     }
 
     private static int listAllCounters(ServerCommandSource source, boolean realtime) {
-        send(source, HopperCounter.formatAll(source.getMinecraftServer(), realtime));
+        send(source, HopperCounter.formatAll(source.getServer(), realtime));
         return 1;
     }
 }

@@ -47,19 +47,19 @@ public class SpawnTracker {
 
     public void start() {
         this.active = true;
-        this.tickStarted = source.getMinecraftServer().getTicks();
+        this.tickStarted = source.getServer().getTicks();
     }
 
     public void stop() {
         this.active = false;
-        this.tickStopped = source.getMinecraftServer().getTicks();
+        this.tickStopped = source.getServer().getTicks();
         TRACKERS.remove(source);
     }
 
     public void sendReport() {
         try {
             if (this.tickStarted < 0) return;
-            int tickTo = this.tickStopped >= 0 ? this.tickStopped : this.source.getMinecraftServer().getTicks();
+            int tickTo = this.tickStopped >= 0 ? this.tickStopped : this.source.getServer().getTicks();
             int ticksActive = tickTo - this.tickStarted;
             double seconds = ticksActive / 20.;
             int minutes = (int) seconds / 60;

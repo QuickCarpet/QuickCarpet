@@ -1,6 +1,7 @@
 accessWidener	v1	named
-accessible class net/minecraft/server/MinecraftServer$class_6414
-accessible method net/minecraft/server/MinecraftServer$class_6414 <init> (JI)V
+accessible class net/minecraft/server/MinecraftServer$DebugStart
+accessible method net/minecraft/server/MinecraftServer$DebugStart <init> (JI)V
 accessible class net/minecraft/block/entity/BlockEntityType$BlockEntityFactory
 accessible class net/minecraft/server/command/TeleportCommand$LookTarget
 accessible method net/minecraft/util/WorldSavePath <init> (Ljava/lang/String;)V
+accessible field net/minecraft/entity/player/PlayerEntity PLAYER_MODEL_PARTS Lnet/minecraft/entity/data/TrackedData;

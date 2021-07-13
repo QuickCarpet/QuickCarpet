@@ -92,6 +92,14 @@ Default: `1`
 Categories: experimental, optimizations  
 Validator: `>= 0`  
 
+## cameraModeNightVision
+doing /c will give you night vision and conduit power
+
+Type: `boolean`  
+Default: `true`  
+Options: `true`, `false`  
+Categories: commands  
+
 ## cameraModeRestoreLocation
 /s restores the player to the location they used /c at
 
@@ -593,6 +601,14 @@ Validator: `quickcarpet.settings.Settings$SpawnChunkLevel`
 Empty shulker boxes can stack to 64 when dropped on the ground
 
 To move them around between inventories, use shift click to move entire stacks  
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: survival  
+
+## stackableShulkerBoxesInInventories
+Empty shulker boxes stack to 64 inside of inventories
 
 Type: `boolean`  
 Default: `false`  

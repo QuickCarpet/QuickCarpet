@@ -26,16 +26,16 @@ public abstract class MinecraftServerMixin {
     @Shadow private volatile boolean loading;
     @Shadow private boolean waitingForNextTick;
     @Shadow private long nextTickTimestamp;
-    @Shadow private boolean profilerEnabled;
+    @Shadow private boolean needsDebugSetup;
     @Shadow private int ticks;
-    @Shadow @Nullable private MinecraftServer.class_6414 field_33978;
+    @Shadow @Nullable private MinecraftServer.DebugStart debugStart;
 
     @Shadow protected abstract boolean shouldKeepTicking();
-    @Shadow protected abstract void method_16208();
+    @Shadow protected abstract void runTasksTillTickEnd();
     @Shadow public abstract void tick(BooleanSupplier booleanSupplier);
 
-    @Shadow protected abstract void startMonitor();
-    @Shadow protected abstract void endMonitor();
+    @Shadow protected abstract void startTickMetrics();
+    @Shadow protected abstract void endTickMetrics();
 
     // Cancel a while statement
     @Redirect(method = "runServer", at = @At(value = "FIELD", target = "Lnet/minecraft/server/MinecraftServer;running:Z"))
@@ -72,9 +72,9 @@ public abstract class MinecraftServerMixin {
                 this.lastTimeReference = this.timeReference;
             }
 
-            if (this.profilerEnabled) {
-                this.profilerEnabled = false;
-                this.field_33978 = new MinecraftServer.class_6414(Util.getMeasuringTimeNano(), this.ticks);
+            if (this.needsDebugSetup) {
+                this.needsDebugSetup = false;
+                this.debugStart = new MinecraftServer.DebugStart(Util.getMeasuringTimeNano(), this.ticks);
             }
 
             partialTimeReference += mspt - (long) mspt;
@@ -83,15 +83,15 @@ public abstract class MinecraftServerMixin {
                 partialTimeReference--;
                 timeReference++;
             }
-            this.startMonitor();
+            this.startTickMetrics();
             this.profiler.push("tick");
             this.tick(this::shouldKeepTicking);
             this.profiler.swap("nextTickWait");
             this.waitingForNextTick = true;
             this.nextTickTimestamp = Math.max(Util.getMeasuringTimeMs() + (long) mspt, this.timeReference);
-            this.method_16208();
+            this.runTasksTillTickEnd();
             this.profiler.pop();
-            this.endMonitor();
+            this.endTickMetrics();
             this.loading = true;
         }
 

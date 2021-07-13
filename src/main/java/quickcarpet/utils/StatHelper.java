@@ -26,6 +26,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 public class StatHelper {
@@ -71,10 +72,10 @@ public class StatHelper {
     @Nullable
     public static String getUsername(MinecraftServer server, UUID uuid) {
         UserCache profileCache = server.getUserCache();
-        GameProfile profile = profileCache.getByUuid(uuid);
-        if (profile != null) return profile.getName();
+        Optional<GameProfile> optProfile = profileCache.getByUuid(uuid);
+        if (optProfile.isPresent()) return optProfile.get().getName();
         MinecraftSessionService sessionService = server.getSessionService();
-        profile = sessionService.fillProfileProperties(new GameProfile(uuid, null), false);
+        GameProfile profile = sessionService.fillProfileProperties(new GameProfile(uuid, null), false);
         if (profile.isComplete()) return profile.getName();
         LOGGER.warn("Could not find name of user " + uuid);
         return null;

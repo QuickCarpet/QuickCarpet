@@ -13,13 +13,13 @@ import quickcarpet.settings.Settings;
 
 public class TillSoilDispenserBehavior extends ItemDispenserBehavior {
     @Override
-    protected ItemStack dispenseSilently(BlockPointer blockPointer_1, ItemStack stack) {
-        if (!Settings.dispensersTillSoil) return super.dispenseSilently(blockPointer_1, stack);
+    protected ItemStack dispenseSilently(BlockPointer pointer, ItemStack stack) {
+        if (!Settings.dispensersTillSoil) return super.dispenseSilently(pointer, stack);
 
-        World world = blockPointer_1.getWorld();
-        Direction direction = blockPointer_1.getBlockState().get(DispenserBlock.FACING);
-        BlockPos front = blockPointer_1.getBlockPos().offset(direction);
-        BlockPos down = blockPointer_1.getBlockPos().down().offset(direction);
+        World world = pointer.getWorld();
+        Direction direction = pointer.getBlockState().get(DispenserBlock.FACING);
+        BlockPos front = pointer.getPos().offset(direction);
+        BlockPos down = pointer.getPos().down().offset(direction);
         BlockState frontState = world.getBlockState(front);
         BlockState downState = world.getBlockState(down);
 

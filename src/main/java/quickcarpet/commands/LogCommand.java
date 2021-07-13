@@ -154,7 +154,7 @@ public class LogCommand {
     }
 
     private static boolean areArgumentsInvalid(ServerCommandSource source, String playerName, String loggerName) {
-        PlayerEntity player = source.getMinecraftServer().getPlayerManager().getPlayer(playerName);
+        PlayerEntity player = source.getServer().getPlayerManager().getPlayer(playerName);
         if (player == null) {
             m(source, ts("command.log.noPlayerSpecified", Formatting.RED));
             return true;

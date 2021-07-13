@@ -48,7 +48,7 @@ public class BreakBlockDispenserBehavior extends ItemDispenserBehavior {
     private boolean breakBlock(BlockPointer blockPointer, boolean silkTouch) {
         ServerWorld world = blockPointer.getWorld();
         Direction facing = blockPointer.getBlockState().get(DispenserBlock.FACING);
-        BlockPos target = blockPointer.getBlockPos().offset(facing);
+        BlockPos target = blockPointer.getPos().offset(facing);
         BlockState state = world.getBlockState(target);
         float hardness = state.getHardness(world, target);
         if (state.isAir() || state.getMaterial().isLiquid() || hardness < 0) return false;

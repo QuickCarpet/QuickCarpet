@@ -15,7 +15,7 @@ public class FireChargeConvertsToNetherrackBehavior extends FallibleItemDispense
     protected ItemStack dispenseSilently(BlockPointer pointer, ItemStack stack) {
         World world = pointer.getWorld();
         Direction direction = pointer.getBlockState().get(DispenserBlock.FACING);
-        BlockPos front = pointer.getBlockPos().offset(direction);
+        BlockPos front = pointer.getPos().offset(direction);
         BlockState state = world.getBlockState(front);
         if (state.getBlock() == Blocks.COBBLESTONE) {
             world.setBlockState(front, Blocks.NETHERRACK.getDefaultState());

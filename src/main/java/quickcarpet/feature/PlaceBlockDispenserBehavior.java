@@ -42,7 +42,7 @@ public class PlaceBlockDispenserBehavior extends FallibleItemDispenserBehavior {
         Direction facing = blockPointer.getBlockState().get(DispenserBlock.FACING);
         Direction.Axis axis = facing.getAxis();
         World world = blockPointer.getWorld();
-        BlockPos pos = blockPointer.getBlockPos();
+        BlockPos pos = blockPointer.getPos();
 
         final Direction ffacing = facing;
 

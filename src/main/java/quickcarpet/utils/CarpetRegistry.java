@@ -28,7 +28,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPointer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
-import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
 import quickcarpet.feature.*;
 import quickcarpet.mixin.accessor.BlockTagsAccessor;
@@ -54,7 +53,7 @@ public class CarpetRegistry {
     public static final DispenserBehavior DISPENSERS_STRIP_LOGS_BEHAVIOR = new StripLogsDispenserBehavior();
     public static final DispenserBehavior SMART_SADDLE_DISPENSER_BEHAVIOR = new FallibleItemDispenserBehavior() {
         public ItemStack dispenseSilently(BlockPointer pointer, ItemStack stack) {
-            BlockPos blockPos = pointer.getBlockPos().offset(pointer.getBlockState().get(DispenserBlock.FACING));
+            BlockPos blockPos = pointer.getPos().offset(pointer.getBlockState().get(DispenserBlock.FACING));
             List<LivingEntity> list = pointer.getWorld().getEntitiesByClass(LivingEntity.class, new Box(blockPos), entity -> entity instanceof Saddleable saddleable && !saddleable.isSaddled() && saddleable.canBeSaddled());
             if (!list.isEmpty()) {
                 ((Saddleable)list.get(0)).saddle(SoundCategory.BLOCKS);

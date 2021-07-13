@@ -99,6 +99,9 @@ public class Settings {
     @Rule(category = COMMANDS)
     public static boolean cameraModeRestoreLocation = true;
 
+    @Rule(category = COMMANDS)
+    public static boolean cameraModeNightVision = true;
+
     @Rule(category = COMMANDS, validator = Validator.OpLevel.class)
     public static int commandBlockInfo = 0;
 
@@ -304,6 +307,9 @@ public class Settings {
 
     @Rule(category = SURVIVAL)
     public static boolean stackableShulkerBoxes = false;
+
+    @Rule(category = SURVIVAL)
+    public static boolean stackableShulkerBoxesInInventories = false;
 
     @Rule(category = {FEATURE, CREATIVE})
     public static boolean terracottaRepeaters = false;

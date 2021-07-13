@@ -19,6 +19,6 @@ public class SpawnHelperMixin {
 
     @Inject(method = "spawnEntitiesInChunk(Lnet/minecraft/entity/SpawnGroup;Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/world/chunk/WorldChunk;Lnet/minecraft/world/SpawnHelper$Checker;Lnet/minecraft/world/SpawnHelper$Runner;)V", at = @At("RETURN"))
     private static void endSpawning(SpawnGroup group, ServerWorld world, WorldChunk chunk, SpawnHelper.Checker checker, SpawnHelper.Runner runner, CallbackInfo ci) {
-        CarpetProfiler.endSection(world);
+        CarpetProfiler.endSection(world, CarpetProfiler.SectionType.SPAWNING);
     }
 }

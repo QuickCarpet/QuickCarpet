@@ -15,7 +15,7 @@ public class ShearVinesBehavior extends FallibleItemDispenserBehavior {
     protected ItemStack dispenseSilently(BlockPointer pointer, ItemStack stack) {
         ServerWorld world = pointer.getWorld();
         Direction direction = pointer.getBlockState().get(DispenserBlock.FACING);
-        BlockPos target = pointer.getBlockPos().offset(direction);
+        BlockPos target = pointer.getPos().offset(direction);
         BlockState targetState = world.getBlockState(target);
         if (targetState.getBlock() != Blocks.VINE) {
             this.setSuccess(false);

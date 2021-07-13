@@ -7,6 +7,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.client.render.entity.PlayerModelPart;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.DimensionArgumentType;
 import net.minecraft.command.argument.EntityAnchorArgumentType;
@@ -77,7 +78,15 @@ public class PlayerCommand {
                 .then(literal("sneak").executes(manipulation(PlayerActionPack::toggleSneaking)))
                 .then(literal("sprint").executes(manipulation(PlayerActionPack::toggleSprinting)))
                 .then(literal("fly").executes(manipulation(PlayerActionPack::toggleFlying)))
-                .then(literal("look")
+                .then(literal("skin")
+                    .then(literal("cape").executes(manipulation(ap -> ap.toggleModelPart(PlayerModelPart.CAPE))))
+                    .then(literal("jacket").executes(manipulation(ap -> ap.toggleModelPart(PlayerModelPart.JACKET))))
+                    .then(literal("left_sleeve").executes(manipulation(ap -> ap.toggleModelPart(PlayerModelPart.LEFT_SLEEVE))))
+                    .then(literal("right_sleeve").executes(manipulation(ap -> ap.toggleModelPart(PlayerModelPart.RIGHT_SLEEVE))))
+                    .then(literal("left_pants_leg").executes(manipulation(ap -> ap.toggleModelPart(PlayerModelPart.LEFT_PANTS_LEG))))
+                    .then(literal("right_pants_leg").executes(manipulation(ap -> ap.toggleModelPart(PlayerModelPart.RIGHT_PANTS_LEG))))
+                    .then(literal("hat").executes(manipulation(ap -> ap.toggleModelPart(PlayerModelPart.HAT))))
+                ).then(literal("look")
                     .then(literal("north").executes(manipulation(ap -> ap.look(Direction.NORTH))))
                     .then(literal("south").executes(manipulation(ap -> ap.look(Direction.SOUTH))))
                     .then(literal("east").executes(manipulation(ap -> ap.look(Direction.EAST))))
@@ -134,7 +143,7 @@ public class PlayerCommand {
 
     private static ServerPlayerEntity getPlayer(CommandContext<ServerCommandSource> context) {
         String playerName = getString(context, "player");
-        MinecraftServer server = context.getSource().getMinecraftServer();
+        MinecraftServer server = context.getSource().getServer();
         return server.getPlayerManager().getPlayer(playerName);
     }
 
@@ -151,7 +160,7 @@ public class PlayerCommand {
             return false;
         }
 
-        if (!context.getSource().getMinecraftServer().getPlayerManager().isOperator(sendingPlayer.getGameProfile())) {
+        if (!context.getSource().getServer().getPlayerManager().isOperator(sendingPlayer.getGameProfile())) {
             if (sendingPlayer != player && !(player instanceof FakeServerPlayerEntity)) {
                 m(context.getSource(), ts("command.player.notOperator", Formatting.RED));
                 return true;
@@ -170,18 +179,19 @@ public class PlayerCommand {
 
     private static CompletableFuture<GameProfile> getSpawnableProfile(CommandContext<ServerCommandSource> context) {
         String playerName = getString(context, "player");
-        MinecraftServer server = context.getSource().getMinecraftServer();
+        MinecraftServer server = context.getSource().getServer();
         PlayerManager manager = server.getPlayerManager();
         PlayerEntity player = manager.getPlayer(playerName);
         if (player != null) {
             m(context.getSource(), ts("command.player.alreadyOnline", Formatting.RED, s(playerName, Formatting.BOLD)));
             return CompletableFuture.completedFuture(null);
         }
-        return CompletableFuture.supplyAsync(() -> server.getUserCache().findByName(playerName), Util.getIoWorkerExecutor()).thenApply(profile -> {
-            if (profile == null) {
+        return CompletableFuture.supplyAsync(() -> server.getUserCache().findByName(playerName), Util.getIoWorkerExecutor()).thenApply(optProfile -> {
+            if (optProfile.isEmpty()) {
                 m(context.getSource(), ts("command.player.doesNotExist", Formatting.RED, s(playerName, Formatting.BOLD)));
                 return null;
             }
+            GameProfile profile = optProfile.get();
             if (manager.getUserBanList().contains(profile)) {
                 m(context.getSource(), ts("command.player.banned", Formatting.RED, s(playerName, Formatting.BOLD)));
                 return null;
@@ -228,7 +238,7 @@ public class PlayerCommand {
         ServerWorld dim = tryGetArg(
                 () -> DimensionArgumentType.getDimensionArgument(context, "dimension"),
                 source::getWorld);
-        GameMode mode = source.getMinecraftServer().getDefaultGameMode();
+        GameMode mode = source.getServer().getDefaultGameMode();
         boolean flying = false;
         try {
             ServerPlayerEntity player = context.getSource().getPlayer();
@@ -240,7 +250,7 @@ public class PlayerCommand {
         boolean finalFlying = flying;
         getSpawnableProfile(context).thenAccept(profile -> {
             if (profile == null) return;
-            MinecraftServer server = source.getMinecraftServer();
+            MinecraftServer server = source.getServer();
             server.send(new ServerTask(server.getTicks(), () -> FakeServerPlayerEntity.createFake(profile, server, pos.x, pos.y, pos.z, facing.y, facing.x, dim, finalMode, finalFlying)));
         });
         return 1;

@@ -21,7 +21,7 @@ public class WorldMixin {
     @Inject(method = "tickBlockEntities", at = @At("HEAD"))
     private void startBlockEntities(CallbackInfo ci) {
         if (!this.isClient) {
-            CarpetProfiler.endSection((World) (Object) this); // end entities
+            CarpetProfiler.endSection((World) (Object) this, CarpetProfiler.SectionType.ENTITIES);
             CarpetProfiler.startSection((World) (Object) this, CarpetProfiler.SectionType.BLOCK_ENTITIES);
         }
     }
@@ -29,7 +29,7 @@ public class WorldMixin {
     @Inject(method = "tickBlockEntities", at = @At("TAIL"))
     private void endBlockEntities(CallbackInfo ci) {
         if (!this.isClient) {
-            CarpetProfiler.endSection((World) (Object) this);
+            CarpetProfiler.endSection((World) (Object) this, CarpetProfiler.SectionType.BLOCK_ENTITIES);
         }
     }
 

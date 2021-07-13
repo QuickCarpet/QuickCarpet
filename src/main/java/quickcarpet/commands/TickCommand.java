@@ -45,13 +45,13 @@ public class TickCommand {
                     .suggests((c, b) -> suggestMatching(new String[]{"20"},b))
                     .executes(c -> step(getInteger(c, "ticks")))))
             .then(literal("health")
-                .executes(c -> healthReport(c.getSource(), 100))
+                .executes(c -> healthReport(100))
                 .then(argument("ticks", integer(20, 24000))
-                    .executes(c -> healthReport(c.getSource(), getInteger(c, "ticks")))))
+                    .executes(c -> healthReport(getInteger(c, "ticks")))))
             .then(literal("entities")
-                .executes(c -> healthEntities(c.getSource(), 100))
+                .executes(c -> healthEntities(100))
                 .then(argument("ticks", integer(20, 24000))
-                    .executes(c -> healthEntities(c.getSource(), getInteger(c, "ticks")))))
+                    .executes(c -> healthEntities(getInteger(c, "ticks")))))
             .then(literal("measure")
                 .executes(c -> measureCurrent(c.getSource()))
                 .then(argument("ticks", integer(10, 24000))
@@ -111,18 +111,18 @@ public class TickCommand {
         return 1;
     }
 
-    private static int healthReport(ServerCommandSource source, int ticks) {
-        CarpetProfiler.startTickReport(source.getMinecraftServer(), CarpetProfiler.ReportType.HEALTH, ticks);
+    private static int healthReport(int ticks) {
+        CarpetProfiler.scheduleHealthReport(ticks);
         return 1;
     }
 
-    private static int healthEntities(ServerCommandSource source, int ticks) {
-        CarpetProfiler.startTickReport(source.getMinecraftServer(), CarpetProfiler.ReportType.ENTITIES, ticks);
+    private static int healthEntities(int ticks) {
+        CarpetProfiler.scheduleEntitiesReport(ticks);
         return 1;
     }
 
     private static int measureCurrent(ServerCommandSource source) {
-        printMSPTStats(source, TickSpeed.getMSPTStats(source.getMinecraftServer()));
+        printMSPTStats(source, TickSpeed.getMSPTStats(source.getServer()));
         return 1;
     }
 

@@ -75,7 +75,7 @@ public class WaypointCommand {
         ServerCommandSource source = ctx.getSource();
         @SuppressWarnings("unchecked")
         Stream<String> waypointNames = Waypoint
-            .getAllWaypoints((Iterable<WaypointContainer>) (Iterable) source.getMinecraftServer().getWorlds())
+            .getAllWaypoints((Iterable<WaypointContainer>) (Iterable) source.getServer().getWorlds())
             .stream().filter(w -> w.canManipulate(source))
             .flatMap(w -> Stream.of(w.name, w.getFullName()));
         return CommandSource.suggestMatching(waypointNames, builder);
@@ -85,7 +85,7 @@ public class WaypointCommand {
     @SuppressWarnings("unchecked")
     public static Waypoint getWaypoint(ServerCommandSource source, String name) {
         return Waypoint.find(name, (WaypointContainer) source.getWorld(),
-                (Iterable<WaypointContainer>) (Iterable) source.getMinecraftServer().getWorlds());
+                (Iterable<WaypointContainer>) (Iterable) source.getServer().getWorlds());
     }
 
     private static int add(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
@@ -127,7 +127,7 @@ public class WaypointCommand {
 
     private static int listAll(ServerCommandSource source, int page) throws CommandSyntaxException {
         ArrayList<Waypoint> waypoints = new ArrayList<>();
-        for (ServerWorld world : source.getMinecraftServer().getWorlds()) {
+        for (ServerWorld world : source.getServer().getWorlds()) {
             waypoints.addAll(((WaypointContainer) world).getWaypoints().values());
         }
         return printList(source, waypoints, page, null, null);
@@ -135,7 +135,7 @@ public class WaypointCommand {
 
     private static int listCreator(ServerCommandSource source, String creator, int page) throws CommandSyntaxException {
         ArrayList<Waypoint> waypoints = new ArrayList<>();
-        for (ServerWorld world : source.getMinecraftServer().getWorlds()) {
+        for (ServerWorld world : source.getServer().getWorlds()) {
             for (Waypoint w : ((WaypointContainer) world).getWaypoints().values()) {
                 if (creator.equalsIgnoreCase(w.creator)) waypoints.add(w);
             }
