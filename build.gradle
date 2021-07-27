@@ -5,8 +5,8 @@ plugins {
 	id 'fabric-loom' version '0.9-SNAPSHOT'
 }
 
-minecraft {
-	accessWidener "src/main/resources/quickcarpet.accesswidener"
+loom {
+	accessWidenerPath = file("src/main/resources/quickcarpet.accesswidener")
 }
 
 def buildDate = new Date()

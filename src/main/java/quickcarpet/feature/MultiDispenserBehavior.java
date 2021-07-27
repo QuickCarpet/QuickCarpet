@@ -4,7 +4,6 @@ import net.minecraft.block.dispenser.DispenserBehavior;
 import net.minecraft.block.dispenser.FallibleItemDispenserBehavior;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPointer;
-import quickcarpet.mixin.accessor.FallibleItemDispenserBehaviorAccessor;
 import quickcarpet.mixin.accessor.ItemDispenserBehaviorAccessor;
 
 public class MultiDispenserBehavior extends FallibleItemDispenserBehavior {
@@ -18,7 +17,7 @@ public class MultiDispenserBehavior extends FallibleItemDispenserBehavior {
     protected ItemStack dispenseSilently(BlockPointer pointer, ItemStack stackIn) {
         for (DispenserBehavior behavior : behaviors) {
             ItemStack stackOut = ((ItemDispenserBehaviorAccessor) behavior).doDispenseSilently(pointer, stackIn);
-            if (!(behavior instanceof FallibleItemDispenserBehavior) || ((FallibleItemDispenserBehaviorAccessor) behavior).isSuccessful()) {
+            if (!(behavior instanceof FallibleItemDispenserBehavior fallible) || fallible.isSuccess()) {
                 this.setSuccess(true);
                 return stackOut;
             }
