@@ -159,7 +159,7 @@ public class Messenger {
 
     public static MutableText tp(Waypoint waypoint, Formatting... style) {
         return runCommand(
-                s(String.format(Locale.ROOT, "[ %.1f, %.1f, %.1f ]", waypoint.position.x, waypoint.position.y, waypoint.position.z), style),
+                s(String.format(Locale.ROOT, "[ %.1f, %.1f, %.1f ]", waypoint.position().x, waypoint.position().y, waypoint.position().z), style),
                 String.format(Locale.ROOT, "/tp waypoint %s", waypoint.getFullName()));
     }
 
@@ -482,7 +482,7 @@ public class Messenger {
 
     @Deprecated
     public static MutableText tp(String desc, Waypoint waypoint) {
-        return tp(desc, waypoint.position);  //TODO: tp to waypoint
+        return tp(desc, waypoint.position());  //TODO: tp to waypoint
     }
 
     @Deprecated

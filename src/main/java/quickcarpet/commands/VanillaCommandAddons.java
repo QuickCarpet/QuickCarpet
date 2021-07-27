@@ -58,8 +58,8 @@ public class VanillaCommandAddons {
             return -1;
         }
         ServerWorld world = source.getServer().getWorld(destination.getDimension());
-        Vec3d pos = destination.position;
-        Vec2f rot = destination.rotation;
+        Vec3d pos = destination.position();
+        Vec2f rot = destination.rotation();
         for (Entity e : entities) {
             TeleportCommandAccessor.invokeTeleport(source, e, world, pos.x, pos.y, pos.z, Collections.emptySet(), rot.y, rot.x, null);
         }

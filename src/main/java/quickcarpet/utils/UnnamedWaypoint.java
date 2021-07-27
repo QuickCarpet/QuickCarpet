@@ -23,13 +23,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-public class UnnamedWaypoint {
-    public final @Nonnull WaypointContainer world;
-    public final @Nonnull Vec3d position;
-    public final @Nonnull Vec2f rotation;
-    public final @Nullable String creator;
-    public final @Nullable UUID creatorUuid;
-
+public record UnnamedWaypoint(@Nonnull WaypointContainer world,
+                              @Nullable String creator, @Nullable UUID creatorUuid,
+                              @Nonnull Vec3d position,
+                              @Nonnull Vec2f rotation) {
     public UnnamedWaypoint(@Nonnull WaypointContainer world, @Nullable String creator, @Nullable UUID creatorUuid, @Nonnull Vec3d position, @Nonnull Vec2f rotation) {
         this.world = world;
         this.creator = creator;

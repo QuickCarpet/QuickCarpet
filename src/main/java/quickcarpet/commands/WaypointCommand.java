@@ -77,7 +77,7 @@ public class WaypointCommand {
         Stream<String> waypointNames = Waypoint
             .getAllWaypoints((Iterable<WaypointContainer>) (Iterable) source.getServer().getWorlds())
             .stream().filter(w -> w.canManipulate(source))
-            .flatMap(w -> Stream.of(w.name, w.getFullName()));
+            .flatMap(w -> Stream.of(w.name(), w.getFullName()));
         return CommandSource.suggestMatching(waypointNames, builder);
     }
 
@@ -118,7 +118,7 @@ public class WaypointCommand {
             m(source, ts("command.waypoint.remove.notAllowed", Formatting.RED, w));
             return -2;
         }
-        if (w.world.getWaypoints().remove(w.name, w)) {
+        if (w.world().getWaypoints().remove(w.name(), w)) {
             m(source, t("command.waypoint.remove.success", w));
             return 1;
         }
@@ -137,7 +137,7 @@ public class WaypointCommand {
         ArrayList<Waypoint> waypoints = new ArrayList<>();
         for (ServerWorld world : source.getServer().getWorlds()) {
             for (Waypoint w : ((WaypointContainer) world).getWaypoints().values()) {
-                if (creator.equalsIgnoreCase(w.creator)) waypoints.add(w);
+                if (creator.equalsIgnoreCase(w.creator())) waypoints.add(w);
             }
         }
         return printList(source, waypoints, page, null, creator);
@@ -184,18 +184,18 @@ public class WaypointCommand {
         Waypoint[] pageWaypoints = Arrays.copyOfRange(waypoints.toArray(new Waypoint[0]), from, to);
         for (Waypoint w : pageWaypoints) {
             if (dimension == null) {
-                if (creator == null && w.creator != null) {
+                if (creator == null && w.creator() != null) {
                     m(source, t("command.waypoint.list.entry.creator",
-                        w, tp(w, Formatting.AQUA), s(w.creator, Formatting.DARK_GREEN)));
+                        w, tp(w, Formatting.AQUA), s(w.creator(), Formatting.DARK_GREEN)));
                 } else {
                     m(source, t("command.waypoint.list.entry",
                         w, tp(w, Formatting.AQUA)));
                 }
             } else {
-                if (creator == null && w.creator != null) {
-                    m(source, t("command.waypoint.list.entry.creator", s(w.name, Formatting.YELLOW), tp(w, Formatting.AQUA), s(w.creator, Formatting.DARK_GREEN)));
+                if (creator == null && w.creator() != null) {
+                    m(source, t("command.waypoint.list.entry.creator", s(w.name(), Formatting.YELLOW), tp(w, Formatting.AQUA), s(w.creator(), Formatting.DARK_GREEN)));
                 } else {
-                    m(source, t("command.waypoint.list.entry", s(w.name, Formatting.YELLOW), tp(w, Formatting.AQUA)));
+                    m(source, t("command.waypoint.list.entry", s(w.name(), Formatting.YELLOW), tp(w, Formatting.AQUA)));
                 }
             }
         }
