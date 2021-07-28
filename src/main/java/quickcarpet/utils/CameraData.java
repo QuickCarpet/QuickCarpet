@@ -1,7 +1,5 @@
 package quickcarpet.utils;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
@@ -19,6 +17,7 @@ import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import quickcarpet.QuickCarpet;
 import quickcarpet.QuickCarpetServer;
 import quickcarpet.mixin.accessor.TeleportCommandAccessor;
 
@@ -40,7 +39,6 @@ public record CameraData(RegistryKey<World> dimension, Vec3d position) {
             Codec.DOUBLE.fieldOf("z").forGetter(d -> d.position().z)
     ).apply(it, (dim, x, y, z) -> new CameraData(RegistryKey.of(Registry.WORLD_KEY, dim), new Vec3d(x, y, z))));
     public static final Codec<Map<UUID, CameraData>> MAP_CODEC = Codec.unboundedMap(Codec.STRING.xmap(UUID::fromString, UUID::toString), CODEC.codec());
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
     private static final Logger LOGGER = LogManager.getLogger("QuickCarpet|CameraData");
 
     public CameraData(Entity entity) {
@@ -82,7 +80,7 @@ public record CameraData(RegistryKey<World> dimension, Vec3d position) {
         try(BufferedWriter writer = Files.newBufferedWriter(file)) {
             MAP_CODEC.encodeStart(JsonOps.INSTANCE, data)
                 .resultOrPartial(e -> LOGGER.error("Could not write camera data: {}", e))
-                .ifPresent(obj -> GSON.toJson(obj, writer));
+                .ifPresent(obj -> QuickCarpet.GSON.toJson(obj, writer));
         }
     }
 }
