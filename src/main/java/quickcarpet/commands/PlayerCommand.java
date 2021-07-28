@@ -73,6 +73,7 @@ public class PlayerCommand {
                 .then(literal("dropAll").executes(PlayerCommand::dropAll))
                 .then(literal("kill").executes(PlayerCommand::kill))
                 .then(literal("shadow"). executes(PlayerCommand::shadow))
+                .then(literal("login").executes(PlayerCommand::login))
                 .then(literal("mount").executes(manipulation(PlayerActionPack::mount)))
                 .then(literal("dismount").executes(manipulation(PlayerActionPack::dismount)))
                 .then(literal("sneak").executes(manipulation(PlayerActionPack::toggleSneaking)))
@@ -252,6 +253,15 @@ public class PlayerCommand {
             if (profile == null) return;
             MinecraftServer server = source.getServer();
             server.send(new ServerTask(server.getTicks(), () -> FakeServerPlayerEntity.createFake(profile, server, pos.x, pos.y, pos.z, facing.y, facing.x, dim, finalMode, finalFlying)));
+        });
+        return 1;
+    }
+
+    private static int login(CommandContext<ServerCommandSource> context) {
+        ServerCommandSource source = context.getSource();
+        getSpawnableProfile(context).thenAccept(profile -> {
+            MinecraftServer server = source.getServer();
+            server.send(new ServerTask(server.getTicks(), () -> FakeServerPlayerEntity.createFake(profile, server)));
         });
         return 1;
     }
