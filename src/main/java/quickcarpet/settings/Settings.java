@@ -154,6 +154,13 @@ public class Settings {
     public static BreakBlockDispenserBehavior.Option dispensersBreakBlocks = BreakBlockDispenserBehavior.Option.FALSE;
 
     @Rule(category = FEATURE)
+    public static boolean dispensersInteractCauldron = false;
+
+    @Rule(category = FEATURE)
+    public static boolean dispensersPickupBucketables = false;
+
+
+    @Rule(category = FEATURE)
     public static PlaceBlockDispenserBehavior.Option dispensersPlaceBlocks = PlaceBlockDispenserBehavior.Option.FALSE;
 
     @Rule(category = FEATURE)
