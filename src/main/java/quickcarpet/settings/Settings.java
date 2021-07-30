@@ -238,6 +238,9 @@ public class Settings {
     @Rule(category = FEATURE)
     public static boolean netherMaps = false;
 
+    @Rule(category = FEATURE)
+    public static boolean persistentPlayers = false;
+
     @Rule(category = {SURVIVAL, FIX})
     public static boolean phantomsRespectMobcap = false;
 

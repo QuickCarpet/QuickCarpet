@@ -2,6 +2,8 @@ package quickcarpet;
 
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.mojang.brigadier.CommandDispatcher;
 import net.fabricmc.api.EnvType;
@@ -35,6 +37,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 public final class QuickCarpet implements QuickCarpetAPI, ServerEventListener, TelemetryProvider {
+    public static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
     public static final Logger LOG = LogManager.getLogger();
     public static final PubSubManager PUBSUB = new PubSubManager();
 
