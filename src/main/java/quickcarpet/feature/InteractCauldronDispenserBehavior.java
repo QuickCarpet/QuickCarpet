@@ -18,10 +18,8 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import quickcarpet.settings.Settings;
-import quickcarpet.utils.CarpetRegistry;
 
 import java.util.List;
-import java.util.logging.Level;
 
 public class InteractCauldronDispenserBehavior extends FallibleItemDispenserBehavior {
     @Nullable
@@ -143,7 +141,7 @@ public class InteractCauldronDispenserBehavior extends FallibleItemDispenserBeha
                 return bucketType;
             }
             if (((DispenserBlockEntity) blockPointer.getBlockEntity()).addToFirstFreeSlot(bucketType) < 0) {
-                super.dispense(blockPointer, bucketType);
+                super.dispenseSilently(blockPointer, bucketType);
             }
             this.setSuccess(true);
         } else {
