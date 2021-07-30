@@ -461,14 +461,6 @@ Default: `false`
 Options: `true`, `false`  
 Categories: feature  
 
-## persistentPlayers
-Save bots and their actions to a file and restore them when reloading the world
-
-Type: `boolean`  
-Default: `false`  
-Options: `true`, `false`  
-Categories: feature  
-
 ## phantomsRespectMobcap
 Phantoms don't ignore the mobcap.
 

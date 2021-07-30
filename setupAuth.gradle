@@ -46,7 +46,7 @@ task setupAuth {
 
         def categories = [:]
         def category
-        loom.files.devLauncherConfig.eachLine { line ->
+        minecraft.devLauncherConfig.eachLine { line ->
             if (!line.empty && Character.isWhitespace(line.charAt(0))) {
                 category << line.trim()
             } else {
@@ -75,7 +75,7 @@ task setupAuth {
         clientArgs << '--userProperties'
         clientArgs << userProperties
 
-        def pw = loom.files.devLauncherConfig.newPrintWriter()
+        def pw = minecraft.devLauncherConfig.newPrintWriter()
         for (def ctgy : categories.keySet()) {
             pw.println ctgy
             for (def val : categories[ctgy]) {

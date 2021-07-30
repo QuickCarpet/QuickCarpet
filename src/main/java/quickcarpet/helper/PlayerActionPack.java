@@ -1,8 +1,5 @@
 package quickcarpet.helper;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.render.entity.PlayerModelPart;
 import net.minecraft.command.argument.EntityAnchorArgumentType;
@@ -23,7 +20,9 @@ import net.minecraft.util.math.*;
 import quickcarpet.utils.RayTracing;
 import quickcarpet.utils.extensions.ActionPackOwner;
 
-import java.util.*;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 
 import static net.minecraft.entity.player.PlayerEntity.PLAYER_MODEL_PARTS;
 
@@ -48,13 +47,6 @@ public class PlayerActionPack {
         stop();
     }
 
-    public PlayerActionPack(ServerPlayerEntity player, State state) {
-        this(player);
-        for (var e : state.actions().entrySet()) {
-            start(e.getKey(), e.getValue());
-        }
-    }
-
     public void copyFrom(PlayerActionPack other) {
         actions.putAll(other.actions);
         currentBlock = other.currentBlock;
@@ -68,79 +60,85 @@ public class PlayerActionPack {
         sideways = other.sideways;
     }
 
-    public void toggleSneaking() {
-        setSneaking(!sneaking);
+    public PlayerActionPack toggleSneaking() {
+        return setSneaking(!sneaking);
     }
 
-    public void setSneaking(boolean doSneak) {
+    public PlayerActionPack setSneaking(boolean doSneak) {
         sneaking = doSneak;
         player.setSneaking(doSneak);
-        if (sprinting && sneaking) {
+        if (sprinting && sneaking)
             setSprinting(false);
-        }
+        return this;
     }
 
-    public void toggleSprinting() {
-        setSprinting(!sprinting);
+    public PlayerActionPack toggleSprinting() {
+        return setSprinting(!sprinting);
     }
 
-    public void setSprinting(boolean doSprint) {
+    public PlayerActionPack setSprinting(boolean doSprint) {
         sprinting = doSprint;
         player.setSprinting(doSprint);
-        if (sneaking && sprinting) {
+        if (sneaking && sprinting)
             setSneaking(false);
-        }
+        return this;
     }
 
-    public void toggleFlying() {
+    public PlayerActionPack toggleFlying() {
         PlayerAbilities abilities = player.getAbilities();
         abilities.flying = abilities.allowFlying && !abilities.flying;
+        return this;
     }
 
-    public void setForward(float speed) {
+    public PlayerActionPack setForward(float speed) {
         forward = speed;
+        return this;
     }
 
-    public void setSideways(float speed) {
+    public PlayerActionPack setSideways(float speed) {
         sideways = speed;
+        return this;
     }
 
-    public void look(Direction direction) {
+    public PlayerActionPack look(Direction direction) {
         switch (direction) {
-            case NORTH -> look(180, 0);
-            case SOUTH -> look(0, 0);
-            case EAST -> look(-90, 0);
-            case WEST -> look(90, 0);
-            case UP -> look(player.getYaw(), -90);
-            case DOWN -> look(player.getYaw(), 90);
+            case NORTH: return look(180, 0);
+            case SOUTH: return look(0, 0);
+            case EAST: return look(-90, 0);
+            case WEST: return look(90, 0);
+            case UP: return look(player.getYaw(), -90);
+            case DOWN: return look(player.getYaw(), 90);
         }
+        return this;
     }
 
-    public void look(Vec2f rotation) {
-        look(rotation.x, rotation.y);
+    public PlayerActionPack look(Vec2f rotation) {
+        return look(rotation.x, rotation.y);
     }
 
-    public void look(float yaw, float pitch) {
+    public PlayerActionPack look(float yaw, float pitch) {
         player.setYaw(yaw % 360);
         player.setPitch(MathHelper.clamp(pitch, -90, 90));
+        return this;
     }
 
-    public void lookAt(Vec3d position) {
+    public PlayerActionPack lookAt(Vec3d position) {
         player.lookAt(EntityAnchorArgumentType.EntityAnchor.EYES, position);
+        return this;
     }
 
-    public void turn(Vec2f rotation) {
-        turn(rotation.x, rotation.y);
+    public PlayerActionPack turn(Vec2f rotation) {
+        return turn(rotation.x, rotation.y);
     }
 
-    public void turn(float yaw, float pitch) {
-        look(player.getYaw() + yaw, player.getPitch() + pitch);
+    public PlayerActionPack turn(float yaw, float pitch) {
+        return look(player.getYaw() + yaw, player.getPitch() + pitch);
     }
 
-    public void mount() {
-        if (player.getVehicle() != null) return;
+    public PlayerActionPack mount() {
+        if (player.getVehicle() != null) return this;
         List<Entity> entities = player.world.getOtherEntities(player, player.getBoundingBox().expand(3, 1, 3), other -> !(other instanceof PlayerEntity));
-        if (entities.isEmpty()) return;
+        if (entities.isEmpty()) return this;
         Entity closest = null;
         double closestDistance = Double.POSITIVE_INFINITY;
         for (Entity e : entities) {
@@ -151,24 +149,28 @@ public class PlayerActionPack {
             }
         }
         if (closest != null) player.startRiding(closest);
+        return this;
     }
 
-    public void dismount() {
+    public PlayerActionPack dismount() {
         player.stopRiding();
+        return this;
     }
 
-    public void start(ActionType type, Action action) {
+    public PlayerActionPack start(ActionType type, Action action) {
         Action previous = actions.put(type, action);
         if (previous != null) type.stop(player, previous);
         type.start(player, action);
+        return this;
     }
 
-    public void stop() {
+    public PlayerActionPack stop() {
         for (ActionType type : ActionType.values()) start(type, null);
         setSneaking(false);
         setSprinting(false);
         forward = 0.0F;
         sideways = 0.0F;
+        return this;
     }
 
     public void onUpdate() {
@@ -193,25 +195,6 @@ public class PlayerActionPack {
     public void toggleModelPart(PlayerModelPart part) {
         DataTracker tracker = player.getDataTracker();
         tracker.set(PLAYER_MODEL_PARTS, (byte) (tracker.get(PLAYER_MODEL_PARTS) ^ part.getBitFlag()));
-    }
-
-    public State getState() {
-        return new State(new EnumMap<>(actions));
-    }
-
-    public record State(Map<ActionType, Action> actions) {
-        public static MapCodec<State> CODEC = RecordCodecBuilder.mapCodec(it -> it.group(
-            Codec.unboundedMap(ActionType.CODEC, Action.CODEC.codec()).fieldOf("actions").forGetter(State::getNonNullActions)
-        ).apply(it, State::new));
-
-        private Map<ActionType, Action> getNonNullActions() {
-            Map<ActionType, Action> nonNull = new LinkedHashMap<>();
-            for (var e : this.actions.entrySet()) {
-                if (e.getValue() == null) continue;
-                nonNull.put(e.getKey(), e.getValue());
-            }
-            return nonNull;
-        }
     }
 
     public enum ActionType {
@@ -370,11 +353,6 @@ public class PlayerActionPack {
             }
         };
 
-        public static Codec<ActionType> CODEC = Codec.STRING.xmap(
-            name -> ActionType.valueOf(name.toUpperCase(Locale.ROOT)),
-            type -> type.name().toLowerCase(Locale.ROOT)
-        );
-
         public final boolean preventSpectator;
 
         ActionType(boolean preventSpectator) {
@@ -390,15 +368,6 @@ public class PlayerActionPack {
     }
 
     public static class Action {
-        public static final MapCodec<Action> CODEC = RecordCodecBuilder.mapCodec(it -> it.group(
-            Codec.INT.fieldOf("limit").forGetter(a -> a.limit),
-            Codec.INT.fieldOf("interval").forGetter(a -> a.interval),
-            Codec.INT.fieldOf("offset").forGetter(a -> a.offset),
-            Codec.INT.fieldOf("perTick").forGetter(a -> a.perTick),
-            Codec.INT.fieldOf("count").forGetter(a -> a.count),
-            Codec.INT.fieldOf("next").forGetter(a -> a.next)
-        ).apply(it, Action::new));
-
         public final int limit;
         public final int interval;
         public final int offset;
@@ -407,16 +376,11 @@ public class PlayerActionPack {
         private int next;
 
         private Action(int limit, int interval, int offset, int perTick) {
-            this(limit, interval, offset, perTick, 0, interval + offset);
-        }
-
-        private Action(int limit, int interval, int offset, int perTick, int count, int next) {
             this.limit = limit;
             this.interval = interval;
             this.offset = offset;
             this.perTick = perTick;
-            this.count = count;
-            this.next = next;
+            next = interval + offset;
         }
 
         public static Action once() {

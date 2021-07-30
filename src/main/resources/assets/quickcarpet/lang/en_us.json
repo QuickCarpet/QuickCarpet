@@ -95,7 +95,6 @@
   "carpet.rule.nbtMotionLimit.extra": "Set to 0 for no limit (could be dangerous)",
   "carpet.rule.netherMaps.description": "Enables normal mapping of the nether",
   "carpet.rule.netherMaps.extra": "Useful for builds above the nether roof or SkyBlock",
-  "carpet.rule.persistentPlayers.description": "Save bots and their actions to a file and restore them when reloading the world",
   "carpet.rule.phantomsRespectMobcap.description": "Phantoms don't ignore the mobcap.",
   "carpet.rule.portalCreativeDelay.description": "Portals won't let a creative player go through instantly",
   "carpet.rule.portalCreativeDelay.extra": "Holding obsidian in either hand won't let you through at all",

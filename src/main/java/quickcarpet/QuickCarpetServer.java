@@ -19,7 +19,6 @@ import quickcarpet.logging.LoggerManager;
 import quickcarpet.network.channels.RulesChannel;
 import quickcarpet.network.channels.StructureChannel;
 import quickcarpet.network.impl.PluginChannelManager;
-import quickcarpet.patches.FakeServerPlayerEntity;
 import quickcarpet.pubsub.PubSubMessenger;
 import quickcarpet.utils.CameraData;
 import quickcarpet.utils.HUDController;
@@ -108,11 +107,6 @@ public class QuickCarpetServer implements QuickCarpetServerAPI, ServerEventListe
         } catch (IOException e) {
             LOG.error("Error loading camera data", e);
         }
-        try {
-            FakeServerPlayerEntity.loadPersistent(server);
-        } catch (IOException e) {
-            LOG.error("Error loading persistent players", e);
-        }
     }
 
     @Override
@@ -122,11 +116,6 @@ public class QuickCarpetServer implements QuickCarpetServerAPI, ServerEventListe
             CameraData.writeSaveFile(cameraData);
         } catch (IOException e) {
             LOG.error("Error saving camera data", e);
-        }
-        try {
-            FakeServerPlayerEntity.savePersistent(server);
-        } catch (IOException e) {
-            LOG.error("Error saving persistent players", e);
         }
     }
 
