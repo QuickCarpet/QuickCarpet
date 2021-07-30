@@ -143,7 +143,7 @@ public class InteractCauldronDispenserBehavior extends FallibleItemDispenserBeha
                 return bucketType;
             }
             if (((DispenserBlockEntity) blockPointer.getBlockEntity()).addToFirstFreeSlot(bucketType) < 0) {
-                super.dispense(blockPointer, bucketType);
+                new ItemDispenserBehavior().dispense(blockPointer, bucketType);
             }
             this.setSuccess(true);
         } else {
