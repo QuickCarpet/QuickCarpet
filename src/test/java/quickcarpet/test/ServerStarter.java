@@ -19,12 +19,43 @@ import quickcarpet.settings.Settings;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 
 public class ServerStarter {
+    private static final Path OUTPUT_DIR = Path.of("../build/test-results/runTestServer");
     private static final Logger LOGGER = LogManager.getLogger("QuickCarpet|TestManager");
+    public static final TestCompletionListener COMPLETION_LISTENER;
+
+    static {
+        try {
+            Files.createDirectories(OUTPUT_DIR);
+            COMPLETION_LISTENER = new XmlReportingTestCompletionListener(ServerStarter.OUTPUT_DIR.resolve("TEST-gametest.xml").toFile());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static final TestListener TEST_LISTENER = new TestListener() {
+        @Override
+        public void onStarted(GameTestState test) {
+
+        }
+
+        @Override
+        public void onPassed(GameTestState test) {
+            COMPLETION_LISTENER.onTestPassed(test);
+        }
+
+        @Override
+        public void onFailed(GameTestState test) {
+            COMPLETION_LISTENER.onTestFailed(test);
+        }
+    };
 
     public static void main(String[] args) throws Throwable {
         SharedConstants.createGameVersion();
@@ -38,9 +69,26 @@ public class ServerStarter {
             StructureTestUtil.testStructuresDirectoryName = Path.of(argList.get(0)).toAbsolutePath().toString();
         }
         DynamicRegistryManager.Impl registryManager = DynamicRegistryManager.create();
-        Path worldPath = Path.of(".");
-        LevelStorage storage = LevelStorage.create(worldPath);
-        LevelStorage.Session storageSession = storage.createSession("gametestworld");
+        Path runDir = Path.of(".");
+        Path worldPath = runDir.resolve("gametestworld");
+        if (Files.exists(worldPath)) {
+            Files.walkFileTree(worldPath, new SimpleFileVisitor<>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    Files.delete(file);
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                    if (exc != null) throw exc;
+                    Files.delete(dir);
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+        }
+        LevelStorage storage = LevelStorage.create(runDir);
+        LevelStorage.Session storageSession = storage.createSession(worldPath.getFileName().toString());
         ResourcePackManager resourcePackManager = new ResourcePackManager(ResourceType.SERVER_DATA,
             new VanillaDataPackProvider(),
             new ModResourcePackCreator(ResourceType.SERVER_DATA)

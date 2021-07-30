@@ -48,3 +48,9 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           files: build/test-results/**/*.xml
+      - name: Publish Test World
+        uses: actions/upload-artifact@v2.2.0
+        if: always()
+        with:
+          name: gametestworld
+          path: run/gametestworld/*
