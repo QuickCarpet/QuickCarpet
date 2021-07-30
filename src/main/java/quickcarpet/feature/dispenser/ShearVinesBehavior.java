@@ -1,4 +1,4 @@
-package quickcarpet.feature;
+package quickcarpet.feature.dispenser;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -21,7 +21,7 @@ public class ShearVinesBehavior extends FallibleItemDispenserBehavior {
             this.setSuccess(false);
             return stack;
         }
-        BreakBlockDispenserBehavior.breakBlock(world, target, targetState, stack);
+        BreakBlockBehavior.breakBlock(world, target, targetState, stack);
         if (stack.damage(1, world.random, null)) stack.setCount(0);
         this.setSuccess(true);
         return stack;

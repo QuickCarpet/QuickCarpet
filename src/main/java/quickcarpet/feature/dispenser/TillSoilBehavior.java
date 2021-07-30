@@ -1,4 +1,4 @@
-package quickcarpet.feature;
+package quickcarpet.feature.dispenser;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -11,7 +11,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import quickcarpet.settings.Settings;
 
-public class TillSoilDispenserBehavior extends ItemDispenserBehavior {
+public class TillSoilBehavior extends ItemDispenserBehavior {
     @Override
     protected ItemStack dispenseSilently(BlockPointer pointer, ItemStack stack) {
         if (!Settings.dispensersTillSoil) return super.dispenseSilently(pointer, stack);

@@ -1,4 +1,4 @@
-package quickcarpet.feature;
+package quickcarpet.feature.dispenser;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -15,7 +15,7 @@ import net.minecraft.world.World;
 import quickcarpet.mixin.accessor.AxeItemAccessor;
 import quickcarpet.settings.Settings;
 
-public class StripLogsDispenserBehavior extends FallibleItemDispenserBehavior {
+public class StripLogsBehavior extends FallibleItemDispenserBehavior {
     @Override
     protected ItemStack dispenseSilently(BlockPointer pointer, ItemStack stack) {
         if (!Settings.dispensersStripLogs) return super.dispenseSilently(pointer, stack);

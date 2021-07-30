@@ -1,4 +1,4 @@
-package quickcarpet.feature;
+package quickcarpet.feature.dispenser;
 
 import net.minecraft.block.*;
 import net.minecraft.block.dispenser.FallibleItemDispenserBehavior;
@@ -21,7 +21,11 @@ import quickcarpet.settings.Settings;
 
 import java.util.List;
 
-public class InteractCauldronDispenserBehavior extends FallibleItemDispenserBehavior {
+public class InteractCauldronBehavior extends FallibleItemDispenserBehavior {
+    public static boolean isCauldronItem(Item item) {
+        return item instanceof FluidModificationItem || item == Items.POTION || item == Items.GLASS_BOTTLE;
+    }
+
     @Nullable
     private static ItemStack getBucketableAnimals(World world, BlockPos pos) {
         List<Entity> list = world.getEntitiesByClass(Entity.class, new Box(pos.getX(), pos.getY(), pos.getZ(), (pos.getX() + 1), (pos.getY() + 1), (pos.getZ() + 1)), (bucketable) -> bucketable instanceof Bucketable);
@@ -71,7 +75,7 @@ public class InteractCauldronDispenserBehavior extends FallibleItemDispenserBeha
             return PotionUtil.setPotion(new ItemStack(Items.POTION), Potions.WATER);
         } else {
             if (((DispenserBlockEntity) blockPointer.getBlockEntity()).addToFirstFreeSlot(new ItemStack(Items.POTION)) < 0) {
-                super.dispense(blockPointer, PotionUtil.setPotion(new ItemStack(Items.POTION), Potions.WATER));
+                super.dispenseSilently(blockPointer, PotionUtil.setPotion(new ItemStack(Items.POTION), Potions.WATER));
             }
         }
         return stack;

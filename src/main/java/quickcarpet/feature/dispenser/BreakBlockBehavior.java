@@ -1,4 +1,4 @@
-package quickcarpet.feature;
+package quickcarpet.feature.dispenser;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -17,7 +17,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import quickcarpet.settings.Settings;
 
-public class BreakBlockDispenserBehavior extends ItemDispenserBehavior {
+public class BreakBlockBehavior extends ItemDispenserBehavior {
     private static final ItemStack SILK_TOUCH_TOOL = new ItemStack(Items.DIAMOND_PICKAXE);
 
     static {
