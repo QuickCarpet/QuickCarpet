@@ -2,7 +2,8 @@
   "required": true,
   "package": "quickcarpet.test.mixin",
   "compatibilityLevel": "JAVA_16",
-  "server": [
-    "MainMixin"
+  "mixins": [
+    "MainMixin",
+    "TestServerMixin"
   ]
 }

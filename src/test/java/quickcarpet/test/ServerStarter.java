@@ -14,6 +14,7 @@ import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.world.level.storage.LevelStorage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import quickcarpet.settings.Settings;
 
 import java.io.IOException;
 import java.net.URI;
@@ -23,7 +24,7 @@ import java.nio.file.Path;
 import java.util.*;
 
 public class ServerStarter {
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogManager.getLogger("QuickCarpet|TestManager");
 
     public static void main(String[] args) throws Throwable {
         SharedConstants.createGameVersion();
@@ -55,8 +56,12 @@ public class ServerStarter {
             LOGGER.info("No tests to run");
             System.exit(0);
         }
+        List<GameTestBatch> processedBatches = new ArrayList<>();
+        for (GameTestBatch batch : batches) {
+            processedBatches.add(processBatch(batch));
+        }
         BlockPos spawnPos = new BlockPos(0, 5, 0);
-        MinecraftServer.startServer(serverThread -> new TestServer(serverThread, storageSession, resourcePackManager, serverResourceManager, batches, spawnPos, registryManager));
+        MinecraftServer.startServer(serverThread -> new TestServer(serverThread, storageSession, resourcePackManager, serverResourceManager, processedBatches, spawnPos, registryManager));
     }
 
     private static Collection<TestFunction> collectTestFunctions() throws URISyntaxException, IOException {
@@ -79,5 +84,29 @@ public class ServerStarter {
             }).filter(Objects::nonNull)
             .forEach(TestFunctions::register);
         return TestFunctions.getTestFunctions();
+    }
+
+    private static GameTestBatch processBatch(GameTestBatch batch) {
+        String id = batch.getId();
+        if (!id.startsWith("rules/")) return batch;
+        String[] ruleSpecs = id.substring(6, id.lastIndexOf(':')).split(",");
+        Map<String, String> rules = new LinkedHashMap<>();
+        for (String ruleSpec : ruleSpecs) {
+            String[] parts = ruleSpec.split("=", 2);
+            rules.put(parts[0], parts[1]);
+        }
+        return new GameTestBatch(id, batch.getTestFunctions(), world -> {
+            LOGGER.info("Setting {}", rules);
+            for (var e : rules.entrySet()) {
+                Settings.MANAGER.getRule(e.getKey()).set(e.getValue(), true);
+            }
+            batch.startBatch(world);
+        }, world -> {
+            LOGGER.info("Resetting {}", rules.keySet());
+            for (String rule : rules.keySet()) {
+                Settings.MANAGER.getRule(rule).resetToDefault(true);
+            }
+            batch.finishBatch(world);
+        });
     }
 }
