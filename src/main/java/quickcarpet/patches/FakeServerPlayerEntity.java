@@ -14,6 +14,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerTask;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.Util;
@@ -146,8 +147,9 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
     }
 
     public static void createShadow(MinecraftServer server, ServerPlayerEntity real) {
-        server.getPlayerManager().remove(real);
-        real.networkHandler.disconnect(new TranslatableText("multiplayer.disconnect.duplicate_login"));
+        Text reason = new TranslatableText("multiplayer.disconnect.duplicate_login");
+        real.networkHandler.onDisconnected(reason);
+        real.networkHandler.disconnect(reason);
         ServerWorld world = (ServerWorld) real.world;
         GameProfile profile = real.getGameProfile();
         FakeServerPlayerEntity shadow = new FakeServerPlayerEntity(server, world, profile);
