@@ -19,6 +19,10 @@ public abstract class ServerPlayerEntityMixin implements ActionPackOwner {
         return actionPack;
     }
 
+    public void setActionPack(PlayerActionPack pack) {
+        this.actionPack = pack;
+    }
+
     @Inject(method = "<init>", at = @At(value = "RETURN"))
     private void init(MinecraftServer server, ServerWorld world, GameProfile profile, CallbackInfo ci) {
         this.actionPack = new PlayerActionPack((ServerPlayerEntity) (Object) this);

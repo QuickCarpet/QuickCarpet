@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
-import quickcarpet.utils.CarpetRegistry;
+import quickcarpet.feature.dispenser.DispenserBehaviors;
 
 import java.util.Map;
 
@@ -27,6 +27,6 @@ public abstract class DispenserBlockMixin extends BlockWithEntity {
      */
     @Overwrite
     public DispenserBehavior getBehaviorForItem(ItemStack stack) {
-        return CarpetRegistry.getDispenserBehavior(stack.getItem(), BEHAVIORS);
+        return DispenserBehaviors.getDispenserBehavior(stack.getItem(), BEHAVIORS);
     }
 }

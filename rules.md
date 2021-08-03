@@ -264,6 +264,22 @@ Default: `false`
 Options: `false`, `normal`, `silk_touch`  
 Categories: feature  
 
+## dispensersInteractCauldron
+Dispensers can interact with a cauldron with a bucket, as if it was a normal liquid block
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: feature  
+
+## dispensersPickupBucketables
+Dispensers can pickup all bucketable mobs, such as fish and axolotls. Combined with dispensersInteractCauldron, dispensers can pickup bucketable mobs inside cauldrons
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: feature  
+
 ## dispensersPlaceBlocks
 Dispensers can place most blocks
 
@@ -455,6 +471,14 @@ Validator: `>= 0`
 Enables normal mapping of the nether
 
 Useful for builds above the nether roof or SkyBlock  
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: feature  
+
+## persistentPlayers
+Save bots and their actions to a file and restore them when reloading the world
 
 Type: `boolean`  
 Default: `false`  

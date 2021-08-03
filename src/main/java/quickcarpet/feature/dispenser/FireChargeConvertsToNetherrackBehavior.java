@@ -1,4 +1,4 @@
-package quickcarpet.feature;
+package quickcarpet.feature.dispenser;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;

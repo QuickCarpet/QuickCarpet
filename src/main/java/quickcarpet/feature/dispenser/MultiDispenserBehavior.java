@@ -1,4 +1,4 @@
-package quickcarpet.feature;
+package quickcarpet.feature.dispenser;
 
 import net.minecraft.block.dispenser.DispenserBehavior;
 import net.minecraft.block.dispenser.FallibleItemDispenserBehavior;
@@ -16,6 +16,7 @@ public class MultiDispenserBehavior extends FallibleItemDispenserBehavior {
     @Override
     protected ItemStack dispenseSilently(BlockPointer pointer, ItemStack stackIn) {
         for (DispenserBehavior behavior : behaviors) {
+            if (behavior == null) continue;
             ItemStack stackOut = ((ItemDispenserBehaviorAccessor) behavior).doDispenseSilently(pointer, stackIn);
             if (!(behavior instanceof FallibleItemDispenserBehavior fallible) || fallible.isSuccess()) {
                 this.setSuccess(true);

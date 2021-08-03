@@ -41,5 +41,17 @@ jobs:
         with:
           files: build/libs/*.jar;api/build/libs/*.jar
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish Unit Test Results
+        uses: EnricoMi/publish-unit-test-result-action@v1.9
+        if: always()
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          files: build/test-results/**/*.xml
+      - name: Publish Test World
+        uses: actions/upload-artifact@v2.2.0
+        if: always()
+        with:
+          name: gametestworld
+          path: run/gametestworld/*
       - name: Publish to Maven
         run: ./gradlew publish

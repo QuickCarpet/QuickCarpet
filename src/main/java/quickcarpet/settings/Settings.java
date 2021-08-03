@@ -16,8 +16,8 @@ import org.apache.logging.log4j.Logger;
 import quickcarpet.QuickCarpetServer;
 import quickcarpet.api.annotation.BugFix;
 import quickcarpet.api.settings.*;
-import quickcarpet.feature.BreakBlockDispenserBehavior;
-import quickcarpet.feature.PlaceBlockDispenserBehavior;
+import quickcarpet.feature.dispenser.BreakBlockBehavior;
+import quickcarpet.feature.dispenser.PlaceBlockBehavior;
 import quickcarpet.utils.Messenger;
 import quickcarpet.utils.Translations;
 
@@ -151,7 +151,7 @@ public class Settings {
     public static boolean creativeNoClip = false;
 
     @Rule(category = FEATURE)
-    public static BreakBlockDispenserBehavior.Option dispensersBreakBlocks = BreakBlockDispenserBehavior.Option.FALSE;
+    public static BreakBlockBehavior.Option dispensersBreakBlocks = BreakBlockBehavior.Option.FALSE;
 
     @Rule(category = FEATURE)
     public static boolean dispensersInteractCauldron = false;
@@ -161,7 +161,7 @@ public class Settings {
 
 
     @Rule(category = FEATURE)
-    public static PlaceBlockDispenserBehavior.Option dispensersPlaceBlocks = PlaceBlockDispenserBehavior.Option.FALSE;
+    public static PlaceBlockBehavior.Option dispensersPlaceBlocks = PlaceBlockBehavior.Option.FALSE;
 
     @Rule(category = FEATURE)
     public static boolean dispensersShearVines = false;
@@ -213,7 +213,7 @@ public class Settings {
     public static boolean hopperMinecartItemTransfer = false;
 
     @Rule(category = EXPERIMENTAL, onChange = IsDevelopmentListener.class)
-    public static boolean isDevelopment = false;
+    public static boolean isDevelopment = SharedConstants.isDevelopment;
 
     public static class IsDevelopmentListener implements ChangeListener<Boolean> {
         @Override
@@ -237,6 +237,9 @@ public class Settings {
 
     @Rule(category = FEATURE)
     public static boolean netherMaps = false;
+
+    @Rule(category = FEATURE)
+    public static boolean persistentPlayers = false;
 
     @Rule(category = {SURVIVAL, FIX})
     public static boolean phantomsRespectMobcap = false;

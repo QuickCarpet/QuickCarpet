@@ -7,7 +7,20 @@ plugins {
 
 loom {
 	accessWidenerPath = file("src/main/resources/quickcarpet.accesswidener")
+	runs {
+		testServer {
+			server()
+			source "test"
+			name "Minecraft Test Server"
+			vmArgs "-Dquickcarpet.test=true"
+			programArgs "${rootDir}/src/test/resources/structures"
+		}
+	}
+	// installerData.installerJson().get("mainClass").asJsonObject.addProperty("testServer", "quickarpet.gametest.ServerStarter")
+
 }
+
+check.dependsOn(runTestServer)
 
 def buildDate = new Date()
 def branch = GitHelper.getBranch(rootDir)

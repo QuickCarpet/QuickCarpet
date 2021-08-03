@@ -1,4 +1,4 @@
-package quickcarpet.feature;
+package quickcarpet.feature.dispenser;
 
 import net.minecraft.block.*;
 import net.minecraft.block.dispenser.FallibleItemDispenserBehavior;
@@ -29,7 +29,7 @@ import quickcarpet.utils.CarpetRegistry;
 
 import java.util.Collection;
 
-public class PlaceBlockDispenserBehavior extends FallibleItemDispenserBehavior {
+public class PlaceBlockBehavior extends FallibleItemDispenserBehavior {
     @Override
     public ItemStack dispenseSilently(BlockPointer blockPointer, ItemStack itemStack) {
         setSuccess(false);

@@ -88,6 +88,7 @@
     "player.PlayerEntityMixin",
     "player.PlayerManagerMixin",
     "player.ServerPlayerEntityMixin",
+    "player.ServerPlayNetworkHandlerMixin",
     "profiler.MinecraftServerMixin",
     "profiler.PortalForcerMixin",
     "profiler.ServerWorldMixin",
