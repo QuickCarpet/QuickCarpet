@@ -28,7 +28,7 @@ public class Configs implements IConfigHandler {
     }
 
     public static class Generic {
-        public static final ConfigHotkey OPEN_CONFIG_GUI = hotkey("openConfigGui", "C,Q");
+        public static final ConfigHotkey OPEN_CONFIG_GUI = hotkey("openConfigGui", "Q,C");
         public static final ConfigBooleanHotkeyed SYNC_LOW_TPS = booleanHotkeyed(ClientSetting.SYNC_LOW_TPS, "");
         public static final ConfigBooleanHotkeyed SYNC_HIGH_TPS = booleanHotkeyed(ClientSetting.SYNC_HIGH_TPS, "");
         public static final ConfigBooleanHotkeyed CREATIVE_NO_CLIP = booleanHotkeyed(ClientSetting.CREATIVE_NO_CLIP, "");
