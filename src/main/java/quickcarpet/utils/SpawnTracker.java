@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 import static quickcarpet.utils.Messenger.*;
 
 public class SpawnTracker {
-    private static final Map<ServerCommandSource, SpawnTracker> TRACKERS = new WeakHashMap<>();
+    private static final Map<String, SpawnTracker> TRACKERS = new WeakHashMap<>();
     private final ServerCommandSource source;
     private final Box bbox;
     private final DimensionType dimension;
@@ -101,11 +101,11 @@ public class SpawnTracker {
 
     @Nullable
     public static SpawnTracker getTracker(ServerCommandSource source) {
-        return TRACKERS.get(source);
+        return TRACKERS.get(source.getName());
     }
 
     public static SpawnTracker getOrCreateTracker(ServerCommandSource source, BlockPos min, BlockPos max) {
-        return TRACKERS.computeIfAbsent(source, s -> new SpawnTracker(source, min, max));
+        return TRACKERS.computeIfAbsent(source.getName(), s -> new SpawnTracker(source, min, max));
     }
 
     public static boolean isAnyActive() {
