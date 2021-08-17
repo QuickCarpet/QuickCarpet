@@ -51,23 +51,7 @@ public class PickupBucketablesBehavior extends FallibleItemDispenserBehavior {
             first.remove(Entity.RemovalReason.DISCARDED);
 
             ItemStack stack = ((Bucketable) first).getBucketItem();
-
-            if(first instanceof AxolotlEntity){
-                Bucketable.copyDataToStack((MobEntity) first, stack);
-                NbtCompound nbtCompound = stack.getOrCreateTag();
-                nbtCompound.putInt("Variant", ((AxolotlEntity) first).getVariant().getId());
-                nbtCompound.putInt("Age", ((AxolotlEntity) first).getBreedingAge());
-                Brain<?> brain = ((AxolotlEntity) first).getBrain();
-                if (brain.hasMemoryModule(MemoryModuleType.HAS_HUNTING_COOLDOWN)) {
-                    nbtCompound.putLong("HuntingCooldown", brain.getMemory(MemoryModuleType.HAS_HUNTING_COOLDOWN));
-                }
-            } else if(first instanceof TropicalFishEntity) {
-                Bucketable.copyDataToStack((MobEntity) first, stack);
-                NbtCompound nbtCompound = stack.getOrCreateTag();
-                nbtCompound.putInt("BucketVariantTag", ((TropicalFishEntity) first).getVariant());
-            } else {
-                Bucketable.copyDataToStack((MobEntity) first, stack);
-            }
+            ((Bucketable) first).copyDataToStack(stack);
 
             return stack;
         } else {
