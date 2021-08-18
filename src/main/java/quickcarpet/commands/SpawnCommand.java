@@ -12,8 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import quickcarpet.helper.Mobcaps;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.SpawnTracker;
-
-import java.util.Map;
+import quickcarpet.utils.SpawnUtils;
 
 import static net.minecraft.command.argument.BlockPosArgumentType.blockPos;
 import static net.minecraft.command.argument.BlockPosArgumentType.getBlockPos;
@@ -43,7 +42,11 @@ public class SpawnCommand {
                         )))))
                 .then(literal("stop")
                     .executes(c -> stopTracking(c.getSource())))
-            );
+            )
+            .then(literal("list")
+                .executes(c -> list(c.getSource()))
+                .then(argument("pos", blockPos())
+                    .executes(c -> list(c.getSource(), getBlockPos(c, "pos")))));
         dispatcher.register(builder);
     }
 
@@ -84,9 +87,9 @@ public class SpawnCommand {
         if (dimension == null) {
             dimension = source.getWorld();
         }
-        Map<SpawnGroup, Pair<Integer, Integer>> mobcaps = Mobcaps.getMobcaps(dimension);
+        var mobcaps = Mobcaps.getMobcaps(dimension);
         m(source, t("command.spawn.mobcaps.title", dimension.getRegistryKey().getValue()));
-        for (Map.Entry<SpawnGroup, Pair<Integer, Integer>> e : mobcaps.entrySet()) {
+        for (var e : mobcaps.entrySet()) {
             SpawnGroup category = e.getKey();
             Pair<Integer, Integer> pair = e.getValue();
             int cur = pair.getLeft();
@@ -94,6 +97,17 @@ public class SpawnCommand {
             Formatting color = cur >= max ? Formatting.RED : (cur * 10 >= max * 8 ? Formatting.YELLOW : Formatting.GREEN);
             Text capText = cur + max == 0 ? s("-/-", Formatting.DARK_GREEN) : formats("%d/%d", color, cur, max);
             m(source, t("command.spawn.mobcaps.line", category, capText));
+        }
+        return 1;
+    }
+
+    private static int list(ServerCommandSource source) {
+        return list(source, new BlockPos(source.getPosition()));
+    }
+
+    private static int list(ServerCommandSource source, BlockPos pos) {
+        for (var text : SpawnUtils.list(source.getWorld(), pos)) {
+            m(source, text);
         }
         return 1;
     }

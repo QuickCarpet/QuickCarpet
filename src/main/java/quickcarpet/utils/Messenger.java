@@ -2,7 +2,7 @@ package quickcarpet.utils;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.SpawnGroup;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.ItemStack;
@@ -82,8 +82,9 @@ public class Messenger {
         return text;
     }
 
-    public static <T extends Text> T hoverText(T text, Text hoverText) {
-        text.getStyle().withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
+    public static <T extends MutableText> T hoverText(T text, Text hoverText) {
+        Style style = text.getStyle().withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
+        text.setStyle(style);
         return text;
     }
 
@@ -142,15 +143,8 @@ public class Messenger {
         return c(s("minecraft:", Formatting.GRAY), s(id.getPath(), Formatting.WHITE));
     }
 
-    public static Formatting creatureTypeColor(SpawnGroup type) {
-        return switch (type) {
-            case MONSTER -> Formatting.DARK_RED;
-            case CREATURE -> Formatting.DARK_GREEN;
-            case AMBIENT -> Formatting.DARK_GRAY;
-            case WATER_CREATURE -> Formatting.BLUE;
-            case WATER_AMBIENT -> Formatting.DARK_AQUA;
-            default -> Formatting.WHITE;
-        };
+    public static MutableText format(EntityType<?> entity) {
+        return format(Registry.ENTITY_TYPE.getId(entity));
     }
 
     public static MutableText tp(Vec3d pos, Formatting... style) {

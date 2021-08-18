@@ -107,7 +107,7 @@ public class HUDController {
                 } else {
                     components.add(s(Integer.toString(actual), getHeatmapColor(actual, limit)));
                     components.add(s("/", Formatting.GRAY));
-                    components.add(s(Integer.toString(limit), creatureTypeColor(e.getKey())));
+                    components.add(s(Integer.toString(limit), SpawnUtils.creatureTypeColor(e.getKey())));
                 }
                 components.add(s(" "));
             }
