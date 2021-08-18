@@ -87,6 +87,11 @@ public class PlayerCommand {
                     .then(literal("left_pants_leg").executes(manipulation(ap -> ap.toggleModelPart(PlayerModelPart.LEFT_PANTS_LEG))))
                     .then(literal("right_pants_leg").executes(manipulation(ap -> ap.toggleModelPart(PlayerModelPart.RIGHT_PANTS_LEG))))
                     .then(literal("hat").executes(manipulation(ap -> ap.toggleModelPart(PlayerModelPart.HAT))))
+                ).then(literal("gamemode")
+                    .then(literal("spectator").requires(s -> s.hasPermissionLevel(Settings.commandCameramode) || s.hasPermissionLevel(2)).executes(ctx -> changeGameMode(ctx, GameMode.SPECTATOR)))
+                    .then(literal("creative").requires(s -> s.hasPermissionLevel(2)).executes(ctx -> changeGameMode(ctx, GameMode.CREATIVE)))
+                    .then(literal("survival").executes(ctx -> changeGameMode(ctx, GameMode.SURVIVAL)))
+                    .then(literal("adventure").executes(ctx -> changeGameMode(ctx, GameMode.ADVENTURE)))
                 ).then(literal("look")
                     .then(literal("north").executes(manipulation(ap -> ap.look(Direction.NORTH))))
                     .then(literal("south").executes(manipulation(ap -> ap.look(Direction.SOUTH))))
@@ -319,6 +324,13 @@ public class PlayerCommand {
             player.dropItem(player.getInventory().getStack(i), true);
         }
         player.getInventory().clear();
+        return 1;
+    }
+
+    private static int changeGameMode(CommandContext<ServerCommandSource> context, GameMode mode) {
+        if (cantManipulate(context)) return 0;
+        ServerPlayerEntity player = getPlayer(context);
+        player.interactionManager.changeGameMode(mode);
         return 1;
     }
 }
