@@ -90,7 +90,7 @@ public class CarpetCommand {
         }
 
         m(source, "");
-        MutableText title = runCommand(s(rule.getName(), Formatting.BOLD), "/carpet" + rule.getName(), ts("command.carpet.refresh", Formatting.GRAY));
+        MutableText title = runCommand(s(rule.getName(), Formatting.BOLD), "/carpet " + rule.getName(), ts("command.carpet.refresh", Formatting.GRAY));
         if (rule.isDisabled()) {
             title.append(c(s(" ("), t("command.carpet.rule.disabled"), s(")")).formatted(Formatting.RED));
         }
