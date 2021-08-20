@@ -51,6 +51,7 @@ public class MixinConfig {
         .putAll("hopperCounters", "hopperCounters")
         .putAll("hopperMinecartCooldown", "hopperMinecartCooldown")
         .putAll("hopperMinecartItemTransfer", "hopperMinecartItemTransfer")
+        .putAll("infiniteHopper", "infiniteHopper")
         .putAll("lightningKillsDropsFix", "lightningKillsDropsFix")
         .putAll("movingBlockDuplicationFix", "carpetDuplicationFix", "railDuplicationFix", "tntDuplicationFix")
         .putAll("nbtMotionLimit", "nbtMotionLimit")
