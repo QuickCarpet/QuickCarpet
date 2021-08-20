@@ -43,10 +43,9 @@ jobs:
           name: quickcarpet-api-jars
           path: api/build/libs/*.jar
       - name: Publish Unit Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v1.9
+        uses: EnricoMi/publish-unit-test-result-action@v1.19
         if: always()
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
           files: build/test-results/**/*.xml
       - name: Publish Test World
         uses: actions/upload-artifact@v2.2.0
