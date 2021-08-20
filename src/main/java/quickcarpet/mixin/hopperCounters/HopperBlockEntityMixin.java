@@ -53,7 +53,8 @@ public abstract class HopperBlockEntityMixin extends LootableContainerBlockEntit
                         }
                     }
                 }
-                cir.setReturnValue(true);
+                markDirty(world, blockPos, blockState);
+                cir.setReturnValue(false);
             }
         }
     }
