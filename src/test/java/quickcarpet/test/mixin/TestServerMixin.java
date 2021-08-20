@@ -22,6 +22,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import quickcarpet.QuickCarpet;
+import quickcarpet.settings.Settings;
 import quickcarpet.test.ServerStarter;
 
 import java.net.Proxy;
@@ -38,6 +39,7 @@ public abstract class TestServerMixin extends MinecraftServer {
     private void onSetupServerDedicated(CallbackInfoReturnable<Boolean> cir) {
         QuickCarpet.getInstance().onGameStarted(EnvType.SERVER);
         QuickCarpet.getInstance().onServerLoaded((TestServer) (Object) this);
+        Settings.MANAGER.getRule("spawnChunkLevel").set("1", false);
     }
 
     @Inject(method = "runTestBatches", at = @At("RETURN"))
