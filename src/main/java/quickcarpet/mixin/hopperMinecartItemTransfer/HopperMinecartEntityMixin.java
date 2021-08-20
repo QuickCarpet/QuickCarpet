@@ -14,6 +14,7 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tag.BlockTags;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
@@ -24,6 +25,8 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import quickcarpet.helper.HopperCounter;
+import quickcarpet.helper.WoolTool;
 import quickcarpet.settings.Settings;
 
 import java.util.List;
@@ -59,6 +62,19 @@ public abstract class HopperMinecartEntityMixin extends StorageMinecartEntity im
             ItemStack transferred = HopperBlockEntity.transfer(this, out, this.removeStack(i, 1), dir);
             if (transferred.isEmpty()) {
                 out.markDirty();
+                if (Settings.infiniteHopper) {
+                    BlockPos pos = this.getBlockPos();
+                    for (int j = 1; j <= 2; j++) {
+                        DyeColor color = WoolTool.getWoolColorAtPosition(world, pos.up(j));
+                        if (color != null) {
+                            if (Settings.hopperCounters) {
+                                HopperCounter.COUNTERS.get(HopperCounter.Key.get(color)).add(world.getServer(), stack.getItem(), -1);
+                            }
+                            this.setStack(i, stack);
+                            break;
+                        }
+                    }
+                }
                 return true;
             }
             this.setStack(i, stack);

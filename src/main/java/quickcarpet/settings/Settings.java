@@ -212,6 +212,9 @@ public class Settings {
     @Rule(category = FEATURE)
     public static boolean hopperMinecartItemTransfer = false;
 
+    @Rule(category = CREATIVE)
+    public static boolean infiniteHopper = false;
+
     @Rule(category = EXPERIMENTAL, onChange = IsDevelopmentListener.class)
     public static boolean isDevelopment = SharedConstants.isDevelopment;
 

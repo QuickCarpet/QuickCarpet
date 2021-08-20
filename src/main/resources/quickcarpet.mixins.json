@@ -69,6 +69,7 @@
     "hopperCounters.ItemEntityMixin",
     "hopperMinecartCooldown.HopperMinecartEntityMixin",
     "hopperMinecartItemTransfer.HopperMinecartEntityMixin",
+    "infiniteHopper.HopperBlockEntityMixin",
     "lightningKillsDropsFix.ItemEntityMixin",
     "loggers.CommandBlockExecutorMixin",
     "movingBlockDuplicationFix.AbstractRailBlockMixin",

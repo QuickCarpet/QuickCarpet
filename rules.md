@@ -406,7 +406,7 @@ Options: `true`, `false`
 Categories: commands  
 
 ## hopperMinecartCooldown
-carpet.rule.hopperMinecartCooldown.description
+Adds a cooldown to the hopper minecart
 
 Type: `int`  
 Default: `0`  
@@ -421,6 +421,16 @@ Type: `boolean`
 Default: `false`  
 Options: `true`, `false`  
 Categories: feature  
+
+## infiniteHopper
+Hoppers "pulling" from wool will keep the items they push out
+
+Also works together with hopperCounters and hopperMinecartItemTransfer  
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: creative  
 
 ## isDevelopment
 Sets the isDevelopment constant

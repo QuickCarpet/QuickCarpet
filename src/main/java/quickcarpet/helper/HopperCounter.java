@@ -54,12 +54,15 @@ public class HopperCounter {
     }
 
     public void add(MinecraftServer server, ItemStack stack) {
+        add(server, stack.getItem(), stack.getCount());
+    }
+
+    public void add(MinecraftServer server, Item item, int count) {
         if (startTick == 0) {
             startTick = server.getTicks();
             startMillis = System.currentTimeMillis();
         }
-        Item item = stack.getItem();
-        counter.put(item, counter.getLong(item) + stack.getCount());
+        counter.put(item, counter.getLong(item) + count);
         pubSubProvider.publish();
         combined.update();
     }

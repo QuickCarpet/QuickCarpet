@@ -39,9 +39,18 @@ public abstract class HopperBlockEntityMixin extends LootableContainerBlockEntit
             if (woolColor != null) {
                 for (int i = 0; i < inventory.size(); ++i) {
                     if (!inventory.getStack(i).isEmpty()) {
-                        ItemStack itemstack = inventory.getStack(i);//.copy();
+                        ItemStack itemstack = inventory.getStack(i);
                         HopperCounter.COUNTERS.get(HopperCounter.Key.get(woolColor)).add(world.getServer(), itemstack);
-                        inventory.setStack(i, ItemStack.EMPTY);
+                        if (Settings.infiniteHopper) {
+                            DyeColor colorAbove = WoolTool.getWoolColorAtPosition(world, blockPos.up());
+                            if (colorAbove != null) {
+                                HopperCounter.COUNTERS.get(HopperCounter.Key.get(colorAbove)).add(world.getServer(), itemstack.getItem(), -itemstack.getCount());
+                            } else {
+                                inventory.setStack(i, ItemStack.EMPTY);
+                            }
+                        } else {
+                            inventory.setStack(i, ItemStack.EMPTY);
+                        }
                     }
                 }
                 cir.setReturnValue(true);
