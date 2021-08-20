@@ -14,6 +14,7 @@ import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.world.level.storage.LevelStorage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.spongepowered.asm.mixin.MixinEnvironment;
 import quickcarpet.settings.Settings;
 
 import java.io.IOException;
@@ -63,6 +64,7 @@ public class ServerStarter {
         CrashReport.initCrashReport();
         Bootstrap.initialize();
         Bootstrap.logMissing();
+        MixinEnvironment.getCurrentEnvironment().audit();
         List<String> argList = new ArrayList<>(Arrays.asList(args));
         argList.remove("nogui");
         if (!argList.isEmpty()) {
