@@ -16,8 +16,6 @@ loom {
 			programArgs "${rootDir}/src/test/resources/structures"
 		}
 	}
-	// installerData.installerJson().get("mainClass").asJsonObject.addProperty("testServer", "quickarpet.gametest.ServerStarter")
-
 }
 
 check.dependsOn(runTestServer)

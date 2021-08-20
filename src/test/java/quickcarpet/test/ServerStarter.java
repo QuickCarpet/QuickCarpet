@@ -30,12 +30,21 @@ import java.util.*;
 public class ServerStarter {
     private static final Path OUTPUT_DIR = Path.of("../build/test-results/runTestServer");
     private static final Logger LOGGER = LogManager.getLogger("QuickCarpet|TestManager");
-    public static final TestCompletionListener COMPLETION_LISTENER;
+    public static final List<TestCompletionListener> COMPLETION_LISTENERS = new ArrayList<>();
 
     static {
         try {
             Files.createDirectories(OUTPUT_DIR);
-            COMPLETION_LISTENER = new XmlReportingTestCompletionListener(ServerStarter.OUTPUT_DIR.resolve("TEST-gametest.xml").toFile());
+            COMPLETION_LISTENERS.add(new XmlReportingTestCompletionListener(ServerStarter.OUTPUT_DIR.resolve("TEST-gametest.xml").toFile()));
+            COMPLETION_LISTENERS.add(new TestCompletionListener() {
+                @Override
+                public void onTestFailed(GameTestState test) {
+                    test.getThrowable().printStackTrace();
+                }
+
+                @Override
+                public void onTestPassed(GameTestState test) {}
+            });
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -49,12 +58,16 @@ public class ServerStarter {
 
         @Override
         public void onPassed(GameTestState test) {
-            COMPLETION_LISTENER.onTestPassed(test);
+            for (TestCompletionListener l : COMPLETION_LISTENERS) {
+                l.onTestPassed(test);
+            }
         }
 
         @Override
         public void onFailed(GameTestState test) {
-            COMPLETION_LISTENER.onTestFailed(test);
+            for (TestCompletionListener l : COMPLETION_LISTENERS) {
+                l.onTestFailed(test);
+            }
         }
     };
 
@@ -139,7 +152,7 @@ public class ServerStarter {
     private static GameTestBatch processBatch(GameTestBatch batch) {
         String id = batch.getId();
         if (!id.startsWith("rules/")) return batch;
-        String[] ruleSpecs = id.substring(6, id.lastIndexOf(':')).split(",");
+        String[] ruleSpecs = id.substring(6, id.indexOf(':')).split(",");
         Map<String, String> rules = new LinkedHashMap<>();
         for (String ruleSpec : ruleSpecs) {
             String[] parts = ruleSpec.split("=", 2);

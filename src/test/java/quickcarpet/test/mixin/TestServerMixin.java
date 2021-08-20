@@ -9,6 +9,7 @@ import net.minecraft.resource.ServerResourceManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.WorldGenerationProgressListenerFactory;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.test.TestCompletionListener;
 import net.minecraft.test.TestServer;
 import net.minecraft.test.TestSet;
 import net.minecraft.util.UserCache;
@@ -49,7 +50,9 @@ public abstract class TestServerMixin extends MinecraftServer {
 
     @Override
     public void shutdown() {
-        ServerStarter.COMPLETION_LISTENER.onStopped();
+        for (TestCompletionListener l : ServerStarter.COMPLETION_LISTENERS) {
+            l.onStopped();
+        }
         super.shutdown();
     }
 }
