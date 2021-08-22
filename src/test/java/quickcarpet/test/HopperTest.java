@@ -46,7 +46,7 @@ public class HopperTest {
     private HopperCounter nextWool(TestContext ctx, BlockPos pos) {
         Block wool = WOOL_BLOCKS[woolIndex++ % WOOL_BLOCKS.length];
         ctx.setBlockState(pos, wool);
-        return HopperCounter.getCounter(HopperCounter.Key.get(WoolTool.getWoolColorAtPosition(ctx.getWorld(), ctx.getAbsolutePos(pos))));
+        return HopperCounter.getCounter(WoolTool.getCounterKey(ctx.getWorld(), ctx.getAbsolutePos(pos)));
     }
 
     @GameTest(structureName = "wool_hopper_wool")

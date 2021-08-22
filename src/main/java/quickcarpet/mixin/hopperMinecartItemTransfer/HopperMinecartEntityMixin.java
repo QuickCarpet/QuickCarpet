@@ -14,7 +14,6 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tag.BlockTags;
-import net.minecraft.util.DyeColor;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
@@ -65,10 +64,10 @@ public abstract class HopperMinecartEntityMixin extends StorageMinecartEntity im
                 if (Settings.infiniteHopper) {
                     BlockPos pos = this.getBlockPos();
                     for (int j = 1; j <= 2; j++) {
-                        DyeColor color = WoolTool.getWoolColorAtPosition(world, pos.up(j));
+                        HopperCounter.Key color = WoolTool.getCounterKey(world, pos.up(j));
                         if (color != null) {
                             if (Settings.hopperCounters) {
-                                HopperCounter.COUNTERS.get(HopperCounter.Key.get(color)).add(world.getServer(), stack.getItem(), -1);
+                                HopperCounter.COUNTERS.get(color).add(world.getServer(), stack.getItem(), -1);
                             }
                             this.setStack(i, stack);
                             break;
