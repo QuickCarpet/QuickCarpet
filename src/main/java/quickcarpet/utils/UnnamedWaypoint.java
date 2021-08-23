@@ -48,7 +48,7 @@ public record UnnamedWaypoint(@Nonnull WaypointContainer world,
     }
 
     public Waypoint named(String name) {
-        return new Waypoint(world, name, creator, creatorUuid, position, rotation);
+        return new Waypoint(this, name);
     }
 
     public static final MapCodec<UnnamedWaypoint> CODEC = RecordCodecBuilder.mapCodec(it -> it.group(

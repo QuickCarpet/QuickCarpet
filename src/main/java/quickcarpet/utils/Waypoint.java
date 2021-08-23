@@ -36,12 +36,19 @@ import static quickcarpet.utils.Messenger.c;
 import static quickcarpet.utils.Messenger.s;
 
 public record Waypoint(UnnamedWaypoint location, String name) implements Comparable<Waypoint>, Messenger.Formattable {
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    public static Codec<Map<String, Waypoint>> MAP_CODEC = UnnamedWaypoint.MAP_CODEC.xmap(map -> {
-        Map<String, Waypoint> map2 = new LinkedHashMap<>();
-        for (Map.Entry<String, UnnamedWaypoint> e : map.entrySet()) map2.put(e.getKey(), e.getValue().named(e.getKey()));
-        return map2;
-    }, map -> (Map<String, UnnamedWaypoint>) (Map) map);
+    public static Codec<Map<String, Waypoint>> MAP_CODEC = UnnamedWaypoint.MAP_CODEC.xmap(unnamed -> {
+        Map<String, Waypoint> named = new LinkedHashMap<>();
+        for (Map.Entry<String, UnnamedWaypoint> e : unnamed.entrySet()) {
+            named.put(e.getKey(), e.getValue().named(e.getKey()));
+        }
+        return named;
+    }, named -> {
+        Map<String, UnnamedWaypoint> unnamed = new LinkedHashMap<>();
+        for (Map.Entry<String, Waypoint> e : named.entrySet()) {
+            unnamed.put(e.getKey(), e.getValue().location());
+        }
+        return unnamed;
+    });
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
     private static final Logger LOGGER = LogManager.getLogger();
