@@ -21,10 +21,8 @@ jobs:
         with:
           path: |
             ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*gradle*') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+            /home/gradle/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ matrix.gradle }}-jdk${{ matrix.java }}-${{ hashFiles('**/*gradle*') }}
       - name: Cache Loom Files
         uses: actions/cache@v2
         if: ${{ !env.ACT }}
@@ -68,10 +66,8 @@ jobs:
         with:
           path: |
             ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*gradle*') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+            /home/gradle/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ matrix.gradle }}-jdk${{ matrix.java }}-${{ hashFiles('**/*gradle*') }}
       - name: Cache Loom Files
         uses: actions/cache@v2
         if: ${{ !env.ACT }}
@@ -109,10 +105,8 @@ jobs:
         with:
           path: |
             ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*gradle*') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+            /home/gradle/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ matrix.gradle }}-jdk${{ matrix.java }}-${{ hashFiles('**/*gradle*') }}
       - name: Cache Loom Files
         uses: actions/cache@v2
         if: ${{ !env.ACT }}
@@ -157,10 +151,8 @@ jobs:
         with:
           path: |
             ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*gradle*') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+            /home/gradle/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ matrix.gradle }}-jdk${{ matrix.java }}-${{ hashFiles('**/*gradle*') }}
       - name: Cache Loom Files
         uses: actions/cache@v2
         if: ${{ !env.ACT }}
