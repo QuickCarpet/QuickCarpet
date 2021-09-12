@@ -152,7 +152,10 @@ jobs:
           path: |
             ~/.gradle/caches
             /home/gradle/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ matrix.gradle }}-jdk${{ matrix.java }}-${{ hashFiles('**/*gradle*') }}
+          # Store this under a separate key to cache remapped mods
+          key: ${{ runner.os }}-gradle-${{ matrix.gradle }}-jdk${{ matrix.java }}-lithium-${{ matrix.lithium }}-${{ hashFiles('**/*gradle*') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-${{ matrix.gradle }}-jdk${{ matrix.java }}-${{ hashFiles('**/*gradle*') }}
       - name: Cache Loom Files
         uses: actions/cache@v2
         if: ${{ !env.ACT }}
