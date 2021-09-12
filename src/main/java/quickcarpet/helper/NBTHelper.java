@@ -13,7 +13,7 @@ import javax.annotation.Nullable;
 public class NBTHelper {
     @Nullable
     public static NbtCompound getBlockEntityTag(ItemStack stack) {
-        NbtCompound tag = stack.getTag();
+        NbtCompound tag = stack.getNbt();
         return tag == null ? null : getTagOrNull(tag, "BlockEntityTag", (int) NbtElement.COMPOUND_TYPE);
     }
 
@@ -36,7 +36,7 @@ public class NBTHelper {
         }
 
         if (bet.isEmpty()) {
-            stack.setTag(null);
+            stack.setNbt(null);
             changed = true;
         }
 

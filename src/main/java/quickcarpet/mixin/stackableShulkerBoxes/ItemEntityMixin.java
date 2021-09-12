@@ -57,7 +57,7 @@ public abstract class ItemEntityMixin extends Entity {
         }
         if (a.getItem() != b.getItem()) return false;
         if (a.getCount() >= SHULKERBOX_MAX_STACK_AMOUNT || b.getCount() >= SHULKERBOX_MAX_STACK_AMOUNT) return false;
-        if (a.hasTag() != b.hasTag()) return false;
-        return !b.hasTag() || b.getTag().equals(a.getTag());
+        if (a.hasNbt() != b.hasNbt()) return false;
+        return !b.hasNbt() || b.getNbt().equals(a.getNbt());
     }
 }

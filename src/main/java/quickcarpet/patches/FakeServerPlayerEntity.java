@@ -17,7 +17,6 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.JsonHelper;
-import net.minecraft.util.Util;
 import net.minecraft.util.WorldSavePath;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
@@ -40,7 +39,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 public class FakeServerPlayerEntity extends ServerPlayerEntity {
     private static final Logger LOGGER = LogManager.getLogger("QuickCarpet|Bots");
@@ -189,17 +187,12 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
     }
 
     private static void loginBot(MinecraftServer server, UUID uuid, PlayerActionPack.State state) {
-        CompletableFuture.supplyAsync(() -> server.getUserCache().getByUuid(uuid), Util.getIoWorkerExecutor()).thenAccept(optProfile -> {
-            if (optProfile.isEmpty()) {
-                LOGGER.warn("Cannot find profile for {}", uuid);
-                return;
-            }
-            GameProfile profile = optProfile.get();
-            server.send(new ServerTask(server.getTicks(), () -> {
-                FakeServerPlayerEntity player = createFake(profile, server);
-                ((ActionPackOwner) player).setActionPack(new PlayerActionPack(player, state));
-            }));
-        });
+        GameProfile profile = new GameProfile(uuid, null);
+        GameProfile filledProfile = server.getSessionService().fillProfileProperties(profile, true);
+        server.send(new ServerTask(server.getTicks(), () -> {
+            FakeServerPlayerEntity player = createFake(filledProfile, server);
+            ((ActionPackOwner) player).setActionPack(new PlayerActionPack(player, state));
+        }));
     }
 
     public static void savePersistent(MinecraftServer server) throws IOException {

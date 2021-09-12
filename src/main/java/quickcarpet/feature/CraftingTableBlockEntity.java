@@ -227,7 +227,7 @@ public class CraftingTableBlockEntity extends LockableContainerBlockEntity imple
             if (!remainingStack.isEmpty()) {
                 if (current.isEmpty()) {
                     inventory.set(i, remainingStack);
-                } else if (ItemStack.areItemsEqualIgnoreDamage(current, remainingStack) && ItemStack.areTagsEqual(current, remainingStack)) {
+                } else if (ItemStack.areItemsEqualIgnoreDamage(current, remainingStack) && ItemStack.areNbtEqual(current, remainingStack)) {
                     current.increment(remainingStack.getCount());
                 } else {
                     ItemScatterer.spawn(world, pos.getX(), pos.getY(), pos.getZ(), remainingStack);

@@ -21,7 +21,6 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.Util;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
@@ -192,12 +191,13 @@ public class PlayerCommand {
             m(context.getSource(), ts("command.player.alreadyOnline", Formatting.RED, s(playerName, Formatting.BOLD)));
             return CompletableFuture.completedFuture(null);
         }
-        return CompletableFuture.supplyAsync(() -> server.getUserCache().findByName(playerName), Util.getIoWorkerExecutor()).thenApply(optProfile -> {
-            if (optProfile.isEmpty()) {
+        CompletableFuture<GameProfile> future = new CompletableFuture<>();
+        server.getUserCache().findByNameAsync(playerName, future::complete);
+        return future.thenApply(profile -> {
+            if (profile == null) {
                 m(context.getSource(), ts("command.player.doesNotExist", Formatting.RED, s(playerName, Formatting.BOLD)));
                 return null;
             }
-            GameProfile profile = optProfile.get();
             if (manager.getUserBanList().contains(profile)) {
                 m(context.getSource(), ts("command.player.banned", Formatting.RED, s(playerName, Formatting.BOLD)));
                 return null;

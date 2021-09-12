@@ -117,7 +117,7 @@ public class PlaceBlockBehavior extends FallibleItemDispenserBehavior {
             } else {
                 world.setBlockState(pos, state);
             }
-            NbtCompound blockEntityTag = itemStack.getSubTag("BlockEntityTag");
+            NbtCompound blockEntityTag = itemStack.getSubNbt("BlockEntityTag");
             if (blockEntityTag != null && block instanceof BlockEntityProvider) {
                 BlockEntity be = world.getBlockEntity(pos);
                 if (be != null) {
