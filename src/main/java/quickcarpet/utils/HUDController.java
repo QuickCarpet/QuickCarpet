@@ -1,5 +1,6 @@
 package quickcarpet.utils;
 
+import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.PlayerListHeaderS2CPacket;
@@ -11,6 +12,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Pair;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import quickcarpet.QuickCarpetServer;
@@ -34,6 +36,7 @@ public class HUDController {
     static {
         HUD_LOGGERS.put(Loggers.TPS, HUDController::logTps);
         HUD_LOGGERS.put(Loggers.MOBCAPS, HUDController::logMobcaps);
+        HUD_LOGGERS.put(Loggers.LOCAL_MOBCAPS, HUDController::logLocalMobcaps);
         HUD_LOGGERS.put(Loggers.COUNTER, HUDController::logCounter);
         HUD_LOGGERS.put(Loggers.PACKETS, HUDController::logPackets);
     }
@@ -89,31 +92,51 @@ public class HUDController {
         logger.log((option, player) -> {
             ServerWorld world = (ServerWorld) player.world;
             MinecraftServer server = world.getServer();
-            world.getRegistryKey();
             RegistryKey<World> dim = switch (option) {
                 case "overworld" -> World.OVERWORLD;
                 case "nether" -> World.NETHER;
                 case "end" -> World.END;
                 default -> world.getRegistryKey();
             };
-            List<MutableText> components = new ArrayList<>();
-            Map<SpawnGroup, Pair<Integer, Integer>> mobcaps = Mobcaps.getMobcaps(server.getWorld(dim));
-            for (Map.Entry<SpawnGroup, Pair<Integer, Integer>> e : mobcaps.entrySet()) {
-                Pair<Integer, Integer> pair = e.getValue();
-                int actual = pair.getLeft();
-                int limit = pair.getRight();
-                if (actual + limit == 0) {
-                    components.add(s("-/-", Formatting.GRAY));
-                } else {
-                    components.add(s(Integer.toString(actual), getHeatmapColor(actual, limit)));
-                    components.add(s("/", Formatting.GRAY));
-                    components.add(s(Integer.toString(limit), SpawnUtils.creatureTypeColor(e.getKey())));
-                }
-                components.add(s(" "));
-            }
-            components.remove(components.size() - 1);
-            return c(components.toArray(new MutableText[0]));
+            return formatMobcaps(Mobcaps.getMobcaps(server.getWorld(dim)));
         }, () -> Mobcaps.getCommandParameters(QuickCarpetServer.getMinecraftServer()));
+    }
+
+    private static void logLocalMobcaps(Logger logger) {
+        logger.log((option, player) -> {
+            ServerWorld world = (ServerWorld) player.world;
+            return formatMobcaps(Mobcaps.getLocalMobcaps(world, new ChunkPos(player.getBlockPos())));
+        }, () -> Mobcaps.getCommandParameters(QuickCarpetServer.getMinecraftServer()));
+    }
+
+    private static MutableText formatMobcaps(Map<SpawnGroup, Pair<Integer, Integer>> mobcaps) {
+        List<MutableText> components = new ArrayList<>();
+        for (Map.Entry<SpawnGroup, Pair<Integer, Integer>> e : mobcaps.entrySet()) {
+            Pair<Integer, Integer> pair = e.getValue();
+            int actual = pair.getLeft();
+            int limit = pair.getRight();
+            if (actual + limit == 0) {
+                components.add(s("-/-", Formatting.GRAY));
+            } else {
+                components.add(s(Integer.toString(actual), getHeatmapColor(actual, limit)));
+                components.add(s("/", Formatting.GRAY));
+                components.add(s(Integer.toString(limit), SpawnUtils.creatureTypeColor(e.getKey())));
+            }
+            components.add(s(" "));
+        }
+        components.remove(components.size() - 1);
+        return c(components.toArray(new MutableText[0]));
+    }
+
+    private static MutableText formatMobcaps(Object2FloatMap<SpawnGroup> mobcaps) {
+        if (mobcaps.isEmpty()) return null;
+        List<MutableText> components = new ArrayList<>();
+        for (var e : mobcaps.object2FloatEntrySet()) {
+            components.add(s(String.format("%.3f", e.getFloatValue()), SpawnUtils.creatureTypeColor(e.getKey())));
+            components.add(s(" "));
+        }
+        components.remove(components.size() - 1);
+        return c(components.toArray(new MutableText[0]));
     }
 
     private static void logCounter(Logger logger) {

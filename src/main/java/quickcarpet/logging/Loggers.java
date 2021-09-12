@@ -23,6 +23,7 @@ public final class Loggers {
     public static final Logger PACKETS = registerLogger("packets", null, null, LogHandler.HUD);
     public static final Logger COUNTER = registerLogger("counter", "white", Arrays.stream(HopperCounter.Key.values()).map(k -> k.name).toArray(String[]::new), LogHandler.HUD);
     public static final Logger MOBCAPS = registerLogger("mobcaps", "dynamic", new String[]{"dynamic", "overworld", "nether", "end"}, LogHandler.HUD);
+    public static final Logger LOCAL_MOBCAPS = registerLogger("local_mobcaps", null, null, LogHandler.HUD);
     public static final Logger GC = registerLogger("gc", null, null, LogHandler.CHAT);
     public static final Logger COMMAND_BLOCKS = registerLogger("command_blocks", "brief", new String[]{"brief", "full"}, LogHandler.CHAT);
     public static final Logger CAREFUL_BREAK = registerLogger(new Logger("careful_break", null, null, null) {
