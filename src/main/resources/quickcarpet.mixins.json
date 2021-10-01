@@ -57,6 +57,8 @@
     "creativeNoClip.BlockItemMixin",
     "creativeNoClip.PistonBlockEntityMixin",
     "creativeNoClip.PlayerEntityMixin",
+    "deepslateGenerator.FluidBlock_deepslateMixin",
+    "deepslateGenerator.LavaFluid_deepslateMixin",
     "dispenser.DispenserBlockMixin",
     "drownedEnchantedTridentsFix.DrownedEntityMixin",
     "fabricApi.RegistrySyncManagerMixin",
