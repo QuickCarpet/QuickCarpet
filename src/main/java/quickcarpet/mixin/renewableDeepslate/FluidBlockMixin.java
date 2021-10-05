@@ -1,4 +1,4 @@
-package quickcarpet.mixin.deepslateGenerator;
+package quickcarpet.mixin.renewableDeepslate;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.*;
 import quickcarpet.settings.Settings;
 
 @Mixin(FluidBlock.class)
-public class FluidBlock_deepslateMixin {
+public class FluidBlockMixin {
 
     @Redirect(
             method="receiveNeighborFluids(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;)Z",
@@ -19,8 +19,8 @@ public class FluidBlock_deepslateMixin {
                     target="Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;)Z"
             ))
     private boolean modifyCobblestone(World world, BlockPos pos, BlockState state) {
-        if (Settings.deepslateGenerator && pos.getY() <= 0 && state.getBlock() == Blocks.COBBLESTONE) {
-            if (pos.getY() < -7 || world.getRandom().nextInt(8+pos.getY()) == 0) {
+        if (Settings.renewableDeepslate && pos.getY() <= 16 && state.getBlock() == Blocks.COBBLESTONE) {
+            if (pos.getY() < -7 || world.getRandom().nextFloat() >= (8+pos.getY())/24.0) {
                 state = Blocks.COBBLED_DEEPSLATE.getDefaultState();
             }
         }

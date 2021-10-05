@@ -355,7 +355,7 @@ public class Settings {
     public static boolean updateSuppressionCrashFix = false;
 
     @Rule(category = {FEATURE, RENEWABLE})
-    public static boolean deepslateGenerator = false;
+    public static boolean renewableDeepslate = false;
 
     @Rule(category = {}, validator = ViewDistance.class, onChange = ViewDistance.class)
     public static int viewDistance = -1;

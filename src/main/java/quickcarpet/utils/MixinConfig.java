@@ -61,6 +61,7 @@ public class MixinConfig {
         .putAll("railPowerLimit", "railPowerLimit")
         .putAll("redstone", "dustOnPistons")
         .putAll("renewableCoral", "renewableCoral")
+        .putAll("renewableDeepslate", "renewableDeepslate")
         .putAll("renewableFromAnvil", "renewableSand/anvil", "renewableGravel/anvil", "anvilledIce", "anvilledPackedIce", "anvilledBlueIce")
         .putAll("renewableFromSilverfish", "renewableSand/silverfish", "renewableGravel/silverfish")
         .putAll("renewableLava", "renewableLava")
