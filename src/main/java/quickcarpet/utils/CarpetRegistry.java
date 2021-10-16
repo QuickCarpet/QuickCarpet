@@ -14,10 +14,13 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.datafixer.Schemas;
+import net.minecraft.entity.EntityType;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.collection.Pool;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.biome.SpawnSettings;
 import quickcarpet.feature.CraftingTableBlockEntity;
 import quickcarpet.mixin.accessor.BlockTagsAccessor;
 
@@ -73,8 +76,9 @@ public class CarpetRegistry {
         TERRACOTTA_BLOCKS.put(Blocks.GREEN_TERRACOTTA, 13);
         TERRACOTTA_BLOCKS.put(Blocks.RED_TERRACOTTA, 14);
         TERRACOTTA_BLOCKS.put(Blocks.BLACK_TERRACOTTA, 15);
-
     }
+
+    public static final Pool<SpawnSettings.SpawnEntry> END_CITY_SPAWN_POOL = Pool.of(new SpawnSettings.SpawnEntry(EntityType.SHULKER, 10, 4, 4));
 
     private static <T extends BlockEntity> BlockEntityType<T> registerBlockEntity(String id, BlockEntityType.BlockEntityFactory<? extends T> supplier, Type<?> type, Block... blocks) {
         return Registry.register(Registry.BLOCK_ENTITY_TYPE, id, new BlockEntityType<>(supplier, ImmutableSet.copyOf(blocks), type));

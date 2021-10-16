@@ -5,12 +5,18 @@ import net.minecraft.block.BlockEntityProvider;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkSectionPos;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.HeightLimitView;
 import net.minecraft.world.Heightmap;
+import net.minecraft.world.TickScheduler;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.ChunkSection;
+import net.minecraft.world.chunk.UpgradeData;
 import net.minecraft.world.chunk.WorldChunk;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,16 +24,15 @@ import org.spongepowered.asm.mixin.Shadow;
 import quickcarpet.utils.extensions.ExtendedWorldChunk;
 
 import javax.annotation.Nullable;
-import java.util.Map;
-
-import static net.minecraft.world.chunk.WorldChunk.EMPTY_SECTION;
 
 @Mixin(WorldChunk.class)
-public abstract class WorldChunkMixin implements ExtendedWorldChunk, Chunk {
-    @Shadow @Final private ChunkSection[] sections;
-    @Shadow @Final private Map<Heightmap.Type, Heightmap> heightmaps;
-    @Shadow private boolean shouldSave;
+public abstract class WorldChunkMixin extends Chunk implements ExtendedWorldChunk {
     @Shadow @Final World world;
+
+    public WorldChunkMixin(ChunkPos $$0, UpgradeData $$1, HeightLimitView $$2, Registry<Biome> $$3, long $$4, @Nullable ChunkSection[] $$5, TickScheduler<Block> $$6, TickScheduler<Fluid> $$7) {
+        super($$0, $$1, $$2, $$3, $$4, $$5, $$6, $$7);
+    }
+
     @Nullable @Shadow public abstract BlockEntity getBlockEntity(BlockPos blockPos_1, WorldChunk.CreationType worldChunk$CreationType_1);
     @Shadow public abstract void addBlockEntity(BlockEntity blockEntity);
 
@@ -45,17 +50,12 @@ public abstract class WorldChunkMixin implements ExtendedWorldChunk, Chunk {
     public BlockState setBlockStateWithBlockEntity(BlockPos pos, BlockState newBlockState, BlockEntity newBlockEntity, boolean moved) {
         int y = pos.getY();
         int sectionY = this.getSectionIndex(y);
-        ChunkSection chunkSection = this.sections[sectionY];
-        if (chunkSection == EMPTY_SECTION) {
-            if (newBlockState.isAir()) {
-                return null;
-            }
-
-            chunkSection = new ChunkSection(ChunkSectionPos.getSectionCoord(y));
-            this.sections[sectionY] = chunkSection;
+        ChunkSection chunkSection = this.sectionArray[sectionY];
+        boolean sectionWasEmpty = chunkSection.isEmpty();
+        if (sectionWasEmpty && newBlockState.isAir()) {
+            return null;
         }
 
-        boolean sectionWasEmpty = chunkSection.isEmpty();
         int x = pos.getX() & 15;
         int inSectionY = y & 15;
         int z = pos.getZ() & 15;
@@ -107,7 +107,7 @@ public abstract class WorldChunkMixin implements ExtendedWorldChunk, Chunk {
                     }
                 }
 
-                this.shouldSave = true;
+                this.needsSaving = true;
                 return oldBlockState;
             }
         }

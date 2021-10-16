@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import net.minecraft.class_6625;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.network.PacketByteBuf;
@@ -52,7 +53,7 @@ public class StructureChannel implements ServerPluginChannelHandler {
         playerMap.put(player, new Object2IntOpenHashMap<>());
         int viewDistance = player.getServer().getPlayerManager().getViewDistance();
         ChunkPos playerPos = player.getWatchedSection().toChunkPos();
-        ServerWorld world = player.getServerWorld();
+        ServerWorld world = player.getWorld();
         for (int x = playerPos.x - viewDistance; x <= playerPos.x + viewDistance; x++) {
             for (int z = playerPos.z - viewDistance; z <= playerPos.z + viewDistance; z++) {
                 if (!world.isChunkLoaded(x, z)) continue;
@@ -90,7 +91,7 @@ public class StructureChannel implements ServerPluginChannelHandler {
     }
 
     private void sendUpdate(ServerPlayerEntity player, Collection<ChunkPos> chunks) {
-        ServerWorld world = player.getServerWorld();
+        ServerWorld world = player.getWorld();
         Map<String, LongSet> references = new HashMap<>();
         for (ChunkPos pos : chunks) {
             if (!world.isChunkLoaded(pos.x, pos.z)) continue;
@@ -110,7 +111,7 @@ public class StructureChannel implements ServerPluginChannelHandler {
                 ChunkPos chunkPos = new ChunkPos(pos);
                 if (chunkMap.computeIntIfAbsent(chunkPos, c -> 1) > 1) continue;
                 Chunk chunk = world.getChunk(chunkPos.x, chunkPos.z);
-                starts.add(chunk.getStructureStart(StructureFeature.STRUCTURES.get(ref.getKey())).toNbt(world, chunkPos));
+                starts.add(chunk.getStructureStart(StructureFeature.STRUCTURES.get(ref.getKey())).toNbt(class_6625.method_38713(world), chunkPos));
             }
         }
         NbtCompound data = new NbtCompound();

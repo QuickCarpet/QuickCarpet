@@ -68,12 +68,11 @@ public class CraftingTableBlockEntity extends LockableContainerBlockEntity imple
     }
 
     @Override
-    public NbtCompound writeNbt(NbtCompound tag) {
+    protected void writeNbt(NbtCompound tag) {
         if (BlockEntityType.getId(this.getType()) == null) addBackMapping();
         super.writeNbt(tag);
         Inventories.writeNbt(tag, inventory);
         tag.put("Output", output.writeNbt(new NbtCompound()));
-        return tag;
     }
 
     @Override

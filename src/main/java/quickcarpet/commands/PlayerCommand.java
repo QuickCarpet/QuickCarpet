@@ -192,7 +192,7 @@ public class PlayerCommand {
             return CompletableFuture.completedFuture(null);
         }
         CompletableFuture<GameProfile> future = new CompletableFuture<>();
-        server.getUserCache().findByNameAsync(playerName, future::complete);
+        server.getUserCache().findByNameAsync(playerName, opt -> future.complete(opt.orElse(null)));
         return future.thenApply(profile -> {
             if (profile == null) {
                 m(context.getSource(), ts("command.player.doesNotExist", Formatting.RED, s(playerName, Formatting.BOLD)));

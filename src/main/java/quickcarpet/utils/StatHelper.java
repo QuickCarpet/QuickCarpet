@@ -72,7 +72,7 @@ public class StatHelper {
     @Nullable
     public static String getUsername(MinecraftServer server, UUID uuid) {
         UserCache profileCache = server.getUserCache();
-        Optional<GameProfile> optProfile = Optional.ofNullable(profileCache.method_14512(uuid));
+        Optional<GameProfile> optProfile = profileCache.getByUuid(uuid);
         if (optProfile.isPresent()) return optProfile.get().getName();
         MinecraftSessionService sessionService = server.getSessionService();
         GameProfile profile = sessionService.fillProfileProperties(new GameProfile(uuid, null), false);

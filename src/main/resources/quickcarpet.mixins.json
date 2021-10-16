@@ -110,7 +110,6 @@
     "renewableSponges.GuardianEntityMixin",
     "sparkingLighter.LighterItemMixin",
     "spawnChunkLevel.ServerWorldMixin",
-    "spawning.EndCityFeatureMixin",
     "spawning.NoiseChunkGeneratorMixin",
     "spawning.PhantomSpawnerMixin",
     "spawning.SpawnHelperMixin",

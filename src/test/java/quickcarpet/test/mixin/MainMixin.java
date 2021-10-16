@@ -9,7 +9,7 @@ import quickcarpet.test.ServerStarter;
 
 @Mixin(Main.class)
 public class MainMixin {
-    @Inject(method = "main", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "main", at = @At("HEAD"), cancellable = true, remap = false)
     private static void mainHead(String[] args, CallbackInfo ci) {
         if (Boolean.parseBoolean(System.clearProperty("quickcarpet.test"))) {
             try {

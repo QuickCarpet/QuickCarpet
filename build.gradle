@@ -2,7 +2,7 @@ import java.text.SimpleDateFormat
 import quickcarpet.build.*
 
 plugins {
-	id 'fabric-loom' version '0.9-SNAPSHOT'
+	id 'fabric-loom' version '0.10-SNAPSHOT'
 }
 
 loom {
@@ -101,7 +101,7 @@ repositories {
 }
 
 dependencies {
-	implementation project(":quickcarpet-api")
+	modImplementation project(":quickcarpet-api")
 
 	modImplementation "net.fabricmc.fabric-api:fabric-resource-loader-v0:${project.fabric_resource_loader_v0_version}"
 	//modImplementation "net.fabricmc.fabric-api:fabric-networking-api-v1:${project.fabric_networking_api_v1_version}"

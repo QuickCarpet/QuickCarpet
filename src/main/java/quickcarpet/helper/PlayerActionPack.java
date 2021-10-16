@@ -223,7 +223,7 @@ public class PlayerActionPack {
                     switch (hit.getType()) {
                         case BLOCK -> {
                             player.updateLastActionTime();
-                            ServerWorld world = player.getServerWorld();
+                            ServerWorld world = player.getWorld();
                             BlockHitResult blockHit = (BlockHitResult) hit;
                             BlockPos pos = blockHit.getBlockPos();
                             Direction side = blockHit.getSide();
@@ -246,7 +246,7 @@ public class PlayerActionPack {
                             if (result != ActionResult.PASS) return;
                         }
                     }
-                    ActionResult result = player.interactionManager.interactItem(player, player.getServerWorld(), player.getStackInHand(hand), hand);
+                    ActionResult result = player.interactionManager.interactItem(player, player.getWorld(), player.getStackInHand(hand), hand);
                     if (result.shouldSwingHand()) player.swingHand(hand);
                     if (result != ActionResult.PASS) return;
                 }

@@ -16,7 +16,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import quickcarpet.mixin.accessor.BlockEntityAccessor;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.extensions.ExtendedPistonBlockEntity;
@@ -121,10 +120,10 @@ public abstract class PistonBlockEntityMixin extends BlockEntity implements Exte
     }
 
     @Inject(method = "writeNbt", at = @At(value = "RETURN", shift = At.Shift.BEFORE))
-    private void onToTag(NbtCompound compoundTag_1, CallbackInfoReturnable<NbtCompound> cir) {
+    private void onToTag(NbtCompound compoundTag_1, CallbackInfo ci) {
         if (Settings.movableBlockEntities && this.carriedBlockEntity != null) {
             //Leave name "carriedTileEntity" instead of "carriedBlockEntity" for upgrade compatibility with 1.12 movable TE
-            compoundTag_1.put("carriedTileEntity", this.carriedBlockEntity.writeNbt(new NbtCompound()));
+            compoundTag_1.put("carriedTileEntity", this.carriedBlockEntity.createNbtWithId());
         }
     }
 }

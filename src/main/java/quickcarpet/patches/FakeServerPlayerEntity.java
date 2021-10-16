@@ -85,7 +85,7 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
         this.tickMovement();
         if (this.getServer().getTicks() % 10 == 0) {
             this.networkHandler.syncWithPlayerPosition();
-            this.getServerWorld().getChunkManager().updatePosition(this);
+            this.getWorld().getChunkManager().updatePosition(this);
         }
     }
 
@@ -140,7 +140,7 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
         player.stepHeight = 0.6F;
         server.getPlayerManager().sendToDimension(new EntitySetHeadYawS2CPacket(player, (byte) (player.headYaw * 256 / 360)), player.world.getRegistryKey());
         server.getPlayerManager().sendToDimension(new EntityPositionS2CPacket(player), player.world.getRegistryKey());
-        player.getServerWorld().getChunkManager().updatePosition(player);
+        player.getWorld().getChunkManager().updatePosition(player);
         player.dataTracker.set(PLAYER_MODEL_PARTS, (byte) 0x7f); // show all model layers (incl. capes)
     }
 
@@ -161,7 +161,7 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
         shadow.interactionManager.changeGameMode(real.interactionManager.getGameMode());
         server.getPlayerManager().sendToDimension(new EntitySetHeadYawS2CPacket(shadow, (byte) (real.headYaw * 256 / 360)), shadow.world.getRegistryKey());
         server.getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.ADD_PLAYER, shadow));
-        real.getServerWorld().getChunkManager().updatePosition(shadow);
+        real.getWorld().getChunkManager().updatePosition(shadow);
         shadow.dataTracker.set(PLAYER_MODEL_PARTS, real.getDataTracker().get(PLAYER_MODEL_PARTS));
         ((ActionPackOwner) shadow).getActionPack().copyFrom(((ActionPackOwner) real).getActionPack());
     }
@@ -187,7 +187,13 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
     }
 
     private static void loginBot(MinecraftServer server, UUID uuid, PlayerActionPack.State state) {
-        GameProfile profile = new GameProfile(uuid, null);
+        GameProfile profile = server.getUserCache().getByUuid(uuid).orElse(null);
+        if (profile == null) {
+            profile = new GameProfile(uuid, null);
+        }
+        if (!profile.isComplete()) {
+            profile = server.getSessionService().fillProfileProperties(profile, true);
+        }
         GameProfile filledProfile = server.getSessionService().fillProfileProperties(profile, true);
         server.send(new ServerTask(server.getTicks(), () -> {
             FakeServerPlayerEntity player = createFake(filledProfile, server);
