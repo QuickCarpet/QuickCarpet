@@ -24,7 +24,7 @@ import java.util.*;
 
 public class Mobcaps {
     public static Map<SpawnGroup, Pair<Integer, Integer>> getMobcaps(ServerWorld world) {
-        int chunks = ((ServerChunkManagerAccessor) world.getChunkManager()).getTicketManager().getSpawningChunkCount();
+        int chunks = ((ServerChunkManagerAccessor) world.getChunkManager()).getTicketManager().getTickedChunkCount();
         SpawnHelper.Info spawnInfo = world.getChunkManager().getSpawnInfo();
         if (spawnInfo == null) return Collections.emptyMap();
         Object2IntMap<SpawnGroup> mobs = spawnInfo.getGroupToCount();
@@ -58,7 +58,7 @@ public class Mobcaps {
 
     public static boolean isBelowCap(ServerChunkManager chunkManager, SpawnGroup group) {
         int count = chunkManager.getSpawnInfo().getGroupToCount().getInt(group);
-        int chunks = ((ServerChunkManagerAccessor) chunkManager).getTicketManager().getSpawningChunkCount();
+        int chunks = ((ServerChunkManagerAccessor) chunkManager).getTicketManager().getTickedChunkCount();
         int cap = chunks * group.getCapacity() / (17 * 17);
         return count < cap;
     }

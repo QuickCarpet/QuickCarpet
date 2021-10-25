@@ -11,7 +11,6 @@ import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
 import net.minecraft.util.Identifier;
 import quickcarpet.api.network.client.ClientPluginChannelHandler;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -25,8 +24,6 @@ public class ClientPluginChannelManager implements quickcarpet.api.network.clien
 
     @Override
     public void register(ClientPluginChannelHandler handler) {
-        System.out.println(Arrays.toString(handler.getClass().getDeclaredMethods()));
-        System.out.println(Arrays.toString(handler.getClass().getMethods()));
         for (Identifier channel : handler.getChannels()) {
             HANDLERS.put(channel, handler);
         }
