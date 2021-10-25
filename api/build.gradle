@@ -5,9 +5,17 @@ plugins {
 def ENV = System.getenv()
 version = project.api_version
 
+configurations {
+    dev
+}
+
+artifacts {
+    dev(jar)
+}
+
 publishing {
     publications {
-        mavenJava(MavenPublication) {
+        api(MavenPublication) {
             artifact(jar.archivePath) {
                 builtBy remapJar
             }

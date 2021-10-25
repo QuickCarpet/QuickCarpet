@@ -101,8 +101,7 @@ repositories {
 }
 
 dependencies {
-	implementation project(":quickcarpet-api")
-	modImplementation project(":quickcarpet-api")
+	implementation project(path: ":quickcarpet-api", configuration: "dev")
 
 	modImplementation "net.fabricmc.fabric-api:fabric-resource-loader-v0:${project.fabric_resource_loader_v0_version}"
 	//modImplementation "net.fabricmc.fabric-api:fabric-networking-api-v1:${project.fabric_networking_api_v1_version}"
