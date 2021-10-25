@@ -105,6 +105,7 @@
   "carpet.rule.railDuplicationFix.description": "Fix rail duplication using pistons",
   "carpet.rule.railPowerLimit.description": "Rail power limit",
   "carpet.rule.renewableCoral.description": "Coral structures will grow with bonemeal from coral plants",
+  "carpet.rule.renewableDeepslate.description": "Makes cobblestone generators generate deepslate instead if below y16",
   "carpet.rule.renewableGravel.description": "Cobblestone crushed by falling anvils makes gravel, or silverfish drop a gravel item when breaking out of a block",
   "carpet.rule.renewableLava.description": "Obsidian surrounded by 6 lava sources has a chance of converting to lava",
   "carpet.rule.renewableNetherrack.description": "Fire charges from dispensers convert cobblestone to netherrack",
