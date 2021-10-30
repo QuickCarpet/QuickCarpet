@@ -547,6 +547,14 @@ Default: `false`
 Options: `true`, `false`  
 Categories: feature, renewable  
 
+## renewableDeepslate
+Makes cobblestone generators generate deepslate instead if below y16
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: feature, renewable  
+
 ## renewableGravel
 Cobblestone crushed by falling anvils makes gravel, or silverfish drop a gravel item when breaking out of a block
 

@@ -92,6 +92,11 @@ public class DispenserTest {
         dispense(ctx, new ItemStack(Items.BUCKET), Items.LAVA_BUCKET, Blocks.AIR, null, null);
     }
 
+    @GameTest(structureName = "dispenser_only")
+    public void vanillaPutPowderSnow(TestContext ctx) {
+        dispense(ctx, new ItemStack(Items.POWDER_SNOW_BUCKET), Items.BUCKET, Blocks.POWDER_SNOW, null, null);
+    }
+
     @GameTest(structureName = "dispenser_with_cauldron")
     public void vanillaPutPowderSnowCauldron(TestContext ctx) {
         dispense(ctx, new ItemStack(Items.POWDER_SNOW_BUCKET), null, Blocks.CAULDRON, Items.POWDER_SNOW_BUCKET, null);
@@ -161,6 +166,11 @@ public class DispenserTest {
             ctx.expectBlockProperty(FRONT_POS, LeveledCauldronBlock.LEVEL, 2);
             ctx.complete();
         });
+    }
+
+    @GameTest(structureName = "dispenser_only", batchId = "rules/dispensersPlaceBlocks=all")
+    public void qcPutPowderSnow(TestContext ctx) {
+        dispense(ctx, new ItemStack(Items.POWDER_SNOW_BUCKET), Items.BUCKET, Blocks.POWDER_SNOW, null, null);
     }
 
     @GameTest(structureName = "dispenser_with_cauldron", batchId = "rules/dispensersInteractCauldron=true")
