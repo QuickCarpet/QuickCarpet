@@ -76,6 +76,8 @@
   "carpet.rule.drownedEnchantedTridentsFix.description": "Makes enchantments work on tridents thrown by drowned",
   "carpet.rule.dustOnPistons.description": "Makes redstone dust not pop off pistons",
   "carpet.rule.explosionNoBlockDamage.description": "Explosions won't destroy blocks",
+  "carpet.rule.extremeBehaviors.description": "Increases the odds of rare behaviors",
+  "carpet.rule.extremeBehaviors.extra": "- Droppers: changes the velocity distribution from normal (std 1) to uniform [-8;8)\n- Withers: increases the change for blue skulls from 1:1000 to 1:10",
   "carpet.rule.fallingBlockDuplicationFix.description": "Fix duplicating falling blocks using end portals",
   "carpet.rule.fillLimit.description": "Customizable fill/clone volume limit",
   "carpet.rule.fillUpdates.description": "fill/clone/setblock and structure blocks cause block updates",

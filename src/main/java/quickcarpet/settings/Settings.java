@@ -184,6 +184,9 @@ public class Settings {
     @Rule(category = TNT)
     public static boolean explosionNoBlockDamage = false;
 
+    @Rule(category = CREATIVE)
+    public static boolean extremeBehaviors = false;
+
     @Rule(
             options = {"32768", "250000", "1000000"},
             validator = Validator.Positive.class,

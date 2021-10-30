@@ -348,6 +348,17 @@ Default: `false`
 Options: `true`, `false`  
 Categories: tnt  
 
+## extremeBehaviors
+Increases the odds of rare behaviors
+
+- Droppers: changes the velocity distribution from normal (std 1) to uniform [-8;8)  
+- Withers: increases the change for blue skulls from 1:1000 to 1:10  
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: creative  
+
 ## fallingBlockDuplicationFix
 Fix duplicating falling blocks using end portals
 
