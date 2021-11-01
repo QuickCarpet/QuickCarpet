@@ -150,7 +150,7 @@ public class HopperCounter {
                 startTick = Math.min(startTick, c.startTick);
                 startMillis = Math.min(startMillis, c.startMillis);
                 for (Object2LongMap.Entry<Item> e : c.counter.object2LongEntrySet()) {
-                    counter.put(e.getKey(), counter.getLong(e) + e.getLongValue());
+                    counter.put(e.getKey(), counter.getLong(e.getKey()) + e.getLongValue());
                 }
             }
             pubSubProvider.publish();
