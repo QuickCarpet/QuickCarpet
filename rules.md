@@ -717,6 +717,14 @@ Default: `true`
 Options: `true`, `false`  
 Categories: tnt  
 
+## updateSuppressionBlock
+Sending block updates to a barrier block triggers update suppression
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: creative, experimental  
+
 ## updateSuppressionCrashFix
 Fixes updates suppression causing server crashes
 

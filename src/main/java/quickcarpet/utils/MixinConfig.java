@@ -75,6 +75,7 @@ public class MixinConfig {
         .putAll("terracottaRepeaters", "terracottaRepeaters")
         .putAll("tileTickLimit", "tileTickLimit")
         .putAll("tnt", "explosionNoBlockDamage", "tntUpdateOnPlace", "tntPrimeMomentum", "tntHardcodeAngle")
+        .putAll("updateSuppressionBlock", "updateSuppressionBlock")
         .putAll("updateSuppressionCrashFix", "updateSuppressionCrashFix")
         .putAll("xp", "xpCoolDown", "xpMerging")
         .build();

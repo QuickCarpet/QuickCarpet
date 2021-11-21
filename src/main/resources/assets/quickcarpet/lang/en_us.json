@@ -128,6 +128,7 @@
   "carpet.rule.tntHardcodeAngle.description": "Sets the horizontal random angle on TNT for debugging of TNT contraptions",
   "carpet.rule.tntPrimeMomentum.description": "Removes random TNT momentum when primed and set to false",
   "carpet.rule.tntUpdateOnPlace.description": "Whether TNT should check for redstone power when placed",
+  "carpet.rule.updateSuppressionBlock.description": "Sending block updates to a barrier block triggers update suppression",
   "carpet.rule.updateSuppressionCrashFix.description": "Fixes updates suppression causing server crashes",
   "carpet.rule.viewDistance.description": "View distance of the dedicated server",
   "carpet.rule.viewDistance.extra": "Use the vanilla client setting for integrated servers",

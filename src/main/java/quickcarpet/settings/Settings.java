@@ -357,6 +357,9 @@ public class Settings {
     @Rule(category = {FIX, EXPERIMENTAL})
     public static boolean updateSuppressionCrashFix = false;
 
+    @Rule(category = {CREATIVE, EXPERIMENTAL})
+    public static boolean updateSuppressionBlock = false;
+
     @Rule(category = {FEATURE, RENEWABLE})
     public static boolean renewableDeepslate = false;
 

@@ -128,6 +128,7 @@
     "tnt.ExplosionMixin",
     "tnt.TntBlockMixin",
     "tnt.TntEntityMixin",
+    "updateSuppressionBlock.BarrierBlockMixin",
     "updateSuppressionCrashFix.MinecraftServerMixin",
     "updateSuppressionCrashFix.ThreadExecutorMixin",
     "updateSuppressionCrashFix.WorldMixin",
