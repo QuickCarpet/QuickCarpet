@@ -9,10 +9,16 @@ import net.minecraft.text.MutableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.collection.Weighting;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.SpawnHelper;
+import net.minecraft.world.World;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.chunk.ChunkSection;
+import net.minecraft.world.chunk.WorldChunk;
 import quickcarpet.mixin.accessor.SpawnHelperAccessor;
+import quickcarpet.settings.Settings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,10 +40,8 @@ public class SpawnUtils {
 
     public static List<MutableText> list(ServerWorld world, BlockPos pos) {
         List<MutableText> result = new ArrayList<>();
-        Chunk chunk = world.getChunk(pos);
-        int heightmap = chunk.sampleHeightmap(Heightmap.Type.WORLD_SURFACE, pos.getX(), pos.getZ()) + 1;
-        BlockPos highestBlock = new BlockPos(pos.getX(), heightmap, pos.getZ());
-        result.add(t("command.spawn.list.highestBlock", tp(highestBlock, Formatting.AQUA)));
+        WorldChunk chunk = (WorldChunk) world.getChunk(pos);
+        Settings.spawningAlgorithm.addSpawnListLocationInfo(result, chunk, pos.getX(), pos.getZ());
         for (SpawnGroup group : SpawnGroup.values()) {
             var entries = SpawnHelperAccessor.invokeGetSpawnEntries(world, world.getStructureAccessor(), world.getChunkManager().getChunkGenerator(), group, pos, null).getEntries();
             if (entries.isEmpty()) continue;
@@ -79,5 +83,51 @@ public class SpawnUtils {
             }
         }
         return result;
+    }
+
+    public static int getLowestBlock(Chunk chunk, int x, int z) {
+        ChunkSection section = getLowestNonEmptySection(chunk);
+        if (section == null) return chunk.getHeight();
+        int localX = x & 0xf;
+        int localZ = z & 0xf;
+        for (int localY = 0; localY < 16; localY++) {
+            if (!section.getBlockState(localX, localY, localZ).isAir()) {
+                return section.getYOffset() + localY;
+            }
+        }
+        int height = chunk.getHeight();
+        BlockPos.Mutable pos = new BlockPos.Mutable(x, section.getYOffset() + 16, z);
+        while (pos.getY() < height) {
+            if (!chunk.getBlockState(pos).isAir()) return pos.getY();
+            pos.move(0, 1, 0);
+        }
+        return height;
+    }
+
+    public static ChunkSection getLowestNonEmptySection(Chunk chunk) {
+        ChunkSection[] sections = chunk.getSectionArray();
+        for (ChunkSection section : sections) {
+            if (!section.isEmpty()) return section;
+        }
+        return null;
+    }
+
+    public static BlockPos getSpawnPosVanilla(World world, WorldChunk chunk) {
+        ChunkPos chunkPos = chunk.getPos();
+        int x = chunkPos.getStartX() + world.random.nextInt(16);
+        int z = chunkPos.getStartZ() + world.random.nextInt(16);
+        int maxY = chunk.sampleHeightmap(Heightmap.Type.WORLD_SURFACE, x, z) + 1;
+        int y = MathHelper.nextBetween(world.random, world.getBottomY(), maxY);
+        return new BlockPos(x, y, z);
+    }
+
+    public static BlockPos getSpawnPosLowestToHighest(World world, WorldChunk chunk) {
+        ChunkPos chunkPos = chunk.getPos();
+        int x = chunkPos.getStartX() + world.random.nextInt(16);
+        int z = chunkPos.getStartZ() + world.random.nextInt(16);
+        int maxY = chunk.sampleHeightmap(Heightmap.Type.WORLD_SURFACE, x, z) + 1;
+        int minY = Math.min(getLowestBlock(chunk, x, z), maxY);
+        int y = MathHelper.nextBetween(world.random, minY, maxY);
+        return new BlockPos(x, y, z);
     }
 }

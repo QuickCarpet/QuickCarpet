@@ -348,6 +348,17 @@ Default: `false`
 Options: `true`, `false`  
 Categories: tnt  
 
+## extremeBehaviors
+Increases the odds of rare behaviors
+
+- Droppers: changes the velocity distribution from normal (std 1) to uniform [-8;8)  
+- Withers: increases the change for blue skulls from 1:1000 to 1:10  
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: creative  
+
 ## fallingBlockDuplicationFix
 Fix duplicating falling blocks using end portals
 
@@ -547,6 +558,14 @@ Default: `false`
 Options: `true`, `false`  
 Categories: feature, renewable  
 
+## renewableDeepslate
+Makes cobblestone generators generate deepslate instead if below y16
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: feature, renewable  
+
 ## renewableGravel
 Cobblestone crushed by falling anvils makes gravel, or silverfish drop a gravel item when breaking out of a block
 
@@ -631,6 +650,16 @@ Default: `11`
 Categories: experimental  
 Validator: `quickcarpet.settings.Settings$SpawnChunkLevel`  
 
+## spawningAlgorithm
+Select the algorithm used for mob spawning
+
+- smart: select blocks from the lowest non-air block up instead of the lowest buildable block  
+
+Type: `SpawningAlgorithm`  
+Default: `vanilla`  
+Options: `vanilla`, `smart`  
+Categories: experimental  
+
 ## stackableShulkerBoxes
 Empty shulker boxes can stack to 64 when dropped on the ground
 
@@ -697,6 +726,14 @@ Type: `boolean`
 Default: `true`  
 Options: `true`, `false`  
 Categories: tnt  
+
+## updateSuppressionBlock
+Sending block updates to a barrier block triggers update suppression
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: creative, experimental  
 
 ## updateSuppressionCrashFix
 Fixes updates suppression causing server crashes

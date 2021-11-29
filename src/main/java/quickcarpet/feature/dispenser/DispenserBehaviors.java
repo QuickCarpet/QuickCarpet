@@ -25,8 +25,9 @@ public final class DispenserBehaviors {
 
         if (item instanceof BlockItem blockItem && PlaceBlockBehavior.canPlace(blockItem.getBlock())) {
             if (ItemTags.CARPETS.contains(item)) return new MultiDispenserBehavior(PLACE_BLOCK, vanilla);
-            if (Settings.dispensersInteractCauldron && item instanceof PowderSnowBucketItem) {
-                return new MultiDispenserBehavior(INTERACT_CAULDRON, PLACE_BLOCK, vanilla);
+            if (item instanceof PowderSnowBucketItem) {
+                if (Settings.dispensersInteractCauldron) return new MultiDispenserBehavior(INTERACT_CAULDRON, vanilla);
+                return vanilla;
             }
             if (isDefault) return PLACE_BLOCK;
         }
