@@ -35,8 +35,8 @@ version = ver.toString()
 allprojects {
 	apply plugin: 'fabric-loom'
 
-	sourceCompatibility = JavaVersion.VERSION_16
-	targetCompatibility = JavaVersion.VERSION_16
+	sourceCompatibility = JavaVersion.VERSION_17
+	targetCompatibility = JavaVersion.VERSION_17
 
 	archivesBaseName = project.name
 	group = project.maven_group
@@ -64,7 +64,7 @@ allprojects {
 
 	tasks.withType(JavaCompile) {
 		options.encoding = "UTF-8"
-		it.options.release = 16
+		it.options.release = 17
 	}
 
 	processResources {

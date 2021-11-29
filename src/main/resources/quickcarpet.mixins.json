@@ -1,7 +1,7 @@
 {
   "required": true,
   "package": "quickcarpet.mixin",
-  "compatibilityLevel": "JAVA_16",
+  "compatibilityLevel": "JAVA_17",
   "plugin": "quickcarpet.utils.MixinConfigPlugin",
   "mixins": [
     "accessor.AxeItemAccessor",
@@ -121,8 +121,8 @@
     "tickSpeed.MinecraftServerMixin",
     "tickSpeed.ServerChunkManagerMixin",
     "tickSpeed.ServerWorldMixin",
-    "tileTickLimit.ServerTickSchedulerMixin",
-    "tileTickLimit.compat.lithium.LithiumServerTickSchedulerMixin",
+    "tileTickLimit.ServerWorldMixin",
+    "tileTickLimit.WorldTickSchedulerMixin",
     "tnt.ExplosionMixin",
     "tnt.TntBlockMixin",
     "tnt.TntEntityMixin",

@@ -23,7 +23,7 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
 
     @Inject(method = "setClientSettings", at = @At("HEAD"))
     private void applyLanguage(ClientSettingsC2SPacket settings, CallbackInfo ci) {
-        this.language = ((ClientSettingsC2SPacketAccessor) settings).getLanguage();
+        this.language = ((ClientSettingsC2SPacketAccessor) (Object) settings).getLanguage();
     }
 
     @Override

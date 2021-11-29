@@ -5,13 +5,13 @@ import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import net.minecraft.class_6625;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
+import net.minecraft.structure.StructureContext;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.chunk.Chunk;
@@ -111,7 +111,7 @@ public class StructureChannel implements ServerPluginChannelHandler {
                 ChunkPos chunkPos = new ChunkPos(pos);
                 if (chunkMap.computeIntIfAbsent(chunkPos, c -> 1) > 1) continue;
                 Chunk chunk = world.getChunk(chunkPos.x, chunkPos.z);
-                starts.add(chunk.getStructureStart(StructureFeature.STRUCTURES.get(ref.getKey())).toNbt(class_6625.method_38713(world), chunkPos));
+                starts.add(chunk.getStructureStart(StructureFeature.STRUCTURES.get(ref.getKey())).toNbt(StructureContext.from(world), chunkPos));
             }
         }
         NbtCompound data = new NbtCompound();

@@ -22,22 +22,22 @@ public abstract class ServerWorldMixin extends World {
         super(properties, registryKey, dimensionType, supplier, bl, bl2, l);
     }
 
-    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerTickScheduler;tick()V", ordinal = 0))
+    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/tick/WorldTickScheduler;tick(JILjava/util/function/BiConsumer;)V", ordinal = 0))
     private void startTickBlocks(BooleanSupplier b, CallbackInfo ci) {
         CarpetProfiler.startSection(this, CarpetProfiler.SectionType.BLOCKS);
     }
 
-    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerTickScheduler;tick()V", ordinal = 0, shift = At.Shift.AFTER))
+    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/tick/WorldTickScheduler;tick(JILjava/util/function/BiConsumer;)V", ordinal = 0, shift = At.Shift.AFTER))
     private void endTickBlocks(BooleanSupplier b, CallbackInfo ci) {
         CarpetProfiler.endSection(this, CarpetProfiler.SectionType.BLOCKS);
     }
 
-    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerTickScheduler;tick()V", ordinal = 1))
+    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/tick/WorldTickScheduler;tick(JILjava/util/function/BiConsumer;)V", ordinal = 1))
     private void startTickFluids(BooleanSupplier b, CallbackInfo ci) {
         CarpetProfiler.startSection(this, CarpetProfiler.SectionType.FLUIDS);
     }
 
-    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerTickScheduler;tick()V", ordinal = 1, shift = At.Shift.AFTER))
+    @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/tick/WorldTickScheduler;tick(JILjava/util/function/BiConsumer;)V", ordinal = 1, shift = At.Shift.AFTER))
     private void endTickFluids(BooleanSupplier b, CallbackInfo ci) {
         CarpetProfiler.endSection(this, CarpetProfiler.SectionType.FLUIDS);
     }

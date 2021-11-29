@@ -10,7 +10,6 @@ import net.minecraft.test.*;
 import net.minecraft.util.Util;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.profiling.jfr.FlightProfiler;
 import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.world.level.storage.LevelStorage;
 import org.apache.logging.log4j.LogManager;
@@ -75,7 +74,6 @@ public class ServerStarter {
     public static void main(String[] args) throws Throwable {
         SharedConstants.createGameVersion();
         SharedConstants.isDevelopment = true;
-        FlightProfiler.INSTANCE.registerEvents();
         CrashReport.initCrashReport();
         Bootstrap.initialize();
         Bootstrap.logMissing();

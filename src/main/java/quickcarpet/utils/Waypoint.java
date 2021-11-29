@@ -26,7 +26,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -153,9 +152,9 @@ public record Waypoint(UnnamedWaypoint location, String name) implements Compara
     }
 
     public static Path getWaypointFile(WaypointContainer world) {
-        File rootFile = new File(".");
-        File saveDirFile = DimensionType.getSaveDirectory(world.getWaypointWorldKey(), rootFile);
-        Path relPath = rootFile.toPath().relativize(saveDirFile.toPath()).resolve("data/waypoints.json");
+        Path rootPath = Path.of(".");
+        Path saveDirPath = DimensionType.getSaveDirectory(world.getWaypointWorldKey(), rootPath);
+        Path relPath = rootPath.relativize(saveDirPath).resolve("data/waypoints.json");
         return QuickCarpetServer.getConfigFile(WorldSavePath.ROOT).resolve(relPath);
     }
 
