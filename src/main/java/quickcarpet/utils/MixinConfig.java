@@ -71,6 +71,7 @@ public class MixinConfig {
         .putAll("sparkingLighter", "sparkingLighter")
         .putAll("spawnChunkLevel", "spawnChunkLevel")
         .putAll("spawning", "shulkerSpawningInEndCities", "phantomsRespectMobcap")
+        .putAll("spawningAlgorithm", "spawningAlgorithm")
         .putAll("stackableShulkerBoxes", "stackableShulkerBoxes", "stackableShulkerBoxesInInventories")
         .putAll("terracottaRepeaters", "terracottaRepeaters")
         .putAll("tileTickLimit", "tileTickLimit")

@@ -19,6 +19,7 @@ import quickcarpet.api.settings.*;
 import quickcarpet.feature.dispenser.BreakBlockBehavior;
 import quickcarpet.feature.dispenser.PlaceBlockBehavior;
 import quickcarpet.utils.Messenger;
+import quickcarpet.utils.SpawningAlgorithm;
 import quickcarpet.utils.Translations;
 
 import java.io.FileOutputStream;
@@ -320,6 +321,9 @@ public class Settings {
 
     @Rule(category = EXPERIMENTAL, onChange = SpawnChunkLevel.class, validator = SpawnChunkLevel.class)
     public static int spawnChunkLevel = 11;
+
+    @Rule(category = EXPERIMENTAL)
+    public static SpawningAlgorithm spawningAlgorithm = SpawningAlgorithm.VANILLA;
 
     @Rule(category = SURVIVAL)
     public static boolean stackableShulkerBoxes = false;

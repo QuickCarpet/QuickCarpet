@@ -116,6 +116,7 @@
     "spawning.PhantomSpawnerMixin",
     "spawning.SpawnHelperMixin",
     "spawning.SpawnRestrictionMixin",
+    "spawningAlgorithm.SpawnHelperMixin",
     "stackableShulkerBoxes.ItemEntityMixin",
     "stackableShulkerBoxes.ItemStackMixin",
     "terracottaRepeaters.AbstractRedstoneGateBlockMixin",

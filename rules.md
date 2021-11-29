@@ -650,6 +650,16 @@ Default: `11`
 Categories: experimental  
 Validator: `quickcarpet.settings.Settings$SpawnChunkLevel`  
 
+## spawningAlgorithm
+Select the algorithm used for mob spawning
+
+- smart: select blocks from the lowest non-air block up instead of the lowest buildable block  
+
+Type: `SpawningAlgorithm`  
+Default: `vanilla`  
+Options: `vanilla`, `smart`  
+Categories: experimental  
+
 ## stackableShulkerBoxes
 Empty shulker boxes can stack to 64 when dropped on the ground
 
