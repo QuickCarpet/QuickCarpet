@@ -1,6 +1,8 @@
 package quickcarpet.mixin.core;
 
 import net.minecraft.network.ClientConnection;
+import net.minecraft.network.NetworkThreadUtils;
+import net.minecraft.network.listener.ServerPlayPacketListener;
 import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
@@ -25,6 +27,7 @@ public class ServerPlayNetworkHandlerMixin {
 
     @Inject(method = "onCustomPayload", at = @At("HEAD"))
     private void processCustomPacket(CustomPayloadC2SPacket packet, CallbackInfo ci) {
+        NetworkThreadUtils.forceMainThread(packet, (ServerPlayPacketListener) this, this.player.getWorld());
         QuickCarpetServer.getInstance().getPluginChannelManager().process(this.player, packet);
     }
 
