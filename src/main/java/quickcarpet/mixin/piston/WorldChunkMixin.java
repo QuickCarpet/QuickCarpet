@@ -90,10 +90,12 @@ public abstract class WorldChunkMixin extends Chunk implements ExtendedWorldChun
                 }
 
                 if (newBlockState.hasBlockEntity()) {
-                    BlockEntity blockEntity = this.getBlockEntity(pos, WorldChunk.CreationType.CHECK);
-                    if (blockEntity == null && newBlockEntity != null) {
+                    BlockEntity blockEntity;
+                    if (newBlockEntity != null) {
                         this.addBlockEntity(newBlockEntity);
                         blockEntity = newBlockEntity;
+                    } else {
+                        blockEntity = this.getBlockEntity(pos, WorldChunk.CreationType.CHECK);
                     }
                     if (blockEntity == null) {
                         blockEntity = ((BlockEntityProvider)newBlock).createBlockEntity(pos, newBlockState);
