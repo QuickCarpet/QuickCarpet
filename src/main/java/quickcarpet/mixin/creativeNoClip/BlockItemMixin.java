@@ -20,7 +20,7 @@ public class BlockItemMixin {
         PlayerEntity player = context1.getPlayer();
         if (player != null && Utils.isNoClip(player)) {
             VoxelShape shape = state.getCollisionShape(world, pos, context);
-            return shape.isEmpty() || world.intersectsEntities(player, shape.offset(pos.getX(), pos.getY(), pos.getZ()));
+            return shape.isEmpty() || world.doesNotIntersectEntities(player, shape.offset(pos.getX(), pos.getY(), pos.getZ()));
         }
         return world.canPlace(state, pos, context);
     }

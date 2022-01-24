@@ -50,7 +50,7 @@ public final class DataTrackerUtils {
         FACING(TrackedDataHandlerRegistry.FACING, (Formatter<Direction>) Formatter.ENUM),
         OPTIONAL_UUID(TrackedDataHandlerRegistry.OPTIONAL_UUID, Formatter.optional((Formatter<UUID>) Formatter.OBJECT)),
         OPTIONAL_BLOCK_STATE(TrackedDataHandlerRegistry.OPTIONAL_BLOCK_STATE, Formatter.optional(Formatter.BLOCK_STATE)),
-        COMPOUND_TAG(TrackedDataHandlerRegistry.TAG_COMPOUND, Formatter.COMPOUND_TAG),
+        COMPOUND_TAG(TrackedDataHandlerRegistry.NBT_COMPOUND, Formatter.COMPOUND_TAG),
         PARTICLE(TrackedDataHandlerRegistry.PARTICLE, Formatter.PARTICLE),
         VILLAGER_DATA(TrackedDataHandlerRegistry.VILLAGER_DATA, Formatter.VILLAGER_DATA),
         ENTITY_ID(TrackedDataHandlerRegistry.FIREWORK_DATA, Formatter.OPTIONAL_INT),
@@ -231,8 +231,8 @@ public final class DataTrackerUtils {
         register(PlayerEntity.class, INTEGER, "score");
         register(PlayerEntity.class, BYTE, "model_parts");
         register(PlayerEntity.class, BYTE, "main_hand");
-        register(PlayerEntity.class, TAG_COMPOUND, "left_shoulder_entity");
-        register(PlayerEntity.class, TAG_COMPOUND, "right_shoulder_entity");
+        register(PlayerEntity.class, NBT_COMPOUND, "left_shoulder_entity");
+        register(PlayerEntity.class, NBT_COMPOUND, "right_shoulder_entity");
         register(PolarBearEntity.class, BOOLEAN, "warning");
         register(PufferfishEntity.class, INTEGER, "puff_state");
         register(RabbitEntity.class, INTEGER, "type");
