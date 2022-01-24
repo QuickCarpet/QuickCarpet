@@ -13,7 +13,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 import quickcarpet.settings.Settings;
@@ -31,8 +30,7 @@ public abstract class FallingBlockEntityMixin extends Entity {
     private int packedIceCount;
 
     @Inject(method = "tick", at = @At(value = "INVOKE", ordinal = 0,
-            target = "Lnet/minecraft/entity/FallingBlockEntity;discard()V"),
-            slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;isOf(Lnet/minecraft/block/Block;)Z", ordinal = 1)),
+            target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"),
             locals = LocalCapture.CAPTURE_FAILHARD,
             cancellable = true)
     private void onTick(CallbackInfo ci, Block block, BlockPos pos) {
