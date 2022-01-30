@@ -42,8 +42,9 @@ public class CraftingTableBlockEntity extends LockableContainerBlockEntity imple
     public DefaultedList<ItemStack> inventory;
     public ItemStack output = ItemStack.EMPTY;
     private final List<AutoCraftingTableContainer> openContainers = new ArrayList<>();
+    private @Nullable Recipe<?> lastRecipe;
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    private Optional<CraftingRecipe> cachedRecipe;
+    private @Nullable Optional<CraftingRecipe> cachedRecipe;
 
     public CraftingTableBlockEntity(BlockPos pos, BlockState state) {
         this(CarpetRegistry.CRAFTING_TABLE_BLOCK_ENTITY_TYPE, pos, state);
@@ -188,14 +189,14 @@ public class CraftingTableBlockEntity extends LockableContainerBlockEntity imple
     }
 
     @Override
-    public void setLastRecipe(@Nullable Recipe<?> var1) {
-
+    public void setLastRecipe(@Nullable Recipe<?> recipe) {
+        lastRecipe = recipe;
     }
 
     @Nullable
     @Override
     public Recipe<?> getLastRecipe() {
-        return null;
+        return lastRecipe;
     }
 
     @Override
@@ -206,8 +207,17 @@ public class CraftingTableBlockEntity extends LockableContainerBlockEntity imple
 
     private Optional<CraftingRecipe> getCurrentRecipe() {
         if (this.world == null) return Optional.empty();
-        if (cachedRecipe != null) return cachedRecipe;
-        return cachedRecipe = this.world.getRecipeManager().getFirstMatch(RecipeType.CRAFTING, craftingInventory, world);
+        Optional<CraftingRecipe> recipe = cachedRecipe;
+        if (recipe == null) {
+            if (lastRecipe instanceof CraftingRecipe last && last.matches(craftingInventory, world)) {
+                recipe = Optional.of(last);
+            } else {
+                recipe = this.world.getRecipeManager().getFirstMatch(RecipeType.CRAFTING, craftingInventory, world);
+            }
+        }
+        recipe.ifPresent(this::setLastRecipe);
+        cachedRecipe = recipe;
+        return recipe;
     }
 
     private ItemStack craft() {
