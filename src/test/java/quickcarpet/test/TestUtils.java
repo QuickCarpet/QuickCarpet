@@ -1,6 +1,7 @@
 package quickcarpet.test;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemStack;
 import net.minecraft.test.GameTestException;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.math.BlockPos;
@@ -43,6 +44,12 @@ public class TestUtils {
                 e.initCause(throwable);
                 throw e;
             }
+        }
+    }
+
+    public static void assertStackEquals(ItemStack expected, ItemStack actual) {
+        if (!ItemStack.areEqual(expected, actual)) {
+            throw new AssertionError("Expected " + expected + ", got " + actual);
         }
     }
 }

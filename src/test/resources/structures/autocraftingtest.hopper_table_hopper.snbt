@@ -1,0 +1,21 @@
+{
+    DataVersion: 2730,
+    size: [2, 4, 1],
+    data: [
+        {pos: [0, 0, 0], state: "minecraft:polished_andesite"},
+        {pos: [0, 1, 0], state: "minecraft:hopper{enabled:true,facing:down}", nbt: {Items: [], TransferCooldown: 0, id: "minecraft:hopper"}},
+        {pos: [0, 2, 0], state: "minecraft:crafting_table", nbt: {Items: [], Output: {id: "minecraft:air", Count: 1}, id: "carpet:crafting_table"}},
+        {pos: [0, 3, 0], state: "minecraft:hopper{enabled:true,facing:down}", nbt: {Items: [], TransferCooldown: 0, id: "minecraft:hopper"}},
+        {pos: [1, 0, 0], state: "minecraft:polished_andesite"},
+        {pos: [1, 1, 0], state: "minecraft:air"},
+        {pos: [1, 2, 0], state: "minecraft:air"},
+        {pos: [1, 3, 0], state: "minecraft:air"}
+    ],
+    entities: [],
+    palette: [
+        "minecraft:air",
+        "minecraft:polished_andesite",
+        "minecraft:crafting_table",
+        "minecraft:hopper{enabled:true,facing:down}"
+    ]
+}
