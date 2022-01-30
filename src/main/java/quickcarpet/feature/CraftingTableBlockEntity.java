@@ -250,4 +250,8 @@ public class CraftingTableBlockEntity extends LockableContainerBlockEntity imple
     public void onContainerClose(AutoCraftingTableContainer container) {
         this.openContainers.remove(container);
     }
+
+    public boolean matches(Recipe<? super CraftingInventory> recipe) {
+        return this.world != null && recipe.matches(this.craftingInventory, this.world);
+    }
 }
