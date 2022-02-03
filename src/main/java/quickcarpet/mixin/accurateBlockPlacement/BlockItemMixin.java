@@ -1,4 +1,4 @@
-package quickcarpet.mixin.blockPlacement;
+package quickcarpet.mixin.accurateBlockPlacement;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

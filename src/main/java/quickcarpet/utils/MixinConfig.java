@@ -33,6 +33,7 @@ public class MixinConfig {
     static final Multimap<String, String> MIXIN_TO_RULES;
     static {
         var identityMapped = Set.of(
+            "accurateBlockPlacement",
             "alwaysBaby",
             "antiCheat",
             "autoCraftingTable",
@@ -50,6 +51,7 @@ public class MixinConfig {
             "extremeBehaviors",
             "fallingBlockDuplicationFix",
             "fillLimit",
+            "flippinCactus",
             "hopperCounters",
             "hopperMinecartCooldown",
             "hopperMinecartItemTransfer",
@@ -77,7 +79,6 @@ public class MixinConfig {
             "xpMerging"
         );
         var builder = ImmutableMultimap.<String, String>builder()
-        .putAll("blockPlacement", "accurateBlockPlacement", "flippinCactus")
         .putAll("dispenser", "dispensersBreakBlocks", "dispensersPlaceBlocks", "dispensersShearVines", "dispensersStripLogs", "dispensersTillSoil", "renewableNetherrack")
         .putAll("fillUpdates", "fillUpdates", "fillUpdatesPostProcessing")
         .putAll("movingBlockDuplicationFix", "carpetDuplicationFix", "railDuplicationFix", "tntDuplicationFix")

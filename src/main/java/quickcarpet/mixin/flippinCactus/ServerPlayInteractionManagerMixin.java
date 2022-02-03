@@ -1,4 +1,4 @@
-package quickcarpet.mixin.blockPlacement;
+package quickcarpet.mixin.flippinCactus;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
