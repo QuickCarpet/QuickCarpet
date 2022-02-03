@@ -139,7 +139,8 @@
     "updateSuppressionCrashFix.ThreadExecutorMixin",
     "updateSuppressionCrashFix.WorldMixin",
     "waypoints.ServerWorldMixin",
-    "xp.ExperienceOrbEntityMixin"
+    "xpCoolDown.ExperienceOrbEntityMixin",
+    "xpMerging.ExperienceOrbEntityMixin"
   ],
   "client": [
     "accessor.PlayerListHudAccessor",

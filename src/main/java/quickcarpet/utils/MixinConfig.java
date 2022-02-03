@@ -68,7 +68,9 @@ public class MixinConfig {
             "terracottaRepeaters",
             "tileTickLimit",
             "updateSuppressionBlock",
-            "updateSuppressionCrashFix"
+            "updateSuppressionCrashFix",
+            "xpCoolDown",
+            "xpMerging"
         );
         var builder = ImmutableMultimap.<String, String>builder()
         .putAll("blockPlacement", "accurateBlockPlacement", "flippinCactus")
@@ -81,8 +83,7 @@ public class MixinConfig {
         .putAll("renewableFromSilverfish", "renewableSand/silverfish", "renewableGravel/silverfish")
         .putAll("spawning", "shulkerSpawningInEndCities", "phantomsRespectMobcap")
         .putAll("stackableShulkerBoxes", "stackableShulkerBoxes", "stackableShulkerBoxesInInventories")
-        .putAll("tnt", "explosionNoBlockDamage", "tntUpdateOnPlace", "tntPrimeMomentum", "tntHardcodeAngle")
-        .putAll("xp", "xpCoolDown", "xpMerging");
+        .putAll("tnt", "explosionNoBlockDamage", "tntUpdateOnPlace", "tntPrimeMomentum", "tntHardcodeAngle");
         for (String rule : identityMapped) {
             builder.put(rule, rule);
         }
