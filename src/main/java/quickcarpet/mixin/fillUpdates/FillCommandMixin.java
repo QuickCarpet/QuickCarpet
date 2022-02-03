@@ -1,4 +1,4 @@
-package quickcarpet.mixin.commands;
+package quickcarpet.mixin.fillUpdates;
 
 import net.minecraft.block.Block;
 import net.minecraft.command.argument.BlockStateArgument;
@@ -7,8 +7,6 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Constant;
-import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.Constants;
@@ -24,10 +22,5 @@ public class FillCommandMixin {
     private static void fillUpdates(ServerWorld serverWorld, BlockPos pos, Block block) {
         if (!Settings.fillUpdates) return;
         serverWorld.updateNeighbors(pos, block);
-    }
-
-    @ModifyConstant(method = "execute", constant = @Constant(intValue = 32768))
-    private static int fillLimit(int old) {
-        return Settings.fillLimit;
     }
 }

@@ -1,4 +1,4 @@
-package quickcarpet.mixin.commands;
+package quickcarpet.mixin.fillUpdates;
 
 import net.minecraft.block.Block;
 import net.minecraft.command.argument.BlockStateArgument;

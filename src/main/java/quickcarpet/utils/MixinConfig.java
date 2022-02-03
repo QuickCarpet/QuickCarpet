@@ -48,6 +48,7 @@ public class MixinConfig {
             "dustOnPistons",
             "extremeBehaviors",
             "fallingBlockDuplicationFix",
+            "fillLimit",
             "hopperCounters",
             "hopperMinecartCooldown",
             "hopperMinecartItemTransfer",
@@ -71,7 +72,6 @@ public class MixinConfig {
         );
         var builder = ImmutableMultimap.<String, String>builder()
         .putAll("blockPlacement", "accurateBlockPlacement", "flippinCactus")
-        .putAll("commands", "fillLimit")
         .putAll("dispenser", "dispensersBreakBlocks", "dispensersPlaceBlocks", "dispensersShearVines", "dispensersStripLogs", "dispensersTillSoil", "renewableNetherrack")
         .putAll("fillUpdates", "fillUpdates", "fillUpdatesPostProcessing")
         .putAll("movingBlockDuplicationFix", "carpetDuplicationFix", "railDuplicationFix", "tntDuplicationFix")
