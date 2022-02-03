@@ -1,4 +1,4 @@
-package quickcarpet.mixin.tnt;
+package quickcarpet.mixin.tntUpdateOnPlace;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.TntBlock;

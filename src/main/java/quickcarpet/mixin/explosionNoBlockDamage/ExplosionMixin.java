@@ -1,4 +1,4 @@
-package quickcarpet.mixin.tnt;
+package quickcarpet.mixin.explosionNoBlockDamage;
 
 import net.minecraft.world.explosion.Explosion;
 import org.spongepowered.asm.mixin.Mixin;
