@@ -1,4 +1,4 @@
-package quickcarpet.mixin.player;
+package quickcarpet.mixin.commandPlayer;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;

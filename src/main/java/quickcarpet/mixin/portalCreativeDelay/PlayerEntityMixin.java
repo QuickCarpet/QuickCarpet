@@ -1,4 +1,4 @@
-package quickcarpet.mixin.player;
+package quickcarpet.mixin.portalCreativeDelay;
 
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;

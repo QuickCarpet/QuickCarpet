@@ -41,6 +41,7 @@ public class MixinConfig {
             "blockEntityFix",
             "calmNetherFires",
             "carefulBreak",
+            "commandPlayer",
             "commandScoreboardPublic",
             "connectionTimeout",
             "creativeNoClip",
@@ -56,6 +57,7 @@ public class MixinConfig {
             "lightningKillsDropsFix",
             "nbtMotionLimit",
             "netherMaps",
+            "portalCreativeDelay",
             "railPowerLimit",
             "renewableCoral",
             "renewableDeepslate",
@@ -78,7 +80,6 @@ public class MixinConfig {
         .putAll("fillUpdates", "fillUpdates", "fillUpdatesPostProcessing")
         .putAll("movingBlockDuplicationFix", "carpetDuplicationFix", "railDuplicationFix", "tntDuplicationFix")
         .putAll("piston", "doubleRetraction", "movableBlockEntities", "movableBlockOverrides", "pushLimit")
-        .putAll("player", "portalCreativeDelay", "commandPlayer")
         .putAll("renewableFromAnvil", "renewableSand/anvil", "renewableGravel/anvil", "anvilledIce", "anvilledPackedIce", "anvilledBlueIce")
         .putAll("renewableFromSilverfish", "renewableSand/silverfish", "renewableGravel/silverfish")
         .putAll("spawning", "shulkerSpawningInEndCities", "phantomsRespectMobcap")

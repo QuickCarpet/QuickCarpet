@@ -1,4 +1,4 @@
-package quickcarpet.mixin.player;
+package quickcarpet.mixin.commandPlayer;
 
 import com.mojang.authlib.GameProfile;
 import net.minecraft.server.MinecraftServer;

@@ -1,4 +1,4 @@
-package quickcarpet.mixin.player;
+package quickcarpet.mixin.commandPlayer;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.ClientConnection;
