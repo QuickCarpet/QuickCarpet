@@ -1,7 +1,6 @@
 package quickcarpet.utils;
 
 import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.MultimapBuilder;
 import org.apache.logging.log4j.LogManager;
@@ -31,61 +30,69 @@ public class MixinConfig {
     /**
      * Mapping from mixin packages to rules that are disabled together with them
      */
-    static final Multimap<String, String> MIXIN_TO_RULES = ImmutableMultimap.<String, String>builder()
-        .putAll("alwaysBaby", "alwaysBaby")
-        .putAll("antiCheat", "antiCheat")
-        .putAll("autoCraftingTable", "autoCraftingTable")
-        .putAll("betterChunkLoading", "betterChunkLoading")
-        .putAll("betterStatistics", "betterStatistics")
-        .putAll("blockEntityFix", "blockEntityFix")
+    static final Multimap<String, String> MIXIN_TO_RULES;
+    static {
+        var identityMapped = Set.of(
+            "alwaysBaby",
+            "antiCheat",
+            "autoCraftingTable",
+            "betterChunkLoading",
+            "betterStatistics",
+            "blockEntityFix",
+            "calmNetherFires",
+            "carefulBreak",
+            "commandScoreboardPublic",
+            "connectionTimeout",
+            "creativeNoClip",
+            "drownedEnchantedTridentsFix",
+            "extremeBehaviors",
+            "fallingBlockDuplicationFix",
+            "hopperCounters",
+            "hopperMinecartCooldown",
+            "hopperMinecartItemTransfer",
+            "infiniteHopper",
+            "lightningKillsDropsFix",
+            "nbtMotionLimit",
+            "netherMaps",
+            "railPowerLimit",
+            "renewableCoral",
+            "renewableDeepslate",
+            "renewableLava",
+            "renewableSoulSand",
+            "renewableSponges",
+            "sparkingLighter",
+            "spawnChunkLevel",
+            "spawningAlgorithm",
+            "terracottaRepeaters",
+            "tileTickLimit",
+            "updateSuppressionBlock",
+            "updateSuppressionCrashFix"
+        );
+        var builder = ImmutableMultimap.<String, String>builder()
         .putAll("blockPlacement", "accurateBlockPlacement", "flippinCactus")
-        .putAll("calmNetherFires", "calmNetherFires")
-        .putAll("carefulBreak", "carefulBreak")
         .putAll("commands", "fillLimit")
-        .putAll("commandScoreboardPublic", "commandScoreboardPublic")
-        .putAll("connectionTimeout", "connectionTimeout")
-        .putAll("creativeNoClip", "creativeNoClip")
         .putAll("dispenser", "dispensersBreakBlocks", "dispensersPlaceBlocks", "dispensersShearVines", "dispensersStripLogs", "dispensersTillSoil", "renewableNetherrack")
-        .putAll("drownedEnchantedTridentsFix", "drownedEnchantedTridentsFix")
-        .putAll("extremeBehaviors", "extremeBehaviors")
-        .putAll("fallingBlockDuplicationFix", "fallingBlockDuplicationFix")
         .putAll("fillUpdates", "fillUpdates", "fillUpdatesPostProcessing")
-        .putAll("hopperCounters", "hopperCounters")
-        .putAll("hopperMinecartCooldown", "hopperMinecartCooldown")
-        .putAll("hopperMinecartItemTransfer", "hopperMinecartItemTransfer")
-        .putAll("infiniteHopper", "infiniteHopper")
-        .putAll("lightningKillsDropsFix", "lightningKillsDropsFix")
         .putAll("movingBlockDuplicationFix", "carpetDuplicationFix", "railDuplicationFix", "tntDuplicationFix")
-        .putAll("nbtMotionLimit", "nbtMotionLimit")
-        .putAll("netherMaps", "netherMaps")
         .putAll("piston", "doubleRetraction", "movableBlockEntities", "movableBlockOverrides", "pushLimit")
         .putAll("player", "portalCreativeDelay", "commandPlayer")
-        .putAll("railPowerLimit", "railPowerLimit")
         .putAll("redstone", "dustOnPistons")
-        .putAll("renewableCoral", "renewableCoral")
-        .putAll("renewableDeepslate", "renewableDeepslate")
         .putAll("renewableFromAnvil", "renewableSand/anvil", "renewableGravel/anvil", "anvilledIce", "anvilledPackedIce", "anvilledBlueIce")
         .putAll("renewableFromSilverfish", "renewableSand/silverfish", "renewableGravel/silverfish")
-        .putAll("renewableLava", "renewableLava")
-        .putAll("renewableSoulSand", "renewableSoulSand")
-        .putAll("renewableSponges", "renewableSponges")
-        .putAll("sparkingLighter", "sparkingLighter")
-        .putAll("spawnChunkLevel", "spawnChunkLevel")
         .putAll("spawning", "shulkerSpawningInEndCities", "phantomsRespectMobcap")
-        .putAll("spawningAlgorithm", "spawningAlgorithm")
         .putAll("stackableShulkerBoxes", "stackableShulkerBoxes", "stackableShulkerBoxesInInventories")
-        .putAll("terracottaRepeaters", "terracottaRepeaters")
-        .putAll("tileTickLimit", "tileTickLimit")
         .putAll("tnt", "explosionNoBlockDamage", "tntUpdateOnPlace", "tntPrimeMomentum", "tntHardcodeAngle")
-        .putAll("updateSuppressionBlock", "updateSuppressionBlock")
-        .putAll("updateSuppressionCrashFix", "updateSuppressionCrashFix")
-        .putAll("xp", "xpCoolDown", "xpMerging")
-        .build();
+        .putAll("xp", "xpCoolDown", "xpMerging");
+        for (String rule : identityMapped) {
+            builder.put(rule, rule);
+        }
+        MIXIN_TO_RULES = builder.build();
+    }
 
     /**
      * Mixins that can be disabled without affecting rules
      */
-    static final Set<String> MIXINS_WITHOUT_RULES = ImmutableSet.of(
+    static final Set<String> MIXINS_WITHOUT_RULES = Set.of(
         "fabricApi",
         "packetCounter"
     );
@@ -93,7 +100,7 @@ public class MixinConfig {
     /**
      * Mixins that can't be disabled
      */
-    static final Set<String> CORE_MIXINS = ImmutableSet.of(
+    static final Set<String> CORE_MIXINS = Set.of(
         "accessor",
         "client",
         "core",
@@ -105,7 +112,6 @@ public class MixinConfig {
 
     private final Set<String> disabledMixins = new HashSet<>();
     private final Set<String> disabledRules = new HashSet<>();
-    @SuppressWarnings("UnstableApiUsage")
     private final Multimap<String, String> disabledOptions = MultimapBuilder.hashKeys().hashSetValues().build();
 
     public MixinConfig(Properties properties) {
