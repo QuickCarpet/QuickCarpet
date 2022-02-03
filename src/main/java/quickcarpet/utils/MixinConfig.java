@@ -45,6 +45,7 @@ public class MixinConfig {
             "connectionTimeout",
             "creativeNoClip",
             "drownedEnchantedTridentsFix",
+            "dustOnPistons",
             "extremeBehaviors",
             "fallingBlockDuplicationFix",
             "hopperCounters",
@@ -76,7 +77,6 @@ public class MixinConfig {
         .putAll("movingBlockDuplicationFix", "carpetDuplicationFix", "railDuplicationFix", "tntDuplicationFix")
         .putAll("piston", "doubleRetraction", "movableBlockEntities", "movableBlockOverrides", "pushLimit")
         .putAll("player", "portalCreativeDelay", "commandPlayer")
-        .putAll("redstone", "dustOnPistons")
         .putAll("renewableFromAnvil", "renewableSand/anvil", "renewableGravel/anvil", "anvilledIce", "anvilledPackedIce", "anvilledBlueIce")
         .putAll("renewableFromSilverfish", "renewableSand/silverfish", "renewableGravel/silverfish")
         .putAll("spawning", "shulkerSpawningInEndCities", "phantomsRespectMobcap")

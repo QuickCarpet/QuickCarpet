@@ -1,4 +1,4 @@
-package quickcarpet.mixin.redstone;
+package quickcarpet.mixin.dustOnPistons;
 
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
