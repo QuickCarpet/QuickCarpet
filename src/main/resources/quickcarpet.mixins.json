@@ -45,6 +45,7 @@
     "commands.CloneCommandMixin",
     "commands.FillCommandMixin",
     "commands.SetBlockCommandMixin",
+    "commandScoreboardPublic.ScoreboardCommandMixin",
     "connectionTimeout.ServerLoginNetworkHandlerMixin",
     "core.AbstractBlockMixin",
     "core.ArgumentTypesMixin",
