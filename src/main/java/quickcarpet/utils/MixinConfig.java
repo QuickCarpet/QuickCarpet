@@ -57,6 +57,7 @@ public class MixinConfig {
             "lightningKillsDropsFix",
             "nbtMotionLimit",
             "netherMaps",
+            "phantomsRespectMobcap",
             "portalCreativeDelay",
             "railPowerLimit",
             "renewableCoral",
@@ -64,6 +65,7 @@ public class MixinConfig {
             "renewableLava",
             "renewableSoulSand",
             "renewableSponges",
+            "shulkerSpawningInEndCities",
             "sparkingLighter",
             "spawnChunkLevel",
             "spawningAlgorithm",
@@ -82,7 +84,6 @@ public class MixinConfig {
         .putAll("piston", "doubleRetraction", "movableBlockEntities", "movableBlockOverrides", "pushLimit")
         .putAll("renewableFromAnvil", "renewableSand/anvil", "renewableGravel/anvil", "anvilledIce", "anvilledPackedIce", "anvilledBlueIce")
         .putAll("renewableFromSilverfish", "renewableSand/silverfish", "renewableGravel/silverfish")
-        .putAll("spawning", "shulkerSpawningInEndCities", "phantomsRespectMobcap")
         .putAll("stackableShulkerBoxes", "stackableShulkerBoxes", "stackableShulkerBoxesInInventories")
         .putAll("tnt", "explosionNoBlockDamage", "tntUpdateOnPlace", "tntPrimeMomentum", "tntHardcodeAngle");
         for (String rule : identityMapped) {
@@ -96,7 +97,8 @@ public class MixinConfig {
      */
     static final Set<String> MIXINS_WITHOUT_RULES = Set.of(
         "fabricApi",
-        "packetCounter"
+        "packetCounter",
+        "spawning"
     );
 
     /**

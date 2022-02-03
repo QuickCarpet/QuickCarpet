@@ -1,4 +1,4 @@
-package quickcarpet.mixin.spawning;
+package quickcarpet.mixin.shulkerSpawningInEndCities;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnRestriction;

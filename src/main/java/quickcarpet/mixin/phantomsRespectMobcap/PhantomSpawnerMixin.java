@@ -1,4 +1,4 @@
-package quickcarpet.mixin.spawning;
+package quickcarpet.mixin.phantomsRespectMobcap;
 
 import net.minecraft.entity.EntityType;
 import net.minecraft.server.world.ServerWorld;

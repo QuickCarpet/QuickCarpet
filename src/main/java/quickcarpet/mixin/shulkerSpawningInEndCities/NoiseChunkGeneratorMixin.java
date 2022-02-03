@@ -1,4 +1,4 @@
-package quickcarpet.mixin.spawning;
+package quickcarpet.mixin.shulkerSpawningInEndCities;
 
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.util.collection.Pool;
