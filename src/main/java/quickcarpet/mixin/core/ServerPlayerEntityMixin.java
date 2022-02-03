@@ -22,12 +22,12 @@ public abstract class ServerPlayerEntityMixin extends PlayerEntity implements Pl
     }
 
     @Inject(method = "setClientSettings", at = @At("HEAD"))
-    private void applyLanguage(ClientSettingsC2SPacket settings, CallbackInfo ci) {
+    private void quickcarpet$applyLanguage(ClientSettingsC2SPacket settings, CallbackInfo ci) {
         this.language = ((ClientSettingsC2SPacketAccessor) (Object) settings).getLanguage();
     }
 
     @Override
-    public String getLanguage() {
+    public String quickcarpet$getLanguage() {
         return language;
     }
 }

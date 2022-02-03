@@ -13,7 +13,7 @@ import quickcarpet.utils.Utils;
 @Environment(EnvType.CLIENT)
 public class WorldRendererMixin {
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isSpectator()Z"))
-    private boolean noClip(ClientPlayerEntity player) {
+    private boolean quickcarpet$noClip(ClientPlayerEntity player) {
         return Utils.isNoClip(player);
     }
 }

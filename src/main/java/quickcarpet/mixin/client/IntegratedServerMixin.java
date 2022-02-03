@@ -11,7 +11,7 @@ import quickcarpet.QuickCarpet;
 public abstract class IntegratedServerMixin {
 
     @Inject(method = "setupServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/integrated/IntegratedServer;loadWorld()V"))
-    private void onSetupServerIntegrated(CallbackInfoReturnable<Boolean> cir) {
+    private void quickcarpet$onSetupServerIntegrated(CallbackInfoReturnable<Boolean> cir) {
         QuickCarpet.getInstance().onServerLoaded((IntegratedServer) (Object) this);
     }
 }

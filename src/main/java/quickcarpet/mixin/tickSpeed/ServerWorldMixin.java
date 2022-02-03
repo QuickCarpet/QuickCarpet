@@ -24,14 +24,14 @@ import java.util.function.Supplier;
 public abstract class ServerWorldMixin extends World {
     @Shadow @Final List<ServerPlayerEntity> players;
 
-    @Shadow public abstract ServerChunkManager getChunkManager();
-
-    protected ServerWorldMixin(MutableWorldProperties properties, RegistryKey<World> registryKey, DimensionType dimensionType, Supplier<Profiler> supplier, boolean bl, boolean bl2, long l) {
-        super(properties, registryKey, dimensionType, supplier, bl, bl2, l);
+    protected ServerWorldMixin(MutableWorldProperties properties, RegistryKey<World> registryRef, DimensionType dimensionType, Supplier<Profiler> profiler, boolean isClient, boolean debugWorld, long seed) {
+        super(properties, registryRef, dimensionType, profiler, isClient, debugWorld, seed);
     }
 
+    @Shadow public abstract ServerChunkManager getChunkManager();
+
     @Inject(method = "tick", at = @At("HEAD"), cancellable = true)
-    private void tickFreeze(BooleanSupplier shouldContinueTicking, CallbackInfo ci) {
+    private void quickcarpet$tickFreeze(BooleanSupplier shouldContinueTicking, CallbackInfo ci) {
         if (TickSpeed.getServerTickSpeed().isPaused()) {
             for (ServerPlayerEntity p : this.players) p.tick();
             this.getChunkManager().tick(shouldContinueTicking);

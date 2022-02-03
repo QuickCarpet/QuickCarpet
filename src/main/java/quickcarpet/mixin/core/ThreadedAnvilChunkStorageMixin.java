@@ -14,7 +14,7 @@ import quickcarpet.network.channels.StructureChannel;
 @Mixin(ThreadedAnvilChunkStorage.class)
 public class ThreadedAnvilChunkStorageMixin {
     @Inject(method = "sendWatchPackets", at = @At("HEAD"))
-    private void recordChunkSent(ServerPlayerEntity player, ChunkPos pos, MutableObject<ChunkDataS2CPacket> mutableObject, boolean withinMaxWatchDistance, boolean withinViewDistance, CallbackInfo ci) {
+    private void quickcarpet$structureChannel$recordChunkSent(ServerPlayerEntity player, ChunkPos pos, MutableObject<ChunkDataS2CPacket> mutableObject, boolean withinMaxWatchDistance, boolean withinViewDistance, CallbackInfo ci) {
         StructureChannel.instance.recordChunkSent(player, pos);
     }
 }

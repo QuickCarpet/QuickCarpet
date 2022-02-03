@@ -8,6 +8,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -24,7 +25,7 @@ public abstract class ItemEntityMixin extends Entity {
     }
 
     @Inject(method = "<init>(Lnet/minecraft/world/World;DDDLnet/minecraft/item/ItemStack;)V", at = @At("RETURN"))
-    private void removeEmptyShulkerBoxTags(World worldIn, double x, double y, double z, ItemStack stack, CallbackInfo ci) {
+    private void quickcarpet$stackableShulkerBoxes$removeEmptyShulkerBoxTags(World worldIn, double x, double y, double z, ItemStack stack, CallbackInfo ci) {
         if (Settings.stackableShulkerBoxes && stack.getItem() instanceof BlockItem && ((BlockItem) stack.getItem()).getBlock() instanceof ShulkerBoxBlock) {
             if (NBTHelper.cleanUpShulkerBoxTag(stack)) {
                 ((ItemEntity) (Object) this).setStack(stack);
@@ -33,7 +34,7 @@ public abstract class ItemEntityMixin extends Entity {
     }
 
     @Redirect(method = "canMerge()Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getMaxCount()I"))
-    private int getItemStackMaxAmount1(ItemStack stack) {
+    private int quickcarpet$stackableShulkerBoxes$getItemStackMaxAmount1(ItemStack stack) {
         return getMaxCount(stack);
     }
 
@@ -41,17 +42,18 @@ public abstract class ItemEntityMixin extends Entity {
         "canMerge(Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ItemStack;)Z",
         "merge(Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ItemStack;I)Lnet/minecraft/item/ItemStack;"
     }, at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getMaxCount()I"))
-    private static int getItemStackMaxAmount2(ItemStack stack) {
+    private static int quickcarpet$stackableShulkerBoxes$getItemStackMaxAmount2(ItemStack stack) {
         return getMaxCount(stack);
     }
 
+    @Unique
     private static int getMaxCount(ItemStack stack) {
         if (Settings.stackableShulkerBoxes && NBTHelper.isEmptyShulkerBox(stack)) return SHULKERBOX_MAX_STACK_AMOUNT;
         return stack.getMaxCount();
     }
 
     @Redirect(method = "tryMerge(Lnet/minecraft/entity/ItemEntity;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ItemEntity;canMerge(Lnet/minecraft/item/ItemStack;Lnet/minecraft/item/ItemStack;)Z"))
-    private boolean canMergeModified(ItemStack a, ItemStack b) {
+    private boolean quickcarpet$stackableShulkerBoxes$canMergeModified(ItemStack a, ItemStack b) {
         if (!Settings.stackableShulkerBoxes || !NBTHelper.isEmptyShulkerBox(a) || !NBTHelper.isEmptyShulkerBox(b)) {
             return ItemEntity.canMerge(a, b);
         }

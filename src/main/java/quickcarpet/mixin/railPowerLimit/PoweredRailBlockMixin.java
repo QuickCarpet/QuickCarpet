@@ -16,11 +16,8 @@ public abstract class PoweredRailBlockMixin extends AbstractRailBlock {
         throw new AbstractMethodError();
     }
 
-    @ModifyConstant(
-            method = "isPoweredByOtherRails(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;ZI)Z",
-            constant = @Constant(intValue = 8)
-    )
-    private int adjustPowerLimit(int powerLimit) {
+    @ModifyConstant(method = "isPoweredByOtherRails(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;ZI)Z", constant = @Constant(intValue = 8))
+    private int quickcarpet$railPowerLimit(int powerLimit) {
         return railPowerLimit - 1;
     }
 }

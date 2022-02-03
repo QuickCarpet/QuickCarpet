@@ -10,7 +10,7 @@ import quickcarpet.settings.Settings;
 @Mixin(ExperienceOrbEntity.class)
 public class ExperienceOrbEntityMixin {
     @Inject(method = "isMergeable(Lnet/minecraft/entity/ExperienceOrbEntity;II)Z", at = @At("HEAD"), cancellable = true)
-    private static void checkMergeDisabled(ExperienceOrbEntity experienceOrbEntity, int seed, int amount, CallbackInfoReturnable<Boolean> cir) {
+    private static void quickcarpet$xpMerging$checkMergeDisabled(ExperienceOrbEntity experienceOrbEntity, int seed, int amount, CallbackInfoReturnable<Boolean> cir) {
         if (!Settings.xpMerging) cir.setReturnValue(false);
     }
 }

@@ -16,7 +16,7 @@ import quickcarpet.utils.Utils;
 @Mixin(BlockItem.class)
 public class BlockItemMixin {
     @Redirect(method = "canPlace", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;canPlace(Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/ShapeContext;)Z"))
-    private boolean canPlaceNoClip(World world, BlockState state, BlockPos pos, ShapeContext context, ItemPlacementContext context1) {
+    private boolean quickcarpet$creativeNoClip$canPlace(World world, BlockState state, BlockPos pos, ShapeContext context, ItemPlacementContext context1) {
         PlayerEntity player = context1.getPlayer();
         if (player != null && Utils.isNoClip(player)) {
             VoxelShape shape = state.getCollisionShape(world, pos, context);

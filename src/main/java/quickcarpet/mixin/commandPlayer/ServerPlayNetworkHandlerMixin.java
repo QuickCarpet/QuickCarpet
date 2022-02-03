@@ -17,7 +17,7 @@ public class ServerPlayNetworkHandlerMixin {
     @Shadow public ServerPlayerEntity player;
 
     @Inject(method = "onDisconnected", at = @At("HEAD"), cancellable = true)
-    private void preventDoubleDisconnect(Text reason, CallbackInfo ci) {
+    private void quickcarpet$player$shadow$preventDoubleDisconnect(Text reason, CallbackInfo ci) {
         if (!this.server.getPlayerManager().getPlayerList().contains(this.player)) {
             ci.cancel();
         }

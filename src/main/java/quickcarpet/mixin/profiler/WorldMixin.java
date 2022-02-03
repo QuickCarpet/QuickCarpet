@@ -19,7 +19,7 @@ public class WorldMixin {
     @Shadow @Final public boolean isClient;
 
     @Inject(method = "tickBlockEntities", at = @At("HEAD"))
-    private void startBlockEntities(CallbackInfo ci) {
+    private void quickcarpet$profiler$startBlockEntities(CallbackInfo ci) {
         if (!this.isClient) {
             CarpetProfiler.endSection((World) (Object) this, CarpetProfiler.SectionType.ENTITIES);
             CarpetProfiler.startSection((World) (Object) this, CarpetProfiler.SectionType.BLOCK_ENTITIES);
@@ -27,17 +27,14 @@ public class WorldMixin {
     }
 
     @Inject(method = "tickBlockEntities", at = @At("TAIL"))
-    private void endBlockEntities(CallbackInfo ci) {
+    private void quickcarpet$profiler$endBlockEntities(CallbackInfo ci) {
         if (!this.isClient) {
             CarpetProfiler.endSection((World) (Object) this, CarpetProfiler.SectionType.BLOCK_ENTITIES);
         }
     }
 
-    @Redirect(
-            method = "tickBlockEntities",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/BlockEntityTickInvoker;tick()V")
-    )
-    private void tickBlockEntity(BlockEntityTickInvoker tickable) {
+    @Redirect(method = "tickBlockEntities", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/BlockEntityTickInvoker;tick()V"))
+    private void quickcarpet$profiler$tickBlockEntity(BlockEntityTickInvoker tickable) {
         if (!this.isClient) {
             CarpetProfiler.startBlockEntity((World) (Object) this, tickable);
             tickable.tick();
@@ -48,14 +45,14 @@ public class WorldMixin {
     }
 
     @Inject(method = "tickEntity", at = @At("HEAD"))
-    private void startEntity(Consumer<Entity> tick, Entity e, CallbackInfo ci) {
+    private void quickcarpet$profiler$startEntity(Consumer<Entity> tick, Entity e, CallbackInfo ci) {
         if (!this.isClient) {
             CarpetProfiler.startEntity((World) (Object) this, e);
         }
     }
 
     @Inject(method = "tickEntity", at = @At("TAIL"))
-    private void endEntity(Consumer<Entity> tick, Entity e, CallbackInfo ci) {
+    private void quickcarpet$profiler$endEntity(Consumer<Entity> tick, Entity e, CallbackInfo ci) {
         if (!this.isClient) {
             CarpetProfiler.endEntity((World) (Object) this);
         }

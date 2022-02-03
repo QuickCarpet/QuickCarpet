@@ -19,12 +19,12 @@ import java.util.Map;
 @Mixin(PistonBlock.class)
 public class PistonBlockMixin {
     @Inject(method = "move", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/block/piston/PistonHandler;getMovedBlocks()Ljava/util/List;"), locals = LocalCapture.CAPTURE_FAILHARD)
-    private void dupeFixStart(World world, BlockPos pos, Direction dir, boolean retract, CallbackInfoReturnable<Boolean> cir, BlockPos pos2, PistonHandler handler, Map<BlockPos, BlockState> map, List<BlockPos> moving) {
+    private void quickcarpet$movingBlockDuplicationFix$start(World world, BlockPos pos, Direction dir, boolean retract, CallbackInfoReturnable<Boolean> cir, BlockPos pos2, PistonHandler handler, Map<BlockPos, BlockState> map, List<BlockPos> moving) {
         PistonHelper.registerPushed(moving);
     }
 
     @Inject(method = "move", at = @At(value = "RETURN", ordinal = 1))
-    private void dupeFixEnd(World world, BlockPos pos, Direction dir, boolean retract, CallbackInfoReturnable<Boolean> cir) {
+    private void quickcarpet$movingBlockDuplicationFix$end(World world, BlockPos pos, Direction dir, boolean retract, CallbackInfoReturnable<Boolean> cir) {
         PistonHelper.finishPush();
     }
 }

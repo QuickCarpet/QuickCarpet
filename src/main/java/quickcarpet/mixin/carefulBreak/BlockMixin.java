@@ -24,7 +24,7 @@ import java.util.function.Supplier;
 @Mixin(Block.class)
 public class BlockMixin {
     @Inject(method = "dropStack(Lnet/minecraft/world/World;Ljava/util/function/Supplier;Lnet/minecraft/item/ItemStack;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/ItemEntity;setToDefaultPickupDelay()V"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-    private static void doCarefulBreak(World world, Supplier<ItemEntity> supplier, ItemStack stack, CallbackInfo ci, ItemEntity item) {
+    private static void quickcarpet$carefulBreak(World world, Supplier<ItemEntity> supplier, ItemStack stack, CallbackInfo ci, ItemEntity item) {
         ServerPlayerEntity player = CarefulBreakHelper.miningPlayer.get();
         if (Settings.carefulBreak && player != null && player.isSneaking() && QuickCarpetServer.getInstance().loggers.isSubscribed(player, Loggers.CAREFUL_BREAK)) {
             item.onPlayerCollision(player);

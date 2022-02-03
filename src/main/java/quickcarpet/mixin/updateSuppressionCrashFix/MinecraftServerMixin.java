@@ -4,6 +4,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.crash.CrashException;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import quickcarpet.settings.Settings;
@@ -16,7 +17,7 @@ import java.util.function.BooleanSupplier;
 @Mixin(MinecraftServer.class)
 public class MinecraftServerMixin {
     @Redirect(method = "tickWorlds", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;tick(Ljava/util/function/BooleanSupplier;)V"))
-    private void fixUpdateSuppressionCrashTick(ServerWorld serverWorld, BooleanSupplier shouldKeepTicking) {
+    private void quickcarpet$updateSuppressionCrashFix$tick(ServerWorld serverWorld, BooleanSupplier shouldKeepTicking) {
         if (!Settings.updateSuppressionCrashFix) {
             serverWorld.tick(shouldKeepTicking);
             return;
@@ -31,6 +32,7 @@ public class MinecraftServerMixin {
         }
     }
 
+    @Unique
     private void logUpdateSuppression(String phase) {
         PistonHelper.finishPush();
         Messenger.broadcast((MinecraftServer) (Object) this, "You just caused a server crash in " + phase + ".");

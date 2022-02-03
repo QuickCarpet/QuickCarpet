@@ -27,12 +27,12 @@ public abstract class ClientWorldMixin extends World {
     }
 
     @Inject(method = "tick", at = @At("HEAD"), cancellable = true)
-    private void tickFreeze(BooleanSupplier shouldContinueTicking, CallbackInfo ci) {
+    private void quickcarpet$tickFreeze(BooleanSupplier shouldContinueTicking, CallbackInfo ci) {
         if (QuickCarpetClient.getInstance().tickSpeed.isPaused()) ci.cancel();
     }
 
     @Inject(method = "tickEntity", at = @At("HEAD"), cancellable = true)
-    private void tickFreezeEntities(Entity entity, CallbackInfo ci) {
+    private void quickcarpet$tickFreezeEntities(Entity entity, CallbackInfo ci) {
         if (!(entity instanceof PlayerEntity) && QuickCarpetClient.getInstance().tickSpeed.isPaused()) {
             ci.cancel();
         }

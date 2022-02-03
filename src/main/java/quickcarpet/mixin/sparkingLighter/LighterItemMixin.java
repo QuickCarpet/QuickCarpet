@@ -17,7 +17,7 @@ import quickcarpet.settings.Settings;
 })
 public class LighterItemMixin {
     @Redirect(method = "useOnBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/AbstractFireBlock;canPlaceAt(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/Direction;)Z"))
-    private boolean canPlaceFireAt(World world, BlockPos pos, Direction direction) {
+    private boolean quickcarpet$sparkingLighter$canPlaceFireAt(World world, BlockPos pos, Direction direction) {
         return Settings.sparkingLighter ? world.isAir(pos) : AbstractFireBlock.canPlaceAt(world, pos, direction);
     }
 }

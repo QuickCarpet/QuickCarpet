@@ -21,7 +21,7 @@ public abstract class FireBlockMixin {
     }
 
     @Redirect(method = "scheduledTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/FireBlock;getFireTickDelay(Ljava/util/Random;)I"))
-    private int calmNetherFires(Random random, BlockState state, ServerWorld world, BlockPos pos) {
+    private int quickcarpet$calmNetherFires(Random random, BlockState state, ServerWorld world, BlockPos pos) {
         int vanilla = getFireTickDelay(random);
         if (Settings.calmNetherFires <= 1) return vanilla;
         boolean infiniburn = world.getBlockState(pos.down()).isIn(world.getDimension().getInfiniburnBlocks());
@@ -29,7 +29,7 @@ public abstract class FireBlockMixin {
     }
 
     @Redirect(method = "scheduledTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/GameRules;getBoolean(Lnet/minecraft/world/GameRules$Key;)Z"))
-    private boolean doFireTick(GameRules gameRules, GameRules.Key<GameRules.BooleanRule> rule, BlockState state, ServerWorld world, BlockPos pos) {
+    private boolean quickcarpet$calmNetherFires$doFireTick(GameRules gameRules, GameRules.Key<GameRules.BooleanRule> rule, BlockState state, ServerWorld world, BlockPos pos) {
         if (!gameRules.getBoolean(rule)) return false;
         if (Settings.calmNetherFires != 0) return true;
         boolean infiniburn = world.getBlockState(pos.down()).isIn(world.getDimension().getInfiniburnBlocks());

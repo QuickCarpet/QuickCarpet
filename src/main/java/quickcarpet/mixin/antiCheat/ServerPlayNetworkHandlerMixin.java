@@ -10,9 +10,7 @@ import quickcarpet.settings.Settings;
 @Mixin(ServerPlayNetworkHandler.class)
 public class ServerPlayNetworkHandlerMixin {
     @Redirect(method = "onPlayerMove", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/network/ServerPlayerEntity;isInTeleportationState()Z"))
-    private boolean isAntiCheatDisabled(ServerPlayerEntity player) {
+    private boolean quickcarpet$antiCheat$isAntiCheatDisabled(ServerPlayerEntity player) {
         return !Settings.antiCheat || player.isInTeleportationState();
     }
-
-
 }

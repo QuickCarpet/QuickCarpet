@@ -192,7 +192,7 @@ public final class QuickCarpet implements QuickCarpetAPI, ServerEventListener, T
         });
         worldUnloadCallbacks.put(world, handle::remove);
         try {
-            Map<String, Waypoint> waypoints = ((WaypointContainer) world).getWaypoints();
+            Map<String, Waypoint> waypoints = ((WaypointContainer) world).quickcarpet$getWaypoints();
             waypoints.clear();
             waypoints.putAll(Waypoint.loadWaypoints((WaypointContainer) world));
         } catch (Exception e) {

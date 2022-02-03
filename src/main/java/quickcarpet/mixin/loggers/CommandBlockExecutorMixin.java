@@ -10,6 +10,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.CommandBlockExecutor;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import quickcarpet.QuickCarpetServer;
@@ -24,12 +25,13 @@ import static quickcarpet.utils.Messenger.*;
 @Mixin(CommandBlockExecutor.class)
 public class CommandBlockExecutorMixin {
     @Redirect(method = "execute", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/command/CommandManager;execute(Lnet/minecraft/server/command/ServerCommandSource;Ljava/lang/String;)I"))
-    private int logExecute(CommandManager manager, ServerCommandSource source, String command) {
+    private int quickcarpet$log$commandBlocks$logExecute(CommandManager manager, ServerCommandSource source, String command) {
         int result = manager.execute(source, command);
         if (Loggers.COMMAND_BLOCKS.isActive()) log(source, command, result);
         return result;
     }
 
+    @Unique
     private static void log(ServerCommandSource source, String command, int result) {
         Vec3d pos = source.getPosition();
         BlockPos blockPos = new BlockPos(pos);

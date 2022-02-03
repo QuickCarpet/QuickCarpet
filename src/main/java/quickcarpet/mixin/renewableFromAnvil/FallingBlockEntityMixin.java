@@ -11,6 +11,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -25,15 +26,15 @@ public abstract class FallingBlockEntityMixin extends Entity {
         super(entityType_1, world_1);
     }
 
-    private int frostedIceCount;
-    private int iceCount;
-    private int packedIceCount;
+    @Unique private int frostedIceCount;
+    @Unique private int iceCount;
+    @Unique private int packedIceCount;
 
     @Inject(method = "tick", at = @At(value = "INVOKE", ordinal = 0,
             target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"),
             locals = LocalCapture.CAPTURE_FAILHARD,
             cancellable = true)
-    private void onTick(CallbackInfo ci, Block block, BlockPos pos) {
+    private void quickcarpet$renewableFromAnvil$onTick(CallbackInfo ci, Block block, BlockPos pos) {
         if (this.block.isIn(BlockTags.ANVIL)) {
             BlockPos posBelow = new BlockPos(this.getX(), this.getY() - 0.06, this.getZ());
             Block blockBelow = this.world.getBlockState(posBelow).getBlock();

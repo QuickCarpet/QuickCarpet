@@ -3,9 +3,9 @@ package quickcarpet.utils.extensions;
 import net.minecraft.block.entity.BlockEntity;
 
 public interface ExtendedPistonBlockEntity {
-    void setCarriedBlockEntity(BlockEntity blockEntity);
-    BlockEntity getCarriedBlockEntity();
-    void setRenderCarriedBlockEntity(boolean render);
-    boolean getRenderCarriedBlockEntity();
-    boolean isRenderModeSet();
+    void quickcarpet$setCarriedBlockEntity(BlockEntity blockEntity);
+    BlockEntity quickcarpet$getCarriedBlockEntity();
+    void quickcarpet$setRenderCarriedBlockEntity(boolean render);
+    boolean quickcarpet$getRenderCarriedBlockEntity();
+    boolean quickcarpet$isRenderModeSet();
 }

@@ -184,7 +184,7 @@ public class PlayerActionPack {
     }
 
     static HitResult getTarget(ServerPlayerEntity player) {
-        float reach = ((ActionPackOwner) player).getActionPack().reach;
+        float reach = ((ActionPackOwner) player).quickcarpet$getActionPack().reach;
         float maxReach = (player.interactionManager.isCreative() ? 5 : 4.5f);
         double distance = reach != 0 ? Math.min(reach,maxReach) : maxReach;
         return RayTracing.rayTrace(player, 1, distance, false);
@@ -270,7 +270,7 @@ public class PlayerActionPack {
                         player.swingHand(Hand.MAIN_HAND);
                     }
                     case BLOCK -> {
-                        PlayerActionPack ap = ((ActionPackOwner) player).getActionPack();
+                        PlayerActionPack ap = ((ActionPackOwner) player).quickcarpet$getActionPack();
                         if (ap.blockHitDelay > 0) {
                             ap.blockHitDelay--;
                             return;
@@ -316,7 +316,7 @@ public class PlayerActionPack {
 
             @Override
             void stop(ServerPlayerEntity player, Action action) {
-                PlayerActionPack ap = ((ActionPackOwner) player).getActionPack();
+                PlayerActionPack ap = ((ActionPackOwner) player).quickcarpet$getActionPack();
                 if (ap.currentBlock == null) return;
                 player.world.setBlockBreakingInfo(-1, ap.currentBlock, -1);
                 player.interactionManager.processBlockBreakingAction(ap.currentBlock, PlayerActionC2SPacket.Action.ABORT_DESTROY_BLOCK, Direction.DOWN, player.world.getTopY());
@@ -328,7 +328,7 @@ public class PlayerActionPack {
             void inactiveTick(ServerPlayerEntity player, Action action) {
                 HitResult hit = getTarget(player);
                 if (hit.getType() == HitResult.Type.BLOCK) {
-                    PlayerActionPack ap = ((ActionPackOwner) player).getActionPack();
+                    PlayerActionPack ap = ((ActionPackOwner) player).quickcarpet$getActionPack();
                     BlockHitResult blockHit = (BlockHitResult) hit;
                     BlockPos pos = blockHit.getBlockPos();
                     if (pos.equals(ap.currentBlock)) {

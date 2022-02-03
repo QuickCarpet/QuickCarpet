@@ -16,7 +16,7 @@ import quickcarpet.utils.CarpetRegistry;
 @Mixin(BlockEntity.class)
 public class BlockEntityMixin {
     @Inject(method = "createFromNbt", at = @At("HEAD"))
-    private static void onCreateFromTag(BlockPos pos, BlockState state, NbtCompound tag, CallbackInfoReturnable<BlockEntity> cir) {
+    private static void quickcarpet$autoCraftingTable$onCreateFromTag(BlockPos pos, BlockState state, NbtCompound tag, CallbackInfoReturnable<BlockEntity> cir) {
         if (!state.isOf(Blocks.CRAFTING_TABLE)) return;
         if (!"carpet:crafting_table".equals(tag.getString("id"))) return;
         if (BlockEntityType.getId(CarpetRegistry.CRAFTING_TABLE_BLOCK_ENTITY_TYPE) != null) return;

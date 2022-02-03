@@ -21,7 +21,7 @@ import quickcarpet.settings.Settings;
 })
 public class DispenserBlockMixin {
     @Redirect(method = "dispense", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/BlockPointerImpl;getBlockEntity()Lnet/minecraft/block/entity/BlockEntity;"))
-    private BlockEntity fixBlockEntityType(BlockPointerImpl blockPointer) {
+    private BlockEntity quickcarpet$blockEntityFix$fixBlockEntityType(BlockPointerImpl blockPointer) {
         BlockEntity be = blockPointer.getBlockEntity();
         if (Settings.blockEntityFix && !(be instanceof DispenserBlockEntity)) {
             be.markRemoved();
@@ -31,7 +31,7 @@ public class DispenserBlockMixin {
     }
 
     @Inject(method = "dispense", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/DispenserBlockEntity;chooseNonEmptySlot()I"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
-    private void ignoreNull(ServerWorld serverWorld, BlockPos pos, CallbackInfo ci, BlockPointerImpl blockPointer, DispenserBlockEntity be) {
+    private void quickcarpet$blockEntityFix$ignoreNull(ServerWorld serverWorld, BlockPos pos, CallbackInfo ci, BlockPointerImpl blockPointer, DispenserBlockEntity be) {
         if (be == null) ci.cancel();
     }
 }

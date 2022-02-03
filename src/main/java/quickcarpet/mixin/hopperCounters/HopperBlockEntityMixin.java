@@ -26,7 +26,7 @@ public abstract class HopperBlockEntityMixin extends LootableContainerBlockEntit
     @Shadow public abstract int size();
 
     @Inject(method = "insert", at = @At("HEAD"), cancellable = true)
-    private static void onInsert(World world, BlockPos pos, BlockState state, Inventory hopper, CallbackInfoReturnable<Boolean> cir) {
+    private static void quickcarpet$hopperCounters$onInsert(World world, BlockPos pos, BlockState state, Inventory hopper, CallbackInfoReturnable<Boolean> cir) {
         if (Settings.hopperCounters && WoolTool.tryCount(world, pos, state, hopper, null)) {
             markDirty(world, pos, state);
             cir.setReturnValue(false);

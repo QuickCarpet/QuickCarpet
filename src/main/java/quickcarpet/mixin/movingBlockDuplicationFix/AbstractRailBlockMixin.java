@@ -15,7 +15,7 @@ import quickcarpet.utils.PistonHelper;
 @Mixin(AbstractRailBlock.class)
 public class AbstractRailBlockMixin {
     @Inject(method = "neighborUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/AbstractRailBlock;dropStacks(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;)V"), cancellable = true)
-    private void fixDupe(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean notify, CallbackInfo ci) {
+    private void quickcarpet$railDuplicationFix(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean notify, CallbackInfo ci) {
         if (Settings.railDuplicationFix && PistonHelper.isBeingPushed(pos)) ci.cancel();
     }
 }

@@ -9,7 +9,7 @@ import quickcarpet.settings.Settings;
 @Mixin(MinecraftServer.class)
 public class MinecraftServerMixin {
     @ModifyConstant(method = "tick", constant = @Constant(intValue = 6000))
-    private int autosaveInterval(int interval) {
+    private int quickcarpet$betterChunkLoading$autosaveInterval(int interval) {
         return Settings.betterChunkLoading ? 900 : interval;
     }
 }

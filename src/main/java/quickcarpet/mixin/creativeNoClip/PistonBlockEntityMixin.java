@@ -11,7 +11,7 @@ import quickcarpet.utils.Utils;
 @Mixin(PistonBlockEntity.class)
 public class PistonBlockEntityMixin {
     @Redirect(method = "pushEntities", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;setVelocity(DDD)V"))
-    private static void setVelocity(Entity entity, double x, double y, double z) {
+    private static void quickcarpet$creativeNoClip$setVelocity(Entity entity, double x, double y, double z) {
         if (entity instanceof PlayerEntity && Utils.isNoClip(((PlayerEntity) entity))) return;
         entity.setVelocity(x, y, z);
     }

@@ -1,5 +1,5 @@
 package quickcarpet.utils.extensions;
 
 public interface PlayerWithLanguage {
-    String getLanguage();
+    String quickcarpet$getLanguage();
 }

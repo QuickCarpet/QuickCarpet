@@ -15,7 +15,7 @@ import quickcarpet.utils.ThrowableUpdateSuppression;
 @Mixin(World.class)
 public class WorldMixin {
     @Inject(method = "updateNeighbor", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/crash/CrashReport;create(Ljava/lang/Throwable;Ljava/lang/String;)Lnet/minecraft/util/crash/CrashReport;"), locals = LocalCapture.CAPTURE_FAILHARD)
-    private void checkUpdateSuppression(BlockPos pos, Block block, BlockPos fromPos, CallbackInfo ci, BlockState blockState, Throwable throwable) {
+    private void quickcarpet$updateSuppressionCrashFix$check(BlockPos pos, Block block, BlockPos fromPos, CallbackInfo ci, BlockState blockState, Throwable throwable) {
         if (Settings.updateSuppressionCrashFix) {
             if (throwable instanceof ThrowableUpdateSuppression e) throw e;
             if (throwable instanceof StackOverflowError e) {

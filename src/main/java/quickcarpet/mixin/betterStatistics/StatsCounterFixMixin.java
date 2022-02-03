@@ -24,7 +24,7 @@ public class StatsCounterFixMixin {
     @org.spongepowered.asm.mixin.Dynamic("lambda in makeRule")
     @SuppressWarnings({"target", "OptionalUsedAsFieldOrParameterType"})
     @Redirect(method = "method_5169(Lcom/mojang/datafixers/types/Type;Lcom/mojang/datafixers/Typed;)Lcom/mojang/datafixers/Typed;", at = @At(value = "INVOKE", target = "Ljava/util/Optional;get()Ljava/lang/Object;", remap = false))
-    private Object modifyInitialMap(Optional<Map<Dynamic<?>, Dynamic<?>>> opt) {
+    private Object quickcarpet$betterStatistics$modifyInitialMap(Optional<Map<Dynamic<?>, Dynamic<?>>> opt) {
         //noinspection OptionalGetWithoutIsPresent
         Map<Dynamic<?>, Dynamic<?>> map = new LinkedHashMap<>(opt.get());
         for (Map.Entry<Dynamic<?>, Dynamic<?>> e : map.entrySet()) {
@@ -46,7 +46,7 @@ public class StatsCounterFixMixin {
     @org.spongepowered.asm.mixin.Dynamic("lambda in makeRule")
     @SuppressWarnings("target")
     @Redirect(method = "method_5169(Lcom/mojang/datafixers/types/Type;Lcom/mojang/datafixers/Typed;)Lcom/mojang/datafixers/Typed;", at = @At(value = "INVOKE", target = "Lcom/mojang/serialization/Dynamic;set(Ljava/lang/String;Lcom/mojang/serialization/Dynamic;)Lcom/mojang/serialization/Dynamic;", ordinal = 0, remap = false))
-    private Dynamic<?> sumStats(Dynamic<?> dyn, String key, Dynamic<?> value) {
+    private Dynamic<?> quickcarpet$betterStatistics$sumStats(Dynamic<?> dyn, String key, Dynamic<?> value) {
         int prev = dyn.get(key).asInt(0);
         Dynamic<?> newValue = value.createInt(prev + value.asInt(0));
         return dyn.set(key, newValue);
@@ -54,7 +54,7 @@ public class StatsCounterFixMixin {
 
     /** Use meta from {@code <stat>.minecraft.<item>.<meta>} (converted to ':'s) */
     @Inject(method = "getItem", at = @At("HEAD"), cancellable = true)
-    private void updateCarpetItem(String id, CallbackInfoReturnable<String> cir) {
+    private void quickcarpet$betterStatistics$updateCarpetItem(String id, CallbackInfoReturnable<String> cir) {
         int dot = StringUtils.ordinalIndexOf(id, ":", 2);
         if (dot > 0) {
             String base = id.substring(0, dot);
@@ -73,7 +73,7 @@ public class StatsCounterFixMixin {
      * Use meta from {@code <stat>.minecraft.<block>.<meta>} (converted to ':'s)
      */
     @Inject(method = "getBlock", at = @At("HEAD"), cancellable = true)
-    private void updateCarpetBlock(String id, CallbackInfoReturnable<String> cir) {
+    private void quickcarpet$betterStatistics$updateCarpetBlock(String id, CallbackInfoReturnable<String> cir) {
         int dot = StringUtils.ordinalIndexOf(id, ":", 2);
         if (dot > 0) {
             try {

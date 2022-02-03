@@ -17,12 +17,12 @@ import quickcarpet.settings.Settings;
 public abstract class TntEntityMixin extends Entity {
     private TNTLogHelper logHelper = null;
 
-    public TntEntityMixin(EntityType<?> entityType_1, World world_1) {
-        super(entityType_1, world_1);
+    public TntEntityMixin(EntityType<?> type, World world) {
+        super(type, world);
     }
 
     @Inject(method = "<init>(Lnet/minecraft/world/World;DDDLnet/minecraft/entity/LivingEntity;)V", at = @At("RETURN"))
-    private void onInit(World world, double x, double y, double z, LivingEntity activator, CallbackInfo ci) {
+    private void quickcarpet$tnt$onInit(World world, double x, double y, double z, LivingEntity activator, CallbackInfo ci) {
         if (!Settings.tntPrimeMomentum) {
             setVelocity(0, 0.2, 0);
         } else if (Settings.tntHardcodeAngle >= 0) {
@@ -33,7 +33,7 @@ public abstract class TntEntityMixin extends Entity {
     }
 
     @Inject(method = "explode", at = @At(value = "HEAD"))
-    private void onExplode(CallbackInfo ci) {
+    private void quickcarpet$log$tnt$onExplode(CallbackInfo ci) {
         if (logHelper != null) {
             logHelper.onExploded();
             logHelper = null;

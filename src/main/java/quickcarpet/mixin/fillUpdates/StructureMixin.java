@@ -19,13 +19,13 @@ public abstract class StructureMixin {
             target = "Lnet/minecraft/world/ServerWorldAccess;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"),
             slice = @Slice(from = @At(value = "INVOKE", target = "Lnet/minecraft/util/Clearable;clear(Ljava/lang/Object;)V"),
                     to = @At(value = "INVOKE", target = "Ljava/lang/Math;min(II)I")))
-    private boolean newSetBlockStateOne(ServerWorldAccess world, BlockPos pos, BlockState state, int flags) {
+    private boolean quickcarpet$fillUpdates$newSetBlockStateOne(ServerWorldAccess world, BlockPos pos, BlockState state, int flags) {
         return world.setBlockState(pos, state, flags | (Settings.fillUpdates ? 0 : NO_FILL_UPDATE));
     }
 
     @Redirect(method = "place(Lnet/minecraft/world/ServerWorldAccess;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/structure/StructurePlacementData;Ljava/util/Random;I)Z", at = @At(value = "INVOKE",
             target = "Lnet/minecraft/world/ServerWorldAccess;updateNeighbors(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;)V"))
-    private void ifUpdateNeighbours(ServerWorldAccess world, BlockPos var1, Block var2) {
+    private void quickcarpet$fillUpdates$ifUpdateNeighbours(ServerWorldAccess world, BlockPos var1, Block var2) {
         if (Settings.fillUpdates) {
             world.updateNeighbors(var1, var2);
         }

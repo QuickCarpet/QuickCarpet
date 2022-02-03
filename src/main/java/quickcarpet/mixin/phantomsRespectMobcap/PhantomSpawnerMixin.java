@@ -13,7 +13,7 @@ import quickcarpet.settings.Settings;
 @Mixin(PhantomSpawner.class)
 public class PhantomSpawnerMixin {
     @Inject(method = "spawn", at = @At("HEAD"), cancellable = true)
-    private void cancelSpawn(ServerWorld world, boolean spawnMonsters, boolean spawnAnimals, CallbackInfoReturnable<Integer> cir) {
+    private void quickcarpet$phantomsRespectMobcap(ServerWorld world, boolean spawnMonsters, boolean spawnAnimals, CallbackInfoReturnable<Integer> cir) {
         if (!spawnMonsters || !Settings.phantomsRespectMobcap) return;
         if (!Mobcaps.isBelowCap(world.getChunkManager(), EntityType.PHANTOM.getSpawnGroup())) {
             cir.setReturnValue(0);

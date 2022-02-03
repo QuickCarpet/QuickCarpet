@@ -22,7 +22,7 @@ public class ServerPlayerInteractionManagerMixin {
     @Shadow protected @Final ServerPlayerEntity player;
 
     @Redirect(method = "tryBreakBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;onBreak(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/entity/player/PlayerEntity;)V"))
-    private void onBreak(Block block, World world, BlockPos pos, BlockState state, PlayerEntity player) {
+    private void quickcarpet$carefulBreak$onBreak(Block block, World world, BlockPos pos, BlockState state, PlayerEntity player) {
         try {
             CarefulBreakHelper.miningPlayer.set(this.player);
             block.onBreak(world, pos, state, player);
@@ -32,7 +32,7 @@ public class ServerPlayerInteractionManagerMixin {
     }
 
     @Redirect(method = "tryBreakBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;removeBlock(Lnet/minecraft/util/math/BlockPos;Z)Z"))
-    private boolean removeBlock(ServerWorld world, BlockPos pos, boolean move) {
+    private boolean quickcarpet$carefulBreak$removeBlock(ServerWorld world, BlockPos pos, boolean move) {
         try {
             CarefulBreakHelper.miningPlayer.set(this.player);
             return world.removeBlock(pos, move);
@@ -42,7 +42,7 @@ public class ServerPlayerInteractionManagerMixin {
     }
 
     @Redirect(method = "tryBreakBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;afterBreak(Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/block/entity/BlockEntity;Lnet/minecraft/item/ItemStack;)V"))
-    private void afterBreak(Block block, World world, PlayerEntity player, BlockPos pos, BlockState state, BlockEntity blockEntity, ItemStack stack) {
+    private void quickcarpet$carefulBreak$afterBreak(Block block, World world, PlayerEntity player, BlockPos pos, BlockState state, BlockEntity blockEntity, ItemStack stack) {
         try {
             CarefulBreakHelper.miningPlayer.set(this.player);
             block.afterBreak(world, player, pos, state, blockEntity, stack);

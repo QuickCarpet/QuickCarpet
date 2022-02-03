@@ -13,6 +13,7 @@ import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
@@ -35,8 +36,6 @@ public abstract class PistonHandlerMixin {
     @Shadow private static boolean isBlockSticky(BlockState block_1) {
         throw new AbstractMethodError();
     }
-    //Get access to the blockstate to check if it is a doubleblock later
-    private BlockState blockState_1;
 
     /*
      * The following Mixins make double chests behave sticky on the side where they are connected to its other double chest half block.
@@ -52,47 +51,31 @@ public abstract class PistonHandlerMixin {
      * @author 2No2Name
      */
     @Inject(method = "tryMove", at = @At(value = "INVOKE", target = "Ljava/util/List;get(I)Ljava/lang/Object;", remap = false, shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private void stickToStickySides(BlockPos blockPos_1, Direction direction_1, CallbackInfoReturnable<Boolean> cir, BlockState blockState_1, int int_1, int int_2, int int_4, BlockPos blockPos_3, int int_5, int int_6){
+    private void quickcarpet$movableBlockEntities$stickToStickySides(BlockPos blockPos_1, Direction direction_1, CallbackInfoReturnable<Boolean> cir, BlockState blockState_1, int int_1, int int_2, int int_4, BlockPos blockPos_3, int int_5, int int_6){
         if(!stickToStickySides(blockPos_3)){
             cir.setReturnValue(false);
             cir.cancel();
         }
     }
 
-
-
     /**
      * Handles blocks besides the slimeblock that are sticky. Currently only supports blocks that are sticky on one side.
      * @author 2No2Name
      */
     @Inject(method = "calculatePush", at = @At(value = "INVOKE", target = "Ljava/util/List;get(I)Ljava/lang/Object;", remap = false, shift = At.Shift.AFTER), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private void stickToStickySides(CallbackInfoReturnable<Boolean> cir, int int_1){
+    private void quickcarpet$movableBlockEntities$stickToStickySides(CallbackInfoReturnable<Boolean> cir, int int_1){
         if(!stickToStickySides(this.movedBlocks.get(int_1))){
             cir.setReturnValue(false);
             cir.cancel();
         }
     }
 
-/*
-    @Redirect(method = "tryMove",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;", ordinal = 0))
-    private BlockState redirectGetBlockState_1_A(World world, BlockPos pos) {
-        return blockState_1 = world.getBlockState(pos);
-    }
-    @Redirect(method = "tryMove",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;", ordinal = 1))
-    private BlockState redirectGetBlockState_1_B(World world, BlockPos pos) {
-        return blockState_1 = world.getBlockState(pos);
-    }
-
- */
-
     /**
      * Makes backwards stickyness work with sticky non-slimeblocks as well.
      * @author 2No2Name
      */
     @Redirect(method = "tryMove", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/piston/PistonHandler;isBlockSticky(Lnet/minecraft/block/BlockState;)Z"))
-    private boolean modifiedIsSticky(BlockState state) {
+    private boolean quickcarpet$movableBlockEntities$modifiedIsSticky(BlockState state) {
         if (Settings.movableBlockEntities && isStickyOnSide(state, this.motionDirection.getOpposite())) {
            return true;
         }
@@ -104,6 +87,7 @@ public abstract class PistonHandlerMixin {
      * @return Direction towards the other block of the double chest, door or bed, null if the blockState is not a double block
      * @author 2No2Name
      */
+    @Unique
     private Direction getDirectionToOther(BlockState blockState){
         Block block = blockState.getBlock();
         if(block == Blocks.CHEST || block == Blocks.TRAPPED_CHEST) {
@@ -137,6 +121,7 @@ public abstract class PistonHandlerMixin {
      * @return boolean whether block is not SLIME_BLOCK but is sticky in the given direction
      * @author 2No2Name
      */
+    @Unique
     private boolean isStickyOnSide(BlockState blockState, Direction direction) {
         //Make blocks be sticky on the side to their other half
         return getDirectionToOther(blockState) == direction;
@@ -148,6 +133,7 @@ public abstract class PistonHandlerMixin {
      * @param pos location of a block that moves and needs to stick other blocks to it
      * @author 2No2Name
      */
+    @Unique
     private boolean stickToStickySides(BlockPos pos){
         if(!Settings.movableBlockEntities)
             return true;
@@ -175,7 +161,7 @@ public abstract class PistonHandlerMixin {
 
 
     @Inject(method = "calculatePush", at = @At(value = "HEAD"))
-    private void clearWeaklyMovedBlocks(CallbackInfoReturnable<Boolean> cir){
+    private void quickcarpet$movableBlockOverrides$clearWeaklyMovedBlocks(CallbackInfoReturnable<Boolean> cir){
         weaklyMovedBlocks.clear();
         weaklyMovedBlocks_moveBefore.clear();
         weaklyMovedBlocks_moveBreakOrigin.clear();
@@ -183,7 +169,7 @@ public abstract class PistonHandlerMixin {
     }
 
     @Inject(method = "tryMove", at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/world/World;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;", ordinal = 0), locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true)
-    private void doOnlyWeakSticking(BlockPos blockPos_1, Direction arg1, CallbackInfoReturnable<Boolean> cir, BlockState blockState_1){
+    private void quickcarpet$movableBlockOverrides$doOnlyWeakSticking(BlockPos blockPos_1, Direction arg1, CallbackInfoReturnable<Boolean> cir, BlockState blockState_1){
         if(Settings.movableBlockOverrides){
             PistonBehavior pistonBehavior = blockState_1.getPistonBehavior();
             if ((pistonBehavior == PistonHelper.WEAK_STICKY || pistonBehavior == PistonHelper.WEAK_STICKY_BREAKABLE) && !movedBlocks.contains(blockPos_1)) {
@@ -269,8 +255,7 @@ public abstract class PistonHandlerMixin {
     }
 
     @Inject(method = "calculatePush", at = @At(value = "RETURN", ordinal = 4), cancellable = true)
-    private void decideOnWeaklyStickingBlocks(CallbackInfoReturnable<Boolean> cir){
-
+    private void quickcarpet$movableBlockOverrides$decideOnWeaklyStickingBlocks(CallbackInfoReturnable<Boolean> cir){
         if(Settings.movableBlockOverrides) {
             int size = weaklyMovedBlocks.size();
             if(size > 0) {
@@ -325,13 +310,11 @@ public abstract class PistonHandlerMixin {
                 }
             }
         }
-        if(movedBlocks.size() > Settings.pushLimit)
-            cir.setReturnValue(false);
-
+        if (movedBlocks.size() > Settings.pushLimit) cir.setReturnValue(false);
     }
 
     @ModifyConstant(method = "tryMove", constant = @Constant(intValue = 12), expect = 3)
-    private int adjustPushLimit(int pushLimit) {
+    private int quickcarpet$pushLimit$adjustPushLimit(int pushLimit) {
         return Settings.pushLimit;
     }
 }

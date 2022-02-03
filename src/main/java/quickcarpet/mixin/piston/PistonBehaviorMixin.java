@@ -13,7 +13,7 @@ import java.util.Arrays;
  * @author 2No2Name, skyrising
  */
 @Mixin(PistonBehavior.class)
-class PistonBehaviorMixin {
+public class PistonBehaviorMixin {
     private static @Mutable @Final PistonBehavior[] field_15973;
 
     private PistonBehaviorMixin(String name, int ordinal) {}

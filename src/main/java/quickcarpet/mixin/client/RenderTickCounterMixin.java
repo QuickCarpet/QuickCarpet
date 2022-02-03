@@ -17,7 +17,7 @@ public class RenderTickCounterMixin {
     @Shadow  @Final private float tickTime;
 
     @Redirect(method = "beginRenderTick", at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/RenderTickCounter;tickTime:F"))
-    private float adjustTickSpeed(RenderTickCounter counter) {
+    private float quickcarpet$adjustTickSpeed(RenderTickCounter counter) {
         float defaultGoal = tickTime;
         float goal = QuickCarpetClient.getInstance().tickSpeed.msptGoal;
         if ((goal > defaultGoal && ClientSetting.SYNC_LOW_TPS.get()) || (goal < defaultGoal && ClientSetting.SYNC_HIGH_TPS.get())) {

@@ -15,7 +15,7 @@ import quickcarpet.utils.PistonHelper;
 @Mixin(TntBlock.class)
 public class TntBlockMixin {
     @Inject(method = "neighborUpdate", at = @At("HEAD"), cancellable = true)
-    private void fixDupe(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean notify, CallbackInfo ci) {
+    private void quickcarpet$tntDuplicationFix(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean notify, CallbackInfo ci) {
         if (Settings.tntDuplicationFix && PistonHelper.isBeingPushed(pos)) ci.cancel();
     }
 }

@@ -17,7 +17,7 @@ public abstract class FallingBlockEntityMixin extends Entity {
     }
 
     @Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/FallingBlockEntity;move(Lnet/minecraft/entity/MovementType;Lnet/minecraft/util/math/Vec3d;)V", shift = At.Shift.AFTER), cancellable = true)
-    private void afterMove(CallbackInfo ci) {
+    private void quickcarpet$fallingBlockDuplicationFix$afterMove(CallbackInfo ci) {
         if (Settings.fallingBlockDuplicationFix && this.isRemoved()) ci.cancel();
     }
 }

@@ -34,7 +34,8 @@ public abstract class WorldMixin implements WorldAccess, ExtendedWorld {
     /**
      * @author 2No2Name
      */
-    public boolean setBlockStateWithBlockEntity(BlockPos pos, BlockState state, BlockEntity newBlockEntity, int flags, int depth) {
+    @Override
+    public boolean quickcarpet$setBlockStateWithBlockEntity(BlockPos pos, BlockState state, BlockEntity newBlockEntity, int flags, int depth) {
         if (this.isOutOfHeightLimit(pos)) return false;
         if (!this.isClient && this.isDebugWorld()) return false;
         WorldChunk worldChunk = this.getWorldChunk(pos);
@@ -42,7 +43,7 @@ public abstract class WorldMixin implements WorldAccess, ExtendedWorld {
 
         BlockState chunkState;
         if (newBlockEntity != null && block instanceof BlockEntityProvider && !worldChunk.isEmpty()) {
-            chunkState = ((ExtendedWorldChunk) worldChunk).setBlockStateWithBlockEntity(pos, state, newBlockEntity, (flags & CALL_ON_ADDED_ON_REMOVED) != 0);
+            chunkState = ((ExtendedWorldChunk) worldChunk).quickcarpet$setBlockStateWithBlockEntity(pos, state, newBlockEntity, (flags & CALL_ON_ADDED_ON_REMOVED) != 0);
         } else {
             chunkState = worldChunk.setBlockState(pos, state, (flags & CALL_ON_ADDED_ON_REMOVED) != 0);
         }

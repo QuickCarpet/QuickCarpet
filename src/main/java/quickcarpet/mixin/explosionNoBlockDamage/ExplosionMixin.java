@@ -13,7 +13,7 @@ public abstract class ExplosionMixin {
     @Shadow public abstract void clearAffectedBlocks();
 
     @Inject(method = "affectWorld", at = @At("HEAD"))
-    private void explosionNoBlockDamage(boolean bl, CallbackInfo ci) {
+    private void quickcarpet$explosionNoBlockDamage(boolean bl, CallbackInfo ci) {
         if (Settings.explosionNoBlockDamage) clearAffectedBlocks();
     }
 }

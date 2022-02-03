@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 @Mixin(ArgumentTypes.class)
 public class ArgumentTypesMixin {
     @Redirect(method = "register()V", at = @At(value = "FIELD", target = "Lnet/minecraft/SharedConstants;isDevelopment:Z"))
-    private static boolean isDevelopment() {
+    private static boolean quickcarpet$isDevelopment() {
         return true;
     }
 }

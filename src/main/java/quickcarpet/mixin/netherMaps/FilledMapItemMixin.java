@@ -17,7 +17,7 @@ public abstract class FilledMapItemMixin extends NetworkSyncedItem {
         value = "INVOKE",
         target = "Lnet/minecraft/world/dimension/DimensionType;hasCeiling()Z"
     ))
-    private boolean redirectIsNether(DimensionType dimension) {
+    private boolean quickcarpet$netherMaps$hasCeiling(DimensionType dimension) {
         return dimension.hasCeiling() && !quickcarpet.settings.Settings.netherMaps;
     }
 }

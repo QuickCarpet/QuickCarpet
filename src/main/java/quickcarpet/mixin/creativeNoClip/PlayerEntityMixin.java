@@ -18,7 +18,7 @@ public abstract class PlayerEntityMixin extends LivingEntity {
     }
 
     @Redirect(method = {"tick", "updatePose"}, at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;isSpectator()Z"))
-    private boolean noClip(PlayerEntity player) {
+    private boolean quickcarpet$creativeNoClip(PlayerEntity player) {
         return Utils.isNoClip(player);
     }
 

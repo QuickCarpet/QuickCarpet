@@ -14,7 +14,7 @@ import quickcarpet.utils.PistonHelper;
 @Mixin(AbstractBlock.AbstractBlockState.class)
 public class AbstractBlockStateMixin {
     @Inject(method = "getPistonBehavior", at = @At(value = "INVOKE",target = "Lnet/minecraft/block/Block;getPistonBehavior(Lnet/minecraft/block/BlockState;)Lnet/minecraft/block/piston/PistonBehavior;"), cancellable = true)
-    private void getPistonBehavior(CallbackInfoReturnable<PistonBehavior> cir){
+    private void quickcarpet$movableBlockOverrides$getPistonBehavior(CallbackInfoReturnable<PistonBehavior> cir){
         if(Settings.movableBlockOverrides) {
             PistonBehavior pistonBehavior = PistonHelper.getOverridePistonBehavior((BlockState) (Object) this);
             if (pistonBehavior != null) cir.setReturnValue(pistonBehavior);

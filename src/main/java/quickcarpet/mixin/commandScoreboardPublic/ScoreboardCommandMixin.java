@@ -15,12 +15,12 @@ import java.util.function.Predicate;
 @Mixin(ScoreboardCommand.class)
 public class ScoreboardCommandMixin {
     @Redirect(method = "register", at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/builder/LiteralArgumentBuilder;requires(Ljava/util/function/Predicate;)Lcom/mojang/brigadier/builder/ArgumentBuilder;", remap = false))
-    private static ArgumentBuilder<?, ?> changeRequires(LiteralArgumentBuilder<ServerCommandSource> builder, Predicate<ServerCommandSource> requirement) {
+    private static ArgumentBuilder<?, ?> quickcarpet$commandScoreboardPublic$changeRequires(LiteralArgumentBuilder<ServerCommandSource> builder, Predicate<ServerCommandSource> requirement) {
         return builder.requires(s -> Settings.commandScoreboardPublic || requirement.test(s));
     }
 
     @Redirect(method = "register", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/command/CommandManager;literal(Ljava/lang/String;)Lcom/mojang/brigadier/builder/LiteralArgumentBuilder;"))
-    private static LiteralArgumentBuilder<ServerCommandSource> addRequirements(String literal) {
+    private static LiteralArgumentBuilder<ServerCommandSource> quickcarpet$commandScoreboardPublic$addRequirements(String literal) {
         LiteralArgumentBuilder<ServerCommandSource> builder = CommandManager.literal(literal);
         return switch (literal) {
             case "players", "teams", "remove", "modify" -> builder.requires(s -> s.hasPermissionLevel(2));

@@ -24,14 +24,14 @@ public abstract class PlayerManagerMixin {
     @Shadow @Final private List<ServerPlayerEntity> players;
 
     @Inject(method = "loadPlayerData", at = @At(value = "RETURN", shift = At.Shift.BEFORE))
-    private void fixStartingPos(ServerPlayerEntity player, CallbackInfoReturnable<NbtCompound> cir) {
+    private void quickcarpet$player$spawn$fixStartingPos(ServerPlayerEntity player, CallbackInfoReturnable<NbtCompound> cir) {
         if (player instanceof FakeServerPlayerEntity) {
             ((FakeServerPlayerEntity) player).applyStartingPosition();
         }
     }
 
     @Redirect(method = "onPlayerConnect", at = @At(value = "NEW", target = "net/minecraft/server/network/ServerPlayNetworkHandler"))
-    private ServerPlayNetworkHandler replaceNew(MinecraftServer server, ClientConnection clientConnection, ServerPlayerEntity playerIn) {
+    private ServerPlayNetworkHandler quickcarpet$player$replaceNew(MinecraftServer server, ClientConnection clientConnection, ServerPlayerEntity playerIn) {
         boolean isServerPlayerEntity = playerIn instanceof FakeServerPlayerEntity;
         if (isServerPlayerEntity) {
             return new FakeServerPlayNetworkHandler(server, clientConnection, playerIn);
@@ -41,7 +41,7 @@ public abstract class PlayerManagerMixin {
     }
 
     @Inject(method = "remove", at = @At("HEAD"), cancellable = true)
-    private void preventDoubleDisconnect(ServerPlayerEntity player, CallbackInfo ci) {
+    private void quickcarpet$player$shadow$preventDoubleDisconnect(ServerPlayerEntity player, CallbackInfo ci) {
         if (!this.players.contains(player)) {
             ci.cancel();
         }

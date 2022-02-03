@@ -7,5 +7,5 @@ import net.minecraft.world.World;
 import java.util.Random;
 
 public interface ExtendedCoralFeature {
-    boolean growSpecific(World worldIn, Random random, BlockPos pos, BlockState blockUnder);
+    boolean quickcarpet$growSpecific(World worldIn, Random random, BlockPos pos, BlockState blockUnder);
 }

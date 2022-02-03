@@ -34,9 +34,7 @@ public abstract class WorldChunkMixin extends Chunk implements ExtendedWorldChun
 
     @Nullable @Shadow public abstract BlockEntity getBlockEntity(BlockPos blockPos_1, WorldChunk.CreationType worldChunk$CreationType_1);
     @Shadow public abstract void addBlockEntity(BlockEntity blockEntity);
-
     @Shadow protected abstract <T extends BlockEntity> void updateTicker(T blockEntity);
-
     @Shadow public abstract void removeBlockEntity(BlockPos pos);
 
     /**
@@ -45,8 +43,9 @@ public abstract class WorldChunkMixin extends Chunk implements ExtendedWorldChun
      *
      * @author 2No2Name
      */
+    @Override
     @Nullable
-    public BlockState setBlockStateWithBlockEntity(BlockPos pos, BlockState newBlockState, BlockEntity newBlockEntity, boolean moved) {
+    public BlockState quickcarpet$setBlockStateWithBlockEntity(BlockPos pos, BlockState newBlockState, BlockEntity newBlockEntity, boolean moved) {
         int y = pos.getY();
         int sectionY = this.getSectionIndex(y);
         ChunkSection chunkSection = this.sectionArray[sectionY];

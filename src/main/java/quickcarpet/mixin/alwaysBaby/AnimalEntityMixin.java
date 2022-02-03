@@ -14,7 +14,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import quickcarpet.settings.Settings;
 
@@ -28,7 +27,7 @@ public abstract class AnimalEntityMixin extends PassiveEntity {
     }
 
     @Inject(method = "interactMob", at = @At(value = "HEAD"), cancellable = true)
-    private void alwaysBaby(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
+    private void quickcarpet$alwaysBaby(PlayerEntity player, Hand hand, CallbackInfoReturnable<ActionResult> cir) {
         ItemStack itemStack = player.getStackInHand(hand);
         if (Settings.alwaysBaby && !this.world.isClient && itemStack.isOf(Items.POISONOUS_POTATO) && this.isBaby() && this.breedingAge != Integer.MIN_VALUE) {
             this.setBreedingAge(Integer.MIN_VALUE);

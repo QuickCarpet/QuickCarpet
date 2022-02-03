@@ -71,7 +71,7 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
     @Override
     public void kill() {
         this.server.send(new ServerTask(this.server.getTicks(), () -> {
-            ((ActionPackOwner) this).getActionPack().stop();
+            ((ActionPackOwner) this).quickcarpet$getActionPack().stop();
             this.networkHandler.onDisconnected(Messenger.s("Killed"));
         }));
     }
@@ -163,7 +163,7 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
         server.getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.ADD_PLAYER, shadow));
         real.getWorld().getChunkManager().updatePosition(shadow);
         shadow.dataTracker.set(PLAYER_MODEL_PARTS, real.getDataTracker().get(PLAYER_MODEL_PARTS));
-        ((ActionPackOwner) shadow).getActionPack().copyFrom(((ActionPackOwner) real).getActionPack());
+        ((ActionPackOwner) shadow).quickcarpet$getActionPack().copyFrom(((ActionPackOwner) real).quickcarpet$getActionPack());
     }
 
     private static final Codec<Map<UUID, PlayerActionPack.State>> BOTS_CODEC = Codec.unboundedMap(Codec.STRING.xmap(UUID::fromString, UUID::toString), PlayerActionPack.State.CODEC.codec());
@@ -197,7 +197,7 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
         GameProfile filledProfile = server.getSessionService().fillProfileProperties(profile, true);
         server.send(new ServerTask(server.getTicks(), () -> {
             FakeServerPlayerEntity player = createFake(filledProfile, server);
-            ((ActionPackOwner) player).setActionPack(new PlayerActionPack(player, state));
+            ((ActionPackOwner) player).quickcarpet$setActionPack(new PlayerActionPack(player, state));
         }));
     }
 
@@ -208,7 +208,7 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
         if (allPlayers.isEmpty()) return;
         for (var player : allPlayers) {
             if (!(player instanceof FakeServerPlayerEntity)) continue;
-            var state = ((ActionPackOwner) player).getActionPack().getState();
+            var state = ((ActionPackOwner) player).quickcarpet$getActionPack().getState();
             bots.put(player.getUuid(), state);
         }
         Path file = getFile();

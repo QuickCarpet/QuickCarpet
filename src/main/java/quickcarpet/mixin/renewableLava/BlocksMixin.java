@@ -21,10 +21,9 @@ public class BlocksMixin {
     @Dynamic("static initializer")
     @Redirect(method = "<clinit>",
         slice = @Slice(from = @At(value = "CONSTANT", args = "stringValue=obsidian")),
-        at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/block/Blocks;register(Ljava/lang/String;Lnet/minecraft/block/Block;)Lnet/minecraft/block/Block;",
-            ordinal = 0))
-    private static Block registerObsidian(String id, Block obsidian) {
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Blocks;register(Ljava/lang/String;Lnet/minecraft/block/Block;)Lnet/minecraft/block/Block;", ordinal = 0)
+    )
+    private static Block quickcarpet$renewableLava$registerObsidian(String id, Block obsidian) {
         return register("obsidian", new ObsidianBlock(Block.Settings.of(Material.STONE, MapColor.BLACK).requiresTool().strength(50.0F, 1200.0F)));
     }
 }

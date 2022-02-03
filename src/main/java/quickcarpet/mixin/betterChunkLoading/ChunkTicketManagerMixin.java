@@ -12,7 +12,7 @@ import quickcarpet.settings.Settings;
 @Mixin(value = ChunkTicketManager.class, priority = 1100)
 public class ChunkTicketManagerMixin {
     @Inject(method = "purge", at = @At(value = "FIELD", target = "Lnet/minecraft/server/world/ChunkTicketManager;ticketsByPosition:Lit/unimi/dsi/fastutil/longs/Long2ObjectOpenHashMap;"), cancellable = true)
-    private void purgeOnAutosave(CallbackInfo ci) {
+    private void quickcarpet$betterChunkLoading$purgeOnAutosave(CallbackInfo ci) {
         if (Settings.betterChunkLoading && QuickCarpetServer.getMinecraftServer().getTicks() % 900 != 0) ci.cancel();
     }
 }

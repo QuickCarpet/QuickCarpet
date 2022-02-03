@@ -95,13 +95,13 @@ public class WaypointCommand {
         ServerWorld dim = Utils.getOrDefault(ctx, "dimension", DimensionArgumentType::getDimensionArgument, source.getWorld());
         Vec2f rot = Utils.getOrDefault(ctx, "rotation", DefaultPosArgument.zero()).toAbsoluteRotation(source);
         WaypointContainer world = (WaypointContainer) dim;
-        Map<String, Waypoint> waypoints = world.getWaypoints();
+        Map<String, Waypoint> waypoints = world.quickcarpet$getWaypoints();
         if (waypoints.containsKey(name)) {
             m(source, ts("command.waypoint.error.exists", Formatting.RED, name));
             return -1;
         }
         Waypoint w = new Waypoint(world, name, source.getPlayer(), pos, rot);
-        world.getWaypoints().put(name, w);
+        world.quickcarpet$getWaypoints().put(name, w);
         m(source, t("command.waypoint.added", w, tp(w, Formatting.AQUA)));
         return 0;
     }
@@ -118,7 +118,7 @@ public class WaypointCommand {
             m(source, ts("command.waypoint.remove.notAllowed", Formatting.RED, w));
             return -2;
         }
-        if (w.world().getWaypoints().remove(w.name(), w)) {
+        if (w.world().quickcarpet$getWaypoints().remove(w.name(), w)) {
             m(source, t("command.waypoint.remove.success", w));
             return 1;
         }
@@ -128,7 +128,7 @@ public class WaypointCommand {
     private static int listAll(ServerCommandSource source, int page) throws CommandSyntaxException {
         ArrayList<Waypoint> waypoints = new ArrayList<>();
         for (ServerWorld world : source.getServer().getWorlds()) {
-            waypoints.addAll(((WaypointContainer) world).getWaypoints().values());
+            waypoints.addAll(((WaypointContainer) world).quickcarpet$getWaypoints().values());
         }
         return printList(source, waypoints, page, null, null);
     }
@@ -136,7 +136,7 @@ public class WaypointCommand {
     private static int listCreator(ServerCommandSource source, String creator, int page) throws CommandSyntaxException {
         ArrayList<Waypoint> waypoints = new ArrayList<>();
         for (ServerWorld world : source.getServer().getWorlds()) {
-            for (Waypoint w : ((WaypointContainer) world).getWaypoints().values()) {
+            for (Waypoint w : ((WaypointContainer) world).quickcarpet$getWaypoints().values()) {
                 if (creator.equalsIgnoreCase(w.creator())) waypoints.add(w);
             }
         }
@@ -144,7 +144,7 @@ public class WaypointCommand {
     }
 
     private static int listDimension(ServerCommandSource source, ServerWorld dimension, int page) throws CommandSyntaxException {
-        Collection<Waypoint> waypoints = ((WaypointContainer) dimension).getWaypoints().values();
+        Collection<Waypoint> waypoints = ((WaypointContainer) dimension).quickcarpet$getWaypoints().values();
         return printList(source, waypoints, page, dimension, null);
     }
 

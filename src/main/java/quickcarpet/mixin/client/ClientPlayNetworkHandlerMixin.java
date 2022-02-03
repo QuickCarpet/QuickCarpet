@@ -25,17 +25,17 @@ import quickcarpet.utils.CarpetRegistry;
 @Mixin(ClientPlayNetworkHandler.class)
 public abstract class ClientPlayNetworkHandlerMixin implements ClientPlayPacketListener {
     @Inject(method = "onGameJoin", at = @At("RETURN"))
-    private void onJoinServer(CallbackInfo ci) {
+    private void quickcarpet$onJoinServer(CallbackInfo ci) {
         QuickCarpetClient.getInstance().onJoinServer();
     }
 
     @Inject(method = "clearWorld", at = @At("HEAD"))
-    private void onLeaveServer(CallbackInfo ci) {
+    private void quickcarpet$onLeaveServer(CallbackInfo ci) {
         QuickCarpetClient.getInstance().onLeaveServer();
     }
 
     @Inject(method = "onCustomPayload", at = @At(value = "CONSTANT", args = "stringValue=Unknown custom packed identifier: {}"), cancellable = true, locals = LocalCapture.CAPTURE_FAILSOFT, require = 0)
-    private void onCustomPayloadNotFound(CustomPayloadS2CPacket packet, CallbackInfo info, Identifier id, PacketByteBuf buf) {
+    private void quickcarpet$onCustomPayloadNotFound(CustomPayloadS2CPacket packet, CallbackInfo info, Identifier id, PacketByteBuf buf) {
         String channel = packet.getChannel().toString();
         if ("minecraft:register".equals(channel) || "minecraft:unregister".equals(channel)) {
             if (buf.refCnt() > 0) {
@@ -47,14 +47,14 @@ public abstract class ClientPlayNetworkHandlerMixin implements ClientPlayPacketL
     }
 
     @Inject(method = "onCustomPayload", at = @At("HEAD"), cancellable = true)
-    private void onCustomPayload(CustomPayloadS2CPacket packet, CallbackInfo info) {
+    private void quickcarpet$onCustomPayload(CustomPayloadS2CPacket packet, CallbackInfo info) {
         if (ClientPluginChannelManager.INSTANCE.process(packet, (ClientPlayNetworkHandler) (Object) this)) {
             info.cancel();
         }
     }
 
     @Inject(method = "onSynchronizeTags", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/Multimap;isEmpty()Z", remap = false), locals = LocalCapture.CAPTURE_FAILHARD)
-    private void ignoreMissingCarpetTags(SynchronizeTagsS2CPacket packet, CallbackInfo ci, TagManager manager, Multimap<RegistryKey<? extends Registry<?>>, Identifier> map) {
+    private void quickcarpet$ignoreMissingCarpetTags(SynchronizeTagsS2CPacket packet, CallbackInfo ci, TagManager manager, Multimap<RegistryKey<? extends Registry<?>>, Identifier> map) {
         map.get(Registry.BLOCK_KEY).removeAll(CarpetRegistry.CARPET_BLOCK_TAGS);
     }
 }

@@ -10,7 +10,7 @@ import quickcarpet.utils.CarefulBreakHelper;
 @Mixin(ThreadExecutor.class)
 public class ThreadExecutorMixin {
     @Inject(method = "executeTask", at = @At("RETURN"))
-    private void afterTask(Runnable task, CallbackInfo ci) {
+    private void quickcarpet$carefulBreak$afterTask(Runnable task, CallbackInfo ci) {
         CarefulBreakHelper.miningPlayer.set(null);
     }
 }

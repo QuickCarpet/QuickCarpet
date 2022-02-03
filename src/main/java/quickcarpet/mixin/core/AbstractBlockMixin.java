@@ -14,10 +14,10 @@ public abstract class AbstractBlockMixin {
     @Shadow public abstract Block getBlock();
 
     @Inject(method = "hasBlockEntity", at = @At("HEAD"), cancellable = true)
-    private void betterHasBlockEntity(CallbackInfoReturnable<Boolean> cir) {
+    private void quickcarpet$dynamicBlockEntity$hasBlockEntity(CallbackInfoReturnable<Boolean> cir) {
         Block block = getBlock();
         if (block instanceof DynamicBlockEntityProvider) {
-            cir.setReturnValue(((DynamicBlockEntityProvider) block).providesBlockEntity());
+            cir.setReturnValue(((DynamicBlockEntityProvider) block).quickcarpet$providesBlockEntity());
         }
     }
 }

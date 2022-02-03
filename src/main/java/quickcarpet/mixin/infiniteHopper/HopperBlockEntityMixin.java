@@ -15,6 +15,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -38,7 +39,7 @@ public abstract class HopperBlockEntityMixin extends LootableContainerBlockEntit
     @Shadow private static boolean isInventoryFull(Inventory inventory, Direction direction) { throw new AbstractMethodError(); }
 
     @Inject(method = "insertAndExtract", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/HopperBlockEntity;insert(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/inventory/Inventory;)Z"), cancellable = true)
-    private static void beforeLithiumInsert(World world, BlockPos pos, BlockState state, HopperBlockEntity blockEntity, BooleanSupplier booleanSupplier, CallbackInfoReturnable<Boolean> cir) {
+    private static void quickcarpet$infiniteHopper$beforeLithiumInsert(World world, BlockPos pos, BlockState state, HopperBlockEntity blockEntity, BooleanSupplier booleanSupplier, CallbackInfoReturnable<Boolean> cir) {
         if (!Settings.infiniteHopper) return;
         HopperCounter.Key color = WoolTool.getCounterKey(world, pos.up());
         if (color == null) return;
@@ -56,6 +57,7 @@ public abstract class HopperBlockEntityMixin extends LootableContainerBlockEntit
         cir.setReturnValue(false);
     }
 
+    @Unique
     private static boolean insertInfinite(World world, BlockPos pos, BlockState state, Inventory hopper, HopperCounter.Key color) {
         HopperCounter from = HopperCounter.getCounter(color);
         if (Settings.hopperCounters && WoolTool.tryCount(world, pos, state, hopper, from)) {

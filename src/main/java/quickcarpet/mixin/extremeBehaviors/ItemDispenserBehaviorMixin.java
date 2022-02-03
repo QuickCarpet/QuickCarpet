@@ -11,7 +11,7 @@ import java.util.Random;
 @Mixin(ItemDispenserBehavior.class)
 public class ItemDispenserBehaviorMixin {
     @Redirect(method = "spawnItem", at = @At(value = "INVOKE", target = "Ljava/util/Random;nextGaussian()D", remap = false))
-    private static double nextGaussian$extremeBehaviors(Random random) {
+    private static double quickcarpet$extremeBehaviors$nextGaussian(Random random) {
         return Settings.extremeBehaviors ? random.nextDouble() * 16 - 8 : random.nextGaussian();
     }
 }

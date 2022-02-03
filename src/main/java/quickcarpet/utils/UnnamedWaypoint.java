@@ -36,7 +36,7 @@ public record UnnamedWaypoint(@Nonnull WaypointContainer world,
     }
 
     public RegistryKey<World> getDimension() {
-        return world.getWaypointWorldKey();
+        return world.quickcarpet$getWaypointWorldKey();
     }
 
     public boolean canManipulate(ServerCommandSource source) {

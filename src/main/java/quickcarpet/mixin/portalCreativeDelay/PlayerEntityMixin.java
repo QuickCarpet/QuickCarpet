@@ -15,7 +15,7 @@ public abstract class PlayerEntityMixin {
     @Shadow public abstract Iterable<ItemStack> getItemsHand();
 
     @Inject(method = "getMaxNetherPortalTime", at = @At("HEAD"), cancellable = true)
-    private void portalCreativeDelay(CallbackInfoReturnable<Integer> cir) {
+    private void quickcarpet$portalCreativeDelay(CallbackInfoReturnable<Integer> cir) {
         if (!Settings.portalCreativeDelay) return;
         int delay = 80;
         for (ItemStack heldItem : this.getItemsHand()) {

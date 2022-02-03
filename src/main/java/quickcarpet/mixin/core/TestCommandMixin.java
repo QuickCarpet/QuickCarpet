@@ -12,7 +12,7 @@ import quickcarpet.settings.Settings;
 @Mixin(TestCommand.class)
 public class TestCommandMixin {
     @Redirect(method = "register", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/command/CommandManager;literal(Ljava/lang/String;)Lcom/mojang/brigadier/builder/LiteralArgumentBuilder;"))
-    private static LiteralArgumentBuilder<ServerCommandSource> addRequires(String literal) {
+    private static LiteralArgumentBuilder<ServerCommandSource> quickcarpet$addRequires(String literal) {
         return CommandManager.literal(literal).requires(s -> Settings.isDevelopment);
     }
 }

@@ -14,17 +14,15 @@ import quickcarpet.settings.Settings;
 public class LavaFluidMixin {
 
     @Redirect(
-            method= "flow(Lnet/minecraft/world/WorldAccess;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/Direction;Lnet/minecraft/fluid/FluidState;)V",
-            at=@At(
-                    value="INVOKE",
-                    target="Lnet/minecraft/world/WorldAccess;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"
-            ))
-    private boolean modifyStone(WorldAccess worldAccess, BlockPos pos, BlockState state, int flags) {
+        method = "flow(Lnet/minecraft/world/WorldAccess;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/Direction;Lnet/minecraft/fluid/FluidState;)V",
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/world/WorldAccess;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z")
+    )
+    private boolean quickcarpet$renewableDeepslate(WorldAccess worldAccess, BlockPos pos, BlockState state, int flags) {
         if (Settings.renewableDeepslate && pos.getY() <= 16) {
-            if (pos.getY() < -7 || worldAccess.getRandom().nextFloat() >= (8+pos.getY())/24.0) {
+            if (pos.getY() < -7 || worldAccess.getRandom().nextFloat() >= (8 + pos.getY()) / 24.0) {
                 state = Blocks.DEEPSLATE.getDefaultState();
             }
         }
-        return worldAccess.setBlockState(pos,state,flags);
+        return worldAccess.setBlockState(pos, state, flags);
     }
 }

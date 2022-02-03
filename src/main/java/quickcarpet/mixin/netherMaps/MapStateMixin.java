@@ -15,7 +15,7 @@ public abstract class MapStateMixin extends PersistentState {
         value = "FIELD",
         target = "Lnet/minecraft/item/map/MapState;dimension:Lnet/minecraft/util/registry/RegistryKey;"
     ))
-    private RegistryKey<World> redirectGetDimension(MapState state) {
+    private RegistryKey<World> quickcarpet$netherMaps$getDimension(MapState state) {
         if (Settings.netherMaps && state.dimension == World.NETHER) {
             return World.OVERWORLD;
         }

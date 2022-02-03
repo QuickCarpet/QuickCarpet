@@ -14,7 +14,7 @@ import java.util.concurrent.CompletableFuture;
 @Mixin(ServerChunkManager.class)
 public abstract class ServerChunkManagerMixin {
     @Redirect(method = "isTickingFutureReady", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ChunkHolder;getTickingFuture()Ljava/util/concurrent/CompletableFuture;"))
-    private CompletableFuture<Either<WorldChunk, ChunkHolder.Unloaded>> tickAllBlocks(ChunkHolder chunkHolder) {
+    private CompletableFuture<Either<WorldChunk, ChunkHolder.Unloaded>> quickcarpet$betterChunkLoading$tickAllBlocks(ChunkHolder chunkHolder) {
         if (Settings.betterChunkLoading) return chunkHolder.getAccessibleFuture();
         return chunkHolder.getTickingFuture();
     }

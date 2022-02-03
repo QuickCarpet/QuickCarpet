@@ -15,7 +15,7 @@ public class TntBlockMixin extends Block {
     }
 
     @Redirect(method = "onBlockAdded", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;isReceivingRedstonePower(Lnet/minecraft/util/math/BlockPos;)Z"))
-    private boolean tntUpdateOnPlace(World world, BlockPos pos) {
+    private boolean quickcarpet$tntUpdateOnPlace(World world, BlockPos pos) {
         if (!quickcarpet.settings.Settings.tntUpdateOnPlace) return false;
         return world.isReceivingRedstonePower(pos);
     }

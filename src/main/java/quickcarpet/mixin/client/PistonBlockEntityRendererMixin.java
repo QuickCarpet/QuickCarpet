@@ -22,24 +22,24 @@ public abstract class PistonBlockEntityRendererMixin implements BlockEntityRende
     private BlockEntityRenderDispatcher blockEntityRenderDispatcher;
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void onInit(BlockEntityRendererFactory.Context ctx, CallbackInfo ci) {
+    private void quickcarpet$onInit(BlockEntityRendererFactory.Context ctx, CallbackInfo ci) {
         blockEntityRenderDispatcher = ctx.getRenderDispatcher();
     }
 
     @Inject(method = "render", at = @At(value = "INVOKE",
-            target ="Lnet/minecraft/client/render/block/entity/PistonBlockEntityRenderer;renderModel(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/world/World;ZI)V",
+            target = "Lnet/minecraft/client/render/block/entity/PistonBlockEntityRenderer;renderModel(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/client/util/math/MatrixStack;Lnet/minecraft/client/render/VertexConsumerProvider;Lnet/minecraft/world/World;ZI)V",
             ordinal = 3))
-    private void updateRenderBool(PistonBlockEntity pistonBlockEntity_1, float float_1, MatrixStack matrixStack_1, VertexConsumerProvider vertexConsumerProvider_1, int int_1, int int_2, CallbackInfo ci) {
+    private void quickcarpet$updateRenderBool(PistonBlockEntity pistonBlockEntity_1, float float_1, MatrixStack matrixStack_1, VertexConsumerProvider vertexConsumerProvider_1, int int_1, int int_2, CallbackInfo ci) {
         if (!(pistonBlockEntity_1 instanceof ExtendedPistonBlockEntity pistonBlockEntityExt)) return;
-        if (!pistonBlockEntityExt.isRenderModeSet())
-            pistonBlockEntityExt.setRenderCarriedBlockEntity(Settings.movableBlockEntities && pistonBlockEntityExt.getCarriedBlockEntity() != null);
+        if (!pistonBlockEntityExt.quickcarpet$isRenderModeSet())
+            pistonBlockEntityExt.quickcarpet$setRenderCarriedBlockEntity(Settings.movableBlockEntities && pistonBlockEntityExt.quickcarpet$getCarriedBlockEntity() != null);
     }
 
     @Inject(method = "render", at = @At("RETURN"))
-    private void endMethod3576(PistonBlockEntity pistonBlockEntity_1, float partialTicks, MatrixStack transform, VertexConsumerProvider bufferWrapper, int int_1, int int_2, CallbackInfo ci) {
+    private void quickcarpet$endMethod3576(PistonBlockEntity pistonBlockEntity_1, float partialTicks, MatrixStack transform, VertexConsumerProvider bufferWrapper, int int_1, int int_2, CallbackInfo ci) {
         if (!(pistonBlockEntity_1 instanceof ExtendedPistonBlockEntity pistonBlockEntityExt)) return;
-        if (pistonBlockEntityExt.getRenderCarriedBlockEntity()) {
-            BlockEntity carriedBlockEntity = pistonBlockEntityExt.getCarriedBlockEntity();
+        if (pistonBlockEntityExt.quickcarpet$getRenderCarriedBlockEntity()) {
+            BlockEntity carriedBlockEntity = pistonBlockEntityExt.quickcarpet$getCarriedBlockEntity();
             if (carriedBlockEntity != null) {
                 //carriedBlockEntity.setPos(pistonBlockEntity_1.getPos());
                 transform.translate(
@@ -53,7 +53,7 @@ public abstract class PistonBlockEntityRendererMixin implements BlockEntityRende
     }
 
     @ModifyConstant(method = "render", constant = @Constant(floatValue = 4f))
-    private float fixShort(float shortCutoff) {
+    private float quickcarpet$fixShort(float shortCutoff) {
         return 0.5f;
     }
 }

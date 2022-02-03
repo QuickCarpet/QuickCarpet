@@ -22,10 +22,10 @@ import quickcarpet.utils.SpawnTracker;
 @Mixin(SpawnHelper.class)
 public class SpawnHelperMixin {
     @Redirect(
-            method = "spawnEntitiesInChunk(Lnet/minecraft/entity/SpawnGroup;Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/world/chunk/Chunk;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/SpawnHelper$Checker;Lnet/minecraft/world/SpawnHelper$Runner;)V",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;spawnEntityAndPassengers(Lnet/minecraft/entity/Entity;)V")
+        method = "spawnEntitiesInChunk(Lnet/minecraft/entity/SpawnGroup;Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/world/chunk/Chunk;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/world/SpawnHelper$Checker;Lnet/minecraft/world/SpawnHelper$Runner;)V",
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;spawnEntityAndPassengers(Lnet/minecraft/entity/Entity;)V")
     )
-    private static void onSuccessfulSpawn(ServerWorld world, Entity entity) {
+    private static void quickcarpet$onSuccessfulSpawn(ServerWorld world, Entity entity) {
         entity.streamSelfAndPassengers().forEach(e -> {
             if (world.spawnEntity(e)) {
                 SpawnTracker.registerSpawn(entity);
@@ -34,14 +34,14 @@ public class SpawnHelperMixin {
     }
 
     @Inject(method = "canSpawn(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/entity/SpawnGroup;Lnet/minecraft/world/gen/StructureAccessor;Lnet/minecraft/world/gen/chunk/ChunkGenerator;Lnet/minecraft/world/biome/SpawnSettings$SpawnEntry;Lnet/minecraft/util/math/BlockPos$Mutable;D)Z", at = @At("HEAD"))
-    private static void onAttempt(ServerWorld world, SpawnGroup group, StructureAccessor structureAccessor, ChunkGenerator chunkGenerator, SpawnSettings.SpawnEntry spawnEntry, BlockPos.Mutable pos, double squaredDistance, CallbackInfoReturnable<Boolean> cir) {
+    private static void quickcarpet$onAttempt(ServerWorld world, SpawnGroup group, StructureAccessor structureAccessor, ChunkGenerator chunkGenerator, SpawnSettings.SpawnEntry spawnEntry, BlockPos.Mutable pos, double squaredDistance, CallbackInfoReturnable<Boolean> cir) {
         if (spawnEntry == null) return; // no type selected yet
         Vec3d pos2 = new Vec3d(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);
         SpawnTracker.registerAttempt(world.getDimension(), pos2, spawnEntry.type);
     }
 
     @Inject(method = "spawn", at = @At("HEAD"))
-    private static void onSpawnStart(ServerWorld world, WorldChunk chunk, SpawnHelper.Info info, boolean spawnAnimals, boolean spawnMonsters, boolean shouldSpawnAnimals, CallbackInfo ci) {
+    private static void quickcarpet$onSpawnStart(ServerWorld world, WorldChunk chunk, SpawnHelper.Info info, boolean spawnAnimals, boolean spawnMonsters, boolean shouldSpawnAnimals, CallbackInfo ci) {
         for (SpawnGroup group : SpawnGroup.values()) {
             SpawnTracker.registerMobcapStatus(world.getDimension(), group, !Mobcaps.isBelowCap(world.getChunkManager(), group));
         }

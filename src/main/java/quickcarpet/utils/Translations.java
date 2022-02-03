@@ -65,7 +65,7 @@ public class Translations {
     }
 
     public static MutableText translate(MutableText text, ServerPlayerEntity player) {
-        return translate(text, ((PlayerWithLanguage) player).getLanguage());
+        return translate(text, ((PlayerWithLanguage) player).quickcarpet$getLanguage());
     }
 
     public static MutableText translate(MutableText text, String locale) {

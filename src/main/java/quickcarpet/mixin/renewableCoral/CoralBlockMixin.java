@@ -9,8 +9,6 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.CoralFeature;
 import net.minecraft.world.gen.feature.Feature;
-import org.spongepowered.asm.mixin.Implements;
-import org.spongepowered.asm.mixin.Interface;
 import org.spongepowered.asm.mixin.Mixin;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.extensions.ExtendedCoralFeature;
@@ -20,13 +18,13 @@ import java.util.List;
 import java.util.Random;
 
 @Mixin(CoralBlock.class)
-@Implements(@Interface(iface = Fertilizable.class, prefix = "fert$"))
 public abstract class CoralBlockMixin implements Fertilizable {
-
+    @Override
     public boolean isFertilizable(BlockView var1, BlockPos var2, BlockState var3, boolean var4) {
         return Settings.renewableCoral && var3.get(CoralParentBlock.WATERLOGGED) && var1.getFluidState(var2.up()).isIn(FluidTags.WATER);
     }
 
+    @Override
     public boolean canGrow(World var1, Random var2, BlockPos var3, BlockState var4) {
         return (double) var1.random.nextFloat() < 0.15D;
     }
@@ -46,7 +44,7 @@ public abstract class CoralBlockMixin implements Fertilizable {
         }
         worldIn.setBlockState(pos, Blocks.WATER.getDefaultState(), 4);
 
-        if (!((ExtendedCoralFeature) coral).growSpecific(worldIn, random, pos, proper_block)) {
+        if (!((ExtendedCoralFeature) coral).quickcarpet$growSpecific(worldIn, random, pos, proper_block)) {
             worldIn.setBlockState(pos, blockUnder, 3);
         } else {
             if (worldIn.random.nextInt(10) == 0) {

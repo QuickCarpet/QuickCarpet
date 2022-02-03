@@ -15,21 +15,21 @@ import quickcarpet.utils.extensions.ActionPackOwner;
 public abstract class ServerPlayerEntityMixin implements ActionPackOwner {
     private PlayerActionPack actionPack;
 
-    public PlayerActionPack getActionPack() {
+    public PlayerActionPack quickcarpet$getActionPack() {
         return actionPack;
     }
 
-    public void setActionPack(PlayerActionPack pack) {
+    public void quickcarpet$setActionPack(PlayerActionPack pack) {
         this.actionPack = pack;
     }
 
     @Inject(method = "<init>", at = @At(value = "RETURN"))
-    private void init(MinecraftServer server, ServerWorld world, GameProfile profile, CallbackInfo ci) {
+    private void quickcarpet$player$init(MinecraftServer server, ServerWorld world, GameProfile profile, CallbackInfo ci) {
         this.actionPack = new PlayerActionPack((ServerPlayerEntity) (Object) this);
     }
 
     @Inject(method = "tick", at = @At(value = "HEAD"))
-    private void onTick(CallbackInfo ci) {
+    private void quickcarpet$player$onTick(CallbackInfo ci) {
         actionPack.onUpdate();
     }
 }

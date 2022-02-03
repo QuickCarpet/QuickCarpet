@@ -21,7 +21,7 @@ public class BlockStateArgumentMixin {
     private static final Direction[] FACINGS = Direction.values();
 
     @Redirect(method = "setBlockState", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;postProcessState(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/WorldAccess;Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;"))
-    private BlockState postProcessState(BlockState state, WorldAccess world, BlockPos pos, ServerWorld serverWorld, BlockPos blockPos, int flags) {
+    private BlockState quickcarpet$fillUpdates$postProcessState(BlockState state, WorldAccess world, BlockPos pos, ServerWorld serverWorld, BlockPos blockPos, int flags) {
         if ((flags & NO_FILL_UPDATE) == 0) return Block.postProcessState(state, world, pos);
         if (!Settings.fillUpdatesPostProcessing) return state;
         BlockPos.Mutable neighbor = new BlockPos.Mutable();

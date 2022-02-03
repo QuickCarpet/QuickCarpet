@@ -16,7 +16,7 @@ public class RegistrySyncManagerMixin {
         value = "INVOKE",
         target = "Lnet/minecraft/util/registry/Registry;get(Lnet/minecraft/util/Identifier;)Ljava/lang/Object;"
     ))
-    private static <T> T redirectGetRegistry(Registry<T> registry, Identifier id) {
+    private static <T> T quickcarpet$redirectGetRegistry(Registry<T> registry, Identifier id) {
         currentRegistry.set(id);
         return registry.get(id);
     }
@@ -25,7 +25,7 @@ public class RegistrySyncManagerMixin {
         value = "INVOKE",
         target = "Lnet/minecraft/util/registry/Registry;getId(Ljava/lang/Object;)Lnet/minecraft/util/Identifier;"
     ))
-    private static <T> Identifier redirectGetId(Registry<T> mutableRegistry, T entry) {
+    private static <T> Identifier quickcarpet$redirectGetId(Registry<T> mutableRegistry, T entry) {
         Identifier id = mutableRegistry.getId(entry);
         if (QuickCarpet.getInstance().isIgnoredForRegistrySync(currentRegistry.get(), id)) return null;
         return id;

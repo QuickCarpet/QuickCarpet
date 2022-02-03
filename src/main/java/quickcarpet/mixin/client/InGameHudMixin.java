@@ -18,7 +18,7 @@ public abstract class InGameHudMixin {
     @Shadow @Final private PlayerListHud playerListHud;
 
     @Redirect(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/MinecraftClient;isInSingleplayer()Z"))
-    private boolean onDraw(MinecraftClient minecraftClient) {
+    private boolean quickcarpet$onDraw(MinecraftClient minecraftClient) {
         if (!minecraftClient.isInSingleplayer()) return false;
         PlayerListHudAccessor hud = ((PlayerListHudAccessor) playerListHud);
         return hud.getFooter() == null && hud.getHeader() == null;

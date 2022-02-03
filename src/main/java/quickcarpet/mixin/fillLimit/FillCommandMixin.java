@@ -9,7 +9,7 @@ import quickcarpet.settings.Settings;
 @Mixin(FillCommand.class)
 public class FillCommandMixin {
     @ModifyConstant(method = "execute", constant = @Constant(intValue = 32768))
-    private static int fillLimit(int old) {
+    private static int quickcarpet$fillLimit(int old) {
         return Settings.fillLimit;
     }
 }

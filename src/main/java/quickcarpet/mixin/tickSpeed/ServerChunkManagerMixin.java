@@ -10,7 +10,7 @@ import quickcarpet.helper.TickSpeed;
 @Mixin(ServerChunkManager.class)
 public class ServerChunkManagerMixin {
     @Inject(method = "tickChunks", at = @At("HEAD"), cancellable = true)
-    private void tickChunks(CallbackInfo ci) {
+    private void quickcarpet$tickFreeze$tickChunks(CallbackInfo ci) {
         if (TickSpeed.getServerTickSpeed().isPaused()) {
             ci.cancel();
         }

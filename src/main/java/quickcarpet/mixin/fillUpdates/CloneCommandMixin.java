@@ -12,7 +12,7 @@ import quickcarpet.utils.Constants;
 @Mixin(CloneCommand.class)
 public class CloneCommandMixin {
     @Redirect(method = "execute", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/world/ServerWorld;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
-    private static boolean fillUpdates(ServerWorld serverWorld, BlockPos pos, BlockState state, int flags) {
+    private static boolean quickcarpet$fillUpdates(ServerWorld serverWorld, BlockPos pos, BlockState state, int flags) {
         return serverWorld.setBlockState(pos, state, Constants.SetBlockState.modifyFlags(flags));
     }
 }

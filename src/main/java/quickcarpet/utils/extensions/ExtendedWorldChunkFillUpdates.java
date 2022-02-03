@@ -7,5 +7,5 @@ import javax.annotation.Nullable;
 
 public interface ExtendedWorldChunkFillUpdates {
     @Nullable
-    BlockState setBlockStateWithoutUpdates(BlockPos pos, BlockState state, boolean moved);
+    BlockState quickcarpet$setBlockStateWithoutUpdates(BlockPos pos, BlockState state, boolean moved);
 }

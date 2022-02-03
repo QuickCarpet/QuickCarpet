@@ -15,13 +15,12 @@ import java.util.function.Supplier;
 
 @Mixin(ServerWorld.class)
 public abstract class ServerWorldMixin extends World {
-
-    protected ServerWorldMixin(MutableWorldProperties properties, RegistryKey<World> registryKey, DimensionType dimensionType, Supplier<Profiler> supplier, boolean bl, boolean bl2, long l) {
-        super(properties, registryKey, dimensionType, supplier, bl, bl2, l);
+    protected ServerWorldMixin(MutableWorldProperties properties, RegistryKey<World> registryRef, DimensionType dimensionType, Supplier<Profiler> profiler, boolean isClient, boolean debugWorld, long seed) {
+        super(properties, registryRef, dimensionType, profiler, isClient, debugWorld, seed);
     }
 
     @ModifyConstant(method = "setSpawnPos", constant = @Constant(intValue = 11), require = 2)
-    private int adjustSpawnChunkLevel(int level) {
+    private int quickcarpet$spawnChunkLevel(int level) {
         return Settings.spawnChunkLevel;
     }
 }

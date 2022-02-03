@@ -17,7 +17,7 @@ public abstract class RepeaterBlockMixin extends AbstractRedstoneGateBlockMixin 
     @Shadow @Final public static IntProperty DELAY;
 
     @Override
-    protected int getDelay(BlockState state, World world, BlockPos pos) {
+    protected int quickcarpet$getDelay(BlockState state, World world, BlockPos pos) {
         int delay = 2;
         if (Settings.terracottaRepeaters) {
             BlockState stateBelow = world.getBlockState(pos.down());

@@ -24,7 +24,7 @@ public class DrownedEntityMixin extends ZombieEntity {
     }
 
     @Redirect(method = "attack", at = @At(value = "NEW", target = "net/minecraft/item/ItemStack"))
-    private ItemStack createItemStack(ItemConvertible item) {
+    private ItemStack quickcarpet$drownedEnchantedTridentsFix$createItemStack(ItemConvertible item) {
         if (Settings.drownedEnchantedTridentsFix) {
             ItemStack holding = this.getActiveItem();
             ItemStack trident = new ItemStack(item);

@@ -14,17 +14,17 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public abstract class AbstractRedstoneGateBlockMixin {
     @Shadow protected abstract int getUpdateDelayInternal(BlockState state);
 
-    protected int getDelay(BlockState state, World world, BlockPos pos) {
+    protected int quickcarpet$getDelay(BlockState state, World world, BlockPos pos) {
         return getUpdateDelayInternal(state);
     }
 
     @Redirect(method = "scheduledTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/AbstractRedstoneGateBlock;getUpdateDelayInternal(Lnet/minecraft/block/BlockState;)I"))
-    private int getDelay(AbstractRedstoneGateBlock block, BlockState state, BlockState state2, ServerWorld world, BlockPos pos) {
-        return getDelay(state, world, pos);
+    private int quickcarpet$terracottaRepeaters$getDelay(AbstractRedstoneGateBlock block, BlockState state, BlockState state2, ServerWorld world, BlockPos pos) {
+        return quickcarpet$getDelay(state, world, pos);
     }
 
     @Redirect(method = "updatePowered", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/AbstractRedstoneGateBlock;getUpdateDelayInternal(Lnet/minecraft/block/BlockState;)I"))
-    private int getDelay(AbstractRedstoneGateBlock block, BlockState state, World world, BlockPos pos) {
-        return getDelay(state, world, pos);
+    private int quickcarpet$terracottaRepeaters$getDelay(AbstractRedstoneGateBlock block, BlockState state, World world, BlockPos pos) {
+        return quickcarpet$getDelay(state, world, pos);
     }
 }

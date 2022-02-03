@@ -9,7 +9,7 @@ import quickcarpet.settings.Settings;
 @Mixin(ExperienceOrbEntity.class)
 public class ExperienceOrbEntityMixin {
     @ModifyConstant(method = "onPlayerCollision", constant = @Constant(intValue = 2))
-    private int setPickupDelay(int value) {
+    private int quickcarpet$xpCoolDown(int value) {
         return Settings.xpCoolDown;
     }
 }

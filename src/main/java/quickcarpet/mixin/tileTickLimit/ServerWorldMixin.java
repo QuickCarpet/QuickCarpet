@@ -10,7 +10,7 @@ import quickcarpet.settings.Settings;
 public class ServerWorldMixin {
 
     @ModifyConstant(method = "tick", constant = @Constant(intValue = 65536))
-    private int tileTickLimit(int vanilla) {
+    private int quickcarpet$tileTickLimit(int vanilla) {
         return Settings.tileTickLimit;
     }
 }

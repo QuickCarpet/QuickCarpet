@@ -41,7 +41,7 @@ public abstract class HopperMinecartEntityMixin extends StorageMinecartEntity im
     }
 
     @Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/vehicle/HopperMinecartEntity;canOperate()Z"))
-    private boolean operate(HopperMinecartEntity hopperMinecartEntity) {
+    private boolean quickcarpet$hopperMinecartItemTransfer$operate(HopperMinecartEntity hopperMinecartEntity) {
         if (Settings.hopperMinecartItemTransfer && this.insert()) return true;
         return this.canOperate();
     }

@@ -28,29 +28,29 @@ public abstract class CommandManagerMixin {
     @Shadow @Final private CommandDispatcher<ServerCommandSource> dispatcher;
 
     @Inject(method = "<init>", at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/CommandDispatcher;findAmbiguities(Lcom/mojang/brigadier/AmbiguityConsumer;)V", remap = false))
-    private void onRegister(CommandManager.RegistrationEnvironment environment, CallbackInfo ci) {
+    private void quickcarpet$onRegister(CommandManager.RegistrationEnvironment environment, CallbackInfo ci) {
         QuickCarpet.getInstance().setCommandDispatcher(this.dispatcher);
     }
 
     @Redirect(method = "<init>", at = @At(value = "FIELD", target = "Lnet/minecraft/SharedConstants;isDevelopment:Z"))
-    private boolean registerTest() {
+    private boolean quickcarpet$registerTest() {
         return true;
     }
 
     @BugFix(value = "MC-124493", status = "WAI")
     @Redirect(method = "execute", at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;isDebugEnabled()Z", remap = false))
-    private boolean moreStackTraces(Logger logger) {
+    private boolean quickcarpet$moreStackTraces(Logger logger) {
         return logger.isDebugEnabled() || QuickCarpet.isDevelopment();
     }
 
     @BugFix(value = "MC-124493", status = "WAI")
     @Inject(method = "execute", at = @At(value = "INVOKE", target = "Lorg/apache/logging/log4j/Logger;isDebugEnabled()Z", remap = false), locals = LocalCapture.CAPTURE_FAILHARD)
-    private void printStackTrace(ServerCommandSource source, String command, CallbackInfoReturnable<Integer> cir, Exception e) {
+    private void quickcarpet$printStackTrace(ServerCommandSource source, String command, CallbackInfoReturnable<Integer> cir, Exception e) {
         e.printStackTrace();
     }
 
     @Redirect(method = "execute", at = @At(value = "INVOKE", target = "Lnet/minecraft/command/CommandException;getTextMessage()Lnet/minecraft/text/Text;"))
-    private Text translateError(CommandException e, ServerCommandSource source, String command) {
+    private Text quickcarpet$translateError(CommandException e, ServerCommandSource source, String command) {
         Entity entity = source.getEntity();
         if (entity instanceof ServerPlayerEntity) {
             return Translations.translate((MutableText) e.getTextMessage(), (ServerPlayerEntity) entity);

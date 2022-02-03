@@ -103,7 +103,7 @@ public record Waypoint(UnnamedWaypoint location, String name) implements Compara
 
     public static Set<Waypoint> getAllWaypoints(Iterable<WaypointContainer> worlds) {
         Set<Waypoint> all = new LinkedHashSet<>();
-        for (WaypointContainer world : worlds) all.addAll(world.getWaypoints().values());
+        for (WaypointContainer world : worlds) all.addAll(world.quickcarpet$getWaypoints().values());
         return all;
     }
 
@@ -116,12 +116,12 @@ public record Waypoint(UnnamedWaypoint location, String name) implements Compara
             if (dimension != null) name = name.substring(slash + 1);
         }
         if (dimension == null) {
-            Map<String, Waypoint> waypoints = defaultWorld.getWaypoints();
+            Map<String, Waypoint> waypoints = defaultWorld.quickcarpet$getWaypoints();
             if (waypoints.containsKey(name)) return waypoints.get(name);
         }
         for (WaypointContainer world : worlds) {
-            if (world.getWaypointWorldKey() != dimension) continue;
-            Map<String, Waypoint> waypoints = world.getWaypoints();
+            if (world.quickcarpet$getWaypointWorldKey() != dimension) continue;
+            Map<String, Waypoint> waypoints = world.quickcarpet$getWaypoints();
             if (waypoints.containsKey(name)) return waypoints.get(name);
         }
         return null;
@@ -139,7 +139,7 @@ public record Waypoint(UnnamedWaypoint location, String name) implements Compara
 
     public static void saveWaypoints(WaypointContainer world) throws IOException {
         Path file = getWaypointFile(world);
-        Map<String, Waypoint> waypoints = world.getWaypoints();
+        Map<String, Waypoint> waypoints = world.quickcarpet$getWaypoints();
         if (waypoints.isEmpty()) {
             Files.deleteIfExists(file);
             return;
@@ -153,7 +153,7 @@ public record Waypoint(UnnamedWaypoint location, String name) implements Compara
 
     public static Path getWaypointFile(WaypointContainer world) {
         Path rootPath = Path.of(".");
-        Path saveDirPath = DimensionType.getSaveDirectory(world.getWaypointWorldKey(), rootPath);
+        Path saveDirPath = DimensionType.getSaveDirectory(world.quickcarpet$getWaypointWorldKey(), rootPath);
         Path relPath = rootPath.relativize(saveDirPath).resolve("data/waypoints.json");
         return QuickCarpetServer.getConfigFile(WorldSavePath.ROOT).resolve(relPath);
     }

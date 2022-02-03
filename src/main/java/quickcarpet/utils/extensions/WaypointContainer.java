@@ -7,6 +7,6 @@ import quickcarpet.utils.Waypoint;
 import java.util.Map;
 
 public interface WaypointContainer {
-    Map<String, Waypoint> getWaypoints();
-    RegistryKey<World> getWaypointWorldKey();
+    Map<String, Waypoint> quickcarpet$getWaypoints();
+    RegistryKey<World> quickcarpet$getWaypointWorldKey();
 }

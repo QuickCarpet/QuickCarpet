@@ -274,14 +274,14 @@ public class PlayerCommand {
     private static int stop(CommandContext<ServerCommandSource> context) {
         if (cantManipulate(context)) return 0;
         ServerPlayerEntity player = getPlayer(context);
-        ((ActionPackOwner) player).getActionPack().stop();
+        ((ActionPackOwner) player).quickcarpet$getActionPack().stop();
         return 1;
     }
 
     private static int reach(CommandContext<ServerCommandSource> context, float dist) {
         if (cantManipulate(context)) return 0;
         ServerPlayerEntity player = getPlayer(context);
-        ((ActionPackOwner) player).getActionPack().reach = dist;
+        ((ActionPackOwner) player).quickcarpet$getActionPack().reach = dist;
         return 1;
     }
 
@@ -293,7 +293,7 @@ public class PlayerCommand {
     private static int manipulate(CommandContext<ServerCommandSource> context, PlayerAction action) throws CommandSyntaxException {
         if (cantManipulate(context)) return 0;
         ServerPlayerEntity player = getPlayer(context);
-        action.doAction(((ActionPackOwner) player).getActionPack());
+        action.doAction(((ActionPackOwner) player).quickcarpet$getActionPack());
         return 1;
     }
 

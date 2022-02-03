@@ -14,12 +14,12 @@ import quickcarpet.logging.PacketCounter;
 @Mixin(ClientConnection.class)
 public class ClientConnectionMixin {
     @Inject(method = "sendImmediately", at = @At("HEAD"))
-    private void countPacketOut(Packet<?> packet_1, GenericFutureListener<? extends Future<? super Void>> genericFutureListener_1, CallbackInfo ci) {
+    private void quickcarpet$packetCounter$out(Packet<?> packet_1, GenericFutureListener<? extends Future<? super Void>> genericFutureListener_1, CallbackInfo ci) {
         PacketCounter.out();
     }
 
-    @Inject(method = "channelRead0", at = @At("HEAD"))
-    private void countPacketIn(ChannelHandlerContext channelHandlerContext_1, Packet<?> packet_1, CallbackInfo ci) {
+    @Inject(method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/Packet;)V", at = @At("HEAD"))
+    private void quickcarpet$packetCounter$in(ChannelHandlerContext channelHandlerContext_1, Packet<?> packet_1, CallbackInfo ci) {
         PacketCounter.in();
     }
 }

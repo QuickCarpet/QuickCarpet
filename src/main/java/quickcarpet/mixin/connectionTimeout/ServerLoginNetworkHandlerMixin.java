@@ -21,17 +21,17 @@ public abstract class ServerLoginNetworkHandlerMixin {
     private long timeoutStart;
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void storeStart(MinecraftServer server, ClientConnection connection, CallbackInfo ci) {
+    private void quickcarpet$connectionTimeout$storeStart(MinecraftServer server, ClientConnection connection, CallbackInfo ci) {
         timeoutStart = System.currentTimeMillis();
     }
 
     @ModifyConstant(method = "tick", constant = @Constant(intValue =  600))
-    private int disableVanillaTimeout(int tickLimit) {
+    private int quickcarpet$connectionTimeout$disableVanillaTimeout(int tickLimit) {
         return -1;
     }
 
     @Inject(method = "tick", at = @At("RETURN"))
-    private void fixedTimeout(CallbackInfo ci) {
+    private void quickcarpet$connectionTimeout$fixedTimeout(CallbackInfo ci) {
         if (Settings.connectionTimeout > 0 && System.currentTimeMillis() > timeoutStart + Settings.connectionTimeout * 1000L) {
             this.disconnect(new TranslatableText("multiplayer.disconnect.slow_login"));
         }

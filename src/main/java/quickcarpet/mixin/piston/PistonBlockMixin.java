@@ -8,6 +8,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -29,11 +30,12 @@ public class PistonBlockMixin extends FacingBlock {
         super(block$Settings_1);
     }
 
-    private ThreadLocal<List<BlockEntity>> list1_BlockEntities = new ThreadLocal<>(); //Unneccessary ThreadLocal if client and server use different PistonBlock instances
+    @Unique
+    private final ThreadLocal<List<BlockEntity>> list1_BlockEntities = new ThreadLocal<>(); //Unnecessary ThreadLocal if client and server use different PistonBlock instances
 
     @Inject(method = "isMovable", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;hasBlockEntity()Z"),
             cancellable = true)
-    private static void craftingTableMoveable(BlockState state, World world, BlockPos pos, Direction pistonDirection,
+    private static void quickcarpet$movableBlockEntities$craftingTable(BlockState state, World world, BlockPos pos, Direction pistonDirection,
                                               boolean allowDestroy, Direction moveDirection, CallbackInfoReturnable<Boolean> cir) {
         if (state.getBlock() instanceof CraftingTableBlock) {
             cir.setReturnValue(true);
@@ -41,10 +43,9 @@ public class PistonBlockMixin extends FacingBlock {
         }
     }
 
-    @Inject(method = "isMovable", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;hasBlockEntity()Z"),
-            cancellable = true)
+    @Inject(method = "isMovable", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;hasBlockEntity()Z"), cancellable = true)
     //Blocks overwritten to be pushable will be pushable without not hasBlockEntity check.
-    private static void additionalBlocksMovable(BlockState state, World world, BlockPos pos, Direction pistonDirection,
+    private static void quickcarpet$movableBlockOverrides$additionalBlocksMovable(BlockState state, World world, BlockPos pos, Direction pistonDirection,
                                                 boolean allowDestroy, Direction moveDirection, CallbackInfoReturnable<Boolean> cir) {
         if (quickcarpet.settings.Settings.movableBlockOverrides && CarpetRegistry.PISTON_OVERRIDE_MOVABLE.contains(state.getBlock())) {
             cir.setReturnValue(true);
@@ -52,7 +53,7 @@ public class PistonBlockMixin extends FacingBlock {
     }
 
     @Inject(method = "isMovable", at = @At(value = "RETURN", ordinal = 3, shift = At.Shift.BEFORE), cancellable = true)
-    private static void additionalBlocksMovable2(BlockState blockState_1, World world_1, BlockPos blockPos_1, Direction direction_1,
+    private static void quickcarpet$movableBlockOverrides$additionalBlocksMovable2(BlockState blockState_1, World world_1, BlockPos blockPos_1, Direction direction_1,
                                                  boolean allowDestroy, Direction direction_2, CallbackInfoReturnable<Boolean> cir) {
         if(quickcarpet.settings.Settings.movableBlockOverrides){
             PistonBehavior override = PistonHelper.getOverridePistonBehavior(blockState_1);
@@ -68,9 +69,8 @@ public class PistonBlockMixin extends FacingBlock {
     }
 
     @Inject(method = "isMovable", at = @At(value = "RETURN", ordinal = 0, shift = At.Shift.BEFORE), cancellable = true)
-    private static void additionalObsidianMovable(BlockState blockState_1, World world_1, BlockPos blockPos_1, Direction direction_1, boolean allowDestroy, Direction direction_2, CallbackInfoReturnable<Boolean> cir) {
+    private static void quickcarpet$movableBlockOverrides$additionalObsidianMovable(BlockState blockState_1, World world_1, BlockPos blockPos_1, Direction direction_1, boolean allowDestroy, Direction direction_2, CallbackInfoReturnable<Boolean> cir) {
         if(quickcarpet.settings.Settings.movableBlockOverrides){
-
             if ((!world_1.getWorldBorder().contains(blockPos_1)) || (blockPos_1.getY() < 0 || direction_1 == Direction.DOWN && blockPos_1.getY() == 0)) {
                 return; //return false
             }
@@ -88,7 +88,7 @@ public class PistonBlockMixin extends FacingBlock {
     }
 
     @Inject(method = "isMovable", at = @At(value = "RETURN", ordinal = 3, shift = At.Shift.BEFORE), cancellable = true)
-    private static void movableCMD(BlockState blockState_1, World world_1, BlockPos blockPos_1,
+    private static void quickcarpet$movableBlockEntities$commandBlock(BlockState blockState_1, World world_1, BlockPos blockPos_1,
                                    Direction direction_1, boolean boolean_1, Direction direction_2, CallbackInfoReturnable<Boolean> cir) {
         Block block_1 = blockState_1.getBlock();
         //Make CommandBlocks movable, either use instanceof CommandBlock or the 3 cmd block objects,
@@ -97,6 +97,7 @@ public class PistonBlockMixin extends FacingBlock {
         }
     }
 
+    @Unique
     private static boolean isPushableTileEntityBlock(BlockState state) {
         Block block = state.getBlock();
         //Making PISTON_EXTENSION (BlockPistonMoving) pushable would not work as its createNewTileEntity()-method returns null
@@ -106,15 +107,13 @@ public class PistonBlockMixin extends FacingBlock {
     }
 
     @Redirect(method = "isMovable", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;hasBlockEntity()Z"))
-    private static boolean ifHasBlockEntity(BlockState state) {
+    private static boolean quickcarpet$movableBlockEntities$hasBlockEntity(BlockState state) {
         return state.hasBlockEntity() && (!quickcarpet.settings.Settings.movableBlockEntities || !isPushableTileEntityBlock(state));
     }
 
-
-
     @Inject(method = "move", at = @At(value = "INVOKE", shift = At.Shift.BEFORE,
             target = "Ljava/util/List;size()I", remap = false, ordinal = 4), locals = LocalCapture.CAPTURE_FAILHARD)
-    private void onMove(World world_1, BlockPos blockPos_1, Direction direction_1, boolean boolean_1,
+    private void quickcarpet$movableBlockEntities$onMove(World world_1, BlockPos blockPos_1, Direction direction_1, boolean boolean_1,
                         CallbackInfoReturnable<Boolean> cir, BlockPos blockPos_2, PistonHandler pistonHandler_1,
                         Map<BlockPos, BlockState> map, List<BlockPos> list_1, List<BlockState> list_2) {
         //Get the blockEntities and remove them from the world before any magic starts to happen
@@ -138,42 +137,34 @@ public class PistonBlockMixin extends FacingBlock {
     @Inject(method = "move", at = @At(value = "INVOKE", shift = At.Shift.BEFORE,
             target = "Lnet/minecraft/world/World;addBlockEntity(Lnet/minecraft/block/entity/BlockEntity;)V", ordinal = 0),
             locals = LocalCapture.CAPTURE_FAILHARD)
-    private void setBlockEntityWithCarried(World world_1, BlockPos blockPos_1, Direction direction_1, boolean boolean_1,
+    private void quickcarpet$movableBlockEntities$setBlockEntityWithCarried(World world_1, BlockPos blockPos_1, Direction direction_1, boolean boolean_1,
            CallbackInfoReturnable<Boolean> cir, BlockPos blockPos_2, PistonHandler pistonHandler_1, Map<BlockPos, BlockState> map,
            List list_1, List list_2, List list_3, BlockState[] blockStates_1, Direction direction_2, int int_2,
            int int_3, BlockPos blockPos_4, BlockState blockState9, BlockState blockState4) {
         BlockEntity blockEntityPiston = PistonExtensionBlock.createBlockEntityPiston(blockPos_4, blockState4, (BlockState) list_2.get(int_3), direction_1, boolean_1, false);
         if (quickcarpet.settings.Settings.movableBlockEntities) {
-            ((ExtendedPistonBlockEntity) blockEntityPiston).setCarriedBlockEntity(list1_BlockEntities.get().get(int_3));
+            ((ExtendedPistonBlockEntity) blockEntityPiston).quickcarpet$setCarriedBlockEntity(list1_BlockEntities.get().get(int_3));
         }
         world_1.addBlockEntity(blockEntityPiston);
     }
 
-    @Redirect(method = "move", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/world/World;addBlockEntity(Lnet/minecraft/block/entity/BlockEntity;)V",
-            ordinal = 0))
-    private void dontDoAnything(World world, BlockEntity blockEntity) {
-    }
+    @Redirect(method = "move", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;addBlockEntity(Lnet/minecraft/block/entity/BlockEntity;)V", ordinal = 0))
+    private void quickcarpet$movableBlockEntities$dontDoAnything(World world, BlockEntity blockEntity) {}
 
-    @Redirect(method = "move", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/block/PistonExtensionBlock;createBlockEntityPiston(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/Direction;ZZ)Lnet/minecraft/block/entity/BlockEntity;",
-            ordinal = 0))
-    private BlockEntity returnNull(BlockPos blockPos, BlockState blockState, BlockState blockState2, Direction direction, boolean bl, boolean bl2) {
+    @Redirect(method = "move", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/PistonExtensionBlock;createBlockEntityPiston(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/Direction;ZZ)Lnet/minecraft/block/entity/BlockEntity;", ordinal = 0))
+    private BlockEntity quickcarpet$movableBlockEntities$returnNull(BlockPos blockPos, BlockState blockState, BlockState blockState2, Direction direction, boolean bl, boolean bl2) {
         return null;
     }
 
-    @Inject(method = "tryMove", at = @At(value = "INVOKE",
-            target = "Lnet/minecraft/world/World;addSyncedBlockEvent(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;II)V",
-            ordinal = 1, shift = At.Shift.BEFORE))
-    private void doubleRetraction(World world, BlockPos pos, BlockState state, CallbackInfo ci) {
+    @Inject(method = "tryMove", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;addSyncedBlockEvent(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/Block;II)V", ordinal = 1, shift = At.Shift.BEFORE))
+    private void quickcarpet$doubleRetraction(World world, BlockPos pos, BlockState state, CallbackInfo ci) {
         if (quickcarpet.settings.Settings.doubleRetraction) {
             world.setBlockState(pos, state.with(PistonBlock.EXTENDED, false), 2);
         }
     }
 
-
     @Redirect(method = "onSyncedBlockEvent", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getPistonBehavior()Lnet/minecraft/block/piston/PistonBehavior;"))
-    private PistonBehavior returnNormalWhenMovable(BlockState blockState){
+    private PistonBehavior quickcarpet$movableBlockOverrides$returnNormalWhenMovable(BlockState blockState){
         PistonBehavior pistonBehavior = blockState.getPistonBehavior();
         if(pistonBehavior == PistonHelper.WEAK_STICKY_BREAKABLE || pistonBehavior == PistonHelper.WEAK_STICKY)
             return PistonBehavior.NORMAL;

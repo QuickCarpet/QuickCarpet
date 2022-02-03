@@ -15,12 +15,12 @@ import quickcarpet.QuickCarpetClient;
 @Environment(EnvType.CLIENT)
 public abstract class MinecraftClientMixin {
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void onInit(RunArgs args, CallbackInfo ci) {
+    private void quickcarpet$onInit(RunArgs args, CallbackInfo ci) {
         QuickCarpet.getInstance().onGameStarted(EnvType.CLIENT);
     }
 
     @Inject(method = "tick", at = @At("HEAD"))
-    private void onTick(CallbackInfo ci) {
+    private void quickcarpet$onTick(CallbackInfo ci) {
         QuickCarpetClient.getInstance().tick();
     }
 }

@@ -18,14 +18,14 @@ import static quickcarpet.utils.Constants.SetBlockState.NO_OBSERVER_UPDATE;
 public class WorldMixin {
     @ModifyConstant(method = "setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;II)Z",
             constant = @Constant(intValue = NO_OBSERVER_UPDATE))
-    private int addFillUpdatesInt(int original) {
+    private int quickcarpet$fillUpdates$addFillUpdatesInt(int original) {
         return NO_OBSERVER_UPDATE | NO_FILL_UPDATE;
     }
 
     @Redirect(method = "setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;II)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/chunk/WorldChunk;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Z)Lnet/minecraft/block/BlockState;"))
-    private BlockState setBlockStateInChunk(WorldChunk worldChunk, BlockPos pos, BlockState state, boolean moved, BlockPos pos1, BlockState state1, int flags) {
+    private BlockState quickcarpet$fillUpdates$setBlockStateInChunk(WorldChunk worldChunk, BlockPos pos, BlockState state, boolean moved, BlockPos pos1, BlockState state1, int flags) {
         if ((flags & NO_FILL_UPDATE) != 0) {
-            return ((ExtendedWorldChunkFillUpdates) worldChunk).setBlockStateWithoutUpdates(pos, state, moved);
+            return ((ExtendedWorldChunkFillUpdates) worldChunk).quickcarpet$setBlockStateWithoutUpdates(pos, state, moved);
         }
         return worldChunk.setBlockState(pos, state, moved);
     }

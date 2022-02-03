@@ -27,7 +27,7 @@ public class CraftingTableBlockMixin extends Block implements DynamicBlockEntity
     }
 
     @Override
-    public boolean providesBlockEntity() {
+    public boolean quickcarpet$providesBlockEntity() {
         return autoCraftingTable;
     }
 
@@ -39,7 +39,7 @@ public class CraftingTableBlockMixin extends Block implements DynamicBlockEntity
 
     @Nullable
     private CraftingTableBlockEntity getBlockEntity(World world, BlockPos pos) {
-        if (!providesBlockEntity()) return null;
+        if (!quickcarpet$providesBlockEntity()) return null;
         BlockEntity blockEntity = world.getBlockEntity(pos);
         if (blockEntity instanceof CraftingTableBlockEntity) {
             return (CraftingTableBlockEntity) blockEntity;
@@ -48,7 +48,7 @@ public class CraftingTableBlockMixin extends Block implements DynamicBlockEntity
     }
 
     @Inject(method = "createScreenHandlerFactory", at = @At("HEAD"), cancellable = true)
-    private void onCreateScreenHandler(BlockState state, World world, BlockPos pos, CallbackInfoReturnable<NamedScreenHandlerFactory> cir) {
+    private void quickcarpet$autoCraftingTable$onCreateScreenHandler(BlockState state, World world, BlockPos pos, CallbackInfoReturnable<NamedScreenHandlerFactory> cir) {
         CraftingTableBlockEntity blockEntity = getBlockEntity(world, pos);
         if (blockEntity != null) {
             cir.setReturnValue(blockEntity);
@@ -58,7 +58,7 @@ public class CraftingTableBlockMixin extends Block implements DynamicBlockEntity
     @Override
     @SuppressWarnings("deprecation")
     public boolean hasComparatorOutput(BlockState blockState) {
-        return providesBlockEntity();
+        return quickcarpet$providesBlockEntity();
     }
 
     @Override

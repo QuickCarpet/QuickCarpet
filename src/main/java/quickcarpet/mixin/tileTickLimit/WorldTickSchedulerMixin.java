@@ -17,16 +17,15 @@ import java.util.Collections;
 
 @Mixin(WorldTickScheduler.class)
 public class WorldTickSchedulerMixin {
-    @Unique
-    private boolean logged;
+    @Unique private boolean logged;
 
     @Inject(method = "collectTickableTicks", at = @At("HEAD"))
-    private void resetLogged(long time, int maxTicks, Profiler profiler, CallbackInfo ci) {
+    private void quickcarpet$tileTickLimit$resetLogged(long time, int maxTicks, Profiler profiler, CallbackInfo ci) {
         logged = false;
     }
 
     @Inject(method = "isTickableTicksCountUnder", at = @At("RETURN"))
-    private void logTileTickLimit(int maxTicks, CallbackInfoReturnable<Boolean> cir) {
+    private void quickcarpet$tileTickLimit$log(int maxTicks, CallbackInfoReturnable<Boolean> cir) {
         if (!cir.getReturnValue()) {
             log();
         }

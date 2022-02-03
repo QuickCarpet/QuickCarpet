@@ -19,7 +19,7 @@ public class CarpetBlockMixin extends Block {
     }
 
     @Inject(method = "getStateForNeighborUpdate", at = @At("HEAD"), cancellable = true)
-    private void fixDupe(BlockState state, Direction direction, BlockState newState, WorldAccess world, BlockPos pos, BlockPos posFrom, CallbackInfoReturnable<BlockState> cir) {
+    private void quickcarpet$carpetDuplicationFix(BlockState state, Direction direction, BlockState newState, WorldAccess world, BlockPos pos, BlockPos posFrom, CallbackInfoReturnable<BlockState> cir) {
         if (quickcarpet.settings.Settings.carpetDuplicationFix && PistonHelper.isBeingPushed(pos)) {
             cir.setReturnValue(super.getStateForNeighborUpdate(state, direction, newState, world, pos, posFrom));
         }
