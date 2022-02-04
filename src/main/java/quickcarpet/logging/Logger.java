@@ -9,12 +9,15 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Lazy;
+import org.jetbrains.annotations.VisibleForTesting;
 import quickcarpet.QuickCarpetServer;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -22,6 +25,7 @@ public class Logger implements Comparable<Logger> {
     public static Codec<Logger> NAME_CODEC = Codec.STRING.comapFlatMap(Loggers::getDataResult, Logger::getName).stable();
 
     boolean active = false;
+    private @Nullable BiConsumer<MutableText, Collection<LogParameter>> testListener;
     private @Nullable Text unavailable;
 
     private final String name;
@@ -119,6 +123,7 @@ public class Logger implements Comparable<Logger> {
     public void log(PlayerIndependentMessageSupplier message, Supplier<Collection<LogParameter>>  commandParams) {
         Map<String, MutableText> messages = new HashMap<>();
         getOnlineSubscribers().forEach(player -> sendMessage(player, messages.computeIfAbsent(getOption(player), message::get), commandParams));
+        if (testListener != null) testListener.accept(messages.computeIfAbsent(getDefault(), message::get), commandParams.get());
     }
 
     public void log(Supplier<MutableText> message) {
@@ -128,6 +133,7 @@ public class Logger implements Comparable<Logger> {
     public void log(Supplier<MutableText> message, Supplier<Collection<LogParameter>>  commandParams) {
         Lazy<MutableText> messages = new Lazy<>(message);
         getOnlineSubscribers().forEach(player -> sendMessage(player, messages.get(), commandParams));
+        if (testListener != null) testListener.accept(messages.get(), commandParams.get());
     }
 
     private static LoggerManager getManager() {
@@ -157,5 +163,20 @@ public class Logger implements Comparable<Logger> {
             return builder.build();
         };
         getHandler(player).handle(this, player, message, params);
+    }
+
+    @VisibleForTesting
+    public Runnable test(BiConsumer<MutableText, Map<String, Object>> listener) {
+        boolean activeBefore = active;
+        active = true;
+        testListener = (msg, params) -> {
+            Map<String, Object> paramMap = new LinkedHashMap<>();
+            if (params != null) for (LogParameter param : params) paramMap.put(param.key(), param.getValue());
+            listener.accept(msg, paramMap);
+        };
+        return () -> {
+            testListener = null;
+            active = activeBefore;
+        };
     }
 }

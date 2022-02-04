@@ -47,8 +47,8 @@ public class TNTLogHelper {
             default -> null;
         }, () -> Arrays.asList(
             new LogParameter("primed.x", primed.x),
-            new LogParameter("primed.x", primed.y),
-            new LogParameter("primed.x", primed.z),
+            new LogParameter("primed.y", primed.y),
+            new LogParameter("primed.z", primed.z),
             new LogParameter("primed.angle", primedAngle),
             new LogParameter("exploded.x", exploded.x),
             new LogParameter("exploded.y", exploded.y),
