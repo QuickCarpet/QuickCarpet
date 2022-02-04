@@ -46,6 +46,7 @@ public class MixinConfig {
             "commandScoreboardPublic",
             "connectionTimeout",
             "creativeNoClip",
+            "doubleRetraction",
             "drownedEnchantedTridentsFix",
             "dustOnPistons",
             "explosionNoBlockDamage",
@@ -58,10 +59,13 @@ public class MixinConfig {
             "hopperMinecartItemTransfer",
             "infiniteHopper",
             "lightningKillsDropsFix",
+            "movableBlockEntities",
+            "movableBlockOverrides",
             "nbtMotionLimit",
             "netherMaps",
             "phantomsRespectMobcap",
             "portalCreativeDelay",
+            "pushLimit",
             "railPowerLimit",
             "renewableCoral",
             "renewableDeepslate",
@@ -84,7 +88,6 @@ public class MixinConfig {
         .putAll("dispenser", "dispensersBreakBlocks", "dispensersPlaceBlocks", "dispensersShearVines", "dispensersStripLogs", "dispensersTillSoil", "renewableNetherrack")
         .putAll("fillUpdates", "fillUpdates", "fillUpdatesPostProcessing")
         .putAll("movingBlockDuplicationFix", "carpetDuplicationFix", "railDuplicationFix", "tntDuplicationFix")
-        .putAll("piston", "doubleRetraction", "movableBlockEntities", "movableBlockOverrides", "pushLimit")
         .putAll("renewableFromAnvil", "renewableSand/anvil", "renewableGravel/anvil", "anvilledIce", "anvilledPackedIce", "anvilledBlueIce")
         .putAll("renewableFromSilverfish", "renewableSand/silverfish", "renewableGravel/silverfish")
         .putAll("stackableShulkerBoxes", "stackableShulkerBoxes", "stackableShulkerBoxesInInventories")

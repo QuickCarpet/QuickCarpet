@@ -1,4 +1,4 @@
-package quickcarpet.mixin.piston;
+package quickcarpet.mixin.movableBlockEntities;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockEntityProvider;
