@@ -76,6 +76,8 @@ public class MixinConfig {
             "sparkingLighter",
             "spawnChunkLevel",
             "spawningAlgorithm",
+            "stackableShulkerBoxes",
+            "stackableShulkerBoxesInInventories",
             "terracottaRepeaters",
             "tileTickLimit",
             "tntUpdateOnPlace",
@@ -90,7 +92,6 @@ public class MixinConfig {
         .putAll("movingBlockDuplicationFix", "carpetDuplicationFix", "railDuplicationFix", "tntDuplicationFix")
         .putAll("renewableFromAnvil", "renewableSand/anvil", "renewableGravel/anvil", "anvilledIce", "anvilledPackedIce", "anvilledBlueIce")
         .putAll("renewableFromSilverfish", "renewableSand/silverfish", "renewableGravel/silverfish")
-        .putAll("stackableShulkerBoxes", "stackableShulkerBoxes", "stackableShulkerBoxesInInventories")
         .putAll("tnt", "tntPrimeMomentum", "tntHardcodeAngle");
         for (String rule : identityMapped) {
             builder.put(rule, rule);

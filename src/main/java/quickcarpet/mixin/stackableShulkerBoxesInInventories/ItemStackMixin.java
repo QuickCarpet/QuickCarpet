@@ -1,4 +1,4 @@
-package quickcarpet.mixin.stackableShulkerBoxes;
+package quickcarpet.mixin.stackableShulkerBoxesInInventories;
 
 import net.minecraft.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;

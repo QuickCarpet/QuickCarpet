@@ -128,7 +128,7 @@
     "spawning.SpawnHelperMixin",
     "spawningAlgorithm.SpawnHelperMixin",
     "stackableShulkerBoxes.ItemEntityMixin",
-    "stackableShulkerBoxes.ItemStackMixin",
+    "stackableShulkerBoxesInInventories.ItemStackMixin",
     "terracottaRepeaters.AbstractRedstoneGateBlockMixin",
     "terracottaRepeaters.RepeaterBlockMixin",
     "tickSpeed.MinecraftServerMixin",
