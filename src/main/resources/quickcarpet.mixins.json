@@ -39,8 +39,6 @@
     "carefulBreak.BlockMixin",
     "carefulBreak.ServerPlayerInteractionManagerMixin",
     "carefulBreak.ThreadExecutorMixin",
-    "client.SoundEngineSourceSetImplMixin",
-    "client.SoundSystemMixin",
     "commandPlayer.PlayerManagerMixin",
     "commandPlayer.ServerPlayerEntityMixin",
     "commandPlayer.ServerPlayNetworkHandlerMixin",
@@ -155,6 +153,8 @@
     "client.MinecraftClientMixin",
     "client.PistonBlockEntityRendererMixin",
     "client.RenderTickCounterMixin",
+    "client.SoundEngineSourceSetImplMixin",
+    "client.SoundSystemMixin",
     "client.WorldRendererMixin"
   ],
   "injectors": {
