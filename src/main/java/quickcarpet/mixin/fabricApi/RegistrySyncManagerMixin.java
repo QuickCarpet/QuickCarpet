@@ -12,7 +12,7 @@ import quickcarpet.QuickCarpet;
 public class RegistrySyncManagerMixin {
     private static final ThreadLocal<Identifier> currentRegistry = new ThreadLocal<>();
 
-    @Redirect(method = "toTag", at = @At(
+    @Redirect(method = "createAndPopulateRegistryMap", at = @At(
         value = "INVOKE",
         target = "Lnet/minecraft/util/registry/Registry;get(Lnet/minecraft/util/Identifier;)Ljava/lang/Object;"
     ))
@@ -21,7 +21,7 @@ public class RegistrySyncManagerMixin {
         return registry.get(id);
     }
 
-    @Redirect(method = "toTag", at = @At(
+    @Redirect(method = "createAndPopulateRegistryMap", at = @At(
         value = "INVOKE",
         target = "Lnet/minecraft/util/registry/Registry;getId(Ljava/lang/Object;)Lnet/minecraft/util/Identifier;"
     ))
