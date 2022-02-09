@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 public class ArgumentTypesMixin {
     @Redirect(method = "register()V", at = @At(value = "FIELD", target = "Lnet/minecraft/SharedConstants;isDevelopment:Z"))
     private static boolean quickcarpet$isDevelopment() {
-        // fabric-gametest-api registers these same argument types with by inject after us
+        // fabric-gametest-api registers these same argument types by injecting after us
         return SharedConstants.isDevelopment || !FabricLoader.getInstance().isModLoaded("fabric-gametest-api-v1");
     }
 }
