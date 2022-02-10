@@ -19,64 +19,65 @@ plugins {
     id("fabric-loom")
 }
 
-val credentials = Properties()
-credentials.load(FileReader(file("credentials.properties")))
+val credentialsFile = file("credentials.properties")
+if (credentialsFile.exists()) {
+    tasks.register("setupAuth") {
+        group = "ide"
+        doLast {
+            val credentials = Properties()
+            credentials.load(FileReader(file("credentials.properties")))
+            var username = credentials["minecraftUser"].toString()
+            val password = credentials["minecraftPass"].toString()
+            val auth = YggdrasilAuthenticationService(Proxy.NO_PROXY, "1").createUserAuthentication(Agent.MINECRAFT)
+            auth.setUsername(username)
+            auth.setPassword(password)
+            auth.logIn()
+            val accessToken = auth.authenticatedToken
+            val uuid = auth.selectedProfile.id.toString().replace("-", "")
+            username = auth.selectedProfile.name
+            val userType = auth.userType.name
+            val userProperties = GsonBuilder().registerTypeAdapter(PropertyMap::class.java, PropertyMap.Serializer()).create().toJson(auth.userProperties)
 
-task("setupAuth") {
-    group = "ide"
-    doLast {
-        var username = credentials["minecraftUser"].toString()
-        val password = credentials["minecraftPass"].toString()
-        val auth = YggdrasilAuthenticationService(Proxy.NO_PROXY, "1").createUserAuthentication(Agent.MINECRAFT)
-        auth.setUsername(username)
-        auth.setPassword(password)
-        auth.logIn()
-        val accessToken = auth.authenticatedToken
-        val uuid = auth.selectedProfile.id.toString().replace("-", "")
-        username = auth.selectedProfile.name
-        val userType = auth.userType.name
-        val userProperties = GsonBuilder().registerTypeAdapter(PropertyMap::class.java, PropertyMap.Serializer()).create().toJson(auth.userProperties)
-
-        val categories = linkedMapOf<String, MutableList<String>>()
-        var category = mutableListOf<String>()
-        val devLauncherConfig = LoomGradleExtension.get(project).files.devLauncherConfig
-        println(devLauncherConfig)
-        for (line in devLauncherConfig.readLines()) {
-            if (!line.isEmpty() && Character.isWhitespace(line[0])) {
-                category.add(line.trim())
-            } else {
-                category = mutableListOf()
-                categories[line] = category
+            val categories = linkedMapOf<String, MutableList<String>>()
+            var category = mutableListOf<String>()
+            val devLauncherConfig = LoomGradleExtension.get(project).files.devLauncherConfig
+            println(devLauncherConfig)
+            for (line in devLauncherConfig.readLines()) {
+                if (!line.isEmpty() && Character.isWhitespace(line[0])) {
+                    category.add(line.trim())
+                } else {
+                    category = mutableListOf()
+                    categories[line] = category
+                }
             }
-        }
-        val clientArgs = categories["clientArgs"]!!
+            val clientArgs = categories["clientArgs"]!!
 
-        var i = 0
-        while (i < clientArgs.size) {
-            if (clientArgs[i] == "--accessToken" || clientArgs[i] == "--uuid" || clientArgs[i] == "--username" || clientArgs[i] == "--userType" || clientArgs[i] == "--userProperties") {
-                clientArgs.removeAt(i)
-                clientArgs.removeAt(i)
-            } else {
-                i += 2
+            var i = 0
+            while (i < clientArgs.size) {
+                if (clientArgs[i] == "--accessToken" || clientArgs[i] == "--uuid" || clientArgs[i] == "--username" || clientArgs[i] == "--userType" || clientArgs[i] == "--userProperties") {
+                    clientArgs.removeAt(i)
+                    clientArgs.removeAt(i)
+                } else {
+                    i += 2
+                }
             }
-        }
 
-        clientArgs.addAll(listOf(
-            "--accessToken", accessToken,
-            "--uuid", uuid,
-            "--username", username,
-            "--userType", userType,
-            "--userProperties", userProperties
-        ))
+            clientArgs.addAll(listOf(
+                "--accessToken", accessToken,
+                "--uuid", uuid,
+                "--username", username,
+                "--userType", userType,
+                "--userProperties", userProperties
+            ))
 
-        val pw = devLauncherConfig.printWriter()
-        for ((key, values) in categories) {
-            pw.println(key)
-            for (v in values) {
-                pw.println("\t" + v)
+            val pw = devLauncherConfig.printWriter()
+            for ((key, values) in categories) {
+                pw.println(key)
+                for (v in values) {
+                    pw.println("\t" + v)
+                }
             }
+            pw.flush()
         }
-        pw.flush()
     }
 }
-
