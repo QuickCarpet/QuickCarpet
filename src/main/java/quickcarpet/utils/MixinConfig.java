@@ -83,6 +83,7 @@ public class MixinConfig {
             "tntUpdateOnPlace",
             "updateSuppressionBlock",
             "updateSuppressionCrashFix",
+            "worldBorderSpawningFix",
             "xpCoolDown",
             "xpMerging"
         );

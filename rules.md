@@ -752,6 +752,14 @@ Type: `int`
 Default: `-1`  
 Validator: `quickcarpet.settings.Settings$ViewDistance`  
 
+## worldBorderSpawningFix
+Prevents pillagers and zombie sieges from spawning outside the world border
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: fix  
+
 ## xpCoolDown
 Delay before players can absorb the next Experience Orb
 

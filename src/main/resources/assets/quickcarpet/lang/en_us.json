@@ -134,6 +134,7 @@
   "carpet.rule.updateSuppressionCrashFix.description": "Fixes updates suppression causing server crashes",
   "carpet.rule.viewDistance.description": "View distance of the dedicated server",
   "carpet.rule.viewDistance.extra": "Use the vanilla client setting for integrated servers",
+  "carpet.rule.worldBorderSpawningFix.description": "Prevents pillagers and zombie sieges from spawning outside the world border",
   "carpet.rule.xpCoolDown.description": "Delay before players can absorb the next Experience Orb",
   "carpet.rule.xpMerging.description": "Enables or disables the vanilla xp merging added in 20w45a",
   "carpet.validator.positive": "Must be positive",

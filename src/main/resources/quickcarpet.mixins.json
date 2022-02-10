@@ -141,6 +141,8 @@
     "updateSuppressionCrashFix.ThreadExecutorMixin",
     "updateSuppressionCrashFix.WorldMixin",
     "waypoints.ServerWorldMixin",
+    "worldBorderSpawningFix.PillagerSpawnerMixin",
+    "worldBorderSpawningFix.ZombieSiegeManagerMixin",
     "xpCoolDown.ExperienceOrbEntityMixin",
     "xpMerging.ExperienceOrbEntityMixin"
   ],

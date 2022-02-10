@@ -370,6 +370,9 @@ public class Settings {
     @Rule(category = {}, validator = ViewDistance.class, onChange = ViewDistance.class)
     public static int viewDistance = -1;
 
+    @Rule(category = {FIX})
+    public static boolean worldBorderSpawningFix = false;
+
     public static class ViewDistance implements ChangeListener<Integer>, Validator<Integer> {
         @Override
         public Optional<TranslatableText> validate(Integer value) {
