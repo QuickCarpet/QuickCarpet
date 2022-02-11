@@ -30,7 +30,7 @@ tasks.check {
 
 val buildDate = Date()
 val branch = GitHelper.getBranch(rootDir)
-val ver = GitHelper.getVersion(rootDir, findProperty("mod_version") as String)
+val ver = GitHelper.getVersion(rootDir, mods.versions.quickcarpet.asProvider().get())
 
 if (branch != "master" && branch != "main" && branch != "HEAD" && ver.pre.isNotEmpty()) {
 	ver.pre.add(0, branch.replace(Regex("[+-]"), "_"))
@@ -40,21 +40,19 @@ println(ver)
 
 version = ver.toString()
 
-val malilib_mc_version = findProperty("malilib_mc_version") ?: findProperty("minecraft_version")
-
 dependencies {
 	implementation(project(path = ":quickcarpet-api", configuration = "dev"))
 	include(project(":quickcarpet-api"))
 
-	modImplementation("net.fabricmc.fabric-api:fabric-resource-loader-v0:${findProperty("fabric_resource_loader_v0_version")}")
-	//modImplementation("net.fabricmc.fabric-api:fabric-networking-api-v1:${findProperty("fabric_networking_api_v1_version"}")
-	//modImplementation("net.fabricmc.fabric-api:fabric-registry-sync-v0:${findProperty("fabric_registry_sync_v0_version"}")
-	modCompileOnly("net.fabricmc.fabric-api:fabric-api:${findProperty("fabric_version")}")
-	modCompileOnly("com.terraformersmc:modmenu:${findProperty("modmenu_version")}")
+	modImplementation(libs.fabric.resource.loader)
+	//modImplementation(libs.fabric.networking)
+	//modImplementation(libs.fabric.registry.sync)
+	modCompileOnly(libs.fabric.api)
+	modCompileOnly(libs.modmenu)
 
-	include("net.fabricmc.fabric-api:fabric-resource-loader-v0:${findProperty("fabric_resource_loader_v0_version")}")
+	include(libs.fabric.resource.loader)
 
-	modCompileOnly("fi.dy.masa.malilib:malilib-fabric-${malilib_mc_version}:${findProperty("malilib_version")}") {
+	modCompileOnly(libs.malilib) {
 		exclude("modmenu")
 	}
 }
@@ -71,8 +69,8 @@ task<Copy>("generateJava") {
 		"branch" to GitHelper.getBranch(rootDir),
 		"commit" to GitHelper.getCommit(rootDir),
 		"working_dir_clean" to GitHelper.getStatus(rootDir),
-		"minecraft_version" to findProperty("minecraft_version"),
-		"yarn_mappings" to findProperty("yarn_mappings")
+		"minecraft_version" to libs.versions.minecraft,
+		"yarn_mappings" to libs.versions.yarn
 	)
 	inputs.properties(templateContext) // for gradle up-to-date check
 	from("src/template/java")

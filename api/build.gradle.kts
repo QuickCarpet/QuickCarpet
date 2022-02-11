@@ -2,4 +2,4 @@ plugins {
     id("quickcarpet.mod-library-conventions")
 }
 
-version = findProperty("api_version")
+version = mods.versions.quickcarpet.api.get()

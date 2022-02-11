@@ -1,0 +1,18 @@
+[versions]
+minecraft = "1.18.1"
+yarn = "1.18.1+build.22"
+loader = "0.12.12"
+malilib = "0.10.0-dev.26"
+
+[libraries]
+minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
+yarn = { module = "net.fabricmc:yarn", version.ref = "yarn" }
+loader = { module = "net.fabricmc:fabric-loader", version.ref = "loader" }
+
+fabric-api = "net.fabricmc.fabric-api:fabric-api:0.46.4+1.18"
+fabric-resource-loader = "net.fabricmc.fabric-api:fabric-resource-loader-v0:0.4.12+e66b59e93a"
+fabric-networking = "net.fabricmc.fabric-api:fabric-networking-api-v1:1.0.18+3ac43d953a"
+fabric-registry-sync = "net.fabricmc.fabric-api:fabric-registry-sync-v0:0.9.0+befed49e3a"
+
+malilib = { module = "fi.dy.masa.malilib:malilib-fabric-1.18.0", version.ref = "malilib" }
+modmenu = "com.terraformersmc:modmenu:3.0.0"
