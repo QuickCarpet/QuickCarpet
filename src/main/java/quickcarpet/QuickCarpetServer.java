@@ -23,6 +23,7 @@ import quickcarpet.patches.FakeServerPlayerEntity;
 import quickcarpet.pubsub.PubSubMessenger;
 import quickcarpet.utils.CameraData;
 import quickcarpet.utils.HUDController;
+import quickcarpet.utils.StatHelper;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -36,8 +37,9 @@ import static quickcarpet.api.network.server.ServerPluginChannelManager.LOG;
 public class QuickCarpetServer implements QuickCarpetServerAPI, ServerEventListener, TelemetryProvider {
     private static QuickCarpetServer instance;
     public final MinecraftServer server;
-    public ServerPluginChannelManager pluginChannels;
     private final PubSubMessenger pubSubMessenger = new PubSubMessenger(QuickCarpet.PUBSUB);
+    private final StatHelper statHelper;
+    public ServerPluginChannelManager pluginChannels;
     public LoggerManager loggers;
     public TickSpeed tickSpeed;
     public Map<UUID, CameraData> cameraData = new HashMap<>();
@@ -50,6 +52,7 @@ public class QuickCarpetServer implements QuickCarpetServerAPI, ServerEventListe
         pluginChannels.register(new RulesChannel());
         tickSpeed = new TickSpeed(server);
         loggers = new LoggerManager(server);
+        statHelper = new StatHelper(server);
     }
 
     public static QuickCarpetServer init(MinecraftServer server) {
@@ -86,6 +89,10 @@ public class QuickCarpetServer implements QuickCarpetServerAPI, ServerEventListe
     @Override
     public ServerPluginChannelManager getPluginChannelManager() {
         return pluginChannels;
+    }
+
+    public StatHelper getStatHelper() {
+        return statHelper;
     }
 
     @Override

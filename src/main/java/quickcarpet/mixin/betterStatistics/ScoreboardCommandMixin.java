@@ -8,7 +8,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import quickcarpet.QuickCarpetServer;
 import quickcarpet.settings.Settings;
-import quickcarpet.utils.StatHelper;
 
 @Mixin(ScoreboardCommand.class)
 public class ScoreboardCommandMixin {
@@ -16,7 +15,7 @@ public class ScoreboardCommandMixin {
     private static ScoreboardObjective quickcarpet$betterStatistics$redirectNewlyCreatedObjective(Scoreboard scoreboard, String name) {
         ScoreboardObjective objective = scoreboard.getNullableObjective(name);
         if (objective != null && Settings.betterStatistics) {
-            StatHelper.initialize(scoreboard, QuickCarpetServer.getMinecraftServer(), objective);
+            QuickCarpetServer.getInstance().getStatHelper().initialize(scoreboard, objective);
         }
         return objective;
     }

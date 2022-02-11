@@ -31,10 +31,15 @@ import java.util.UUID;
 
 public class StatHelper {
     private static final Logger LOGGER = LogManager.getLogger();
-    private static Map<UUID, StatHandler> cache;
-    private static long cacheTime;
+    private final MinecraftServer server;
+    private Map<UUID, StatHandler> cache;
+    private long cacheTime;
 
-    public static File[] getStatFiles() {
+    public StatHelper(MinecraftServer server) {
+        this.server = server;
+    }
+
+    public File[] getStatFiles() {
         try {
             return Files.list(QuickCarpetServer.getConfigFile(new WorldSavePath("stats")))
                     .filter(p -> p.getFileName().toString().endsWith(".json"))
@@ -45,7 +50,7 @@ public class StatHelper {
         }
     }
 
-    public static Map<UUID, StatHandler> getAllStatistics(MinecraftServer server) {
+    public Map<UUID, StatHandler> getAllStatistics(MinecraftServer server) {
         if (cache != null && server.getTicks() - cacheTime < 100) return cache;
         File[] files = getStatFiles();
         HashMap<UUID, StatHandler> stats = new HashMap<>();
@@ -62,7 +67,8 @@ public class StatHelper {
                     ServerStatHandler manager = new ServerStatHandler(server, file);
                     stats.put(uuid, manager);
                 }
-            } catch (IllegalArgumentException ignored) {}
+            } catch (IllegalArgumentException ignored) {
+            }
         }
         cache = stats;
         cacheTime = server.getTicks();
@@ -70,7 +76,7 @@ public class StatHelper {
     }
 
     @Nullable
-    public static String getUsername(MinecraftServer server, UUID uuid) {
+    public String getUsername(MinecraftServer server, UUID uuid) {
         UserCache profileCache = server.getUserCache();
         Optional<GameProfile> optProfile = profileCache.getByUuid(uuid);
         if (optProfile.isPresent()) return optProfile.get().getName();
@@ -81,7 +87,7 @@ public class StatHelper {
         return null;
     }
 
-    public static void initialize(Scoreboard scoreboard, MinecraftServer server, ScoreboardObjective objective) {
+    public void initialize(Scoreboard scoreboard, ScoreboardObjective objective) {
         LOGGER.debug("Initializing " + objective);
         ScoreboardCriterion criterion = objective.getCriterion();
         if (!(criterion instanceof Stat<?> stat)) return;
@@ -96,9 +102,5 @@ public class StatHelper {
             score.setScore(value);
             LOGGER.debug("Initialized score " + objective.getName() + " of " + username + " to " + value);
         }
-    }
-
-    public static void clearCache() {
-        cache = null;
     }
 }

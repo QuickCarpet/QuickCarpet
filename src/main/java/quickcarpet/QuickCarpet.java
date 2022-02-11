@@ -220,7 +220,6 @@ public final class QuickCarpet implements QuickCarpetAPI, ServerEventListener, T
     public void onWorldsUnloaded(MinecraftServer server) {
         for (ServerWorld world : server.getWorlds()) onWorldUnloaded(world);
         for (QuickCarpetModule m : modules) m.onWorldsUnloaded(server);
-        StatHelper.clearCache();
         this.server = null;
         QuickCarpetServer.shutdown();
     }
