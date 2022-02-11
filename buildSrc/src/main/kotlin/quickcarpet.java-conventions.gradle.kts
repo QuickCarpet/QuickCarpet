@@ -47,6 +47,7 @@ tasks.withType<JavaCompile> {
 
 task<Jar>("sourcesJar") {
     dependsOn(tasks.classes)
+    @Suppress("DEPRECATION")
     classifier = "sources"
     from(sourceSets.main.get().allSource)
 }

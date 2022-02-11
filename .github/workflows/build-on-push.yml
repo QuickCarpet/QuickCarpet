@@ -9,7 +9,7 @@ jobs:
       fail-fast: false
       matrix:
         java: [17]
-        gradle: [7.2]
+        gradle: [7.4]
     container:
       image: gradle:${{ matrix.gradle }}-jdk${{ matrix.java }}
     steps:
@@ -34,7 +34,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-loom-
       - name: Build with Gradle
-        run: gradle clean build -x check --stacktrace --no-daemon
+        run: gradle clean build -x check --stacktrace --no-daemon --profile
       - name: Upload Main JARs
         uses: actions/upload-artifact@v2.2.0
         if: ${{ !env.ACT }}
@@ -54,7 +54,7 @@ jobs:
       fail-fast: false
       matrix:
         java: [17]
-        gradle: [7.2]
+        gradle: [7.4]
     container:
       image: gradle:${{ matrix.gradle }}-jdk${{ matrix.java }}
     steps:
@@ -93,7 +93,7 @@ jobs:
       fail-fast: false
       matrix:
         java: [17]
-        gradle: [7.2]
+        gradle: [7.4]
     container:
       image: gradle:${{ matrix.gradle }}-jdk${{ matrix.java }}
     steps:
@@ -138,7 +138,7 @@ jobs:
   #    fail-fast: false
   #    matrix:
   #      java: [17]
-  #      gradle: [7.2]
+  #      gradle: [7.4]
   #      lithium: [mc1.17.1-0.7.3]
   #  container:
   #    image: gradle:${{ matrix.gradle }}-jdk${{ matrix.java }}
