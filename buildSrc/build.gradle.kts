@@ -4,6 +4,7 @@ plugins {
 }
 
 repositories {
+    mavenCentral()
     maven {
         name = "Fabric"
         url = uri("https://maven.fabricmc.net/")
@@ -12,7 +13,6 @@ repositories {
         name = "Cotton"
         url = uri("https://server.bbkr.space/artifactory/libs-release/")
     }
-
     maven {
         url = uri("https://libraries.minecraft.net/")
     }
