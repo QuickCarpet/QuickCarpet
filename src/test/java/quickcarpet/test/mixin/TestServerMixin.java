@@ -4,6 +4,7 @@ import com.mojang.authlib.GameProfileRepository;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
 import com.mojang.datafixers.DataFixer;
 import net.fabricmc.api.EnvType;
+import net.minecraft.class_6904;
 import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.resource.ServerResourceManager;
 import net.minecraft.server.MinecraftServer;
@@ -32,8 +33,8 @@ import java.net.Proxy;
 public abstract class TestServerMixin extends MinecraftServer {
     @Shadow private TestSet testSet;
 
-    public TestServerMixin(Thread serverThread, DynamicRegistryManager.Impl registryManager, LevelStorage.Session session, SaveProperties saveProperties, ResourcePackManager dataPackManager, Proxy proxy, DataFixer dataFixer, ServerResourceManager serverResourceManager, MinecraftSessionService sessionService, GameProfileRepository gameProfileRepo, UserCache userCache, WorldGenerationProgressListenerFactory worldGenerationProgressListenerFactory) {
-        super(serverThread, registryManager, session, saveProperties, dataPackManager, proxy, dataFixer, serverResourceManager, sessionService, gameProfileRepo, userCache, worldGenerationProgressListenerFactory);
+    public TestServerMixin(Thread serverThread, LevelStorage.Session session, ResourcePackManager resourcePackManager, class_6904 arg, Proxy proxy, DataFixer dataFixer, MinecraftSessionService minecraftSessionService, GameProfileRepository gameProfileRepository, UserCache userCache, WorldGenerationProgressListenerFactory worldGenerationProgressListenerFactory) {
+        super(serverThread, session, resourcePackManager, arg, proxy, dataFixer, minecraftSessionService, gameProfileRepository, userCache, worldGenerationProgressListenerFactory);
     }
 
     @Inject(method = "setupServer", at = @At(value = "INVOKE", target = "Lnet/minecraft/test/TestServer;loadWorld()V"))

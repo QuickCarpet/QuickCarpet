@@ -14,16 +14,12 @@ import quickcarpet.feature.ObsidianBlock;
 
 @Mixin(Blocks.class)
 public class BlocksMixin {
-    @Shadow private static Block register(String string_1, Block block_1) {
-        throw new AssertionError();
-    }
-
     @Dynamic("static initializer")
     @Redirect(method = "<clinit>",
         slice = @Slice(from = @At(value = "CONSTANT", args = "stringValue=obsidian")),
-        at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Blocks;register(Ljava/lang/String;Lnet/minecraft/block/Block;)Lnet/minecraft/block/Block;", ordinal = 0)
+        at = @At(value = "NEW", target = "net/minecraft/block/Block", ordinal = 0)
     )
-    private static Block quickcarpet$renewableLava$registerObsidian(String id, Block obsidian) {
-        return register("obsidian", new ObsidianBlock(Block.Settings.of(Material.STONE, MapColor.BLACK).requiresTool().strength(50.0F, 1200.0F)));
+    private static Block quickcarpet$renewableLava$newObsidian(Block.Settings settings) {
+        return new ObsidianBlock(settings);
     }
 }

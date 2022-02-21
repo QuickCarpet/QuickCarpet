@@ -146,10 +146,10 @@ public class PlaceBlockBehavior extends FallibleItemDispenserBehavior {
         FALSE, WHITELIST, BLACKLIST, ALL
     }
 
-    public static boolean canPlace(Block block) {
+    public static boolean canPlace(BlockState block) {
         return switch (Settings.dispensersPlaceBlocks) {
-            case WHITELIST -> CarpetRegistry.DISPENSER_BLOCK_WHITELIST.contains(block);
-            case BLACKLIST -> !CarpetRegistry.DISPENSER_BLOCK_BLACKLIST.contains(block);
+            case WHITELIST -> block.isIn(CarpetRegistry.DISPENSER_BLOCK_WHITELIST);
+            case BLACKLIST -> !block.isIn(CarpetRegistry.DISPENSER_BLOCK_BLACKLIST);
             case ALL -> true;
             default -> false;
         };

@@ -60,6 +60,10 @@ public final class QuickCarpet implements QuickCarpetAPI, ServerEventListener, T
         return instance;
     }
 
+    public void onBootstrapInitialize() {
+        CarpetRegistry.init();
+    }
+
     @Override
     public void onServerInit(MinecraftServer server) {
         this.server = QuickCarpetServer.init(server);
@@ -89,7 +93,6 @@ public final class QuickCarpet implements QuickCarpetAPI, ServerEventListener, T
     @Override
     public void onGameStarted(EnvType env) {
         QuickCarpetAPI.getInstance();
-        CarpetRegistry.init();
         CarpetProfiler.init();
         try {
             Translations.init();

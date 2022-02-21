@@ -20,7 +20,7 @@ public class PistonBlockMixin {
     //Blocks overwritten to be pushable will be pushable without not hasBlockEntity check.
     private static void quickcarpet$movableBlockOverrides$additionalBlocksMovable(BlockState state, World world, BlockPos pos, Direction pistonDirection,
                                                                                   boolean allowDestroy, Direction moveDirection, CallbackInfoReturnable<Boolean> cir) {
-        if (quickcarpet.settings.Settings.movableBlockOverrides && CarpetRegistry.PISTON_OVERRIDE_MOVABLE.contains(state.getBlock())) {
+        if (quickcarpet.settings.Settings.movableBlockOverrides && state.isIn(CarpetRegistry.PISTON_OVERRIDE_MOVABLE)) {
             cir.setReturnValue(true);
         }
     }

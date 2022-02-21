@@ -5,12 +5,9 @@ import net.minecraft.Bootstrap;
 import net.minecraft.SharedConstants;
 import net.minecraft.resource.*;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.command.CommandManager;
 import net.minecraft.test.*;
-import net.minecraft.util.Util;
 import net.minecraft.util.crash.CrashReport;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.DynamicRegistryManager;
 import net.minecraft.world.level.storage.LevelStorage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -83,7 +80,6 @@ public class ServerStarter {
         if (!argList.isEmpty()) {
             StructureTestUtil.testStructuresDirectoryName = Path.of(argList.get(0)).toAbsolutePath().toString();
         }
-        DynamicRegistryManager.Impl registryManager = DynamicRegistryManager.create();
         Path runDir = Path.of(".");
         Path worldPath = runDir.resolve("gametestworld");
         if (Files.exists(worldPath)) {
@@ -110,8 +106,6 @@ public class ServerStarter {
         );
         DataPackSettings dataPackSettings = new DataPackSettings(Collections.emptyList(), Collections.emptyList());
         MinecraftServer.loadDataPacks(resourcePackManager, dataPackSettings, false);
-        ServerResourceManager serverResourceManager = ServerResourceManager.reload(resourcePackManager.createResourcePacks(), registryManager, CommandManager.RegistrationEnvironment.DEDICATED, 4, Util.getMainWorkerExecutor(), Runnable::run).get();
-        serverResourceManager.loadRegistryTags();
         Collection<TestFunction> testFunctions = collectTestFunctions();
         Collection<GameTestBatch> batches = TestUtil.createBatches(testFunctions);
         LOGGER.info("Found {} test functions in {} batches", testFunctions.size(), batches.size());
@@ -124,7 +118,7 @@ public class ServerStarter {
             processedBatches.add(processBatch(batch));
         }
         BlockPos spawnPos = new BlockPos(0, 5, 0);
-        MinecraftServer.startServer(serverThread -> new TestServer(serverThread, storageSession, resourcePackManager, serverResourceManager, processedBatches, spawnPos, registryManager));
+        MinecraftServer.startServer(serverThread -> TestServer.create(serverThread, storageSession, resourcePackManager, processedBatches, spawnPos));
     }
 
     private static Collection<TestFunction> collectTestFunctions() throws URISyntaxException, IOException {

@@ -1,8 +1,8 @@
 package quickcarpet.mixin.core;
 
 import net.minecraft.block.Block;
+import net.minecraft.resource.ResourceManager;
 import net.minecraft.tag.Tag;
-import net.minecraft.tag.TagGroup;
 import net.minecraft.tag.TagGroupLoader;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -22,15 +22,16 @@ import java.util.Map;
 public abstract class TagGroupLoaderMixin<T> {
     @Shadow @Final private String dataType;
 
-    @Inject(method = "buildGroup", at = @At("HEAD"))
-    private void quickcarpet$onReload(Map<Identifier, Tag.Builder> builders, CallbackInfoReturnable<TagGroup<T>> cir) {
+    @Inject(method = "loadTags", at = @At("RETURN"))
+    private void quickcarpet$onReload(ResourceManager manager, CallbackInfoReturnable<Map<Identifier, Tag.Builder>> cir) {
+        Map<Identifier, Tag.Builder> builders = cir.getReturnValue();
         if (this.dataType.equals("tags/blocks")) {
             for (BlockPropertyTag t : CarpetRegistry.VIRTUAL_BLOCK_TAGS) {
                 Tag.Builder tBuilder = new Tag.Builder();
                 for (Block b : t.values()) {
                     tBuilder.add(Registry.BLOCK.getId(b), Build.ID);
                 }
-                builders.put(t.id, tBuilder);
+                builders.put(t.getKey().id(), tBuilder);
             }
         }
     }

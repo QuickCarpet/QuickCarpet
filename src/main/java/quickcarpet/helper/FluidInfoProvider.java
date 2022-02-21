@@ -14,7 +14,7 @@ import static quickcarpet.utils.Messenger.hoverText;
 import static quickcarpet.utils.Messenger.s;
 
 public interface FluidInfoProvider<T extends Comparable<T>> extends StateInfoProvider<FluidState, T> {
-    Registry<FluidInfoProvider<?>> REGISTRY = new SimpleRegistry<>(RegistryKey.ofRegistry(new Identifier("quickcarpet", "fluid_info_provider")), Lifecycle.experimental());
+    Registry<FluidInfoProvider<?>> REGISTRY = new SimpleRegistry<>(RegistryKey.ofRegistry(new Identifier("quickcarpet", "fluid_info_provider")), Lifecycle.experimental(), null);
 
     interface Directional<T extends Comparable<T>> extends FluidInfoProvider<T>, StateInfoProvider.Directional<FluidState, T> {}
     static <T extends Comparable<T>> FluidInfoProvider<T> withFormatter(FluidInfoProvider<T> provider, Messenger.Formatter<T> formatter) {

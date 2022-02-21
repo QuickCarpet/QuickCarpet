@@ -3,6 +3,7 @@ package quickcarpet.mixin.core;
 import com.mojang.authlib.GameProfileRepository;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
 import com.mojang.datafixers.DataFixer;
+import net.minecraft.class_6904;
 import net.minecraft.resource.ResourcePackManager;
 import net.minecraft.resource.ServerResourceManager;
 import net.minecraft.server.MinecraftServer;
@@ -32,7 +33,7 @@ public abstract class MinecraftServerMixin {
 
     // Called during game start
     @Inject(method = "<init>", at = @At(value = "RETURN"))
-    private void quickcarpet$onMinecraftServerCTOR(Thread thread, DynamicRegistryManager.Impl impl, LevelStorage.Session session, SaveProperties saveProperties, ResourcePackManager resourcePackManager, Proxy proxy, DataFixer dataFixer, ServerResourceManager serverResourceManager, MinecraftSessionService minecraftSessionService, GameProfileRepository gameProfileRepository, UserCache userCache, WorldGenerationProgressListenerFactory worldGenerationProgressListenerFactory, CallbackInfo ci) {
+    private void quickcarpet$onMinecraftServerCTOR(Thread serverThread, LevelStorage.Session session, ResourcePackManager resourcePackManager, class_6904 arg, Proxy proxy, DataFixer dataFixer, MinecraftSessionService minecraftSessionService, GameProfileRepository gameProfileRepository, UserCache userCache, WorldGenerationProgressListenerFactory worldGenerationProgressListenerFactory, CallbackInfo ci) {
         QuickCarpet.getInstance().onServerInit((MinecraftServer) (Object) this);
     }
 

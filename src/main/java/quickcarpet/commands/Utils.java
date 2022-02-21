@@ -38,7 +38,7 @@ import static net.minecraft.server.command.CommandManager.literal;
 import static quickcarpet.utils.Messenger.*;
 
 public class Utils {
-    private static final List<Formatting> ARG_COLORS = ImmutableList.of(Formatting.AQUA, Formatting.YELLOW, Formatting.GREEN, Formatting.LIGHT_PURPLE, Formatting.GOLD);
+    private static final List<Formatting> ARG_COLORS = List.of(Formatting.AQUA, Formatting.YELLOW, Formatting.GREEN, Formatting.LIGHT_PURPLE, Formatting.GOLD);
 
     interface ArgumentGetter<T> {
         T get(CommandContext<ServerCommandSource> context, String name) throws CommandSyntaxException;
@@ -106,7 +106,7 @@ public class Utils {
     }
 
     static <S extends State<?, S>, P extends StateInfoProvider<S, ?>> int executeStateInfo(ServerCommandSource source, BlockPos pos, S state, Registry<P> providers) {
-        for (Map.Entry<RegistryKey<P>, P> e : providers.getEntries()) {
+        for (Map.Entry<RegistryKey<P>, P> e : providers.getEntrySet()) {
             MutableText value = e.getValue().getAndFormat(state, source.getWorld(), pos);
             m(source, c(Translations.translate(e.getKey()), s(": "), value));
         }

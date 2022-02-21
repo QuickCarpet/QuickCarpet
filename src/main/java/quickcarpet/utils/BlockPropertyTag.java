@@ -5,6 +5,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.tag.Tag;
+import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
@@ -15,21 +16,20 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class BlockPropertyTag implements Tag.Identified<Block> {
-    public final Identifier id;
+public class BlockPropertyTag extends Tag<Block> {
+    private final TagKey<Block> key;
     private final Predicate<BlockState> property;
 
     public BlockPropertyTag(Identifier id, BlockPropertyPredicate function) {
-        this.id = id;
+        super(List.of());
+        this.key = TagKey.of(Registry.BLOCK_KEY, id);
         this.property = state -> function.test(state, new SingleBlockView(state), BlockPos.ORIGIN);
     }
 
-    @Override
-    public Identifier getId() {
-        return id;
+    public TagKey<Block> getKey() {
+        return key;
     }
 
-    @Override
     public boolean contains(Block block) {
         return this.property.test(block.getDefaultState());
     }

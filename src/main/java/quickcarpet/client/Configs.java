@@ -35,18 +35,18 @@ public class Configs implements IConfigHandler {
         public static final ConfigBooleanHotkeyed CREATIVE_NO_CLIP_OVERRIDE = booleanHotkeyed(ClientSetting.CREATIVE_NO_CLIP_OVERRIDE, "");
         public static final ConfigBooleanHotkeyed SOUND_ENGINE_FIX = booleanHotkeyed(ClientSetting.SOUND_ENGINE_FIX, "");
 
-        public static final List<IConfigBase> OPTIONS = ImmutableList.of(
+        public static final List<IConfigBase> OPTIONS = List.of(
             SYNC_LOW_TPS,
             SYNC_HIGH_TPS,
             CREATIVE_NO_CLIP,
             CREATIVE_NO_CLIP_OVERRIDE
         );
 
-        public static final List<IHotkey> HOTKEYS = ImmutableList.of(
+        public static final List<IHotkey> HOTKEYS = List.of(
             OPEN_CONFIG_GUI
         );
 
-        public static final List<IHotkeyTogglable> TOGGLEABLE = ImmutableList.of(
+        public static final List<IHotkeyTogglable> TOGGLEABLE = List.of(
             SYNC_LOW_TPS,
             SYNC_HIGH_TPS,
             CREATIVE_NO_CLIP,
@@ -56,8 +56,8 @@ public class Configs implements IConfigHandler {
 
         public static List<IHotkey> getHotkeys() {
             List<IHotkey> list = new ArrayList<>();
-            list.addAll((List) Configs.Generic.HOTKEYS);
-            list.addAll((List) ConfigUtils.createConfigWrapperForType(ConfigType.HOTKEY, Configs.Generic.TOGGLEABLE));
+            list.addAll(Generic.HOTKEYS);
+            list.addAll(ConfigUtils.createConfigWrapperForType(ConfigType.HOTKEY, Generic.TOGGLEABLE));
             return list;
         }
     }
@@ -65,7 +65,7 @@ public class Configs implements IConfigHandler {
     public static class Rendering {
         public static final ConfigBooleanHotkeyed MOVING_BLOCK_CULLING = booleanHotkeyed(ClientSetting.MOVING_BLOCK_CULLING, "");
 
-        public static final List<IHotkeyTogglable> OPTIONS = ImmutableList.of(
+        public static final List<IHotkeyTogglable> OPTIONS = List.of(
             MOVING_BLOCK_CULLING
         );
     }

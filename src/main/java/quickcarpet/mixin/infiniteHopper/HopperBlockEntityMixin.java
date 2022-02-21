@@ -32,7 +32,7 @@ public abstract class HopperBlockEntityMixin extends LootableContainerBlockEntit
     }
 
     @Shadow protected abstract boolean isFull();
-    @Shadow protected abstract void setCooldown(int cooldown);
+    @Shadow protected abstract void setTransferCooldown(int cooldown);
 
     @Shadow @Nullable private static Inventory getOutputInventory(World world, BlockPos pos, BlockState state) { throw new AbstractMethodError(); }
 
@@ -50,7 +50,7 @@ public abstract class HopperBlockEntityMixin extends LootableContainerBlockEntit
         }
 
         if (bl) {
-            hopper.setCooldown(8);
+            hopper.setTransferCooldown(8);
             BlockEntity.markDirty(world, pos, state);
             cir.setReturnValue(true);
         }

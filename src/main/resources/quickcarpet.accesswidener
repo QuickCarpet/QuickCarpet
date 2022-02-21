@@ -4,3 +4,4 @@ accessible class net/minecraft/server/command/TeleportCommand$LookTarget
 accessible method net/minecraft/util/WorldSavePath <init> (Ljava/lang/String;)V
 accessible field net/minecraft/entity/player/PlayerEntity PLAYER_MODEL_PARTS Lnet/minecraft/entity/data/TrackedData;
 accessible class net/minecraft/world/SpawnDensityCapper$DensityCap
+mutable field net/minecraft/world/gen/feature/ConfiguredStructureFeature field_37143 Ljava/util/Map;

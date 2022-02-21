@@ -22,7 +22,7 @@ public class HopperTest {
     private static final BlockPos HOPPER_POS = new BlockPos(0, 3, 0);
     private static final BlockPos ABOVE_HOPPER_POS = HOPPER_POS.up();
     private static final BlockPos BELOW_HOPPER_POS = HOPPER_POS.down();
-    private static final Block[] WOOL_BLOCKS = Registry.BLOCK.stream().filter(BlockTags.WOOL::contains).toArray(Block[]::new);
+    private static final Block[] WOOL_BLOCKS = Registry.BLOCK.stream().filter(block -> block.getDefaultState().isIn(BlockTags.WOOL)).toArray(Block[]::new);
     private static int woolIndex;
 
     private void clearCounters(TestContext ctx) {

@@ -14,7 +14,9 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureContext;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ChunkPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.chunk.Chunk;
+import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.StructureFeature;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -92,12 +94,13 @@ public class StructureChannel implements ServerPluginChannelHandler {
 
     private void sendUpdate(ServerPlayerEntity player, Collection<ChunkPos> chunks) {
         ServerWorld world = player.getWorld();
-        Map<String, LongSet> references = new HashMap<>();
+        Map<Identifier, LongSet> references = new HashMap<>();
+        var registry = world.getRegistryManager().get(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY);
         for (ChunkPos pos : chunks) {
             if (!world.isChunkLoaded(pos.x, pos.z)) continue;
             Chunk chunk = world.getChunk(pos.x, pos.z);
-            for (Map.Entry<StructureFeature<?>, LongSet> e : chunk.getStructureReferences().entrySet()) {
-                references.merge(e.getKey().getName(), e.getValue(), (a, b) -> {
+            for (Map.Entry<ConfiguredStructureFeature<?, ?>, LongSet> e : chunk.getStructureReferences().entrySet()) {
+                references.merge(registry.getId(e.getKey()), e.getValue(), (a, b) -> {
                     LongSet c = new LongOpenHashSet(a);
                     c.addAll(b);
                     return c;
@@ -106,12 +109,12 @@ public class StructureChannel implements ServerPluginChannelHandler {
         }
         NbtList starts = new NbtList();
         Object2IntMap<ChunkPos> chunkMap = playerMap.get(player);
-        for (Map.Entry<String, LongSet> ref : references.entrySet()) {
+        for (Map.Entry<Identifier, LongSet> ref : references.entrySet()) {
             for (long pos : ref.getValue()) {
                 ChunkPos chunkPos = new ChunkPos(pos);
                 if (chunkMap.computeIntIfAbsent(chunkPos, c -> 1) > 1) continue;
                 Chunk chunk = world.getChunk(chunkPos.x, chunkPos.z);
-                starts.add(chunk.getStructureStart(StructureFeature.STRUCTURES.get(ref.getKey())).toNbt(StructureContext.from(world), chunkPos));
+                starts.add(chunk.getStructureStart(registry.get(ref.getKey())).toNbt(StructureContext.from(world), chunkPos));
             }
         }
         NbtCompound data = new NbtCompound();
@@ -123,7 +126,6 @@ public class StructureChannel implements ServerPluginChannelHandler {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
         buf.writeVarInt(PACKET_S2C_DATA);
         buf.writeNbt(data);
-        // LOGGER.info(data);
         PacketSplitter.send(player.networkHandler, CHANNEL, buf);
     }
 

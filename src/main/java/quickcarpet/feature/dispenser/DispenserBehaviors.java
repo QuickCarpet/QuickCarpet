@@ -23,8 +23,8 @@ public final class DispenserBehaviors {
         DispenserBehavior vanilla = behaviors.get(item);
         boolean isDefault = behaviors instanceof Object2ObjectMap<Item, DispenserBehavior> o2oMap && vanilla == o2oMap.defaultReturnValue() && !behaviors.containsKey(item);
 
-        if (item instanceof BlockItem blockItem && PlaceBlockBehavior.canPlace(blockItem.getBlock())) {
-            if (ItemTags.CARPETS.contains(item)) return new MultiDispenserBehavior(PLACE_BLOCK, vanilla);
+        if (item instanceof BlockItem blockItem && PlaceBlockBehavior.canPlace(blockItem.getBlock().getDefaultState())) {
+            if (item.getRegistryEntry().isIn(ItemTags.CARPETS)) return new MultiDispenserBehavior(PLACE_BLOCK, vanilla);
             if (item instanceof PowderSnowBucketItem) {
                 if (Settings.dispensersInteractCauldron) return new MultiDispenserBehavior(INTERACT_CAULDRON, vanilla);
                 return vanilla;

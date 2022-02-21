@@ -2,8 +2,8 @@ package quickcarpet.mixin.tickSpeed;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.Util;
-import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.Opcodes;
+import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;

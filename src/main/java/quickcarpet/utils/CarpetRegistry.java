@@ -1,6 +1,5 @@
 package quickcarpet.utils;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.DataFixUtils;
 import com.mojang.datafixers.schemas.Schema;
@@ -15,14 +14,12 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.datafixer.Schemas;
 import net.minecraft.entity.EntityType;
-import net.minecraft.tag.BlockTags;
-import net.minecraft.tag.Tag;
+import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.Pool;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.biome.SpawnSettings;
 import quickcarpet.feature.CraftingTableBlockEntity;
-import quickcarpet.mixin.accessor.BlockTagsAccessor;
 
 import java.util.List;
 
@@ -30,31 +27,30 @@ public class CarpetRegistry {
     private static final Schema SCHEMA = Schemas.getFixer().getSchema(DataFixUtils.makeKey(SharedConstants.getGameVersion().getWorldVersion()));
     public static final BlockEntityType<CraftingTableBlockEntity> CRAFTING_TABLE_BLOCK_ENTITY_TYPE = registerBlockEntity("carpet:crafting_table", CraftingTableBlockEntity::new, CraftingTableBlockEntity.getType(SCHEMA), Blocks.CRAFTING_TABLE);
 
-    static { BlockTags.getTagGroup(); } // load BlockTags class
     public static final BlockPropertyTag SIMPLE_FULL_BLOCK = new BlockPropertyTag(new Identifier("carpet:simple_full_block"), BlockState::isOpaqueFullCube);
     public static final BlockPropertyTag FULL_CUBE = new BlockPropertyTag(new Identifier("carpet:full_cube"), BlockState::isFullCube);
-    public static final List<BlockPropertyTag> VIRTUAL_BLOCK_TAGS = ImmutableList.of(SIMPLE_FULL_BLOCK, FULL_CUBE);
+    public static final List<BlockPropertyTag> VIRTUAL_BLOCK_TAGS = List.of(SIMPLE_FULL_BLOCK, FULL_CUBE);
 
-    public static final Tag.Identified<Block> DISPENSER_BLOCK_WHITELIST = BlockTagsAccessor.register("carpet:dispenser_placeable_whitelist");
-    public static final Tag.Identified<Block> DISPENSER_BLOCK_BLACKLIST = BlockTagsAccessor.register("carpet:dispenser_placeable_blacklist");
+    public static final TagKey<Block> DISPENSER_BLOCK_WHITELIST = TagKey.of(Registry.BLOCK_KEY, new Identifier("carpet:dispenser_placeable_whitelist"));
+    public static final TagKey<Block> DISPENSER_BLOCK_BLACKLIST = TagKey.of(Registry.BLOCK_KEY, new Identifier("carpet:dispenser_placeable_blacklist"));
 
     //Additional Movable Blocks
-    public static final Tag.Identified<Block> PISTON_OVERRIDE_MOVABLE = BlockTagsAccessor.register("carpet:piston_movable");
-    public static final Tag.Identified<Block> PISTON_OVERRIDE_PUSH_ONLY = BlockTagsAccessor.register("carpet:piston_push_only");
-    public static final Tag.Identified<Block> PISTON_OVERRIDE_IMMOVABLE = BlockTagsAccessor.register("carpet:piston_immovable");
-    public static final Tag.Identified<Block> PISTON_OVERRIDE_DESTROY = BlockTagsAccessor.register("carpet:piston_destroy");
-    public static final Tag.Identified<Block> PISTON_OVERRIDE_WEAK_STICKY = BlockTagsAccessor.register("carpet:piston_weak_sticky");
+    public static final TagKey<Block> PISTON_OVERRIDE_MOVABLE = TagKey.of(Registry.BLOCK_KEY, new Identifier("carpet:piston_movable"));
+    public static final TagKey<Block> PISTON_OVERRIDE_PUSH_ONLY = TagKey.of(Registry.BLOCK_KEY, new Identifier("carpet:piston_push_only"));
+    public static final TagKey<Block> PISTON_OVERRIDE_IMMOVABLE = TagKey.of(Registry.BLOCK_KEY, new Identifier("carpet:piston_immovable"));
+    public static final TagKey<Block> PISTON_OVERRIDE_DESTROY = TagKey.of(Registry.BLOCK_KEY, new Identifier("carpet:piston_destroy"));
+    public static final TagKey<Block> PISTON_OVERRIDE_WEAK_STICKY = TagKey.of(Registry.BLOCK_KEY, new Identifier("carpet:piston_weak_sticky"));
 
-    public static final List<Identifier> CARPET_BLOCK_TAGS = ImmutableList.of(
-        SIMPLE_FULL_BLOCK.getId(),
-        FULL_CUBE.getId(),
-        DISPENSER_BLOCK_BLACKLIST.getId(),
-        DISPENSER_BLOCK_WHITELIST.getId(),
-        PISTON_OVERRIDE_MOVABLE.getId(),
-        PISTON_OVERRIDE_PUSH_ONLY.getId(),
-        PISTON_OVERRIDE_IMMOVABLE.getId(),
-        PISTON_OVERRIDE_DESTROY.getId(),
-        PISTON_OVERRIDE_WEAK_STICKY.getId()
+    public static final List<TagKey<Block>> CARPET_BLOCK_TAGS = List.of(
+        SIMPLE_FULL_BLOCK.getKey(),
+        FULL_CUBE.getKey(),
+        DISPENSER_BLOCK_BLACKLIST,
+        DISPENSER_BLOCK_WHITELIST,
+        PISTON_OVERRIDE_MOVABLE,
+        PISTON_OVERRIDE_PUSH_ONLY,
+        PISTON_OVERRIDE_IMMOVABLE,
+        PISTON_OVERRIDE_DESTROY,
+        PISTON_OVERRIDE_WEAK_STICKY
     );
 
     public static final Object2IntMap<Block> TERRACOTTA_BLOCKS = new Object2IntOpenHashMap<>();

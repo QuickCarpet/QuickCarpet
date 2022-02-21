@@ -13,7 +13,7 @@ import net.minecraft.util.registry.SimpleRegistry;
 import quickcarpet.utils.Messenger;
 
 public interface BlockInfoProvider<T extends Comparable<T>> extends StateInfoProvider<BlockState, T> {
-    Registry<BlockInfoProvider<?>> REGISTRY = new SimpleRegistry<>(RegistryKey.ofRegistry(new Identifier("quickcarpet", "block_info_provider")), Lifecycle.experimental());
+    Registry<BlockInfoProvider<?>> REGISTRY = new SimpleRegistry<>(RegistryKey.ofRegistry(new Identifier("quickcarpet", "block_info_provider")), Lifecycle.experimental(), null);
 
     interface Directional<T extends Comparable<T>> extends BlockInfoProvider<T>, StateInfoProvider.Directional<BlockState, T> {}
     static <T extends Comparable<T>> BlockInfoProvider<T> withFormatter(BlockInfoProvider<T> provider, Messenger.Formatter<T> formatter) {
