@@ -16,6 +16,8 @@ import quickcarpet.utils.Reflection;
 import quickcarpet.utils.Translations;
 
 import javax.annotation.Nullable;
+import java.lang.invoke.MethodHandles;
+import java.lang.invoke.VarHandle;
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.function.Function;
@@ -26,6 +28,8 @@ import static java.lang.reflect.Modifier.*;
 final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T> {
     private final Rule rule;
     private final Field field;
+    private final VarHandle varHandle;
+    private final boolean fieldVolatile;
 
     private final String shortName;
     private final String name;
@@ -34,7 +38,7 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
     private final TranslatableText extraInfo;
     @Nullable
     private final TranslatableText deprecated;
-    private final ImmutableList<RuleCategory> categories;
+    private final List<RuleCategory> categories;
     private final List<String> options;
     private final List<String> enabledOptions;
     private final Class<T> type;
@@ -50,12 +54,19 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
 
     @SuppressWarnings("unchecked")
     ParsedRuleImpl(SettingsManager manager, Field field, Rule rule) {
-        if (((field.getModifiers() & (PUBLIC | STATIC | FINAL)) != (PUBLIC | STATIC))) {
+        int fieldAccess = field.getModifiers();
+        if (((fieldAccess & (PUBLIC | STATIC | FINAL)) != (PUBLIC | STATIC))) {
             throw new IllegalArgumentException(field + " is not public static");
         }
         this.manager = manager;
         this.rule = rule;
         this.field = field;
+        try {
+            this.varHandle = MethodHandles.lookup().unreflectVarHandle(field);
+        } catch (IllegalAccessException e) {
+            throw new IllegalArgumentException(e);
+        }
+        this.fieldVolatile = (fieldAccess & VOLATILE) != 0;
         this.shortName = SettingsManager.getDefaultRuleName(field, rule);
         this.name = manager.getRuleName(field, rule);
         this.type = (Class<T>) field.getType();
@@ -78,7 +89,7 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
                 .toList();
             if (!options.isEmpty() && enabledOptions.size() <= 1) disabled = true;
         } else {
-            this.enabledOptions = ImmutableList.of(defaultAsString);
+            this.enabledOptions = List.of(defaultAsString);
         }
         this.disabled = disabled;
         this.deprecated = rule.deprecated() ? new TranslatableText(manager.getDeprecationTranslationKey(field, rule)) : null;
@@ -184,8 +195,8 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
     @Override
     @Nullable
     public QuickCarpetModule getModule() {
-        if (!(manager instanceof ModuleSettingsManager)) return null;
-        return ((ModuleSettingsManager) manager).module;
+        if (!(manager instanceof ModuleSettingsManager moduleManager)) return null;
+        return moduleManager.module;
     }
 
     @Override
@@ -209,24 +220,24 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
                 throw new ParsedRule.ValueException(Messenger.t(""));
             }
         }
-        try {
-            this.field.set(null, value);
-            this.onChange.onChange(this, previousValue);
-            //noinspection unchecked
-            this.categories.forEach(c -> c.onChange((ParsedRuleImpl<Object>) this, previousValue));
-            if (sync) RulesChannel.instance.sendRuleUpdate(Collections.singleton(this));
-        } catch (IllegalAccessException e) {
-            throw new IllegalStateException(e);
+        if (this.fieldVolatile) {
+            this.varHandle.setVolatile(value);
+        } else {
+            this.varHandle.set(value);
         }
+        this.onChange.onChange(this, previousValue);
+        //noinspection unchecked
+        this.categories.forEach(c -> c.onChange((ParsedRuleImpl<Object>) this, previousValue));
+        if (sync) RulesChannel.instance.sendRuleUpdate(Collections.singleton(this));
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public T get() {
-        try {
-            return (T) this.field.get(null);
-        } catch (IllegalAccessException e) {
-            throw new IllegalStateException(e);
+        if (this.fieldVolatile) {
+            return (T) this.varHandle.getVolatile();
+        } else {
+            return (T) this.varHandle.get();
         }
     }
 
@@ -375,7 +386,7 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
         TypeAdapter.Simple<Boolean> BOOLEAN = new Simple<>(Boolean::parseBoolean, BoolArgumentType::bool) {
             @Override
             public List<String> getOptions() {
-                return ImmutableList.of("true", "false");
+                return List.of("true", "false");
             }
         };
         TypeAdapter.Simple<Integer> INTEGER = new Simple<>(Integer::parseInt, IntegerArgumentType::integer);
