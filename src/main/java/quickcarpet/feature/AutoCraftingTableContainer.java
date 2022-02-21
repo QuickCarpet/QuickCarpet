@@ -52,8 +52,8 @@ public class AutoCraftingTableContainer extends AbstractRecipeScreenHandler<Craf
     }
 
     @Override
-    public ItemStack transferSlot(PlayerEntity player, int slot) {
-        if (slot == 0) {
+    public ItemStack transferSlot(PlayerEntity player, int index) {
+        if (index == 0) {
             ItemStack before = this.blockEntity.getStack(0).copy();
             ItemStack current = before.copy();
             if (!this.insertItem(current, 10, 46, true)) {
@@ -62,7 +62,39 @@ public class AutoCraftingTableContainer extends AbstractRecipeScreenHandler<Craf
             this.blockEntity.removeStack(0, before.getCount() - current.getCount());
             return this.blockEntity.getStack(0);
         }
-        return super.transferSlot(player, slot);
+        ItemStack result = ItemStack.EMPTY;
+        Slot slot = this.slots.get(index);
+        if (slot != null && slot.hasStack()) {
+            ItemStack tmp = slot.getStack();
+            result = tmp.copy();
+            if (index >= 10 && index < 46) {
+                if (!this.insertItem(tmp, 1, 10, false)) {
+                    if (index < 37) {
+                        if (!this.insertItem(tmp, 37, 46, false)) {
+                            return ItemStack.EMPTY;
+                        }
+                    } else if (!this.insertItem(tmp, 10, 37, false)) {
+                        return ItemStack.EMPTY;
+                    }
+                }
+            } else if (!this.insertItem(tmp, 10, 46, false)) {
+                return ItemStack.EMPTY;
+            }
+
+            if (tmp.isEmpty()) {
+                slot.setStack(ItemStack.EMPTY);
+            } else {
+                slot.markDirty();
+            }
+
+            if (tmp.getCount() == result.getCount()) {
+                return ItemStack.EMPTY;
+            }
+
+            slot.onTakeItem(player, tmp);
+        }
+
+        return result;
     }
 
     @Override
