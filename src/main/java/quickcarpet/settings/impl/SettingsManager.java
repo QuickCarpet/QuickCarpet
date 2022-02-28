@@ -129,7 +129,7 @@ abstract class SettingsManager implements quickcarpet.api.settings.SettingsManag
 
     @Override
     public Collection<ParsedRule<?>> getRulesMatching(Predicate<ParsedRule<?>> predicate) {
-        return getRules().stream().filter(predicate).collect(ImmutableList.toImmutableList());
+        return getRules().stream().filter(predicate).toList();
     }
 
     @Override

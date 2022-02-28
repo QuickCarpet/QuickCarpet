@@ -18,6 +18,7 @@ import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.Pool;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.StructureSpawns;
 import net.minecraft.world.biome.SpawnSettings;
 import quickcarpet.feature.CraftingTableBlockEntity;
 
@@ -75,6 +76,7 @@ public class CarpetRegistry {
     }
 
     public static final Pool<SpawnSettings.SpawnEntry> END_CITY_SPAWN_POOL = Pool.of(new SpawnSettings.SpawnEntry(EntityType.SHULKER, 10, 4, 4));
+    public static final StructureSpawns END_CITY_SPAWNS = new StructureSpawns(StructureSpawns.BoundingBox.PIECE, END_CITY_SPAWN_POOL);
 
     private static <T extends BlockEntity> BlockEntityType<T> registerBlockEntity(String id, BlockEntityType.BlockEntityFactory<? extends T> supplier, Type<?> type, Block... blocks) {
         return Registry.register(Registry.BLOCK_ENTITY_TYPE, id, new BlockEntityType<>(supplier, ImmutableSet.copyOf(blocks), type));

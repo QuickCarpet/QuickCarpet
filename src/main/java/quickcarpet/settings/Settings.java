@@ -1,7 +1,6 @@
 package quickcarpet.settings;
 
 import net.minecraft.SharedConstants;
-import net.minecraft.class_7061;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
@@ -12,9 +11,8 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Pair;
 import net.minecraft.util.Unit;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.world.StructureSpawns;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -298,21 +296,8 @@ public class Settings {
     @Rule(category = {FEATURE})
     public static boolean smartSaddleDispenser = false;
 
-    @Rule(category = {FEATURE, RENEWABLE}, onChange = ShulkerSpawningInEndCitiesListener.class)
+    @Rule(category = {FEATURE, RENEWABLE})
     public static boolean shulkerSpawningInEndCities = false;
-
-    public static class ShulkerSpawningInEndCitiesListener implements ChangeListener<Boolean> {
-        @Override
-        public void onChange(ParsedRule<Boolean> rule, Boolean previous) {
-            MinecraftServer server = QuickCarpetServer.getNullableMinecraftServer();
-            if (server != null) {
-                //server.getRegistryManager().get(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY).get
-            }
-            ConfiguredStructureFeatures.field_26308.value().field_37143 = rule.get()
-                ? Map.of(SpawnGroup.MONSTER, new class_7061(class_7061.class_7062.PIECE, CarpetRegistry.END_CITY_SPAWN_POOL))
-                : Map.of();
-        }
-    }
 
     @Rule(category = {SURVIVAL, FIX})
     public static boolean sparkingLighter = false;

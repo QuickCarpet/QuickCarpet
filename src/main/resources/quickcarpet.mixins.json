@@ -119,6 +119,7 @@
     "renewableLava.BlocksMixin",
     "renewableSoulSand.LivingEntityMixin",
     "renewableSponges.GuardianEntityMixin",
+    "shulkerSpawningInEndCities.ChunkGeneratorMixin",
     "shulkerSpawningInEndCities.SpawnRestrictionMixin",
     "sparkingLighter.LighterItemMixin",
     "spawnChunkLevel.ServerWorldMixin",
