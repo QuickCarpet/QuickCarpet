@@ -41,33 +41,33 @@ public abstract class WorldMixin implements WorldAccess, ExtendedWorld {
         WorldChunk worldChunk = this.getWorldChunk(pos);
         Block block = state.getBlock();
 
-        BlockState chunkState;
+        BlockState oldState;
         if (newBlockEntity != null && block instanceof BlockEntityProvider && !worldChunk.isEmpty()) {
-            chunkState = ((ExtendedWorldChunk) worldChunk).quickcarpet$setBlockStateWithBlockEntity(pos, state, newBlockEntity, (flags & CALL_ON_ADDED_ON_REMOVED) != 0);
+            oldState = ((ExtendedWorldChunk) worldChunk).quickcarpet$setBlockStateWithBlockEntity(pos, state, newBlockEntity, (flags & CALL_ON_ADDED_ON_REMOVED) != 0);
         } else {
-            chunkState = worldChunk.setBlockState(pos, state, (flags & CALL_ON_ADDED_ON_REMOVED) != 0);
+            oldState = worldChunk.setBlockState(pos, state, (flags & CALL_ON_ADDED_ON_REMOVED) != 0);
         }
 
-        if (chunkState == null) return false;
-        BlockState previousState = this.getBlockState(pos);
+        if (oldState == null) return false;
+        BlockState newState = this.getBlockState(pos);
 
-        if ((flags & CHECK_LIGHT) != 0 && previousState != chunkState && (previousState.getOpacity(this, pos) != chunkState.getOpacity(this, pos) || previousState.getLuminance() != chunkState.getLuminance() || previousState.hasSidedTransparency() || chunkState.hasSidedTransparency())) {
+        if ((flags & SKIP_LIGHTING_UPDATES) == 0 && newState != oldState && (newState.getOpacity(this, pos) != oldState.getOpacity(this, pos) || newState.getLuminance() != oldState.getLuminance() || newState.hasSidedTransparency() || oldState.hasSidedTransparency())) {
             this.getProfiler().push("queueCheckLight");
             this.getChunkManager().getLightingProvider().checkBlock(pos);
             this.getProfiler().pop();
         }
 
-        if (previousState == state) {
-            if (chunkState != previousState) {
-                this.scheduleBlockRerenderIfNeeded(pos, chunkState, previousState);
+        if (newState == state) {
+            if (oldState != newState) {
+                this.scheduleBlockRerenderIfNeeded(pos, oldState, newState);
             }
 
             if ((flags & SEND_TO_CLIENT) != 0 && (!this.isClient || (flags & NO_RERENDER) == 0) && (this.isClient || worldChunk.getLevelType() != null && worldChunk.getLevelType().isAfter(ChunkHolder.LevelType.TICKING))) {
-                this.updateListeners(pos, chunkState, state, flags);
+                this.updateListeners(pos, oldState, state, flags);
             }
 
             if ((flags & UPDATE_NEIGHBORS) != 0) {
-                this.updateNeighbors(pos, chunkState.getBlock());
+                this.updateNeighbors(pos, oldState.getBlock());
                 if (!this.isClient && state.hasComparatorOutput()) {
                     this.updateComparators(pos, block);
                 }
@@ -75,12 +75,12 @@ public abstract class WorldMixin implements WorldAccess, ExtendedWorld {
 
             if ((flags & (NO_OBSERVER_UPDATE | NO_FILL_UPDATE)) == 0 && depth > 0) {
                 int maskedFlags = flags & ~(UPDATE_NEIGHBORS | SKIP_DROPS);
-                chunkState.prepare(this, pos, maskedFlags, depth - 1);
+                oldState.prepare(this, pos, maskedFlags, depth - 1);
                 state.updateNeighbors(this, pos, maskedFlags, depth - 1);
                 state.prepare(this, pos, maskedFlags, depth - 1);
             }
 
-            this.onBlockChanged(pos, chunkState, previousState);
+            this.onBlockChanged(pos, oldState, newState);
         }
         return true;
     }

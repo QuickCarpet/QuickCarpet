@@ -18,7 +18,7 @@ public final class Constants {
         public static final int NO_OBSERVER_UPDATE = Block.FORCE_STATE;
         public static final int SKIP_DROPS = Block.SKIP_DROPS;
         public static final int CALL_ON_ADDED_ON_REMOVED = Block.MOVED;
-        public static final int CHECK_LIGHT = Block.SKIP_LIGHTING_UPDATES;
+        public static final int SKIP_LIGHTING_UPDATES = Block.SKIP_LIGHTING_UPDATES;
         public static final int NO_FILL_UPDATE = 1024;
 
         public static int modifyFlags(int flags) {
