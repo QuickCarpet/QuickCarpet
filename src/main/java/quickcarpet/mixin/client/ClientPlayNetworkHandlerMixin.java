@@ -51,11 +51,4 @@ public abstract class ClientPlayNetworkHandlerMixin implements ClientPlayPacketL
             info.cancel();
         }
     }
-/*
-    @Inject(method = "onSynchronizeTags", at = @At(value = "INVOKE", target = "Lcom/google/common/collect/Multimap;isEmpty()Z", remap = false), locals = LocalCapture.CAPTURE_FAILHARD)
-    private void quickcarpet$ignoreMissingCarpetTags(SynchronizeTagsS2CPacket packet, CallbackInfo ci, TagManager manager, Multimap<RegistryKey<? extends Registry<?>>, Identifier> map) {
-        map.get(Registry.BLOCK_KEY).removeAll(CarpetRegistry.CARPET_BLOCK_TAGS);
-    }
-
- */
 }

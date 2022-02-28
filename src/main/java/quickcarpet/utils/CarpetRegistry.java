@@ -42,18 +42,6 @@ public class CarpetRegistry {
     public static final TagKey<Block> PISTON_OVERRIDE_DESTROY = TagKey.of(Registry.BLOCK_KEY, new Identifier("carpet:piston_destroy"));
     public static final TagKey<Block> PISTON_OVERRIDE_WEAK_STICKY = TagKey.of(Registry.BLOCK_KEY, new Identifier("carpet:piston_weak_sticky"));
 
-    public static final List<TagKey<Block>> CARPET_BLOCK_TAGS = List.of(
-        SIMPLE_FULL_BLOCK.getKey(),
-        FULL_CUBE.getKey(),
-        DISPENSER_BLOCK_BLACKLIST,
-        DISPENSER_BLOCK_WHITELIST,
-        PISTON_OVERRIDE_MOVABLE,
-        PISTON_OVERRIDE_PUSH_ONLY,
-        PISTON_OVERRIDE_IMMOVABLE,
-        PISTON_OVERRIDE_DESTROY,
-        PISTON_OVERRIDE_WEAK_STICKY
-    );
-
     public static final Object2IntMap<Block> TERRACOTTA_BLOCKS = new Object2IntOpenHashMap<>();
 
     static {
