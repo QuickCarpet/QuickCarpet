@@ -261,6 +261,7 @@
   "carpet.profiler.section.raids": "Raids",
   "carpet.profiler.section.portals": "Portals",
   "carpet.profiler.section.entity_manager": "Entity Manager",
+  "carpet.profiler.section.chunk_unload": "Chunk Unloading",
   "carpet.profiler.section.unknown": "Unknown",
   "carpet.profiler.title": "Average tick time: %sms",
   "carpet.profiler.top_10_counts": "Top 10 counts:",

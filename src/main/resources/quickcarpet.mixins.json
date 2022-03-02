@@ -105,6 +105,7 @@
     "portalCreativeDelay.PlayerEntityMixin",
     "profiler.MinecraftServerMixin",
     "profiler.PortalForcerMixin",
+    "profiler.ServerChunkManagerMixin",
     "profiler.ServerWorldMixin",
     "profiler.SpawnHelperMixin",
     "profiler.WorldMixin",

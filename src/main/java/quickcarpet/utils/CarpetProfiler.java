@@ -60,6 +60,7 @@ public class CarpetProfiler {
         RAIDS(false, false),
         PORTALS(false, false),
         ENTITY_MANAGER(false, false),
+        CHUNK_UNLOAD(false, false)
         ;
 
         public static final SectionType[] GLOBAL = Arrays.stream(values()).filter(s -> s.global).toArray(SectionType[]::new);
