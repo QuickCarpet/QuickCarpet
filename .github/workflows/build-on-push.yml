@@ -23,6 +23,8 @@ jobs:
             ~/.gradle/caches
             /home/gradle/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ matrix.gradle }}-jdk${{ matrix.java }}-${{ hashFiles('*gradle.*', '*/*gradle.kts', 'buildSrc/src/**', '*.versions.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-${{ matrix.gradle }}-jdk${{ matrix.java }}-
       - name: Cache Loom Files
         uses: actions/cache@v2
         if: ${{ !env.ACT }}
@@ -68,6 +70,8 @@ jobs:
             ~/.gradle/caches
             /home/gradle/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ matrix.gradle }}-jdk${{ matrix.java }}-${{ hashFiles('*gradle.*', '*/*gradle.kts', 'buildSrc/src/**', '*.versions.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-${{ matrix.gradle }}-jdk${{ matrix.java }}-
       - name: Cache Loom Files
         uses: actions/cache@v2
         if: ${{ !env.ACT }}
@@ -107,6 +111,8 @@ jobs:
             ~/.gradle/caches
             /home/gradle/.gradle/caches
           key: ${{ runner.os }}-gradle-${{ matrix.gradle }}-jdk${{ matrix.java }}-${{ hashFiles('*gradle.*', '*/*gradle.kts', 'buildSrc/src/**', '*.versions.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-${{ matrix.gradle }}-jdk${{ matrix.java }}-
       - name: Cache Loom Files
         uses: actions/cache@v2
         if: ${{ !env.ACT }}
@@ -161,6 +167,8 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ matrix.gradle }}-jdk${{ matrix.java }}-lithium-${{ matrix.lithium }}-${{ hashFiles('*gradle.*', '*/*gradle.kts', 'buildSrc/src/**', '*.versions.toml') }}
           restore-keys: |
             ${{ runner.os }}-gradle-${{ matrix.gradle }}-jdk${{ matrix.java }}-${{ hashFiles('*gradle.*', '*/*gradle.kts', 'buildSrc/src/**', '*.versions.toml') }}
+            ${{ runner.os }}-gradle-${{ matrix.gradle }}-jdk${{ matrix.java }}-lithium-${{ matrix.lithium }}-
+            ${{ runner.os }}-gradle-${{ matrix.gradle }}-jdk${{ matrix.java }}-
       - name: Cache Loom Files
         uses: actions/cache@v2
         if: ${{ !env.ACT }}
