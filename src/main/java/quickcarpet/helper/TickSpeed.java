@@ -76,7 +76,7 @@ public class TickSpeed implements TelemetryProvider {
         stepAmount = amount;
     }
 
-    public Text setTickWarp(ServerCommandSource source, int warpAmount, String callback) {
+    public Text setTickWarp(@Nullable ServerCommandSource source, int warpAmount, @Nullable String callback) {
         if (0 == warpAmount) {
             tickWarpCallback = null;
             tickWarpSender = null;

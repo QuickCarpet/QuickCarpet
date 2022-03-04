@@ -21,6 +21,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import quickcarpet.QuickCarpet;
+import quickcarpet.QuickCarpetServer;
 import quickcarpet.settings.Settings;
 import quickcarpet.test.ServerStarter;
 
@@ -39,6 +40,8 @@ public abstract class TestServerMixin extends MinecraftServer {
         QuickCarpet.getInstance().onGameStarted(EnvType.SERVER);
         QuickCarpet.getInstance().onServerLoaded((TestServer) (Object) this);
         Settings.MANAGER.getRule("spawnChunkLevel").set("1", false);
+        // FIXME: somehow tick warp breaks some tests
+        QuickCarpetServer.getInstance().tickSpeed.setTickRateGoal(1000);
     }
 
     @Inject(method = "runTestBatches", at = @At("RETURN"))
