@@ -22,10 +22,6 @@ import quickcarpet.settings.Settings;
 import java.util.List;
 
 public class InteractCauldronBehavior extends FallibleItemDispenserBehavior {
-    public static boolean isCauldronItem(Item item) {
-        return item instanceof FluidModificationItem || item == Items.POTION || item == Items.GLASS_BOTTLE;
-    }
-
     @Nullable
     private static ItemStack getBucketableAnimals(World world, BlockPos pos) {
         List<Entity> list = world.getEntitiesByClass(Entity.class, new Box(pos.getX(), pos.getY(), pos.getZ(), (pos.getX() + 1), (pos.getY() + 1), (pos.getZ() + 1)), (bucketable) -> bucketable instanceof Bucketable);

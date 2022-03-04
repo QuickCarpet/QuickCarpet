@@ -6,11 +6,18 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPointer;
 import quickcarpet.mixin.accessor.ItemDispenserBehaviorAccessor;
 
+import java.util.List;
+
 public class MultiDispenserBehavior extends FallibleItemDispenserBehavior {
     private final DispenserBehavior[] behaviors;
 
     public MultiDispenserBehavior(DispenserBehavior...behaviors) {
         this.behaviors = behaviors;
+    }
+
+    public static DispenserBehavior of(List<DispenserBehavior> behaviors) {
+        if (behaviors.size() == 1) return behaviors.get(0);
+        return new MultiDispenserBehavior(behaviors.toArray(new DispenserBehavior[0]));
     }
 
     @Override

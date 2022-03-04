@@ -111,6 +111,28 @@ public class DispenserTest {
         });
     }
 
+    @GameTest(structureName = "dispenser_only")
+    public void vanillaFireCharge(TestContext ctx) {
+        ctx.setBlockState(FRONT_POS, Blocks.COBBLESTONE);
+        dispense(ctx, new ItemStack(Items.FIRE_CHARGE), null, Blocks.COBBLESTONE, null, () -> {
+            ctx.expectEntityAround(EntityType.SMALL_FIREBALL, FRONT_POS, 1);
+            ctx.killAllEntities();
+            ctx.complete();
+        });
+    }
+
+    @GameTest(structureName = "dispenser_only")
+    public void vanillaShearVines(TestContext ctx) {
+        ctx.setBlockState(FRONT_POS, Blocks.VINE.getDefaultState().with(VineBlock.WEST, true));
+        dispense(ctx, new ItemStack(Items.SHEARS), Items.SHEARS, Blocks.VINE, null, null);
+    }
+
+    @GameTest(structureName = "dispenser_only")
+    public void vanillaGunpowder(TestContext ctx) {
+        ctx.setBlockState(FRONT_POS, Blocks.STONE);
+        dispense(ctx, new ItemStack(Items.GUNPOWDER), null, Blocks.STONE, Items.GUNPOWDER, null);
+    }
+
     @GameTest(structureName = "dispenser_with_cauldron", batchId = "rules/dispensersInteractCauldron=true")
     public void qcPutLavaBucketCauldron(TestContext ctx) {
         dispense(ctx, new ItemStack(Items.LAVA_BUCKET), Items.BUCKET, Blocks.LAVA_CAULDRON, null, null);
@@ -228,5 +250,32 @@ public class DispenserTest {
             ctx.expectBlockProperty(FRONT_POS, SeaPickleBlock.PICKLES, 2);
             ctx.complete();
         });
+    }
+
+    @GameTest(structureName = "dispenser_only", batchId = "rules/renewableNetherrack=true")
+    public void qcFireCharge(TestContext ctx) {
+        ctx.setBlockState(FRONT_POS, Blocks.COBBLESTONE);
+        dispense(ctx, new ItemStack(Items.FIRE_CHARGE), null, Blocks.NETHERRACK, null, () -> {
+            ctx.dontExpectEntity(EntityType.SMALL_FIREBALL);
+            ctx.complete();
+        });
+    }
+
+    @GameTest(structureName = "dispenser_only", batchId = "rules/dispensersShearVines=true")
+    public void qcShearVines(TestContext ctx) {
+        ctx.setBlockState(FRONT_POS, Blocks.VINE.getDefaultState().with(VineBlock.WEST, true));
+        dispense(ctx, new ItemStack(Items.SHEARS), Items.SHEARS, Blocks.AIR, Items.VINE, null);
+    }
+
+    @GameTest(structureName = "dispenser_only", batchId = "rules/dispensersBreakBlocks=normal")
+    public void qcGunpowderNormal(TestContext ctx) {
+        ctx.setBlockState(FRONT_POS, Blocks.STONE);
+        dispense(ctx, new ItemStack(Items.GUNPOWDER), null, Blocks.AIR, Items.COBBLESTONE, null);
+    }
+
+    @GameTest(structureName = "dispenser_only", batchId = "rules/dispensersBreakBlocks=silk_touch")
+    public void qcGunpowderSilk(TestContext ctx) {
+        ctx.setBlockState(FRONT_POS, Blocks.STONE);
+        dispense(ctx, new ItemStack(Items.GUNPOWDER), null, Blocks.AIR, Items.STONE, null);
     }
 }
