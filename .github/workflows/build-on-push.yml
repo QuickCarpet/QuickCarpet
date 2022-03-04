@@ -22,7 +22,7 @@ jobs:
           path: |
             ~/.gradle/caches
             /home/gradle/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ matrix.gradle }}-jdk${{ matrix.java }}-${{ hashFiles('**/*gradle*') }}
+          key: ${{ runner.os }}-gradle-${{ matrix.gradle }}-jdk${{ matrix.java }}-${{ hashFiles('**/*gradle.kts') }}
       - name: Cache Loom Files
         uses: actions/cache@v2
         if: ${{ !env.ACT }}
@@ -30,7 +30,7 @@ jobs:
           path: |
             build/loom-cache
             .gradle/loom-cache
-          key: ${{ runner.os }}-loom-${{ hashFiles('**/*gradle*', '**/*.accesswidener') }}
+          key: ${{ runner.os }}-loom-${{ hashFiles('**/*gradle.kts', '**/*.accesswidener') }}
           restore-keys: |
             ${{ runner.os }}-loom-
       - name: Build with Gradle
@@ -67,7 +67,7 @@ jobs:
           path: |
             ~/.gradle/caches
             /home/gradle/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ matrix.gradle }}-jdk${{ matrix.java }}-${{ hashFiles('**/*gradle*') }}
+          key: ${{ runner.os }}-gradle-${{ matrix.gradle }}-jdk${{ matrix.java }}-${{ hashFiles('**/*gradle.kts') }}
       - name: Cache Loom Files
         uses: actions/cache@v2
         if: ${{ !env.ACT }}
@@ -75,7 +75,7 @@ jobs:
           path: |
             build/loom-cache
             .gradle/loom-cache
-          key: ${{ runner.os }}-loom-${{ hashFiles('**/*gradle*', '**/*.accesswidener') }}
+          key: ${{ runner.os }}-loom-${{ hashFiles('**/*gradle.kts', '**/*.accesswidener') }}
           restore-keys: |
             ${{ runner.os }}-loom-
       - name: Run Unit Tests
@@ -106,7 +106,7 @@ jobs:
           path: |
             ~/.gradle/caches
             /home/gradle/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ matrix.gradle }}-jdk${{ matrix.java }}-${{ hashFiles('**/*gradle*') }}
+          key: ${{ runner.os }}-gradle-${{ matrix.gradle }}-jdk${{ matrix.java }}-${{ hashFiles('**/*gradle.kts') }}
       - name: Cache Loom Files
         uses: actions/cache@v2
         if: ${{ !env.ACT }}
@@ -114,7 +114,7 @@ jobs:
           path: |
             build/loom-cache
             .gradle/loom-cache
-          key: ${{ runner.os }}-loom-${{ hashFiles('**/*gradle*', '**/*.accesswidener') }}
+          key: ${{ runner.os }}-loom-${{ hashFiles('**/*gradle.kts', '**/*.accesswidener') }}
           restore-keys: |
             ${{ runner.os }}-loom-
       - name: Download LazyDFU
@@ -158,9 +158,9 @@ jobs:
             ~/.gradle/caches
             /home/gradle/.gradle/caches
           # Store this under a separate key to cache remapped mods
-          key: ${{ runner.os }}-gradle-${{ matrix.gradle }}-jdk${{ matrix.java }}-lithium-${{ matrix.lithium }}-${{ hashFiles('**/*gradle*') }}
+          key: ${{ runner.os }}-gradle-${{ matrix.gradle }}-jdk${{ matrix.java }}-lithium-${{ matrix.lithium }}-${{ hashFiles('**/*gradle.kts') }}
           restore-keys: |
-            ${{ runner.os }}-gradle-${{ matrix.gradle }}-jdk${{ matrix.java }}-${{ hashFiles('**/*gradle*') }}
+            ${{ runner.os }}-gradle-${{ matrix.gradle }}-jdk${{ matrix.java }}-${{ hashFiles('**/*gradle.kts') }}
       - name: Cache Loom Files
         uses: actions/cache@v2
         if: ${{ !env.ACT }}
@@ -168,7 +168,7 @@ jobs:
           path: |
             build/loom-cache
             .gradle/loom-cache
-          key: ${{ runner.os }}-loom-${{ hashFiles('**/*gradle*', '**/*.accesswidener') }}
+          key: ${{ runner.os }}-loom-${{ hashFiles('**/*gradle.kts', '**/*.accesswidener') }}
           restore-keys: |
             ${{ runner.os }}-loom-
       - name: Download Mods
