@@ -288,6 +288,14 @@ Default: `false`
 Options: `false`, `whitelist`, `blacklist`, `all`  
 Categories: feature  
 
+## dispensersScrapeCopper
+Dispensers with axes can scrape and unwax copper
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: feature  
+
 ## dispensersShearVines
 Dispensers can shear vines
 

@@ -68,6 +68,7 @@
   "carpet.rule.dispensersInteractCauldron.description": "Dispensers can interact with a cauldron with a bucket, as if it was a normal liquid block",
   "carpet.rule.dispensersPickupBucketables.description": "Dispensers can pickup all bucketable mobs, such as fish and axolotls. Combined with dispensersInteractCauldron, dispensers can pickup bucketable mobs inside cauldrons",
   "carpet.rule.dispensersPlaceBlocks.description": "Dispensers can place most blocks",
+  "carpet.rule.dispensersScrapeCopper.description": "Dispensers with axes can scrape and unwax copper",
   "carpet.rule.dispensersShearVines.description": "Dispensers can shear vines",
   "carpet.rule.dispensersStripLogs.description": "Dispensers with axes can strip logs and wood",
   "carpet.rule.dispensersTillSoil.description": "Dispensers with hoes can till soil",

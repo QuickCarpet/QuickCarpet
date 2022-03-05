@@ -170,6 +170,9 @@ public class Settings {
     public static PlaceBlockBehavior.Option dispensersPlaceBlocks = PlaceBlockBehavior.Option.FALSE;
 
     @Rule(category = FEATURE)
+    public static boolean dispensersScrapeCopper = false;
+
+    @Rule(category = FEATURE)
     public static boolean dispensersShearVines = false;
 
     @Rule(category = FEATURE)

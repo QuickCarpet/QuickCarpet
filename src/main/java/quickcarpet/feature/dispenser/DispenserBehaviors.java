@@ -20,6 +20,7 @@ public final class DispenserBehaviors {
     public static final PickupBucketablesBehavior PICKUP_BUCKETABLES = new PickupBucketablesBehavior();
     public static final FireChargeConvertsToNetherrackBehavior FIRE_CHARGE = new FireChargeConvertsToNetherrackBehavior();
     public static final ShearVinesBehavior SHEAR_VINES = new ShearVinesBehavior();
+    public static final ScrapeCopperBehavior SCRAPE_COPPER = new ScrapeCopperBehavior();
 
     private DispenserBehaviors() {}
 
@@ -84,6 +85,10 @@ public final class DispenserBehaviors {
     }
 
     private static DispenserBehavior getAxeBehavior(DispenserBehavior vanilla) {
-        return Settings.dispensersStripLogs ? STRIP_LOGS : vanilla;
+        List<DispenserBehavior> matching = new ArrayList<>(2);
+        if (Settings.dispensersStripLogs) matching.add(STRIP_LOGS);
+        if (Settings.dispensersScrapeCopper) matching.add(SCRAPE_COPPER);
+        if (matching.isEmpty()) return vanilla;
+        return MultiDispenserBehavior.of(matching);
     }
 }
