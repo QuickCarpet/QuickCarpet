@@ -24,6 +24,7 @@
     "accessor.TeleportCommandAccessor",
     "accessor.UpgradeDataAccessor",
     "accurateBlockPlacement.BlockItemMixin",
+    "accurateBlockPlacement.ServerPlayNetworkHandlerMixin",
     "alwaysBaby.AnimalEntityMixin",
     "antiCheat.ServerPlayNetworkHandlerMixin",
     "autoCraftingTable.CraftingTableBlockMixin",
