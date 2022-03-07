@@ -75,8 +75,8 @@ public class HopperCounter {
         combined.update();
     }
 
-    public static List<MutableText> formatAll(MinecraftServer server, boolean realtime) {
-        List<MutableText> text = new ArrayList<>();
+    public static Collection<Text> formatAll(MinecraftServer server, boolean realtime) {
+        List<Text> text = new ArrayList<>();
 
         for (HopperCounter counter : COUNTERS.values()) {
             if (counter.getTotalItems() == 0 || counter.key == Key.ALL) continue;

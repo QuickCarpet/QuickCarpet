@@ -89,7 +89,7 @@ public class CarpetCommand {
             return 1;
         }
 
-        m(source, "");
+        m(source, s(""));
         MutableText title = runCommand(s(rule.getName(), Formatting.BOLD), "/carpet " + rule.getName(), ts("command.carpet.refresh", Formatting.GRAY));
         if (rule.isDisabled()) {
             title.append(c(s(" ("), t("command.carpet.rule.disabled"), s(")")).formatted(Formatting.RED));
@@ -105,7 +105,7 @@ public class CarpetCommand {
             m(source, ts("command.carpet.rule.deprecated", Formatting.RED, rule.getDeprecated()));
         }
 
-        List<Text> categories = new ArrayList<>();
+        List<MutableText> categories = new ArrayList<>();
         categories.add(t("command.carpet.categories"));
         Stream<String> ruleCategories = rule.getCategories().stream().map(c -> c.lowerCase);
         if (rule.getModule() != null) {
@@ -116,7 +116,7 @@ public class CarpetCommand {
             categories.add(s(", "));
         });
         categories.remove(categories.size()-1);
-        m(source, categories.toArray(new Object[0]));
+        m(source, categories.toArray(new MutableText[0]));
 
         Text valueText = s(rule.getAsString(), rule.getBoolValue() ? Formatting.GREEN : Formatting.DARK_RED, Formatting.BOLD);
         Text status = t(rule.isDefault() ? "carpet.rule.value.default" : "carpet.rule.value.modified");
@@ -200,7 +200,7 @@ public class CarpetCommand {
     private static int listSettings(ServerCommandSource source, Text title, Iterable<ParsedRule<?>> rules) {
         if (source.getEntity() instanceof ServerPlayerEntity) {
             title.getStyle().withFormatting(Formatting.BOLD);
-            m(source, title);
+            m(source, title.copy());
             for (ParsedRule<?> rule : rules) {
                 m(source, displayInteractiveSetting(rule));
             }
