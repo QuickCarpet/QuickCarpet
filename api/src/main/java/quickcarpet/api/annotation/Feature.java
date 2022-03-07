@@ -2,7 +2,8 @@ package quickcarpet.api.annotation;
 
 import java.lang.annotation.*;
 
-@Deprecated
+@SuppressWarnings("ALL")
+@Deprecated(forRemoval = true)
 @Retention(RetentionPolicy.CLASS)
 @Repeatable(Features.class)
 @Target({ElementType.TYPE, ElementType.METHOD})
