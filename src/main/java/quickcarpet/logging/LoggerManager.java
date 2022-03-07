@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
@@ -30,7 +31,7 @@ import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 public class LoggerManager {
-    private static final org.apache.logging.log4j.Logger LOGGER = LogManager.getLogger();
+    private static final org.slf4j.Logger LOGGER = LogUtils.getLogger();
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
     private final MinecraftServer server;
     private final Map<String, PlayerSubscriptions> playerSubscriptions = new HashMap<>();

@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 public interface PluginChannelManager<T extends PluginChannelHandler> {
     Identifier REGISTER = new Identifier("minecraft:register");
     Identifier UNREGISTER = new Identifier("minecraft:unregister");
+    @Deprecated(forRemoval = true)
     Logger LOG = LogManager.getLogger();
 
     void register(T handler);

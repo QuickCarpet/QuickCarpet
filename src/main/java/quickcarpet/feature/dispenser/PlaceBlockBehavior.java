@@ -127,7 +127,7 @@ public class PlaceBlockBehavior extends FallibleItemDispenserBehavior {
                     blockEntityTag.putInt("z", pos.getZ());
                     be.readNbt(blockEntityTag);
                 } else {
-                    QuickCarpet.LOG.warn("Expected a BlockEntity for {} at {},{},{}", state, pos.getX(), pos.getY(), pos.getZ());
+                    QuickCarpet.LOGGER.warn("Expected a BlockEntity for {} at {},{},{}", state, pos.getX(), pos.getY(), pos.getZ());
                 }
             }
             BlockSoundGroup soundType = state.getSoundGroup();

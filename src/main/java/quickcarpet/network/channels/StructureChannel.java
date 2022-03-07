@@ -1,5 +1,6 @@
 package quickcarpet.network.channels;
 
+import com.mojang.logging.LogUtils;
 import io.netty.buffer.Unpooled;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
@@ -19,14 +20,14 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
 import net.minecraft.world.gen.feature.StructureFeature;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 import quickcarpet.api.network.server.ServerPluginChannelHandler;
 import quickcarpet.network.impl.PacketSplitter;
 
 import java.util.*;
 
 public class StructureChannel implements ServerPluginChannelHandler {
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogUtils.getLogger();
     private static final int RESEND_TIMEOUT = 30 * 20;
     public static final Identifier CHANNEL = new Identifier("carpet:structures");
     public static final int VERSION = 1;

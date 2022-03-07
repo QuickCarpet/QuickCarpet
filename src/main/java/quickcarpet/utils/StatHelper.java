@@ -2,6 +2,7 @@ package quickcarpet.utils;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
+import com.mojang.logging.LogUtils;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.ScoreboardCriterion;
 import net.minecraft.scoreboard.ScoreboardObjective;
@@ -14,8 +15,7 @@ import net.minecraft.stat.Stat;
 import net.minecraft.stat.StatHandler;
 import net.minecraft.util.UserCache;
 import net.minecraft.util.WorldSavePath;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 import quickcarpet.QuickCarpetServer;
 
 import javax.annotation.Nullable;
@@ -30,7 +30,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class StatHelper {
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogUtils.getLogger();
     private final MinecraftServer server;
     private Map<UUID, StatHandler> cache;
     private long cacheTime;

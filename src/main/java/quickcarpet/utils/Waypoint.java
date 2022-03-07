@@ -2,6 +2,7 @@ package quickcarpet.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.server.command.ServerCommandSource;
@@ -17,8 +18,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 import quickcarpet.QuickCarpetServer;
 import quickcarpet.utils.extensions.WaypointContainer;
 
@@ -50,7 +50,7 @@ public record Waypoint(UnnamedWaypoint location, String name) implements Compara
     });
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogUtils.getLogger();
 
     public Waypoint(@Nonnull WaypointContainer world, @Nonnull String name, @Nullable String creator, @Nullable UUID creatorUuid, @Nonnull Vec3d position, @Nonnull Vec2f rotation) {
         this(new UnnamedWaypoint(world, creator, creatorUuid, position, rotation), name);

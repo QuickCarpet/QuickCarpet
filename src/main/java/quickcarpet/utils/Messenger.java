@@ -1,5 +1,6 @@
 package quickcarpet.utils;
 
+import com.mojang.logging.LogUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
@@ -27,8 +28,7 @@ import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.village.VillagerData;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 
 import javax.annotation.MatchesPattern;
 import javax.annotation.Nonnull;
@@ -42,7 +42,7 @@ import java.util.stream.DoubleStream;
  * Utility class for formatting {@link Text}s
  */
 public class Messenger {
-    private static final Logger LOG = LogManager.getLogger();
+    private static final Logger LOGGER = LogUtils.getLogger();
 
     public static final Formatting[] GRAY_ITALIC = new Formatting[]{Formatting.GRAY, Formatting.ITALIC};
 
@@ -289,7 +289,7 @@ public class Messenger {
 
     public static void broadcast(MinecraftServer server, MutableText message) {
         if (server == null) {
-            LOG.error("Message not delivered: " + message.getString());
+            LOGGER.error("Message not delivered: " + message.getString());
             return;
         }
         server.sendSystemMessage(message, Util.NIL_UUID);

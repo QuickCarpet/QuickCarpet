@@ -2,6 +2,7 @@ package quickcarpet;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.mojang.logging.LogUtils;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -9,6 +10,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Pair;
 import net.minecraft.util.WorldSavePath;
 import net.minecraft.world.level.ServerWorldProperties;
+import org.slf4j.Logger;
 import quickcarpet.api.QuickCarpetServerAPI;
 import quickcarpet.api.ServerEventListener;
 import quickcarpet.api.TelemetryProvider;
@@ -35,6 +37,7 @@ import java.util.UUID;
 import static quickcarpet.api.network.server.ServerPluginChannelManager.LOG;
 
 public class QuickCarpetServer implements QuickCarpetServerAPI, ServerEventListener, TelemetryProvider {
+    private static final Logger LOGGER = LogUtils.getLogger();
     private static QuickCarpetServer instance;
     public final MinecraftServer server;
     private final PubSubMessenger pubSubMessenger = new PubSubMessenger(QuickCarpet.PUBSUB);
@@ -103,7 +106,7 @@ public class QuickCarpetServer implements QuickCarpetServerAPI, ServerEventListe
             QuickCarpet.PUBSUB.update(server.getTicks());
             StructureChannel.instance.tick();
         } catch (RuntimeException e) {
-            LOG.error("Exception ticking " + Build.NAME, e);
+            LOGGER.error("Exception ticking " + Build.NAME, e);
         }
     }
 
@@ -113,12 +116,12 @@ public class QuickCarpetServer implements QuickCarpetServerAPI, ServerEventListe
         try {
             cameraData = CameraData.readSaveFile();
         } catch (IOException e) {
-            LOG.error("Error loading camera data", e);
+            LOGGER.error("Error loading camera data", e);
         }
         try {
             FakeServerPlayerEntity.loadPersistent(server);
         } catch (IOException e) {
-            LOG.error("Error loading persistent players", e);
+            LOGGER.error("Error loading persistent players", e);
         }
     }
 
@@ -128,12 +131,12 @@ public class QuickCarpetServer implements QuickCarpetServerAPI, ServerEventListe
         try {
             CameraData.writeSaveFile(cameraData);
         } catch (IOException e) {
-            LOG.error("Error saving camera data", e);
+            LOGGER.error("Error saving camera data", e);
         }
         try {
             FakeServerPlayerEntity.savePersistent(server);
         } catch (IOException e) {
-            LOG.error("Error saving persistent players", e);
+            LOGGER.error("Error saving persistent players", e);
         }
     }
 
@@ -143,7 +146,7 @@ public class QuickCarpetServer implements QuickCarpetServerAPI, ServerEventListe
             loggers.onPlayerConnect(player);
             pluginChannels.onPlayerConnect(player);
         } catch (RuntimeException e) {
-            LOG.error("Exception during onPlayerConnect for " + player.getEntityName(), e);
+            LOGGER.error("Exception during onPlayerConnect for " + player.getEntityName(), e);
         }
     }
 
@@ -153,7 +156,7 @@ public class QuickCarpetServer implements QuickCarpetServerAPI, ServerEventListe
             loggers.onPlayerDisconnect(player);
             pluginChannels.onPlayerDisconnect(player);
         } catch (RuntimeException e) {
-            LOG.error("Exception during onPlayerDisconnect for " + player.getEntityName(), e);
+            LOGGER.error("Exception during onPlayerDisconnect for " + player.getEntityName(), e);
         }
     }
 

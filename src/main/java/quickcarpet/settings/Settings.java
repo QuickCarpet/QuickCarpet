@@ -1,5 +1,6 @@
 package quickcarpet.settings;
 
+import com.mojang.logging.LogUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
@@ -12,7 +13,7 @@ import net.minecraft.util.Unit;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 import quickcarpet.QuickCarpetServer;
 import quickcarpet.api.annotation.BugFix;
 import quickcarpet.api.settings.*;
@@ -29,7 +30,7 @@ import java.util.Optional;
 import static quickcarpet.api.settings.RuleCategory.*;
 
 public class Settings {
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogUtils.getLogger();
     public static final RuleUpgrader RULE_UPGRADER = new RuleUpgrader() {
         @Override
         public Pair<String, String> upgrade(String key, String value) {

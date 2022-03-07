@@ -1,14 +1,14 @@
 package quickcarpet.utils;
 
 import com.google.common.collect.AbstractIterator;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 
 public class Reflection {
-    private static final Logger LOGGER = LogManager.getLogger();
+    private static final Logger LOGGER = LogUtils.getLogger();
 
     public static <T> T callDeprecatedPrivateConstructor(Class<T> cls) {
         try {

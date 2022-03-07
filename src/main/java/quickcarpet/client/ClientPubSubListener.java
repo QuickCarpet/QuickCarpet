@@ -1,5 +1,6 @@
 package quickcarpet.client;
 
+import com.mojang.logging.LogUtils;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -9,8 +10,7 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.listener.ClientPlayPacketListener;
 import net.minecraft.network.packet.s2c.play.CustomPayloadS2CPacket;
 import net.minecraft.util.Identifier;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
 import quickcarpet.QuickCarpetClient;
 import quickcarpet.api.network.client.ClientPluginChannelHandler;
 import quickcarpet.network.impl.PacketSplitter;
@@ -23,7 +23,7 @@ import static quickcarpet.pubsub.PubSubMessenger.*;
 
 @Environment(EnvType.CLIENT)
 public class ClientPubSubListener implements ClientPluginChannelHandler {
-    private final Logger LOG = LogManager.getLogger();
+    private final Logger LOGGER = LogUtils.getLogger();
     private final QuickCarpetClient client = QuickCarpetClient.getInstance();
 
     @Override
@@ -75,7 +75,7 @@ public class ClientPubSubListener implements ClientPluginChannelHandler {
                     default -> throw new IllegalArgumentException();
                 });
             } catch (IllegalArgumentException ignored) {
-                LOG.warn("Could not parse pubsub update {} of type {}", name, valueType);
+                LOGGER.warn("Could not parse pubsub update {} of type {}", name, valueType);
                 return values;
             }
         }
