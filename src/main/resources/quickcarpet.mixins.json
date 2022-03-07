@@ -63,7 +63,7 @@
     "doubleRetraction.PistonBlockMixin",
     "drownedEnchantedTridentsFix.DrownedEntityMixin",
     "dustOnPistons.RedstoneWireBlockMixin",
-    "explosionNoBlockDamage.ExplosionMixin",
+    "explosionBlockDamage.ExplosionMixin",
     "extremeBehaviors.ItemDispenserBehaviorMixin",
     "extremeBehaviors.WitherEntityMixin",
     "fabricApi.RegistrySyncManagerMixin",

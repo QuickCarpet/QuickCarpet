@@ -40,7 +40,7 @@ public class TntTest {
         ctx.complete();
     }
 
-    @GameTest(structureName = "contained_explosion", batchId = "rules/explosionNoBlockDamage=true")
+    @GameTest(structureName = "contained_explosion", batchId = "rules/explosionBlockDamage=false")
     public void qc$explosionNoBlockDamage(TestContext ctx) {
         createExplosion(ctx, Explosion.DestructionType.BREAK);
         ctx.expectBlock(Blocks.WHITE_STAINED_GLASS, CENTER);

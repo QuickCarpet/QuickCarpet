@@ -1,4 +1,4 @@
-package quickcarpet.mixin.explosionNoBlockDamage;
+package quickcarpet.mixin.explosionBlockDamage;
 
 import net.minecraft.world.explosion.Explosion;
 import org.spongepowered.asm.mixin.Mixin;
@@ -14,6 +14,6 @@ public abstract class ExplosionMixin {
 
     @Inject(method = "affectWorld", at = @At("HEAD"))
     private void quickcarpet$explosionNoBlockDamage(boolean bl, CallbackInfo ci) {
-        if (Settings.explosionNoBlockDamage) clearAffectedBlocks();
+        if (!Settings.explosionBlockDamage) clearAffectedBlocks();
     }
 }

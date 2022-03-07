@@ -348,11 +348,11 @@ Default: `false`
 Options: `true`, `false`  
 Categories: experimental  
 
-## explosionNoBlockDamage
-Explosions won't destroy blocks
+## explosionBlockDamage
+Explosions won't destroy blocks when set to false
 
 Type: `boolean`  
-Default: `false`  
+Default: `true`  
 Options: `true`, `false`  
 Categories: tnt  
 

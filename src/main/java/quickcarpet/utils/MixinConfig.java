@@ -49,7 +49,7 @@ public class MixinConfig {
             "doubleRetraction",
             "drownedEnchantedTridentsFix",
             "dustOnPistons",
-            "explosionNoBlockDamage",
+            "explosionBlockDamage",
             "extremeBehaviors",
             "fallingBlockDuplicationFix",
             "fillLimit",

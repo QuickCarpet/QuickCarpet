@@ -1,7 +1,6 @@
 package quickcarpet.settings;
 
 import net.minecraft.SharedConstants;
-import net.minecraft.entity.SpawnGroup;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.world.ChunkTicketType;
@@ -11,9 +10,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Pair;
 import net.minecraft.util.Unit;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.StructureSpawns;
 import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.ConfiguredStructureFeatures;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import quickcarpet.QuickCarpetServer;
@@ -21,14 +18,12 @@ import quickcarpet.api.annotation.BugFix;
 import quickcarpet.api.settings.*;
 import quickcarpet.feature.dispenser.BreakBlockBehavior;
 import quickcarpet.feature.dispenser.PlaceBlockBehavior;
-import quickcarpet.utils.CarpetRegistry;
 import quickcarpet.utils.Messenger;
 import quickcarpet.utils.SpawningAlgorithm;
 import quickcarpet.utils.Translations;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Map;
 import java.util.Optional;
 
 import static quickcarpet.api.settings.RuleCategory.*;
@@ -42,6 +37,7 @@ public class Settings {
                 case "silverFishDropGravel" -> new Pair<>("renewableGravel", "true".equals(value) ? "silverfish" : "none");
                 case "mobInFireConvertsSandToSoulsand" -> new Pair<>("renewableSoulSand", value);
                 case "fireChargeConvertsToNetherrack" -> new Pair<>("renewableNetherrack", value);
+                case "explosionNoBlockDamage" -> new Pair<>("explosionBlockDamage", "true".equals(value) ? "false" : "true");
                 default -> null;
             };
         }
@@ -191,7 +187,7 @@ public class Settings {
     public static boolean dustOnPistons = false;
 
     @Rule(category = TNT)
-    public static boolean explosionNoBlockDamage = false;
+    public static boolean explosionBlockDamage = true;
 
     @Rule(category = CREATIVE)
     public static boolean extremeBehaviors = false;
