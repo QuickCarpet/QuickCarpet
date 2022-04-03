@@ -132,14 +132,23 @@ public class PlayerCommand {
     }
 
     private static LiteralArgumentBuilder<ServerCommandSource> makeActionCommand(String actionName, ActionType type) {
+        var once = literal("once").executes(c -> action(c, type, Action.once()));
+        var continuous = literal("continuous").executes(c -> action(c, type, Action.continuous()));
+        var interval = literal("inteval")
+            .then(argument("ticks", integer(2))
+                .executes(c -> action(c, type, Action.interval(getInteger(c, "ticks"), -1)))
+                .then(argument("count", integer(1))
+                    .executes(c -> action(c, type, Action.interval(getInteger(c, "ticks"), getInteger(c, "count"))))
+                )
+            );
+        var perTick = literal("perTick").then(argument("times", integer(1,10))
+                .executes(c -> action(c, type, Action.perTick(getInteger(c, "times")))));
         return literal(actionName)
             .executes(c -> action(c, type, Action.once()))
-            .then(literal("once").executes(c -> action(c, type, Action.once())))
-            .then(literal("continuous").executes(c -> action(c, type, Action.continuous())))
-            .then(literal("interval").then(argument("ticks", integer(2))
-                    .executes(c -> action(c, type, Action.interval(getInteger(c, "ticks"))))))
-            .then(literal("perTick").then(argument("times", integer(1,10))
-                    .executes(c -> action(c, type, Action.perTick(getInteger(c, "times"))))));
+            .then(once)
+            .then(continuous)
+            .then(interval)
+            .then(perTick);
     }
 
     private static Collection<String> getPlayers(ServerCommandSource source) {

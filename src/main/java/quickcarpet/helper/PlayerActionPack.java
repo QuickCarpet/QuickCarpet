@@ -427,12 +427,12 @@ public class PlayerActionPack {
             return new Action(-1, 1, 0, 1);
         }
 
-        public static Action interval(int interval) {
-            return new Action(-1, interval, 0, 1);
+        public static Action interval(int interval, int limit) {
+            return new Action(limit, interval, 0, 1);
         }
 
-        public static Action interval(int interval, int offset) {
-            return new Action(-1, interval, offset, 1);
+        public static Action interval(int interval, int offset, int limit) {
+            return new Action(limit, interval, offset, 1);
         }
 
         public static Action perTick(int amount) { return new Action(-1, 1, 0, amount); }
