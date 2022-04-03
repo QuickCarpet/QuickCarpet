@@ -27,7 +27,10 @@ import quickcarpet.helper.Mobcaps;
 import quickcarpet.pubsub.PubSubManager;
 import quickcarpet.pubsub.PubSubNode;
 import quickcarpet.settings.Settings;
-import quickcarpet.utils.*;
+import quickcarpet.utils.CarpetProfiler;
+import quickcarpet.utils.CarpetRegistry;
+import quickcarpet.utils.Translations;
+import quickcarpet.utils.Waypoint;
 import quickcarpet.utils.extensions.WaypointContainer;
 
 import java.io.IOException;
@@ -242,8 +245,7 @@ public final class QuickCarpet implements QuickCarpetAPI, ServerEventListener, T
 
     public static boolean isDevelopment() {
         try {
-            //noinspection ConstantConditions
-            return Build.VERSION.contains("dev") || FabricLoader.getInstance().isDevelopmentEnvironment();
+            return Build.VERSION_IS_DEV || FabricLoader.getInstance().isDevelopmentEnvironment();
         } catch (NullPointerException e) {
             return true;
         }
@@ -256,6 +258,13 @@ public final class QuickCarpet implements QuickCarpetAPI, ServerEventListener, T
 
     @Override
     public String getVersion() {
+        return Build.VERSION;
+    }
+
+    public static String getFullVersionString() {
+        if (Build.VERSION_IS_DEV || isDevelopment()) {
+            return Build.VERSION +  " " + Build.BRANCH + "-" + Build.COMMIT_SHORT + " (" + Build.BUILD_TIMESTAMP + ")";
+        }
         return Build.VERSION;
     }
 

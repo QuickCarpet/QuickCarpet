@@ -1,5 +1,5 @@
-import java.text.SimpleDateFormat
 import quickcarpet.build.*
+import java.text.SimpleDateFormat
 import java.util.*
 
 plugins {
@@ -69,8 +69,8 @@ task<Copy>("generateJava") {
 		"branch" to GitHelper.getBranch(rootDir),
 		"commit" to GitHelper.getCommit(rootDir),
 		"working_dir_clean" to GitHelper.getStatus(rootDir),
-		"minecraft_version" to libs.versions.minecraft,
-		"yarn_mappings" to libs.versions.yarn
+		"minecraft_version" to libs.versions.minecraft.get(),
+		"yarn_mappings" to libs.versions.yarn.get()
 	)
 	inputs.properties(templateContext) // for gradle up-to-date check
 	from("src/template/java")
