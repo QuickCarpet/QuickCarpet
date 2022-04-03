@@ -12,13 +12,13 @@ import net.minecraft.util.Pair;
 import net.minecraft.util.Unit;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
-import org.apache.logging.log4j.LogManager;
 import org.slf4j.Logger;
 import quickcarpet.QuickCarpetServer;
 import quickcarpet.api.annotation.BugFix;
 import quickcarpet.api.settings.*;
 import quickcarpet.feature.dispenser.BreakBlockBehavior;
 import quickcarpet.feature.dispenser.PlaceBlockBehavior;
+import quickcarpet.utils.Constants;
 import quickcarpet.utils.Messenger;
 import quickcarpet.utils.SpawningAlgorithm;
 import quickcarpet.utils.Translations;
@@ -28,6 +28,8 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static quickcarpet.api.settings.RuleCategory.*;
+import static quickcarpet.utils.Constants.Validator.Texts.TNT_ANGLE;
+import static quickcarpet.utils.Constants.Validator.Texts.VIEW_DISTANCE_INTEGRATED;
 
 public class Settings {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -319,7 +321,7 @@ public class Settings {
 
         @Override
         public Optional<TranslatableText> validate(Integer value) {
-            if (value < 1 || value > 32) return Optional.of(Messenger.t("carpet.validator.range", 1, 32));
+            if (value < 1 || value > 32) return Optional.of(Messenger.t(Constants.Validator.Keys.RANGE, 1, 32));
             return Optional.empty();
         }
     }
@@ -350,7 +352,7 @@ public class Settings {
         public Optional<TranslatableText> validate(Double value) {
             if (value == -1) return Optional.empty();
             if (value >= 0 && value < 360) return Optional.empty();
-            return Optional.of(Messenger.t("carpet.validator.tntAngle"));
+            return Optional.of(TNT_ANGLE);
         }
     }
 
@@ -384,10 +386,10 @@ public class Settings {
             if (value == -1) return Optional.empty();
             MinecraftServer server = QuickCarpetServer.getNullableMinecraftServer();
             if (server != null && !server.isDedicated()) {
-                return Optional.of(Messenger.t("carpet.validator.viewDistance.integrated"));
+                return Optional.of(VIEW_DISTANCE_INTEGRATED);
             }
             if (value >= 2 && value <= 32) return Optional.empty();
-            return Optional.of(Messenger.t("carpet.validator.range", 2, 32));
+            return Optional.of(Messenger.t(Constants.Validator.Keys.RANGE, 2, 32));
         }
 
         @Override

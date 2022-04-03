@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import quickcarpet.logging.LogParameter;
 import quickcarpet.logging.Loggers;
 import quickcarpet.settings.Settings;
+import quickcarpet.utils.Constants.OtherKeys;
 import quickcarpet.utils.Messenger;
 
 import java.util.Collections;
@@ -36,7 +37,7 @@ public class WorldTickSchedulerMixin {
         if (logged) return;
         logged = true;
         Loggers.TILE_TICK_LIMIT.log(
-            () -> Messenger.t("logger.tileTickLimit.message", Settings.tileTickLimit),
+            () -> Messenger.t(OtherKeys.TILE_TICK_LIMIT_REACHED, Settings.tileTickLimit),
             () -> Collections.singletonList(new LogParameter("LIMIT", Settings.tileTickLimit))
         );
     }

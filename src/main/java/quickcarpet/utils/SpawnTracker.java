@@ -11,6 +11,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.dimension.DimensionType;
+import quickcarpet.utils.Constants.SpawnCommand.Keys;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -64,7 +65,7 @@ public class SpawnTracker {
             double seconds = ticksActive / 20.;
             int minutes = (int) seconds / 60;
             int hours = minutes / 60;
-            m(source, ts("command.spawn.tracking.title", Formatting.DARK_GREEN, formats("%d:%02d:%05.2f", Formatting.LIGHT_PURPLE, hours, minutes % 60, seconds % 60)));
+            m(source, ts(Keys.TRACKING_TITLE, Formatting.DARK_GREEN, formats("%d:%02d:%05.2f", Formatting.LIGHT_PURPLE, hours, minutes % 60, seconds % 60)));
             double perHour = 72000. / ticksActive;
             Set<SpawnGroup> seenEntityCategories = new TreeSet<>();
             seenEntityCategories.addAll(mobcapFull.keySet());
@@ -74,7 +75,7 @@ public class SpawnTracker {
                 int mobcapNotFullCount = mobcapNotFull.getOrDefault(category, 0);
                 int totalGlobalAttempts = mobcapFullCount + mobcapNotFullCount;
                 double mobcapFullPortion = (double) mobcapFullCount / totalGlobalAttempts;
-                m(source, ts("command.spawn.tracking.category", Formatting.GRAY,
+                m(source, ts(Keys.TRACKING_CATEGORY, Formatting.GRAY,
                     s(category.getName(), Formatting.WHITE),
                     formats("%.2f", getHeatmapColor(mobcapFullPortion, 1), 100 * mobcapFullPortion)
                 ));
@@ -83,7 +84,7 @@ public class SpawnTracker {
                     int numAttempts = attempts.getOrDefault(type, 0);
                     double successfulPerHour = successful * perHour;
                     double successfulPortion = (double) successful / numAttempts;
-                    m(source, ts("command.spawn.tracking.mob", Formatting.GRAY,
+                    m(source, ts(Keys.TRACKING_MOB, Formatting.GRAY,
                         s(EntityType.getId(type).toString(), Formatting.WHITE),
                         s(Integer.toString(successful), Formatting.DARK_GREEN),
                         c(

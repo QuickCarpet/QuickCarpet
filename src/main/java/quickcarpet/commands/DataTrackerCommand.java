@@ -1,7 +1,6 @@
 package quickcarpet.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -12,6 +11,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import org.apache.commons.lang3.tuple.Pair;
 import quickcarpet.settings.Settings;
+import quickcarpet.utils.Constants.DataTrackerCommand.Keys;
 import quickcarpet.utils.DataTrackerUtils;
 
 import java.util.List;
@@ -21,11 +21,12 @@ import static net.minecraft.command.argument.EntityArgumentType.entity;
 import static net.minecraft.command.argument.EntityArgumentType.getEntity;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
+import static quickcarpet.utils.Constants.DataTrackerCommand.Texts.NO_ENTRIES;
 import static quickcarpet.utils.Messenger.*;
 
 public class DataTrackerCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        LiteralArgumentBuilder<ServerCommandSource> tracker = literal("datatracker")
+        var tracker = literal("datatracker")
             .requires(s -> s.hasPermissionLevel(Settings.commandDataTracker))
             .then(argument("entity", entity())
                 .then(literal("list").executes(DataTrackerCommand::list)));
@@ -38,7 +39,7 @@ public class DataTrackerCommand {
         DataTracker tracker = target.getDataTracker();
         List<DataTracker.Entry<?>> entries = tracker.getAllEntries();
         if (entries == null || entries.isEmpty()) {
-            m(ctx.getSource(), ts("command.datatracker.no_entries", GRAY_ITALIC));
+            m(ctx.getSource(), NO_ENTRIES);
             return 0;
         }
         Int2ObjectMap<Pair<String, DataTrackerUtils.KnownType>> knownProps = DataTrackerUtils.collectKnownProperties(target.getClass());
@@ -53,8 +54,9 @@ public class DataTrackerCommand {
         DataTrackerUtils.KnownType type = DataTrackerUtils.KnownType.get(data.getType());
         Pair<String, DataTrackerUtils.KnownType> known = knownProps.get(data.getId());
         String name = known.getRight() == type ? known.getLeft() : "unknown (" + data.getId() + ")";
+        @SuppressWarnings("unchecked")
         Formatter<T> formatter = (Formatter<T>) type.formatter;
 
-        return t("command.datatracker.entry", name, type.name().toLowerCase(Locale.ROOT), formatter.format(entry.get()));
+        return t(Keys.ENTRY, name, type.name().toLowerCase(Locale.ROOT), formatter.format(entry.get()));
     }
 }

@@ -4,6 +4,7 @@ import fi.dy.masa.malilib.hotkeys.IHotkey;
 import fi.dy.masa.malilib.hotkeys.IKeybindManager;
 import fi.dy.masa.malilib.hotkeys.IKeybindProvider;
 import quickcarpet.Build;
+import quickcarpet.utils.Constants.Client.Keys;
 
 public class InputHandler implements IKeybindProvider {
     private static final InputHandler INSTANCE = new InputHandler();
@@ -23,7 +24,7 @@ public class InputHandler implements IKeybindProvider {
 
     @Override
     public void addHotkeys(IKeybindManager manager) {
-        manager.addHotkeysForCategory(Build.ID, "quickcarpet.hotkeys.category.generic_hotkeys", Configs.Generic.getHotkeys());
-        manager.addHotkeysForCategory(Build.ID, "quickcarpet.hotkeys.category.rendering_hotkeys", Configs.Rendering.OPTIONS);
+        manager.addHotkeysForCategory(Build.ID, Keys.HOTKEYS_CATEGORY_GENERIC_HOTKEYS, Configs.Generic.getHotkeys());
+        manager.addHotkeysForCategory(Build.ID, Keys.HOTKEYS_CATEGORY_RENDERING_HOTKEYS, Configs.Rendering.OPTIONS);
     }
 }

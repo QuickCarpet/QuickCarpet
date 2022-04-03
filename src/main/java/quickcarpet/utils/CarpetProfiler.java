@@ -23,6 +23,8 @@ import quickcarpet.QuickCarpetServer;
 import quickcarpet.helper.TickSpeed;
 import quickcarpet.logging.LogParameter;
 import quickcarpet.logging.Loggers;
+import quickcarpet.utils.Constants.OtherKeys;
+import quickcarpet.utils.Constants.Profiler.Keys;
 
 import javax.annotation.Nullable;
 import javax.management.Notification;
@@ -32,6 +34,8 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
 import java.util.*;
 
+import static quickcarpet.utils.Constants.Profiler.Texts.TOP_10_COUNTS;
+import static quickcarpet.utils.Constants.Profiler.Texts.TOP_10_GROSSING;
 import static quickcarpet.utils.Messenger.*;
 
 public class CarpetProfiler {
@@ -69,7 +73,7 @@ public class CarpetProfiler {
         private final boolean global;
         private final boolean customFormat;
         private final boolean accumulate;
-        private final String translationKey = "carpet.profiler.section." + this.name().toLowerCase(Locale.ROOT);
+        private final String translationKey = Keys.SECTION_PREFIX + this.name().toLowerCase(Locale.ROOT);
 
         SectionType(boolean global, boolean custom) {
             this(global, custom, true);
@@ -88,12 +92,12 @@ public class CarpetProfiler {
         public MutableText format(double amount, double avgTime) {
             float msptGoal = TickSpeed.getServerTickSpeed().msptGoal;
             if (customFormat) {
-                return t(translationKey + ".format", getName(),
+                return t(translationKey + Keys.SECTION_FORMAT_SUFFIX, getName(),
                     formats("%.3f", getHeatmapColor(amount, msptGoal), amount),
                     formats("%.3f", getHeatmapColor(avgTime, msptGoal), avgTime)
                 );
             }
-            return t("carpet.profiler.section.format", getName(),
+            return t(Keys.SECTION_FORMAT, getName(),
                 formats("%.3f", getHeatmapColor(amount, msptGoal), amount)
             );
         }
@@ -235,7 +239,7 @@ public class CarpetProfiler {
         protected void finalizeReport(MinecraftServer server) {
             double divider = 1e-6 / duration;
             double avgTickTime = divider * totalTickTime;
-            broadcast(server, t("carpet.profiler.title", formats("%.3f", getHeatmapColor(avgTickTime, 50), avgTickTime)));
+            broadcast(server, t(Keys.TITLE, formats("%.3f", getHeatmapColor(avgTickTime, 50), avgTickTime)));
             long accumulated = 0L;
 
             Measurement global = measurements.get(null);
@@ -311,12 +315,12 @@ public class CarpetProfiler {
                     times.put(new Pair<>(m, be), m.blockEntityTimes.getLong(be));
                 }
             }
-            broadcast(server, t("carpet.profiler.top_10_counts"));
+            broadcast(server, TOP_10_COUNTS);
             counts.object2LongEntrySet().stream()
                 .sorted((a, b) -> Long.compare(b.getLongValue(), a.getLongValue()))
                 .limit(10)
                 .forEachOrdered(e -> broadcast(server, format(e, (double) e.getLongValue() / duration, 0)));
-            broadcast(server, t("carpet.profiler.top_10_grossing"));
+            broadcast(server, TOP_10_GROSSING);
             times.object2LongEntrySet().stream()
                 .sorted((a, b) -> Long.compare(b.getLongValue(), a.getLongValue()))
                 .limit(10)
@@ -394,8 +398,8 @@ public class CarpetProfiler {
         Pair<Measurement, Object> key = entry.getKey();
         Identifier dim = key.getLeft().dimension.getValue();
         Object e = key.getRight();
-        Identifier ent = e instanceof EntityType ? EntityType.getId((EntityType) e) : BlockEntityType.getId((BlockEntityType) e);
-        return t("carpet.profiler.entity.line", ent, dim, formats("%.3f", msptGoal == 0 ? Formatting.WHITE : getHeatmapColor(value, msptGoal), value));
+        Identifier ent = e instanceof EntityType ? EntityType.getId((EntityType<?>) e) : BlockEntityType.getId((BlockEntityType<?>) e);
+        return t(Keys.ENTITY_LINE, ent, dim, formats("%.3f", msptGoal == 0 ? Formatting.WHITE : getHeatmapColor(value, msptGoal), value));
     }
 
     public static void init() {
@@ -405,7 +409,7 @@ public class CarpetProfiler {
                 ((NotificationEmitter) gc).addNotificationListener(CarpetProfiler::handleGCNotification, null, null);
             });
         } catch (ClassNotFoundException e) {
-            Loggers.GC.setUnavailable(t("logger.gc.unavailable", System.getProperty("java.vm.name")));
+            Loggers.GC.setUnavailable(t(OtherKeys.GC_LOGGER_UNAVAILABLE, System.getProperty("java.vm.name")));
         }
     }
 

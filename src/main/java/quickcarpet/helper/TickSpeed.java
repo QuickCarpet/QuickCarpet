@@ -13,6 +13,7 @@ import quickcarpet.QuickCarpetServer;
 import quickcarpet.api.TelemetryProvider;
 import quickcarpet.commands.TickCommand;
 import quickcarpet.pubsub.PubSubInfoProvider;
+import quickcarpet.utils.Constants.TickCommand.Keys;
 import quickcarpet.utils.Messenger;
 
 import javax.annotation.Nullable;
@@ -20,6 +21,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static quickcarpet.utils.Constants.TickCommand.Texts.*;
 import static quickcarpet.utils.Messenger.*;
 
 public class TickSpeed implements TelemetryProvider {
@@ -81,17 +83,15 @@ public class TickSpeed implements TelemetryProvider {
             tickWarpCallback = null;
             tickWarpSender = null;
             finishTickWarp();
-            return ts("command.tick.warp.interrupted", GRAY_ITALIC);
+            return WARP_INTERRUPTED;
         }
-        if (warpTimeRemaining > 0) {
-            return ts("command.tick.warp.active", Formatting.GREEN);
-        }
+        if (warpTimeRemaining > 0) return WARP_ACTIVE;
         tickWarpStartTime = System.nanoTime();
         tickWarpScheduledTicks = warpAmount;
         warpTimeRemaining = warpAmount;
         tickWarpCallback = callback;
         tickWarpSender = source;
-        return ts("command.tick.warp.start", GRAY_ITALIC);
+        return WARP_START;
     }
 
     public long getWarpTimeTotal() {
@@ -131,17 +131,17 @@ public class TickSpeed implements TelemetryProvider {
 
                 if (j < 1) {
                     if (tickWarpSender != null) {
-                        m(tickWarpSender, ts("command.tick.warp.callback.failed", Formatting.RED, runCommand(s("/" + tickWarpCallback, Formatting.UNDERLINE), "/" + tickWarpCallback)));
+                        m(tickWarpSender, ts(Keys.WARP_CALLBACK_FAILED, Formatting.RED, runCommand(s("/" + tickWarpCallback, Formatting.UNDERLINE), "/" + tickWarpCallback)));
                     }
                 }
             } catch (Throwable t) {
                 if (tickWarpSender != null) {
-                    m(tickWarpSender, ts("command.tick.warp.callback.failed.unknown", Formatting.RED, runCommand(s("/" + tickWarpCallback, Formatting.UNDERLINE), "/" + tickWarpCallback)));
+                    m(tickWarpSender, ts(Keys.WARP_CALLBACK_FAILED_UNKNOWN, Formatting.RED, runCommand(s("/" + tickWarpCallback, Formatting.UNDERLINE), "/" + tickWarpCallback)));
                 }
             }
             tickWarpCallback = null;
         }
-        MutableText message = ts("command.tick.warp.completed", GRAY_ITALIC, tps, String.format("%.2f", mspt));
+        MutableText message = ts(Keys.WARP_COMPLETED, GRAY_ITALIC, tps, String.format("%.2f", mspt));
         if (tickWarpSender != null) {
             m(tickWarpSender, message);
             tickWarpSender = null;

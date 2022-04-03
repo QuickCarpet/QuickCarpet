@@ -1,7 +1,6 @@
 package quickcarpet.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
@@ -14,9 +13,11 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
 import quickcarpet.helper.BlockInfoProvider;
 import quickcarpet.settings.Settings;
+import quickcarpet.utils.Constants.StateInfoCommand.Keys;
 
 import static net.minecraft.command.argument.BlockPosArgumentType.getLoadedBlockPos;
 import static net.minecraft.server.command.CommandManager.literal;
+import static quickcarpet.utils.Constants.StateInfoCommand.Texts.BLOCK_STATE;
 import static quickcarpet.utils.Messenger.*;
 
 public class BlockInfoCommand {
@@ -25,7 +26,7 @@ public class BlockInfoCommand {
     );
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        LiteralArgumentBuilder<ServerCommandSource> blockInfo = Utils.makeStateInfoCommand(
+        var blockInfo = Utils.makeStateInfoCommand(
             literal("blockinfo"),
             BlockInfoProvider.REGISTRY,
             BlockInfoCommand::execute,
@@ -40,7 +41,7 @@ public class BlockInfoCommand {
         ServerWorld world = source.getWorld();
         BlockPos pos = getLoadedBlockPos(ctx, "pos");
         BlockState state = world.getBlockState(pos);
-        m(source, t("command.stateinfo.line", t("command.stateinfo.block_state"), format(state)));
+        m(source, t(Keys.LINE, BLOCK_STATE, format(state)));
         return Utils.executeStateInfo(source, pos, state, BlockInfoProvider.REGISTRY);
     }
 

@@ -1,7 +1,6 @@
 package quickcarpet.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.entity.Entity;
@@ -12,6 +11,7 @@ import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import quickcarpet.mixin.accessor.TeleportCommandAccessor;
 import quickcarpet.settings.Settings;
+import quickcarpet.utils.Constants.WaypointCommand.Keys;
 import quickcarpet.utils.Waypoint;
 
 import java.util.Collection;
@@ -27,7 +27,7 @@ import static quickcarpet.utils.Messenger.*;
 
 public class VanillaCommandAddons {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        LiteralArgumentBuilder<ServerCommandSource> tp = literal("teleport")
+        var tp = literal("teleport")
             .then(literal("waypoint")
                 .requires(s -> s.hasPermissionLevel(Settings.commandWaypoint))
                 .then(argument("waypoint", greedyString())
@@ -54,7 +54,7 @@ public class VanillaCommandAddons {
         String name = getString(ctx, "waypoint");
         Waypoint destination = WaypointCommand.getWaypoint(source, name);
         if (destination == null) {
-            m(source, ts("command.waypoint.error.notFound", Formatting.RED, name));
+            m(source, ts(Keys.ERROR_NOT_FOUND, Formatting.RED, name));
             return -1;
         }
         ServerWorld world = source.getServer().getWorld(destination.getDimension());

@@ -1,13 +1,13 @@
 package quickcarpet.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import quickcarpet.helper.TickSpeed;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.CarpetProfiler;
+import quickcarpet.utils.Constants.TickCommand.Keys;
 
 import static com.mojang.brigadier.arguments.FloatArgumentType.floatArg;
 import static com.mojang.brigadier.arguments.FloatArgumentType.getFloat;
@@ -18,12 +18,13 @@ import static com.mojang.brigadier.arguments.StringArgumentType.greedyString;
 import static net.minecraft.command.CommandSource.suggestMatching;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
+import static quickcarpet.utils.Constants.TickCommand.Texts.*;
 import static quickcarpet.utils.Messenger.*;
 
 public class TickCommand {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        LiteralArgumentBuilder<ServerCommandSource> tick = literal("tick")
+        var tick = literal("tick")
             .requires(s -> s.hasPermissionLevel(Settings.commandTick))
             .then(literal("rate").requires(s -> s.hasPermissionLevel(Settings.commandTickManipulate))
                 .executes(c -> sendCurrentTPS(c.getSource()))
@@ -67,7 +68,7 @@ public class TickCommand {
 
     private static int sendCurrentTPS(ServerCommandSource source) {
         float tickRateGoal = TickSpeed.getServerTickSpeed().tickRateGoal;
-        m(source, t("command.tick.current", formats("%.1f", Formatting.BOLD, tickRateGoal)));
+        m(source, t(Keys.CURRENT, formats("%.1f", Formatting.BOLD, tickRateGoal)));
         return (int) tickRateGoal;
     }
 
@@ -81,17 +82,17 @@ public class TickCommand {
         TickSpeed tickSpeed = TickSpeed.getServerTickSpeed();
         long warpTotal = tickSpeed.getWarpTimeTotal();
         if (warpTotal == 0) {
-            m(source, ts("command.tick.warp.status.inactive", Formatting.YELLOW));
+            m(source, WARP_STATUS_INACTIVE);
             return 0;
         }
         long warpRemaining = tickSpeed.getWarpTimeRemaining();
         long warpDone = warpTotal - warpRemaining;
         double percentDone = Math.round(warpDone * 1000.0 / warpTotal) / 10.0;
-        m(source, ts("command.tick.warp.status.active", Formatting.DARK_GREEN, warpDone, warpTotal, percentDone));
+        m(source, ts(Keys.WARP_STATUS_ACTIVE, Formatting.DARK_GREEN, warpDone, warpTotal, percentDone));
         ServerCommandSource sender = tickSpeed.getTickWarpSender();
-        if (sender != null) m(source, t("command.tick.warp.status.startedBy", sender.getDisplayName()));
+        if (sender != null) m(source, t(Keys.WARP_STATUS_STARTED_BY, sender.getDisplayName()));
         String callback = tickSpeed.getTickWarpCallback();
-        if (callback != null) m(source, t("command.tick.warp.status.callback", callback));
+        if (callback != null) m(source, t(Keys.WARP_STATUS_CALLBACK, callback));
         return warpRemaining > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) warpRemaining;
     }
 
@@ -103,11 +104,7 @@ public class TickCommand {
     private static int toggleFreeze(ServerCommandSource source) {
         TickSpeed tickSpeed = TickSpeed.getServerTickSpeed();
         tickSpeed.setPaused(!tickSpeed.isPaused());
-        if (tickSpeed.isPaused()) {
-            m(source, ts("command.tick.freeze", GRAY_ITALIC));
-        } else {
-            m(source, ts("command.tick.unfreeze", GRAY_ITALIC));
-        }
+        m(source, tickSpeed.isPaused() ? FREEZE : UNFREEZE);
         return 1;
     }
 
@@ -132,21 +129,21 @@ public class TickCommand {
     }
 
     public static void printMSPTStats(ServerCommandSource source, TickSpeed.MSPTStatistics stats) {
-        m(source, ts("command.tick.stats", Formatting.DARK_GREEN, s(Integer.toString(stats.count), Formatting.AQUA)), s(":", Formatting.GRAY));
-        m(source, t("command.tick.stats.loadavg"), s(": ", Formatting.GRAY),
+        m(source, ts(Keys.STATS, Formatting.DARK_GREEN, s(Integer.toString(stats.count), Formatting.AQUA)), s(":", Formatting.GRAY));
+        m(source, STATS_LOADAVG, s(": ", Formatting.GRAY),
             formats("%.3f", Formatting.AQUA, TickSpeed.getExponential1MinuteMSPT()), s(", ", Formatting.GRAY),
             formats("%.3f", Formatting.AQUA, TickSpeed.getExponential5MinuteMSPT()), s(", ", Formatting.GRAY),
             formats("%.3f", Formatting.AQUA, TickSpeed.getExponential15MinuteMSPT())
         );
-        m(source, t("command.tick.stats.minavgmax"), s(": ", Formatting.GRAY),
+        m(source, STATS_MINAVGMAX, s(": ", Formatting.GRAY),
             formats("%.3f", Formatting.AQUA, stats.min), s(", ", Formatting.GRAY),
             formats("%.3f±%.3f", Formatting.AQUA, stats.mean, stats.stdDev), s(", ", Formatting.GRAY),
             formats("%.3f", Formatting.AQUA, stats.max)
         );
-        m(source, t("command.tick.stats.lagticks"), s(": ", Formatting.GRAY),
+        m(source, STATS_LAGTICKS, s(": ", Formatting.GRAY),
             formats("%.1f%%", Formatting.AQUA, stats.lagPercentage)
         );
-        m(source, t("command.tick.stats.percentiles"), s(": ", Formatting.GRAY),
+        m(source, STATS_PERCENTILES, s(": ", Formatting.GRAY),
             formats("%.3f", Formatting.AQUA, stats.percentile90), s(", ", Formatting.GRAY),
             formats("%.3f", Formatting.AQUA, stats.percentile95), s(", ", Formatting.GRAY),
             formats("%.3f", Formatting.AQUA, stats.percentile99)

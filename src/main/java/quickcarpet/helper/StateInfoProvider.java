@@ -8,6 +8,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import quickcarpet.utils.Constants.OtherKeys;
 import quickcarpet.utils.Messenger;
 import quickcarpet.utils.Messenger.Formatter;
 
@@ -75,7 +76,7 @@ public interface StateInfoProvider<S extends State<?, S>, T extends Comparable<T
                     MutableText format1 = format(value1);
                     MutableText format2 = format(value2);
                     MutableText directions = directions1.stream().map(Messenger::format).collect(joining(s(",")));
-                    return t("state_info_provider.2", directions, format1, format2);
+                    return t(OtherKeys.STATE_INFO_PROVIDER_2, directions, format1, format2);
                 }
                 default -> {
                     List<Text> parts = new ArrayList<>(keys.size());

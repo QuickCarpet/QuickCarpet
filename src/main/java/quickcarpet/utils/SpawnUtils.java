@@ -19,11 +19,13 @@ import net.minecraft.world.chunk.ChunkSection;
 import net.minecraft.world.chunk.WorldChunk;
 import quickcarpet.mixin.accessor.SpawnHelperAccessor;
 import quickcarpet.settings.Settings;
+import quickcarpet.utils.Constants.SpawnCommand.Keys;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static quickcarpet.utils.Constants.SpawnCommand.Texts.*;
 import static quickcarpet.utils.Messenger.*;
 
 public class SpawnUtils {
@@ -45,28 +47,28 @@ public class SpawnUtils {
         for (SpawnGroup group : SpawnGroup.values()) {
             var entries = SpawnHelperAccessor.invokeGetSpawnEntries(world, world.getStructureAccessor(), world.getChunkManager().getChunkGenerator(), group, pos, null).getEntries();
             if (entries.isEmpty()) continue;
-            result.add(t("command.spawn.list.group", group.getName()));
+            result.add(t(Keys.LIST_GROUP, group.getName()));
             int total = Weighting.getWeightSum(entries);
             for (var entry : entries) {
                 EntityType<?> type = entry.type;
                 int weight = entry.getWeight().getValue();
                 double percentage = weight * 100.0 / total;
-                var line = t("command.spawn.list.entry", format(type), dbl(percentage, getHeatmapColor(100 - percentage, 99)));
+                var line = t(Keys.LIST_ENTRY, format(type), dbl(percentage, getHeatmapColor(100 - percentage, 99)));
                 var location = SpawnRestriction.getLocation(type);
                 boolean canSpawn = location != null && SpawnHelper.canSpawn(location, world, pos, type);
                 boolean fits = world.isSpaceEmpty(type.createSimpleBoundingBox(pos.getX() + 0.5D, pos.getY(), pos.getZ() + 0.5D));
                 line.append(", ");
                 line.append(canSpawn
-                    ? ts("command.spawn.list.entry.canSpawn", canSpawn && fits ? Formatting.GREEN : Formatting.GOLD)
-                    : ts("command.spawn.list.entry.cantSpawn", Formatting.RED));
+                    ? ts(Keys.LIST_ENTRY_CAN_SPAWN, canSpawn && fits ? Formatting.GREEN : Formatting.GOLD)
+                    : LIST_ENTRY_CANT_SPAWN);
                 line.append(", ");
                 line.append(fits
-                        ? ts("command.spawn.list.entry.fits", canSpawn && fits ? Formatting.GREEN : Formatting.GOLD)
-                        : ts("command.spawn.list.entry.collides", Formatting.RED));
+                        ? ts(Keys.LIST_ENTRY_FITS, canSpawn && fits ? Formatting.GREEN : Formatting.GOLD)
+                        : LIST_ENTRY_COLLIDES);
                 result.add(line);
-                result.add(t("command.spawn.list.entry.weight", weight));
-                var pack = entry.minGroupSize == entry.maxGroupSize ? entry.minGroupSize : t("command.spawn.list.entry.packRange", entry.minGroupSize, entry.maxGroupSize);
-                result.add(t("command.spawn.list.entry.pack", pack));
+                result.add(t(Keys.LIST_ENTRY_WEIGHT, weight));
+                var pack = entry.minGroupSize == entry.maxGroupSize ? entry.minGroupSize : t(Keys.LIST_ENTRY_PACK_RANGE, entry.minGroupSize, entry.maxGroupSize);
+                result.add(t(Keys.LIST_ENTRY_PACK, pack));
                 if (!canSpawn || !fits) continue;
                 double spawnChance = 0;
                 Random random = new Random(0);
@@ -77,8 +79,8 @@ public class SpawnUtils {
                 }
                 spawnChance /= 10;
                 result.add(hoverText(
-                    t("command.spawn.list.entry.chance", dbl(spawnChance, getHeatmapColor(100 - spawnChance, 99))),
-                    t("command.spawn.list.entry.chance.hover"))
+                    t(Keys.LIST_ENTRY_CHANCE, dbl(spawnChance, getHeatmapColor(100 - spawnChance, 99))),
+                    LIST_ENTRY_CHANCE_HOVER)
                 );
             }
         }

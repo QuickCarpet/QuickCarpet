@@ -1,7 +1,6 @@
 package quickcarpet.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.command.argument.PosArgument;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -9,6 +8,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Vec3d;
 import quickcarpet.settings.Settings;
+import quickcarpet.utils.Constants.MeasureCommand.Keys;
 
 import java.util.Locale;
 import java.util.function.ToDoubleBiFunction;
@@ -21,13 +21,13 @@ import static quickcarpet.utils.Messenger.*;
 
 public class MeasureCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        LiteralArgumentBuilder<ServerCommandSource> distance = CommandManager.literal("measure")
+        var measure = CommandManager.literal("measure")
             .requires(s -> s.hasPermissionLevel(Settings.commandMeasure))
             .then(argument("from", vec3())
                 .executes(c -> MeasureCommand.fromPosToSource(c.getSource(), getPosArgument(c, "from")))
                 .then(argument("to", vec3())
                     .executes(c -> MeasureCommand.fromPosToPos(c.getSource(), getPosArgument(c, "from"), getPosArgument(c, "to")))));
-        dispatcher.register(distance);
+        dispatcher.register(measure);
     }
 
     private static int fromPosToSource(ServerCommandSource source, PosArgument from) {
@@ -39,11 +39,11 @@ public class MeasureCommand {
     }
 
     private static int measure(ServerCommandSource source, Vec3d from, Vec3d to) {
-        m(source, t("command.measure.title", tp(from, Formatting.BOLD), tp(to, Formatting.BOLD)));
+        m(source, t(Keys.TITLE, tp(from, Formatting.BOLD), tp(to, Formatting.BOLD)));
         Vec3d fromCentered = new Vec3d(((int) from.x) + 0.5, (int) from.y, ((int) from.z) + 0.5);
         Vec3d toCentered = new Vec3d(((int) to.x) + 0.5, (int) to.y, ((int) to.z) + 0.5);
         for (Type type : Type.values()) {
-            m(source, t("command.measure.line", type.text(),
+            m(source, t(Keys.LINE, type.text(),
                 dbl(type.distance.applyAsDouble(from, to), Formatting.AQUA),
                 dbl(type.distance.applyAsDouble(fromCentered, toCentered), Formatting.AQUA)));
         }
@@ -57,7 +57,7 @@ public class MeasureCommand {
         AREA(vec -> Math.abs(vec.x) * Math.abs(vec.z)),
         VOLUME(vec -> Math.abs(vec.x) * Math.abs(vec.y) * Math.abs(vec.z));
 
-        ToDoubleBiFunction<Vec3d, Vec3d> distance;
+        final ToDoubleBiFunction<Vec3d, Vec3d> distance;
 
         Type(ToDoubleBiFunction<Vec3d, Vec3d> distance) {
             this.distance = distance;
@@ -68,7 +68,7 @@ public class MeasureCommand {
         }
 
         Text text() {
-            return t("command.measure." + name().toLowerCase(Locale.ROOT));
+            return t(Keys.PREFIX + name().toLowerCase(Locale.ROOT));
         }
     }
 }

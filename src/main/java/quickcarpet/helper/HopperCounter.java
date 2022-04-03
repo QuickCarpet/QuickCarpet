@@ -15,6 +15,7 @@ import net.minecraft.util.Formatting;
 import quickcarpet.QuickCarpet;
 import quickcarpet.logging.LogParameter;
 import quickcarpet.pubsub.PubSubInfoProvider;
+import quickcarpet.utils.Constants.Counter.Keys;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -22,6 +23,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static quickcarpet.utils.Constants.Counter.Texts.*;
 import static quickcarpet.utils.Messenger.*;
 
 public class HopperCounter {
@@ -86,7 +88,7 @@ public class HopperCounter {
             text.addAll(temp);
         }
         if (text.isEmpty()) {
-            text.add(ts("counter.none", Formatting.GOLD));
+            text.add(NONE);
         }
         return text;
     }
@@ -94,32 +96,32 @@ public class HopperCounter {
     public List<MutableText> format(MinecraftServer server, boolean realTime, boolean brief) {
         if (counter.isEmpty()) {
             if (brief) {
-                return Collections.singletonList(ts("counter.format", Formatting.DARK_GREEN, key.getText(), "-", "-", "-"));
+                return Collections.singletonList(ts(Keys.FORMAT, Formatting.DARK_GREEN, key.getText(), "-", "-", "-"));
             }
-            return Collections.singletonList(ts("counter.none.color", Formatting.DARK_GREEN, key.getText()));
+            return Collections.singletonList(ts(Keys.NONE_COLOR, Formatting.DARK_GREEN, key.getText()));
         }
         long total = getTotalItems();
         long ticks = Math.max(realTime ? (System.currentTimeMillis() - startMillis) / 50 : server.getTicks() - startTick, 1);
         if (total == 0) {
             if (brief) {
-                return Collections.singletonList(ts("counter.format", Formatting.AQUA, key.getText(), 0, 0, String.format("%.1f", ticks / 1200.0)));
+                return Collections.singletonList(ts(Keys.FORMAT, Formatting.AQUA, key.getText(), 0, 0, String.format("%.1f", ticks / 1200.0)));
             }
-            MutableText line = t("counter.none.color.timed", key.getText(), String.format("%.1f", ticks / 1200.0), realTime ? c(s(" - "), t("counter.realTime")) : s(""));
+            MutableText line = t(Keys.NONE_COLOR_TIMED, key.getText(), String.format("%.1f", ticks / 1200.0), realTime ? c(s(" - "), REAL_TIME) : s(""));
             line.append(" ");
-            line.append(runCommand(s("[X]", Formatting.DARK_RED, Formatting.BOLD), "/counter " + key.name + " reset", ts("counter.action.reset", Formatting.GRAY)));
+            line.append(runCommand(s("[X]", Formatting.DARK_RED, Formatting.BOLD), "/counter " + key.name + " reset", ACTION_RESET));
         }
         if (brief) {
-            return Collections.singletonList(ts("counter.format", Formatting.AQUA, key.getText(), total, total * 72000 / ticks, String.format("%.1f", ticks / 1200.0)));
+            return Collections.singletonList(ts(Keys.FORMAT, Formatting.AQUA, key.getText(), total, total * 72000 / ticks, String.format("%.1f", ticks / 1200.0)));
         }
         return counter.object2LongEntrySet().stream().map(e -> {
             Text itemName = t(e.getKey().getTranslationKey());
             long count = e.getLongValue();
-            return t("counter.format.item", itemName, count, String.format("%.1f", count * 72000.0 / ticks));
+            return t(Keys.FORMAT_ITEM, itemName, count, String.format("%.1f", count * 72000.0 / ticks));
         }).collect(Collectors.toList());
     }
 
     public long getTotalItems() {
-        return counter.values().stream().mapToLong(Long::longValue).sum();
+        return counter.values().longStream().sum();
     }
 
     private static class Combined extends HopperCounter {

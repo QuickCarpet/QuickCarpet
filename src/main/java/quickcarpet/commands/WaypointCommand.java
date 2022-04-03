@@ -1,7 +1,6 @@
 package quickcarpet.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
@@ -17,6 +16,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import quickcarpet.settings.Settings;
+import quickcarpet.utils.Constants.WaypointCommand.Keys;
 import quickcarpet.utils.Waypoint;
 import quickcarpet.utils.extensions.WaypointContainer;
 
@@ -38,14 +38,14 @@ import static net.minecraft.command.argument.RotationArgumentType.rotation;
 import static net.minecraft.command.argument.Vec3ArgumentType.vec3;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
+import static quickcarpet.utils.Constants.WaypointCommand.Texts.*;
 import static quickcarpet.utils.Messenger.*;
 
 public class WaypointCommand {
-    private static final SimpleCommandExceptionType INVALID_PAGE = new SimpleCommandExceptionType(t("command.waypoint.list.invalidPage"));
+    private static final SimpleCommandExceptionType INVALID_PAGE = new SimpleCommandExceptionType(LIST_INVALID_PAGE);
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        LiteralArgumentBuilder<ServerCommandSource> waypoint = literal("waypoint")
-            .requires(s -> s.hasPermissionLevel(Settings.commandWaypoint));
+        var waypoint = literal("waypoint").requires(s -> s.hasPermissionLevel(Settings.commandWaypoint));
         waypoint.then(literal("add")
             .then(argument("name", string()).executes(WaypointCommand::add)
             .then(argument("position", vec3()).executes(WaypointCommand::add)
@@ -71,21 +71,23 @@ public class WaypointCommand {
         dispatcher.register(waypoint);
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static Iterable<WaypointContainer> toWaypointContainers(Iterable<ServerWorld> worlds) {
+        return (Iterable) worlds;
+    }
+
     public static CompletableFuture<Suggestions> suggest(CommandContext<ServerCommandSource> ctx, SuggestionsBuilder builder) {
         ServerCommandSource source = ctx.getSource();
-        @SuppressWarnings("unchecked")
         Stream<String> waypointNames = Waypoint
-            .getAllWaypoints((Iterable<WaypointContainer>) (Iterable) source.getServer().getWorlds())
+            .getAllWaypoints(toWaypointContainers(source.getServer().getWorlds()))
             .stream().filter(w -> w.canManipulate(source))
             .flatMap(w -> Stream.of(w.name(), w.getFullName()));
         return CommandSource.suggestMatching(waypointNames, builder);
     }
 
     @Nullable
-    @SuppressWarnings("unchecked")
     public static Waypoint getWaypoint(ServerCommandSource source, String name) {
-        return Waypoint.find(name, (WaypointContainer) source.getWorld(),
-                (Iterable<WaypointContainer>) (Iterable) source.getServer().getWorlds());
+        return Waypoint.find(name, (WaypointContainer) source.getWorld(), toWaypointContainers(source.getServer().getWorlds()));
     }
 
     private static int add(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
@@ -97,12 +99,12 @@ public class WaypointCommand {
         WaypointContainer world = (WaypointContainer) dim;
         Map<String, Waypoint> waypoints = world.quickcarpet$getWaypoints();
         if (waypoints.containsKey(name)) {
-            m(source, ts("command.waypoint.error.exists", Formatting.RED, name));
+            m(source, ts(Keys.ERROR_EXISTS, Formatting.RED, name));
             return -1;
         }
         Waypoint w = new Waypoint(world, name, source.getPlayer(), pos, rot);
         world.quickcarpet$getWaypoints().put(name, w);
-        m(source, t("command.waypoint.added", w, tp(w, Formatting.AQUA)));
+        m(source, t(Keys.ADDED, w, tp(w, Formatting.AQUA)));
         return 0;
     }
 
@@ -111,15 +113,15 @@ public class WaypointCommand {
         String name = getString(ctx, "name");
         Waypoint w = getWaypoint(source, name);
         if (w == null) {
-            m(source, ts("command.waypoint.error.notFound", Formatting.RED, name));
+            m(source, ts(Keys.ERROR_NOT_FOUND, Formatting.RED, name));
             return -1;
         }
         if (!w.canManipulate(source)) {
-            m(source, ts("command.waypoint.remove.notAllowed", Formatting.RED, w));
+            m(source, ts(Keys.REMOVE_NOT_ALLOWED, Formatting.RED, w));
             return -2;
         }
         if (w.world().quickcarpet$getWaypoints().remove(w.name(), w)) {
-            m(source, t("command.waypoint.remove.success", w));
+            m(source, t(Keys.REMOVE_SUCCESS, w));
             return 1;
         }
         return 0;
@@ -150,7 +152,7 @@ public class WaypointCommand {
 
     private static int printList(ServerCommandSource source, Collection<Waypoint> waypoints, int page, @Nullable ServerWorld dimension, @Nullable String creator) throws CommandSyntaxException {
         if (waypoints.isEmpty()) {
-            m(source, ts("command.waypoint.list.none", Formatting.GOLD));
+            m(source, LIST_NONE);
             return 0;
         }
         int PAGE_SIZE = 20;
@@ -158,24 +160,22 @@ public class WaypointCommand {
         if (page > pages) throw INVALID_PAGE.create();
         MutableText header;
         if (dimension != null) {
-            header = t("command.waypoint.list.header.dimension", s(dimension.toString(), Formatting.DARK_GREEN));
+            header = t(Keys.LIST_HEADER_DIMENSION, s(dimension.toString(), Formatting.DARK_GREEN));
         } else if (creator != null) {
-            header = t("command.waypoint.list.header.creator", s(creator, Formatting.DARK_GREEN));
+            header = t(Keys.LIST_HEADER_CREATOR, s(creator, Formatting.DARK_GREEN));
         } else {
-            header = t("command.waypoint.list.header.all");
+            header = LIST_HEADER_ALL.copy();
         }
         if (pages > 1) {
-            header.append(" ").append(t("command.waypoint.list.page", page, pages));
+            header.append(" ").append(t(Keys.LIST_PAGE, page, pages));
             String baseCommand = "/waypoint list";
             if (dimension != null) baseCommand += " in " + dimension.getRegistryKey().getValue();
             else if (creator != null) baseCommand += " by " + creator;
             if (page > 1) {
-                header.append(" ").append(runCommand(s("[<]", Formatting.GRAY), baseCommand + " " + (page - 1),
-                        t("command.waypoint.list.page.previous")));
+                header.append(" ").append(runCommand(s("[<]", Formatting.GRAY), baseCommand + " " + (page - 1), LIST_PAGE_PREVIOUS));
             }
             if (page < pages) {
-                header.append(" ").append(runCommand(s("[>]", Formatting.GRAY), baseCommand + " " + (page + 1),
-                        t("command.waypoint.list.page.next")));
+                header.append(" ").append(runCommand(s("[>]", Formatting.GRAY), baseCommand + " " + (page + 1), LIST_PAGE_NEXT));
             }
         }
         header.append(s(":", Formatting.GRAY));
@@ -185,17 +185,15 @@ public class WaypointCommand {
         for (Waypoint w : pageWaypoints) {
             if (dimension == null) {
                 if (creator == null && w.creator() != null) {
-                    m(source, t("command.waypoint.list.entry.creator",
-                        w, tp(w, Formatting.AQUA), s(w.creator(), Formatting.DARK_GREEN)));
+                    m(source, t(Keys.LIST_ENTRY_CREATOR, w, tp(w, Formatting.AQUA), s(w.creator(), Formatting.DARK_GREEN)));
                 } else {
-                    m(source, t("command.waypoint.list.entry",
-                        w, tp(w, Formatting.AQUA)));
+                    m(source, t(Keys.LIST_ENTRY, w, tp(w, Formatting.AQUA)));
                 }
             } else {
                 if (creator == null && w.creator() != null) {
-                    m(source, t("command.waypoint.list.entry.creator", s(w.name(), Formatting.YELLOW), tp(w, Formatting.AQUA), s(w.creator(), Formatting.DARK_GREEN)));
+                    m(source, t(Keys.LIST_ENTRY_CREATOR, s(w.name(), Formatting.YELLOW), tp(w, Formatting.AQUA), s(w.creator(), Formatting.DARK_GREEN)));
                 } else {
-                    m(source, t("command.waypoint.list.entry", s(w.name(), Formatting.YELLOW), tp(w, Formatting.AQUA)));
+                    m(source, t(Keys.LIST_ENTRY, s(w.name(), Formatting.YELLOW), tp(w, Formatting.AQUA)));
                 }
             }
         }

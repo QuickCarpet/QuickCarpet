@@ -1,30 +1,31 @@
 package quickcarpet.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import quickcarpet.helper.HopperCounter;
 import quickcarpet.settings.Settings;
+import quickcarpet.utils.Constants.CounterCommand.Keys;
 
 import static net.minecraft.server.command.CommandManager.literal;
+import static quickcarpet.utils.Constants.CounterCommand.Texts.RESET_SUCCESS;
 import static quickcarpet.utils.Messenger.*;
 
 public class CounterCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        LiteralArgumentBuilder<ServerCommandSource> counter = literal("counter")
-                .requires((player) -> Settings.hopperCounters)
-                .executes((context) -> listAllCounters(context.getSource(), false));
+        var counter = literal("counter")
+            .requires(p -> Settings.hopperCounters)
+            .executes(c -> listAllCounters(c.getSource(), false));
 
         counter.then(literal("reset").executes(c-> resetCounter(c.getSource(), null)));
         counter.then(literal("realtime").executes(c -> listAllCounters(c.getSource(), true)));
 
         counter.then(Utils.argument("key", HopperCounter.Key.class)
-                .executes(c -> displayCounter(c.getSource(), getKey(c, "key"), false))
-                .then(literal("reset").executes(c -> resetCounter(c.getSource(), getKey(c, "key"))))
-                .then(literal("realtime").executes((c) -> displayCounter(c.getSource(), getKey(c, "key"), true))));
+            .executes(c -> displayCounter(c.getSource(), getKey(c, "key"), false))
+            .then(literal("reset").executes(c -> resetCounter(c.getSource(), getKey(c, "key"))))
+            .then(literal("realtime").executes((c) -> displayCounter(c.getSource(), getKey(c, "key"), true))));
         dispatcher.register(counter);
     }
 
@@ -43,11 +44,11 @@ public class CounterCommand {
     private static int resetCounter(ServerCommandSource source, HopperCounter.Key color) {
         if (color == null) {
             HopperCounter.getCounter(HopperCounter.Key.ALL).reset(source.getServer());
-            m(source, t("command.counter.reset.success"));
+            m(source, RESET_SUCCESS);
         } else {
             HopperCounter counter = HopperCounter.getCounter(color);
             counter.reset(source.getServer());
-            m(source, t("command.counter.reset.one.success", counter.key.getText()));
+            m(source, t(Keys.RESET_ONE_SUCCESS, counter.key.getText()));
         }
         return 1;
     }

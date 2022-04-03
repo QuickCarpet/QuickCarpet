@@ -6,6 +6,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.WorldChunk;
+import quickcarpet.utils.Constants.SpawnCommand.Keys;
 
 import java.util.List;
 
@@ -23,7 +24,7 @@ public enum SpawningAlgorithm {
         public void addSpawnListLocationInfo(List<MutableText> result, WorldChunk chunk, int x, int z) {
             int heightmap = chunk.sampleHeightmap(Heightmap.Type.WORLD_SURFACE, x, z) + 1;
             BlockPos highestBlock = new BlockPos(x, heightmap, z);
-            result.add(t("command.spawn.list.highestBlock", tp(highestBlock, Formatting.AQUA)));
+            result.add(t(Keys.LIST_HIGHEST_BLOCK, tp(highestBlock, Formatting.AQUA)));
         }
     },
     SMART {
@@ -36,9 +37,9 @@ public enum SpawningAlgorithm {
         public void addSpawnListLocationInfo(List<MutableText> result, WorldChunk chunk, int x, int z) {
             int heightmap = chunk.sampleHeightmap(Heightmap.Type.WORLD_SURFACE, x, z) + 1;
             BlockPos highestBlock = new BlockPos(x, heightmap, z);
-            result.add(t("command.spawn.list.highestBlock", tp(highestBlock, Formatting.AQUA)));
+            result.add(t(Keys.LIST_HIGHEST_BLOCK, tp(highestBlock, Formatting.AQUA)));
             BlockPos lowestBlock = new BlockPos(x, SpawnUtils.getLowestBlock(chunk, x, z), z);
-            result.add(t("command.spawn.list.lowestBlock", tp(lowestBlock, Formatting.AQUA)));
+            result.add(t(Keys.LIST_LOWEST_BLOCK, tp(lowestBlock, Formatting.AQUA)));
         }
     };
 

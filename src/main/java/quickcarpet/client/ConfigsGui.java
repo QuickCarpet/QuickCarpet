@@ -8,6 +8,7 @@ import fi.dy.masa.malilib.gui.button.ButtonGeneric;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resource.language.I18n;
 import quickcarpet.Build;
+import quickcarpet.utils.Constants.Client.Keys;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class ConfigsGui extends GuiConfigsBase {
     private static ConfigGuiTab selectedTab = ConfigGuiTab.GENERIC;
 
     public ConfigsGui() {
-        super(10, 50, Build.ID, null, "quickcarpet.gui.title.configs");
+        super(10, 50, Build.ID, null, Keys.TITLE_CONFIGS);
     }
 
     public ConfigsGui(Screen parent) {
@@ -66,10 +67,10 @@ public class ConfigsGui extends GuiConfigsBase {
     }
 
     public enum ConfigGuiTab {
-        GENERIC("quickcarpet.gui.button.config_gui.generic"),
-        GENERIC_HOTKEYS("quickcarpet.gui.button.config_gui.generic_hotkeys"),
-        RENDERING("quickcarpet.gui.button.config_gui.rendering"),
-        RENDERING_HOTKEYS("quickcarpet.gui.button.config_gui.rendering_hotkeys");
+        GENERIC(Keys.BUTTON_CONFIG_GUI_GENERIC),
+        GENERIC_HOTKEYS(Keys.BUTTON_CONFIG_GUI_GENERIC_HOTKEYS),
+        RENDERING(Keys.BUTTON_CONFIG_GUI_RENDERING),
+        RENDERING_HOTKEYS(Keys.BUTTON_CONFIG_GUI_RENDERING_HOTKEYS);
 
         private final String translationKey;
 

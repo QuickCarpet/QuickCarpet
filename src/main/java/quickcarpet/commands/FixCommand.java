@@ -1,7 +1,6 @@
 package quickcarpet.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.argument.BlockPosArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
@@ -13,6 +12,7 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.chunk.WorldChunk;
 import quickcarpet.settings.Settings;
+import quickcarpet.utils.Constants.FixCommand.Keys;
 
 import java.util.EnumSet;
 
@@ -25,7 +25,7 @@ import static quickcarpet.utils.Messenger.t;
 
 public class FixCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        LiteralArgumentBuilder<ServerCommandSource> fix = literal("fix")
+        var fix = literal("fix")
             .requires(s -> s.hasPermissionLevel(Settings.commandFix))
             .then(literal("chunk").then(argument("block_pos", columnPos())
                 .executes(c -> fixChunk(c.getSource(), getColumnPos(c, "block_pos")))));
@@ -37,10 +37,10 @@ public class FixCommand {
         ChunkPos cPos = new ChunkPos(pos.x >> 4, pos.z >> 4);
         BlockView chunk = world.getChunkAsView(cPos.x, cPos.z);
         if (chunk instanceof WorldChunk worldChunk) {
-            m(source, t("command.fix.fixing", cPos.x, cPos.z));
+            m(source, t(Keys.FIXING, cPos.x, cPos.z));
             Heightmap.populateHeightmaps(worldChunk, EnumSet.allOf(Heightmap.Type.class));
             ((ServerLightingProvider) world.getLightingProvider()).light(worldChunk, false).thenRun(() -> {
-                m(source, t("command.fix.fixed", cPos.x, cPos.z));
+                m(source, t(Keys.FIXED, cPos.x, cPos.z));
             });
             return 1;
         } else {

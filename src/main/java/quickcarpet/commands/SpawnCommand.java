@@ -1,7 +1,6 @@
 package quickcarpet.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
@@ -11,6 +10,7 @@ import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockPos;
 import quickcarpet.helper.Mobcaps;
 import quickcarpet.settings.Settings;
+import quickcarpet.utils.Constants.SpawnCommand.Keys;
 import quickcarpet.utils.SpawnTracker;
 import quickcarpet.utils.SpawnUtils;
 
@@ -20,11 +20,12 @@ import static net.minecraft.command.argument.DimensionArgumentType.dimension;
 import static net.minecraft.command.argument.DimensionArgumentType.getDimensionArgument;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
+import static quickcarpet.utils.Constants.SpawnCommand.Texts.*;
 import static quickcarpet.utils.Messenger.*;
 
 public class SpawnCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        LiteralArgumentBuilder<ServerCommandSource> builder = literal("spawn")
+        var spawn = literal("spawn")
             .requires(s -> s.hasPermissionLevel(Settings.commandSpawn))
             .then(literal("mobcaps")
                 .executes(c -> sendMobcaps(c.getSource(), null))
@@ -47,13 +48,13 @@ public class SpawnCommand {
                 .executes(c -> list(c.getSource()))
                 .then(argument("pos", blockPos())
                     .executes(c -> list(c.getSource(), getBlockPos(c, "pos")))));
-        dispatcher.register(builder);
+        dispatcher.register(spawn);
     }
 
     private static int sendTrackingReport(ServerCommandSource source) {
         SpawnTracker tracker = SpawnTracker.getTracker(source);
         if (tracker == null) {
-            m(source, ts("command.spawn.tracking.inactive", Formatting.GOLD));
+            m(source, TRACKING_INACTIVE);
             return 1;
         }
         tracker.sendReport();
@@ -63,22 +64,22 @@ public class SpawnCommand {
     private static int startTracking(ServerCommandSource source, BlockPos min, BlockPos max) {
         SpawnTracker tracker = SpawnTracker.getOrCreateTracker(source, min, max);
         if (tracker.isActive()) {
-            m(source, ts("command.spawn.tracking.active", Formatting.GOLD));
+            m(source, TRACKING_ACTIVE);
             return 1;
         }
         tracker.start();
-        m(source, ts("command.spawn.tracking.started", Formatting.DARK_GREEN));
+        m(source, TRACKING_STARTED);
         return 1;
     }
 
     private static int stopTracking(ServerCommandSource source) {
         SpawnTracker tracker = SpawnTracker.getTracker(source);
         if (tracker == null) {
-            m(source, ts("command.spawn.tracking.active", Formatting.GOLD));
+            m(source, TRACKING_INACTIVE);
             return 1;
         }
         tracker.stop();
-        m(source, ts("command.spawn.tracking.stopped", Formatting.DARK_GREEN));
+        m(source, TRACKING_STOPPED);
         tracker.sendReport();
         return 1;
     }
@@ -88,7 +89,7 @@ public class SpawnCommand {
             dimension = source.getWorld();
         }
         var mobcaps = Mobcaps.getMobcaps(dimension);
-        m(source, t("command.spawn.mobcaps.title", dimension.getRegistryKey().getValue()));
+        m(source, t(Keys.MOBCAPS_TITLE, dimension.getRegistryKey().getValue()));
         for (var e : mobcaps.entrySet()) {
             SpawnGroup category = e.getKey();
             Pair<Integer, Integer> pair = e.getValue();
@@ -96,7 +97,7 @@ public class SpawnCommand {
             int max = pair.getRight();
             Formatting color = cur >= max ? Formatting.RED : (cur * 10 >= max * 8 ? Formatting.YELLOW : Formatting.GREEN);
             Text capText = cur + max == 0 ? s("-/-", Formatting.DARK_GREEN) : formats("%d/%d", color, cur, max);
-            m(source, t("command.spawn.mobcaps.line", category, capText));
+            m(source, t(Keys.MOBCAPS_LINE, category, capText));
         }
         return 1;
     }

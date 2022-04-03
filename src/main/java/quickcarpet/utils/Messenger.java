@@ -31,6 +31,7 @@ import net.minecraft.village.VillagerData;
 import org.slf4j.Logger;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collector;
@@ -226,6 +227,22 @@ public class Messenger {
         return message;
     }
 
+    public static <T> MutableText join(Iterable<T> items, Function<T, Text> mapper, Text delimiter) {
+        return join(null, items, mapper, delimiter, null);
+    }
+
+    public static <T> MutableText join(@Nullable Text prefix, Iterable<T> items, Function<T, Text> mapper, Text delimiter, @Nullable Text suffix) {
+        MutableText message = prefix == null ? new LiteralText("") : prefix.copy();
+        boolean first = true;
+        for (T item : items) {
+            if (!first) message.append(delimiter);
+            message.append(mapper.apply(item));
+            first = false;
+        }
+        if (suffix != null) message.append(suffix);
+        return message;
+    }
+
     //simple text
 
     public static MutableText s(@Nonnull String text) {
@@ -284,7 +301,7 @@ public class Messenger {
         broadcast(server, new LiteralText(message));
     }
 
-    public static void broadcast(MinecraftServer server, MutableText message) {
+    public static void broadcast(MinecraftServer server, Text message) {
         if (server == null) {
             LOGGER.error("Message not delivered: " + message.getString());
             return;

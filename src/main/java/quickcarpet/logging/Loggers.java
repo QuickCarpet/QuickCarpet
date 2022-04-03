@@ -5,6 +5,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableText;
 import quickcarpet.helper.HopperCounter;
 import quickcarpet.settings.Settings;
+import quickcarpet.utils.Constants.CarpetCommand;
 import quickcarpet.utils.Translations;
 
 import javax.annotation.Nullable;
@@ -35,7 +36,7 @@ public final class Loggers {
         @Nullable
         @Override
         public MutableText getUnavailabilityReason() {
-            return isAvailable() ? null : new TranslatableText("command.carpet.option.disabled", "carefulBreak");
+            return isAvailable() ? null : new TranslatableText(CarpetCommand.Keys.OPTION_DISABLED, "carefulBreak");
         }
     });
     public static final Logger TILE_TICK_LIMIT = registerLogger("tileTickLimit", null, null, LogHandler.CHAT);
