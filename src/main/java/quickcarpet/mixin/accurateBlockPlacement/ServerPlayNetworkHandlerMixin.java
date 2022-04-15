@@ -9,7 +9,7 @@ import quickcarpet.settings.Settings;
 
 @Mixin(ServerPlayNetworkHandler.class)
 public class ServerPlayNetworkHandlerMixin {
-    @Redirect(method = "onPlayerInteractBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/Vec3d;subtract(Lnet/minecraft/util/math/Vec3d;)Lnet/minecraft/util/math/Vec3d;"))
+    @Redirect(method = "onPlayerInteractBlock", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/Vec3d;subtract(Lnet/minecraft/util/math/Vec3d;)Lnet/minecraft/util/math/Vec3d;"), require = 0)
     private Vec3d quickcarpet$accurateBlockPlacement$removeHitPosCheck(Vec3d hitVec, Vec3d blockCenter) {
         return Settings.accurateBlockPlacement ? Vec3d.ZERO : hitVec.subtract(blockCenter);
     }
