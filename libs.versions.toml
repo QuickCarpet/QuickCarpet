@@ -1,18 +1,20 @@
 [versions]
 minecraft = "1.18.2"
 yarn = "1.18.2+build.1"
-loader = "0.13.3"
-malilib = "0.11.5"
+loader = "0.16.0-beta.7"
+malilib = "0.12.0"
+qsl = "1.1.0-beta.3+1.18.2-SNAPSHOT"
 
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
 yarn = { module = "net.fabricmc:yarn", version.ref = "yarn" }
-loader = { module = "net.fabricmc:fabric-loader", version.ref = "loader" }
+loader = { module = "org.quiltmc:quilt-loader", version.ref = "loader" }
 
-fabric-api = "net.fabricmc.fabric-api:fabric-api:0.47.9+1.18.2"
-fabric-resource-loader = "net.fabricmc.fabric-api:fabric-resource-loader-v0:0.4.17+801ec85b60"
-fabric-networking = "net.fabricmc.fabric-api:fabric-networking-api-v1:1.0.20+d882b91560"
-fabric-registry-sync = "net.fabricmc.fabric-api:fabric-registry-sync-v0:0.9.6+ca4be9c960"
+qsl = { module = "org.quiltmc:qsl", version.ref = "qsl" }
+qsl-base = { module = "org.quiltmc.qsl.core:qsl_base", version.ref = "qsl" }
+qsl-resource-loader = { module = "org.quiltmc.qsl.core:resource_loader", version.ref = "qsl" }
 
-malilib = { module = "fi.dy.masa.malilib:malilib-fabric-1.18.1", version.ref = "malilib" }
+quilted-fabric = "org.quiltmc.quilted-fabric-api:quilted-fabric-api:1.0.0-beta.2+0.48.0-1.18.2"
+
+malilib = { module = "fi.dy.masa.malilib:malilib-fabric-1.18.2", version.ref = "malilib" }
 modmenu = "com.terraformersmc:modmenu:3.0.0"

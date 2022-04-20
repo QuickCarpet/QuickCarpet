@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "quilt_loader": {
+    "group": "quickcarpet",
+    "id": "quickcarpet-test",
+    "version": "0.0.1",
+    "intermediate_mappings": "net.fabricmc:intermediary"
+  },
+  "mixin": [
+    "quickcarpet-test.mixins.json"
+  ]
+}

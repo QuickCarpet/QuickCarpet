@@ -1,9 +1,9 @@
 package quickcarpet.utils;
 
-import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.tree.ClassNode;
+import org.quiltmc.loader.api.QuiltLoader;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
@@ -16,7 +16,7 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
 
     @Override
     public void onLoad(String mixinPackage) {
-        multiconnect = FabricLoader.getInstance().isModLoaded("multiconnect");
+        multiconnect = QuiltLoader.isModLoaded("multiconnect");
     }
 
     @Override
@@ -38,15 +38,8 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
             case "quickcarpet.mixin.autoCraftingTable.compat.multiconnect.BlockEntityMixin" -> {
                 return multiconnect;
             }
-            case "quickcarpet.mixin.fabricApi.RegistrySyncManagerMixin" -> {
-                if (FabricLoader.getInstance().isModLoaded("fabric-registry-sync-v0")) {
-                    LOGGER.info("Applying Fabric API Registry Sync workaround");
-                    return true;
-                }
-                return false;
-            }
             case "quickcarpet.mixin.tileTickLimit.compat.lithium.LithiumServerTickSchedulerMixin" -> {
-                return FabricLoader.getInstance().isModLoaded("lithium");
+                return QuiltLoader.isModLoaded("lithium");
             }
         }
         return true;

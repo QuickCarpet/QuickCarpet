@@ -6,6 +6,14 @@ plugins {
 repositories {
     mavenCentral()
     maven {
+        name = "Quilt Snapshot"
+        url = uri("https://maven.quiltmc.org/repository/snapshot/")
+    }
+    maven {
+        name = "Quilt Release"
+        url = uri("https://maven.quiltmc.org/repository/release/")
+    }
+    maven {
         name = "Fabric"
         url = uri("https://maven.fabricmc.net/")
     }
@@ -21,7 +29,6 @@ repositories {
 }
 
 dependencies {
-    implementation("net.fabricmc:fabric-loom:0.10-SNAPSHOT")
-    implementation("io.github.juuxel:loom-quiltflower-mini:1.2.1")
+    implementation("org.quiltmc:loom:0.12.23")
     implementation("com.atlauncher:ATLauncher:3.4.12.2")
 }

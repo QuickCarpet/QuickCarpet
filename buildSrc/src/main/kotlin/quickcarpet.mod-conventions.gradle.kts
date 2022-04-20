@@ -1,7 +1,6 @@
 plugins {
     id("quickcarpet.java-conventions")
-    id("fabric-loom")
-    id("io.github.juuxel.loom-quiltflower-mini")
+    id("org.quiltmc.loom")
 }
 
 val mods = project.extensions.getByType<VersionCatalogsExtension>().named("mods")
@@ -23,7 +22,7 @@ tasks.named<Copy>("processResources") {
     )
     inputs.properties(properties)
 
-    filesMatching("fabric.mod.json") {
+    filesMatching("quilt.mod.json") {
         expand(properties)
     }
 }

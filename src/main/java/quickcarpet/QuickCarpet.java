@@ -8,7 +8,6 @@ import com.google.gson.JsonObject;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.logging.LogUtils;
 import net.fabricmc.api.EnvType;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.SpawnGroup;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
@@ -17,6 +16,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 import net.minecraft.world.level.ServerWorldProperties;
+import org.quiltmc.loader.api.QuiltLoader;
 import org.slf4j.Logger;
 import quickcarpet.api.QuickCarpetAPI;
 import quickcarpet.api.ServerEventListener;
@@ -245,7 +245,7 @@ public final class QuickCarpet implements QuickCarpetAPI, ServerEventListener, T
 
     public static boolean isDevelopment() {
         try {
-            return Build.VERSION_IS_DEV || FabricLoader.getInstance().isDevelopmentEnvironment();
+            return Build.VERSION_IS_DEV || QuiltLoader.isDevelopmentEnvironment();
         } catch (NullPointerException e) {
             return true;
         }

@@ -1,9 +1,11 @@
 package quickcarpet.test;
 
-import net.fabricmc.fabric.impl.resource.loader.ModResourcePackCreator;
 import net.minecraft.Bootstrap;
 import net.minecraft.SharedConstants;
-import net.minecraft.resource.*;
+import net.minecraft.resource.DataPackSettings;
+import net.minecraft.resource.ResourcePackManager;
+import net.minecraft.resource.ResourceType;
+import net.minecraft.resource.VanillaDataPackProvider;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.test.*;
 import net.minecraft.util.crash.CrashReport;
@@ -101,8 +103,7 @@ public class ServerStarter {
         LevelStorage storage = LevelStorage.create(runDir);
         LevelStorage.Session storageSession = storage.createSession(worldPath.getFileName().toString());
         ResourcePackManager resourcePackManager = new ResourcePackManager(ResourceType.SERVER_DATA,
-            new VanillaDataPackProvider(),
-            new ModResourcePackCreator(ResourceType.SERVER_DATA)
+            new VanillaDataPackProvider()
         );
         DataPackSettings dataPackSettings = new DataPackSettings(Collections.emptyList(), Collections.emptyList());
         MinecraftServer.loadDataPacks(resourcePackManager, dataPackSettings, false);

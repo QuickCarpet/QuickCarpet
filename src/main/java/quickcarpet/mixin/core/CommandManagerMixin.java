@@ -46,7 +46,7 @@ public abstract class CommandManagerMixin {
 
     @BugFix(value = "MC-124493", status = "WAI")
     @Inject(method = "execute", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;isDebugEnabled()Z", remap = false), locals = LocalCapture.CAPTURE_FAILHARD)
-    private void quickcarpet$printStackTrace(ServerCommandSource source, String command, CallbackInfoReturnable<Integer> cir, Exception e) {
+    private void quickcarpet$printStackTrace(ServerCommandSource commandSource, String command, CallbackInfoReturnable<Integer> cir, StringReader stringReader, Exception e, MutableText mutableText2) {
         e.printStackTrace();
     }
 

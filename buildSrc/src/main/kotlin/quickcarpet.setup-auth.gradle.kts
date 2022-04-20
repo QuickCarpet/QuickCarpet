@@ -1,9 +1,9 @@
-import quickcarpet.build.AuthHelper
 import net.fabricmc.loom.LoomGradleExtension
+import quickcarpet.build.AuthHelper
 import kotlin.system.exitProcess
 
 plugins {
-    id("fabric-loom")
+    id("org.quiltmc.loom")
 }
 
 tasks.register("setupAuth") {

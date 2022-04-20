@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "quilt_loader": {
+    "group": "quickcarpet",
+    "id": "quickcarpet-api",
+    "version": "${api_version}",
+    "metadata": {
+      "name": "QuickCarpet API",
+      "description": "API for QuickCarpet modules",
+      "contributors": {
+        "skyrising": "Owner"
+      },
+      "contact": {
+        "homepage": "https://discord.gg/scicraft",
+        "sources": "https://github.com/QuickCarpet/QuickCarpet",
+        "issues": "https://github.com/QuickCarpet/QuickCarpet/issues"
+      },
+      "license": "MIT",
+      "icon": "assets/quickcarpet-api/icon.png"
+    },
+    "intermediate_mappings": "net.fabricmc:intermediary"
+  },
+  "modmenu": {
+    "parent": "quickcarpet",
+    "badges": ["library"],
+    "links": {
+      "modmenu.discord": "https://discord.gg/scicraft"
+    }
+  }
+}

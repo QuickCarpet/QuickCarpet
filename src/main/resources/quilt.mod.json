@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "quilt_loader": {
+    "group": "quickcarpet",
+    "id": "quickcarpet",
+    "version": "${version}",
+    "entrypoints": {
+      "client": ["quickcarpet.QuickCarpetClient::getInstance"],
+      "modmenu": ["quickcarpet.client.ModMenuEntry"]
+    },
+    "depends": [
+      {"id": "minecraft", "versions": "~1.18.2"},
+      "quickcarpet-api",
+      "quilt_resource_loader"
+    ],
+    "breaks": [
+      "carpet"
+    ],
+    "metadata": {
+      "name": "QuickCarpet",
+      "description": "Powerful toolbox with ultimate control for technical Minecraft",
+      "contributors": {
+        "DeadlyMC": "Owner",
+        "skyrising": "Owner"
+      },
+      "contact": {
+        "homepage": "https://discord.gg/scicraft",
+        "sources": "https://github.com/QuickCarpet/QuickCarpet",
+        "issues": "https://github.com/QuickCarpet/QuickCarpet/issues"
+      },
+      "license": "MIT",
+      "icon": "assets/quickcarpet/icon.png"
+    },
+    "intermediate_mappings": "net.fabricmc:intermediary"
+  },
+  "mixin": [
+    "quickcarpet.mixins.json"
+  ],
+  "minecraft": {
+    "environment": "*"
+  },
+  "access_widener": "quickcarpet.accesswidener",
+  "modmenu": {
+    "links": {
+      "modmenu.discord": "https://discord.gg/scicraft"
+    }
+  }
+}

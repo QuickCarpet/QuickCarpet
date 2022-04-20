@@ -1,8 +1,0 @@
-{
-  "schemaVersion": 1,
-  "id": "quickcarpet-test",
-  "version": "0.0.1",
-  "mixins": [
-    "quickcarpet-test.mixins.json"
-  ]
-}

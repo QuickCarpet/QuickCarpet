@@ -1,4 +1,4 @@
-import quickcarpet.build.*
+import quickcarpet.build.GitHelper
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -44,16 +44,33 @@ dependencies {
 	implementation(project(path = ":quickcarpet-api", configuration = "dev"))
 	include(project(":quickcarpet-api"))
 
-	modImplementation(libs.fabric.resource.loader)
-	//modImplementation(libs.fabric.networking)
-	//modImplementation(libs.fabric.registry.sync)
-	modCompileOnly(libs.fabric.api)
-	modCompileOnly(libs.modmenu)
+	include(libs.qsl.base)
+	include(libs.qsl.resource.loader)
 
-	include(libs.fabric.resource.loader)
-
-	modCompileOnly(libs.malilib) {
-		exclude("modmenu")
+	val fullModMenu = false
+	if (fullModMenu) {
+		modImplementation(libs.quilted.fabric)
+		modImplementation(libs.qsl)
+		modImplementation(libs.modmenu) {
+			exclude("net.fabricmc")
+			exclude("net.fabricmc.fabric-api")
+		}
+		modImplementation(libs.malilib) {
+			exclude("modmenu")
+			exclude("net.fabricmc")
+			exclude("net.fabricmc.fabric-api")
+		}
+	} else {
+		modImplementation(libs.qsl.resource.loader)
+		modCompileOnly(libs.modmenu) {
+			exclude("net.fabricmc")
+			exclude("net.fabricmc.fabric-api")
+		}
+		modCompileOnly(libs.malilib) {
+			exclude("modmenu")
+			exclude("net.fabricmc")
+			exclude("net.fabricmc.fabric-api")
+		}
 	}
 }
 
