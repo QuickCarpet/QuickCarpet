@@ -16,9 +16,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.extensions.ExtendedCoralFeature;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.Random;
 
 @Mixin(CoralBlock.class)
@@ -30,33 +28,33 @@ public abstract class CoralBlockMixin implements Fertilizable {
 
     @Override
     public boolean canGrow(World var1, Random var2, BlockPos var3, BlockState var4) {
-        return (double) var1.random.nextFloat() < 0.15D;
+        return var1.random.nextFloat() < 0.30;
     }
 
     @Override
-    public void grow(ServerWorld worldIn, Random random, BlockPos pos, BlockState blockUnder) {
+    public void grow(ServerWorld world, Random random, BlockPos pos, BlockState blockUnder) {
         // can't be a static final field because of bootstrap order (this would load features from blocks)
         List<CoralFeature> features = List.of((CoralFeature) Feature.CORAL_CLAW, (CoralFeature) Feature.CORAL_TREE, (CoralFeature) Feature.CORAL_MUSHROOM);
         CoralFeature coral = features.get(random.nextInt(features.size()));
-        MapColor color = blockUnder.getMapColor(worldIn, pos);
+        MapColor color = blockUnder.getMapColor(world, pos);
         BlockState properBlock = blockUnder;
         RegistryEntryList.Named<Block> blocks = Registry.BLOCK.getEntryList(BlockTags.CORAL_BLOCKS).orElse(null);
         if (blocks == null) return;
         for (RegistryEntry<Block> block : blocks) {
             properBlock = block.value().getDefaultState();
-            if (properBlock.getMapColor(worldIn, pos) == color) {
+            if (properBlock.getMapColor(world, pos) == color) {
                 break;
             }
         }
-        worldIn.setBlockState(pos, Blocks.WATER.getDefaultState(), 4);
+        world.setBlockState(pos, Blocks.WATER.getDefaultState(), 4);
 
-        if (!((ExtendedCoralFeature) coral).quickcarpet$growSpecific(worldIn, random, pos, properBlock)) {
-            worldIn.setBlockState(pos, blockUnder, 3);
+        if (!((ExtendedCoralFeature) coral).quickcarpet$growSpecific(world, random, pos, properBlock)) {
+            world.setBlockState(pos, blockUnder);
         } else {
-            if (worldIn.random.nextInt(10) == 0) {
-                BlockPos randomPos = pos.add(worldIn.random.nextInt(16) - 8, worldIn.random.nextInt(8), worldIn.random.nextInt(16) - 8);
-                if (worldIn.getBlockState(randomPos).isIn(BlockTags.CORAL_BLOCKS)) {
-                    worldIn.setBlockState(randomPos, Blocks.WET_SPONGE.getDefaultState(), 3);
+            if (world.random.nextInt(4) == 0) {
+                BlockPos randomPos = pos.add(world.random.nextInt(16) - 8, world.random.nextInt(8), world.random.nextInt(16) - 8);
+                if (world.getBlockState(randomPos).isIn(BlockTags.CORAL_BLOCKS)) {
+                    world.setBlockState(randomPos, Blocks.WET_SPONGE.getDefaultState());
                 }
             }
         }
