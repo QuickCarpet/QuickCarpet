@@ -9,8 +9,8 @@
   ],
   "contact": {
     "homepage": "https://discord.gg/scicraft",
-    "sources": "https://github.com/DeadlyMC/QuickCarpet",
-    "issues": "https://github.com/DeadlyMC/QuickCarpet/issues"
+    "sources": "https://github.com/QuickCarpet/QuickCarpet",
+    "issues": "https://github.com/QuickCarpet/QuickCarpet/issues"
   },
   "license": "MIT",
   "environment": "*",
