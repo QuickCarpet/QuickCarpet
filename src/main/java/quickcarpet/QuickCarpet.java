@@ -146,6 +146,11 @@ public final class QuickCarpet implements QuickCarpetAPI, ServerEventListener, T
     }
 
     @Override
+    public Set<QuickCarpetModule> getModules() {
+        return Collections.unmodifiableSet(modules);
+    }
+
+    @Override
     public CoreSettingsManager getSettingsManager() {
         return Settings.MANAGER;
     }
