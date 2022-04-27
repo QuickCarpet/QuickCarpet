@@ -22,6 +22,7 @@ import quickcarpet.api.QuickCarpetAPI;
 import quickcarpet.api.ServerEventListener;
 import quickcarpet.api.TelemetryProvider;
 import quickcarpet.api.module.QuickCarpetModule;
+import quickcarpet.api.settings.CoreSettingsManager;
 import quickcarpet.api.settings.ParsedRule;
 import quickcarpet.commands.*;
 import quickcarpet.helper.Mobcaps;
@@ -142,6 +143,11 @@ public final class QuickCarpet implements QuickCarpetAPI, ServerEventListener, T
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public CoreSettingsManager getSettingsManager() {
+        return Settings.MANAGER;
     }
 
     @Override
