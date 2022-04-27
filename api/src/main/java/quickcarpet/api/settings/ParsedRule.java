@@ -17,7 +17,10 @@ public interface ParsedRule<T> {
     SettingsManager getManager();
 
     Rule getRule();
+    @Deprecated
+    @Nullable
     Field getField();
+    FieldAccessor<T> getFieldAccessor();
     String getShortName();
     String getName();
     TranslatableText getDescription();
@@ -30,6 +33,9 @@ public interface ParsedRule<T> {
     Class<T> getType();
     Validator<T> getValidator();
     ChangeListener<T> getChangeListener();
+    /**
+     * @since 1.1.0
+     */
     boolean isDisabled();
 
     ArgumentType<?> getArgumentType();

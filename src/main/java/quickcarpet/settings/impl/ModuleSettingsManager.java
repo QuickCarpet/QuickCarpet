@@ -3,8 +3,6 @@ package quickcarpet.settings.impl;
 import quickcarpet.api.module.QuickCarpetModule;
 import quickcarpet.api.settings.Rule;
 
-import java.lang.reflect.Field;
-
 class ModuleSettingsManager extends SettingsManager implements quickcarpet.api.settings.ModuleSettingsManager {
     public final QuickCarpetModule module;
     public final String prefix;
@@ -16,12 +14,18 @@ class ModuleSettingsManager extends SettingsManager implements quickcarpet.api.s
     }
 
     @Override
-    public String getRuleName(Field field, Rule rule) {
-        return this.prefix + super.getRuleName(field, rule);
+    public String getRuleName(String fieldName, Rule rule) {
+        return this.prefix + super.getRuleName(fieldName, rule);
     }
 
     @Override
-    protected String getTranslationKey(Field field, Rule rule, String key) {
-        return module.getId() + ".rule." + getDefaultRuleName(field, rule) + "." + key;
+    protected String getTranslationKey(String fieldName, Rule rule, String key) {
+        return module.getId() + ".rule." + getDefaultRuleName(fieldName, rule) + "." + key;
+    }
+
+    @Override
+    public void parse() {
+        super.parse();
+        module.addRules(this);
     }
 }
