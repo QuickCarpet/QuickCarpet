@@ -5,6 +5,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import quickcarpet.Build;
+import quickcarpet.api.ServerEventListener;
 import quickcarpet.api.module.QuickCarpetModule;
 import quickcarpet.api.settings.*;
 
@@ -18,6 +19,7 @@ import static java.lang.reflect.Modifier.*;
 abstract class SettingsManager implements quickcarpet.api.settings.SettingsManager, RuleCreator {
     protected static final Logger LOG = LogManager.getLogger(Build.NAME);
     protected final Class<?> settingsClass;
+    protected final ServerEventListener source;
     MinecraftServer server;
     protected boolean parsed;
     protected boolean initialized;
@@ -25,7 +27,8 @@ abstract class SettingsManager implements quickcarpet.api.settings.SettingsManag
     @Nullable
     protected final RuleUpgrader ruleUpgrader;
 
-    protected SettingsManager(Class<?> settingsClass) {
+    protected SettingsManager(ServerEventListener source, Class<?> settingsClass) {
+        this.source = source;
         this.settingsClass = settingsClass;
 
         RuleUpgrader upgrader = null;
@@ -54,6 +57,7 @@ abstract class SettingsManager implements quickcarpet.api.settings.SettingsManag
             ParsedRuleImpl<?> parsed = new ParsedRuleImpl<>(this, f, rule);
             rules.put(parsed.getName(), parsed);
         }
+        source.addRules(this);
         this.parsed = true;
     }
 

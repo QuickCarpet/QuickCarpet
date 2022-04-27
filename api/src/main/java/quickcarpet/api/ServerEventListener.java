@@ -7,7 +7,10 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
+import quickcarpet.api.settings.ParsedRule;
 import quickcarpet.api.settings.RuleCreator;
+
+import java.util.List;
 
 public interface ServerEventListener {
     default Class<?> getSettingsClass() {
@@ -19,6 +22,8 @@ public interface ServerEventListener {
      * @since 1.2.0
      */
     default void addRules(RuleCreator creator) {}
+    default boolean isRuleEnabled(ParsedRule<?> rule) { return true; }
+    default List<String> getEnabledOptions(ParsedRule<?> rule, List<String> options) { return options; }
     default void onServerInit(MinecraftServer server) {}
     default void onServerLoaded(MinecraftServer server) {}
     default void tick(MinecraftServer server) {}
