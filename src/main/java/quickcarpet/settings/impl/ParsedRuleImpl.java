@@ -11,7 +11,6 @@ import quickcarpet.api.settings.*;
 import quickcarpet.network.channels.RulesChannel;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.Messenger;
-import quickcarpet.utils.MixinConfig;
 import quickcarpet.utils.Reflection;
 import quickcarpet.utils.Translations;
 
@@ -172,18 +171,12 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
         this.deprecated = deprecated ? new TranslatableText(manager.getDeprecationTranslationKey(name, rule)) : null;
     }
 
-    private static boolean isEnabled(ParsedRule<?> rule) {
-        return MixinConfig.getInstance().isRuleEnabled(rule);
+    private static boolean isEnabled(ParsedRuleImpl<?> rule) {
+        return ((SettingsManager) rule.manager).source.isRuleEnabled(rule);
     }
 
-    private static List<String> getEnabledOptions(ParsedRule<?> rule, List<String> options, boolean disabled) {
-        return disabled ? List.of(rule.getDefaultAsString()) : getEnabledOptions(rule, options);
-    }
-
-    private static List<String> getEnabledOptions(ParsedRule<?> rule, List<String> options) {
-        return options.stream()
-            .filter(option -> MixinConfig.getInstance().isOptionEnabled(rule, option))
-            .toList();
+    private static List<String> getEnabledOptions(ParsedRuleImpl<?> rule, List<String> options, boolean disabled) {
+        return disabled ? List.of(rule.getDefaultAsString()) : ((SettingsManager) rule.manager).source.getEnabledOptions(rule, options);
     }
 
     @Override
@@ -292,8 +285,7 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
     @Override
     @Nullable
     public QuickCarpetModule getModule() {
-        if (!(manager instanceof ModuleSettingsManager moduleManager)) return null;
-        return moduleManager.module;
+        return manager instanceof ModuleSettingsManager moduleManager ? moduleManager.getModule() : null;
     }
 
     @Override

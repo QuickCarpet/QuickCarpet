@@ -4,13 +4,15 @@ import quickcarpet.api.module.QuickCarpetModule;
 import quickcarpet.api.settings.Rule;
 
 class ModuleSettingsManager extends SettingsManager implements quickcarpet.api.settings.ModuleSettingsManager {
-    public final QuickCarpetModule module;
     public final String prefix;
 
     protected ModuleSettingsManager(QuickCarpetModule module, Class<?> settingsClass) {
-        super(settingsClass);
-        this.module = module;
+        super(module, settingsClass);
         this.prefix = module.getId() + "/";
+    }
+
+    public QuickCarpetModule getModule() {
+        return (QuickCarpetModule) source;
     }
 
     @Override
@@ -20,12 +22,6 @@ class ModuleSettingsManager extends SettingsManager implements quickcarpet.api.s
 
     @Override
     protected String getTranslationKey(String fieldName, Rule rule, String key) {
-        return module.getId() + ".rule." + getDefaultRuleName(fieldName, rule) + "." + key;
-    }
-
-    @Override
-    public void parse() {
-        super.parse();
-        module.addRules(this);
+        return getModule().getId() + ".rule." + getDefaultRuleName(fieldName, rule) + "." + key;
     }
 }

@@ -33,7 +33,7 @@ public class CoreSettingsManager extends SettingsManager implements quickcarpet.
     private boolean locked;
 
     public CoreSettingsManager() {
-        super(getAndVerifyCallingClass());
+        super(QuickCarpet.getInstance(), getAndVerifyCallingClass());
     }
 
     private static Class<?> getAndVerifyCallingClass() {

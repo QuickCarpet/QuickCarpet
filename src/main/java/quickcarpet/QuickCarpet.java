@@ -22,6 +22,7 @@ import quickcarpet.api.QuickCarpetAPI;
 import quickcarpet.api.ServerEventListener;
 import quickcarpet.api.TelemetryProvider;
 import quickcarpet.api.module.QuickCarpetModule;
+import quickcarpet.api.settings.ParsedRule;
 import quickcarpet.commands.*;
 import quickcarpet.helper.Mobcaps;
 import quickcarpet.pubsub.PubSubManager;
@@ -31,10 +32,7 @@ import quickcarpet.utils.*;
 import quickcarpet.utils.extensions.WaypointContainer;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 public final class QuickCarpet implements QuickCarpetAPI, ServerEventListener, TelemetryProvider {
     public static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
@@ -238,6 +236,18 @@ public final class QuickCarpet implements QuickCarpetAPI, ServerEventListener, T
         if (CarpetRegistry.isIgnoredForSync(entry)) return true;
         for (QuickCarpetModule m : modules) if (m.isIgnoredForRegistrySync(registry, entry)) return true;
         return false;
+    }
+
+    @Override
+    public boolean isRuleEnabled(ParsedRule<?> rule) {
+        return MixinConfig.getInstance().isRuleEnabled(rule);
+    }
+
+    @Override
+    public List<String> getEnabledOptions(ParsedRule<?> rule, List<String> options) {
+        return options.stream()
+            .filter(option -> MixinConfig.getInstance().isOptionEnabled(rule, option))
+            .toList();
     }
 
     public static boolean isDevelopment() {
