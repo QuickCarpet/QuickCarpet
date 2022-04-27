@@ -27,9 +27,9 @@ import static java.lang.reflect.Modifier.*;
 
 final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T> {
     private final Rule rule;
+    @Nullable
     private final Field field;
-    private final VarHandle varHandle;
-    private final boolean fieldVolatile;
+    private final FieldAccessor<T> fieldAccessor;
 
     private final String shortName;
     private final String name;
@@ -54,45 +54,136 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
 
     @SuppressWarnings("unchecked")
     ParsedRuleImpl(SettingsManager manager, Field field, Rule rule) {
+        this(
+            manager,
+            SettingsManager.getDefaultRuleName(field.getName(), rule),
+            makeFieldAccessor(field),
+            Arrays.asList(rule.category()),
+            Arrays.asList(rule.options()),
+            Reflection.callDeprecatedPrivateConstructor(rule.validator()),
+            Reflection.callDeprecatedPrivateConstructor(rule.onChange()),
+            rule.deprecated(),
+            rule,
+            field
+        );
+    }
+
+    private static VarHandle getVarHandle(Field field) {
+        try {
+            return MethodHandles.lookup().unreflectVarHandle(field);
+        } catch (IllegalAccessException e) {
+            throw new IllegalArgumentException(e);
+        }
+    }
+
+    private static <T> VarHandleFieldAccessor<T> makeFieldAccessor(Field field) {
         int fieldAccess = field.getModifiers();
         if (((fieldAccess & (PUBLIC | STATIC | FINAL)) != (PUBLIC | STATIC))) {
             throw new IllegalArgumentException(field + " is not public static");
         }
+        return (fieldAccess & VOLATILE) != 0
+            ? new VolatileVarHandleFieldAccessor<>(getVarHandle(field))
+            : new VarHandleFieldAccessor<>(getVarHandle(field));
+    }
+
+    static class VarHandleFieldAccessor<T> implements FieldAccessor<T> {
+        protected final VarHandle varHandle;
+
+        VarHandleFieldAccessor(VarHandle varHandle) {
+            if (!varHandle.coordinateTypes().isEmpty()) {
+                throw new IllegalArgumentException("VarHandle must not require coordinates");
+            }
+            this.varHandle = varHandle;
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public Class<T> getType() {
+            return (Class<T>) varHandle.varType();
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public T get() {
+            return (T) varHandle.get();
+        }
+
+        @Override
+        public void set(T value) {
+            varHandle.set(value);
+        }
+    }
+
+    static class VolatileVarHandleFieldAccessor<T> extends VarHandleFieldAccessor<T> {
+        VolatileVarHandleFieldAccessor(VarHandle varHandle) {
+            super(varHandle);
+        }
+
+        @Override
+        @SuppressWarnings("unchecked")
+        public T get() {
+            return (T) varHandle.getVolatile();
+        }
+
+        @Override
+        public void set(T value) {
+            varHandle.setVolatile(value);
+        }
+    }
+
+    ParsedRuleImpl(SettingsManager manager, String name, FieldAccessor<T> field, List<RuleCategory> categories, List<String> options, @Nullable Validator<T> validator, @Nullable ChangeListener<T> onChange, boolean deprecated) {
+        this(
+            manager,
+            name,
+            field,
+            categories,
+            options,
+            validator,
+            onChange,
+            deprecated,
+            null,
+            null
+        );
+    }
+
+    private ParsedRuleImpl(SettingsManager manager, String name, FieldAccessor<T> fieldAccessor, List<RuleCategory> categories, List<String> staticOptions, @Nullable Validator<T> validator, @Nullable ChangeListener<T> onChange, boolean deprecated, @Nullable Rule rule, @Nullable Field field) {
         this.manager = manager;
         this.rule = rule;
         this.field = field;
-        try {
-            this.varHandle = MethodHandles.lookup().unreflectVarHandle(field);
-        } catch (IllegalAccessException e) {
-            throw new IllegalArgumentException(e);
-        }
-        this.fieldVolatile = (fieldAccess & VOLATILE) != 0;
-        this.shortName = SettingsManager.getDefaultRuleName(field, rule);
-        this.name = manager.getRuleName(field, rule);
-        this.type = (Class<T>) field.getType();
-        this.description = new TranslatableText(manager.getDescriptionTranslationKey(field, rule));
-        String extraKey = manager.getExtraTranslationKey(field, rule);
+        this.fieldAccessor = fieldAccessor;
+        this.shortName = name;
+        this.name = manager.getRuleName(name, rule);
+        this.type = fieldAccessor.getType();
+        this.description = new TranslatableText(manager.getDescriptionTranslationKey(name, rule));
+        String extraKey = manager.getExtraTranslationKey(name, rule);
         this.extraInfo = Translations.hasTranslation(extraKey) ? new TranslatableText(extraKey) : null;
-        this.categories = ImmutableList.copyOf(rule.category());
-        this.validator = (Validator<T>) Reflection.callDeprecatedPrivateConstructor(rule.validator());
-        this.onChange = (ChangeListener<T>) Reflection.callDeprecatedPrivateConstructor(rule.onChange());
+        this.categories = ImmutableList.copyOf(categories);
+        this.validator = validator == null ? v -> Optional.empty() : validator;
+        this.onChange = onChange == null ? (r, p) -> {} : onChange;
         this.typeAdapter = getTypeAdapter(this.type);
         this.defaultValue = get();
         this.defaultAsString = typeAdapter.toString(this.defaultValue);
-        boolean disabled = !MixinConfig.getInstance().isRuleEnabled(this);
         List<String> options = typeAdapter.getOptions();
-        if (options == null) options = ImmutableList.copyOf(rule.options());
+        if (options == null) options = ImmutableList.copyOf(staticOptions);
         this.options = options;
-        if (!disabled) {
-            this.enabledOptions = options.stream()
-                .filter(option -> MixinConfig.getInstance().isOptionEnabled(this, option))
-                .toList();
-            if (!options.isEmpty() && enabledOptions.size() <= 1) disabled = true;
-        } else {
-            this.enabledOptions = List.of(defaultAsString);
-        }
-        this.disabled = disabled;
-        this.deprecated = rule.deprecated() ? new TranslatableText(manager.getDeprecationTranslationKey(field, rule)) : null;
+        boolean disabled = !isEnabled(this);
+        this.enabledOptions = getEnabledOptions(this, options, disabled);
+        this.disabled = disabled || (!options.isEmpty() && enabledOptions.size() <= 1);
+        this.deprecated = deprecated ? new TranslatableText(manager.getDeprecationTranslationKey(name, rule)) : null;
+    }
+
+    private static boolean isEnabled(ParsedRule<?> rule) {
+        return MixinConfig.getInstance().isRuleEnabled(rule);
+    }
+
+    private static List<String> getEnabledOptions(ParsedRule<?> rule, List<String> options, boolean disabled) {
+        return disabled ? List.of(rule.getDefaultAsString()) : getEnabledOptions(rule, options);
+    }
+
+    private static List<String> getEnabledOptions(ParsedRule<?> rule, List<String> options) {
+        return options.stream()
+            .filter(option -> MixinConfig.getInstance().isOptionEnabled(rule, option))
+            .toList();
     }
 
     @Override
@@ -101,8 +192,14 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
     }
 
     @Override
+    @Nullable
     public Field getField() {
         return field;
+    }
+
+    @Override
+    public FieldAccessor<T> getFieldAccessor() {
+        return fieldAccessor;
     }
 
     @Override
@@ -220,11 +317,7 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
                 throw new ParsedRule.ValueException(Messenger.t(""));
             }
         }
-        if (this.fieldVolatile) {
-            this.varHandle.setVolatile(value);
-        } else {
-            this.varHandle.set(value);
-        }
+        this.fieldAccessor.set(value);
         this.onChange.onChange(this, previousValue);
         //noinspection unchecked
         this.categories.forEach(c -> c.onChange((ParsedRuleImpl<Object>) this, previousValue));
@@ -232,13 +325,8 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public T get() {
-        if (this.fieldVolatile) {
-            return (T) this.varHandle.getVolatile();
-        } else {
-            return (T) this.varHandle.get();
-        }
+        return this.fieldAccessor.get();
     }
 
     @Override
