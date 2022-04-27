@@ -52,6 +52,9 @@ public final class QuickCarpet implements QuickCarpetAPI, ServerEventListener, T
     // Client will call getInstance at head of MinecraftClient::init()
     private QuickCarpet() {
         instance = this;
+        for (var container : FabricLoader.getInstance().getEntrypointContainers("quickcarpet", QuickCarpetModule.class)) {
+            registerModule(container.getEntrypoint());
+        }
     }
 
     public static QuickCarpet getInstance() {
