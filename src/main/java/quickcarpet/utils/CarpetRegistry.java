@@ -14,6 +14,7 @@ import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.datafixer.Schemas;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.SpawnGroup;
 import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.Pool;
@@ -23,6 +24,7 @@ import net.minecraft.world.biome.SpawnSettings;
 import quickcarpet.feature.CraftingTableBlockEntity;
 
 import java.util.List;
+import java.util.Map;
 
 public class CarpetRegistry {
     private static final Schema SCHEMA = Schemas.getFixer().getSchema(DataFixUtils.makeKey(SharedConstants.getGameVersion().getWorldVersion()));
@@ -65,6 +67,7 @@ public class CarpetRegistry {
 
     public static final Pool<SpawnSettings.SpawnEntry> END_CITY_SPAWN_POOL = Pool.of(new SpawnSettings.SpawnEntry(EntityType.SHULKER, 10, 4, 4));
     public static final StructureSpawns END_CITY_SPAWNS = new StructureSpawns(StructureSpawns.BoundingBox.PIECE, END_CITY_SPAWN_POOL);
+    public static final Map<SpawnGroup, StructureSpawns> END_CITY_SPAWN_MAP = Map.of(SpawnGroup.MONSTER, END_CITY_SPAWNS);
 
     private static <T extends BlockEntity> BlockEntityType<T> registerBlockEntity(String id, BlockEntityType.BlockEntityFactory<? extends T> supplier, Type<?> type, Block... blocks) {
         return Registry.register(Registry.BLOCK_ENTITY_TYPE, id, new BlockEntityType<>(supplier, ImmutableSet.copyOf(blocks), type));
