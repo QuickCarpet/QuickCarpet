@@ -11,9 +11,9 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
-import quickcarpet.helper.FluidInfoProvider;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.Constants.StateInfoCommand.Keys;
+import quickcarpet.utils.QuickCarpetRegistries;
 
 import static net.minecraft.command.argument.BlockPosArgumentType.getLoadedBlockPos;
 import static net.minecraft.server.command.CommandManager.literal;
@@ -28,7 +28,7 @@ public class FluidInfoCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         var fluidInfo = Utils.makeStateInfoCommand(
             literal("fluidinfo"),
-            FluidInfoProvider.REGISTRY,
+            QuickCarpetRegistries.FLUID_INFO_PROVIDER,
             FluidInfoCommand::execute,
             FluidInfoCommand::executeDirection
         ).requires(source -> source.hasPermissionLevel(Settings.commandFluidInfo));
@@ -42,10 +42,10 @@ public class FluidInfoCommand {
         BlockPos pos = getLoadedBlockPos(ctx, "pos");
         FluidState state = world.getFluidState(pos);
         m(source, t(Keys.LINE, FLUID_STATE, format(state)));
-        return Utils.executeStateInfo(source, pos, state, FluidInfoProvider.REGISTRY);
+        return Utils.executeStateInfo(source, pos, state, QuickCarpetRegistries.FLUID_INFO_PROVIDER);
     }
 
     private static int executeDirection(CommandContext<ServerCommandSource> ctx, Direction direction) throws CommandSyntaxException {
-        return Utils.executeStateInfo(ctx, direction, FluidInfoProvider.REGISTRY, BlockView::getFluidState, UNKNOWN_PROVIDER_EXCEPTION::create);
+        return Utils.executeStateInfo(ctx, direction, QuickCarpetRegistries.FLUID_INFO_PROVIDER, BlockView::getFluidState, UNKNOWN_PROVIDER_EXCEPTION::create);
     }
 }

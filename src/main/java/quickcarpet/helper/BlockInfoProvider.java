@@ -1,6 +1,5 @@
 package quickcarpet.helper;
 
-import com.mojang.serialization.Lifecycle;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SideShapeType;
@@ -8,13 +7,10 @@ import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.entity.ai.pathing.NavigationType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.util.registry.SimpleRegistry;
 import quickcarpet.utils.Messenger;
+import quickcarpet.utils.QuickCarpetRegistries;
 
 public interface BlockInfoProvider<T extends Comparable<T>> extends StateInfoProvider<BlockState, T> {
-    Registry<BlockInfoProvider<?>> REGISTRY = new SimpleRegistry<>(RegistryKey.ofRegistry(new Identifier("quickcarpet", "block_info_provider")), Lifecycle.experimental(), null);
-
     interface Directional<T extends Comparable<T>> extends BlockInfoProvider<T>, StateInfoProvider.Directional<BlockState, T> {}
     static <T extends Comparable<T>> BlockInfoProvider<T> withFormatter(BlockInfoProvider<T> provider, Messenger.Formatter<T> formatter) {
         class WithFormatter extends StateInfoProvider.WithFormatter<BlockState, T> implements Directional<T> {
@@ -26,7 +22,7 @@ public interface BlockInfoProvider<T extends Comparable<T>> extends StateInfoPro
     }
 
     static <T extends BlockInfoProvider<?>> T register(Identifier id, T provider) {
-        return Registry.register(REGISTRY, id, provider);
+        return Registry.register(QuickCarpetRegistries.BLOCK_INFO_PROVIDER, id, provider);
     }
 
     static <T extends BlockInfoProvider<?>> T register(String id, T provider) {

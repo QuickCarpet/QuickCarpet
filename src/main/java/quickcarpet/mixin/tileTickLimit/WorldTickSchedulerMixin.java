@@ -36,7 +36,7 @@ public class WorldTickSchedulerMixin {
     private void log() {
         if (logged) return;
         logged = true;
-        Loggers.TILE_TICK_LIMIT.log(
+        Loggers.BLOCK_TICK_LIMIT.log(
             () -> Messenger.t(OtherKeys.TILE_TICK_LIMIT_REACHED, Settings.tileTickLimit),
             () -> Collections.singletonList(new LogParameter("LIMIT", Settings.tileTickLimit))
         );

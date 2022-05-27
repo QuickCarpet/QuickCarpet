@@ -8,9 +8,12 @@ import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.Lazy;
 import org.jetbrains.annotations.VisibleForTesting;
 import quickcarpet.QuickCarpetServer;
+import quickcarpet.utils.QuickCarpetIdentifier;
+import quickcarpet.utils.QuickCarpetRegistries;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -22,22 +25,17 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class Logger implements Comparable<Logger> {
-    public static Codec<Logger> NAME_CODEC = Codec.STRING.comapFlatMap(Loggers::getDataResult, Logger::getName).stable();
+    public static Codec<Logger> NAME_CODEC = QuickCarpetIdentifier.CODEC.comapFlatMap(Loggers::getDataResult, Logger::getId).stable();
 
     boolean active = false;
     private @Nullable BiConsumer<MutableText, Collection<LogParameter>> testListener;
     private @Nullable Text unavailable;
 
-    private final String name;
-    private final MutableText displayName;
     private final String[] options;
     private final String defaultOption;
     final LogHandler defaultHandler;
 
-    public Logger(String name, String def, String[] options, LogHandler defaultHandler) {
-        this.name = name;
-        this.displayName = new LiteralText(name);
-        displayName.setStyle(displayName.getStyle().withColor(Formatting.GOLD));
+    public Logger(String def, String[] options, LogHandler defaultHandler) {
         this.defaultOption = def;
         this.options = options == null ? new String[0] : options;
         this.defaultHandler = defaultHandler;
@@ -51,13 +49,13 @@ public class Logger implements Comparable<Logger> {
         return options;
     }
 
-    public String getName() {
-        return name;
+    public Identifier getId() {
+        return QuickCarpetRegistries.LOGGER.getId(this);
     }
 
     @Override
     public int compareTo(Logger o) {
-        return name.compareTo(o.name);
+        return getId().compareTo(o.getId());
     }
 
     public boolean isActive() {
@@ -65,7 +63,7 @@ public class Logger implements Comparable<Logger> {
     }
 
     public Text getDisplayName() {
-        return displayName;
+        return new LiteralText(QuickCarpetIdentifier.toString(getId())).formatted(Formatting.GOLD);
     }
 
     public void setAvailable() {

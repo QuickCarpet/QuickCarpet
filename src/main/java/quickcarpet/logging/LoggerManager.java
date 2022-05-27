@@ -15,9 +15,9 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.WorldSavePath;
-import org.apache.logging.log4j.LogManager;
 import quickcarpet.QuickCarpetServer;
 
 import javax.annotation.Nullable;
@@ -93,7 +93,7 @@ public class LoggerManager {
     /**
      * Subscribes the player with name playerName to the log with name logName.
      */
-    public void subscribePlayer(String playerName, String logName, String option, LogHandler handler) {
+    public void subscribePlayer(String playerName, Identifier logName, String option, LogHandler handler) {
         subscribePlayer(playerName, Loggers.getLogger(logName), option, handler);
     }
 
@@ -115,7 +115,7 @@ public class LoggerManager {
     /**
      * Unsubscribes the player with name playerName from the log with name logName.
      */
-    public void unsubscribePlayer(String playerName, String logName) {
+    public void unsubscribePlayer(String playerName, Identifier logName) {
         unsubscribePlayer(playerName, Loggers.getLogger(logName));
     }
 
@@ -132,7 +132,7 @@ public class LoggerManager {
     /**
      * If the player is not subscribed to the log, then subscribe them. Otherwise, unsubscribe them.
      */
-    public boolean togglePlayerSubscription(String playerName, String logName, LogHandler handler) {
+    public boolean togglePlayerSubscription(String playerName, Identifier logName, LogHandler handler) {
         PlayerSubscriptions subs = playerSubscriptions.get(playerName);
         Logger logger = Loggers.getLogger(logName);
         if (subs != null && subs.isSubscribedTo(logger)) {

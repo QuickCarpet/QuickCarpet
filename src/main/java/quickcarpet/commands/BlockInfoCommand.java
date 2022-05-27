@@ -11,9 +11,9 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
-import quickcarpet.helper.BlockInfoProvider;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.Constants.StateInfoCommand.Keys;
+import quickcarpet.utils.QuickCarpetRegistries;
 
 import static net.minecraft.command.argument.BlockPosArgumentType.getLoadedBlockPos;
 import static net.minecraft.server.command.CommandManager.literal;
@@ -28,7 +28,7 @@ public class BlockInfoCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         var blockInfo = Utils.makeStateInfoCommand(
             literal("blockinfo"),
-            BlockInfoProvider.REGISTRY,
+            QuickCarpetRegistries.BLOCK_INFO_PROVIDER,
             BlockInfoCommand::execute,
             BlockInfoCommand::executeDirection
         ).requires(source -> source.hasPermissionLevel(Settings.commandBlockInfo));
@@ -42,10 +42,10 @@ public class BlockInfoCommand {
         BlockPos pos = getLoadedBlockPos(ctx, "pos");
         BlockState state = world.getBlockState(pos);
         m(source, t(Keys.LINE, BLOCK_STATE, format(state)));
-        return Utils.executeStateInfo(source, pos, state, BlockInfoProvider.REGISTRY);
+        return Utils.executeStateInfo(source, pos, state, QuickCarpetRegistries.BLOCK_INFO_PROVIDER);
     }
 
     private static int executeDirection(CommandContext<ServerCommandSource> ctx, Direction direction) throws CommandSyntaxException {
-        return Utils.executeStateInfo(ctx, direction, BlockInfoProvider.REGISTRY, BlockView::getBlockState, UNKNOWN_PROVIDER_EXCEPTION::create);
+        return Utils.executeStateInfo(ctx, direction, QuickCarpetRegistries.BLOCK_INFO_PROVIDER, BlockView::getBlockState, UNKNOWN_PROVIDER_EXCEPTION::create);
     }
 }

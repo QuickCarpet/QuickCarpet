@@ -10,10 +10,12 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 import quickcarpet.QuickCarpetServer;
 import quickcarpet.logging.*;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.Constants.LogCommand.Keys;
+import quickcarpet.utils.QuickCarpetIdentifier;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,6 +25,8 @@ import java.util.concurrent.CompletableFuture;
 
 import static com.mojang.brigadier.arguments.StringArgumentType.*;
 import static net.minecraft.command.CommandSource.suggestMatching;
+import static net.minecraft.command.argument.IdentifierArgumentType.getIdentifier;
+import static net.minecraft.command.argument.IdentifierArgumentType.identifier;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 import static quickcarpet.utils.Constants.LogCommand.Texts.*;
@@ -59,14 +63,14 @@ public class LogCommand {
             .executes(LogCommand::subscribe)
                 .then(handlerArg));
 
-        log.then(argument("log name", word())
-            .suggests((c, b)-> suggestMatching(Loggers.getLoggerNames(), b))
-            .executes(c -> toggleSubscription(c.getSource(), c.getSource().getName(), getString(c, "log name")))
+        log.then(argument("log name", identifier())
+            .suggests((c, b)-> suggestMatching(Loggers.getLoggerNames().stream().map(QuickCarpetIdentifier::toString), b))
+            .executes(c -> toggleSubscription(c.getSource(), c.getSource().getName(), getLoggerArgument(c)))
             .then(literal("clear")
                 .executes(c -> unsubFromLogger(
                     c.getSource(),
                     c.getSource().getName(),
-                    getString(c, "log name"))))
+                    getLoggerArgument(c))))
             .then(playerArg)
             .then(handlerArg)
             .then(argument("option", word())
@@ -77,9 +81,17 @@ public class LogCommand {
         dispatcher.register(log);
     }
 
+    private static Identifier getLoggerArgument(CommandContext<ServerCommandSource> context) {
+        Identifier logger = getIdentifier(context, "log name");
+        if ("minecraft".equals(logger.getNamespace())) {
+            return QuickCarpetIdentifier.of(logger.getPath());
+        }
+        return logger;
+    }
+
     private static int subscribe(CommandContext<ServerCommandSource> context, String handlerName) {
         String player = Utils.getOrDefault(context, "player", context.getSource().getName());
-        String logger = getString(context, "log name");
+        Identifier logger = getLoggerArgument(context);
         String option = Utils.getOrNull(context, "option", String.class);
         LogHandler handler = null;
         if (handlerName != null) {
@@ -95,7 +107,7 @@ public class LogCommand {
     }
 
     private static CompletableFuture<Suggestions> suggestLoggerOptions(CommandContext<ServerCommandSource> context, SuggestionsBuilder builder) {
-        String loggerName = getString(context, "log name");
+        Identifier loggerName = getLoggerArgument(context);
         Logger logger = Loggers.getLogger(loggerName);
         String[] options = logger == null ? new String[]{} : logger.getOptions();
         return suggestMatching(options, builder);
@@ -118,7 +130,8 @@ public class LogCommand {
     }
 
     private static MutableText formatListEntry(LoggerManager.PlayerSubscriptions subs, Logger logger, boolean subscribed) {
-        MutableText line = s(" - " + logger.getName() + ": ");
+        String loggerName = QuickCarpetIdentifier.toString(logger.getId());
+        MutableText line = s(" - " + loggerName + ": ");
         String[] options = logger.getOptions();
         if (options.length == 0) {
             if (subscribed) {
@@ -126,8 +139,8 @@ public class LogCommand {
             } else {
                 line.append(formatButton(
                     ACTION_SUBSCRIBE,
-                    t(Keys.ACTION_SUBSCRIBE_TO, logger.getName()),
-                    "/log " + logger.getName(),
+                    t(Keys.ACTION_SUBSCRIBE_TO, loggerName),
+                    "/log " + loggerName,
                     true
                 ));
             }
@@ -135,10 +148,10 @@ public class LogCommand {
             for (String option : logger.getOptions()) {
                 line.append(formatButton(
                     s(option),
-                    t(Keys.ACTION_SUBSCRIBE_TO_OPTION, logger.getName(), option),
-                    "/log " + logger.getName() + " " + option,
-                    !subscribed || !option.equalsIgnoreCase(subs.getOption(logger)
-                )));
+                    t(Keys.ACTION_SUBSCRIBE_TO_OPTION, loggerName, option),
+                    "/log " + loggerName + " " + option,
+                    !subscribed || !option.equalsIgnoreCase(subs.getOption(logger))
+                ));
             }
         }
         return line;
@@ -155,7 +168,7 @@ public class LogCommand {
         return button;
     }
 
-    private static boolean areArgumentsInvalid(ServerCommandSource source, String playerName, String loggerName) {
+    private static boolean areArgumentsInvalid(ServerCommandSource source, String playerName, Identifier loggerName) {
         PlayerEntity player = source.getServer().getPlayerManager().getPlayer(playerName);
         if (player == null) {
             m(source, NO_PLAYER_SPECIFIED);
@@ -168,7 +181,7 @@ public class LogCommand {
                 assert reason != null;
                 m(source, ts(Keys.UNAVAILABLE, Formatting.RED, style(reason, Formatting.GOLD, Formatting.BOLD)));
             } else {
-                m(source, ts(Keys.UNKNOWN, Formatting.RED, s(loggerName, Formatting.BOLD)));
+                m(source, ts(Keys.UNKNOWN, Formatting.RED, s(QuickCarpetIdentifier.toString(loggerName), Formatting.BOLD)));
             }
             return true;
         }
@@ -177,23 +190,24 @@ public class LogCommand {
 
     private static int unsubFromAll(ServerCommandSource source, String playerName) {
         if (areArgumentsInvalid(source, playerName, null)) return 0;
-        for (String loggerName : Loggers.getLoggerNames()) {
+        for (Identifier loggerName : Loggers.getLoggerNames()) {
             getLoggers().unsubscribePlayer(playerName, loggerName);
         }
         m(source, UNSUBSCRIBED_ALL);
         return 1;
     }
 
-    private static int unsubFromLogger(ServerCommandSource source, String playerName, String loggerName) {
+    private static int unsubFromLogger(ServerCommandSource source, String playerName, Identifier loggerName) {
         if (areArgumentsInvalid(source, playerName, loggerName)) return 0;
         getLoggers().unsubscribePlayer(playerName, loggerName);
-        m(source, ts(Keys.UNSUBSCRIBED, GRAY_ITALIC, loggerName));
+        m(source, ts(Keys.UNSUBSCRIBED, GRAY_ITALIC, QuickCarpetIdentifier.toString(loggerName)));
         return 1;
     }
 
-    private static int toggleSubscription(ServerCommandSource source, String playerName, String loggerName) {
-        if (areArgumentsInvalid(source, playerName, loggerName)) return 0;
-        boolean subscribed = getLoggers().togglePlayerSubscription(playerName, loggerName, null);
+    private static int toggleSubscription(ServerCommandSource source, String playerName, Identifier id) {
+        if (areArgumentsInvalid(source, playerName, id)) return 0;
+        boolean subscribed = getLoggers().togglePlayerSubscription(playerName, id, null);
+        String loggerName = QuickCarpetIdentifier.toString(id);
         if (subscribed) {
             if (playerName.equalsIgnoreCase(source.getName())) {
                 m(source, ts(Keys.SUBSCRIBED_TO, GRAY_ITALIC, loggerName));
@@ -210,9 +224,10 @@ public class LogCommand {
         return 1;
     }
 
-    private static int subscribePlayer(ServerCommandSource source, String playerName, String loggerName, String option, LogHandler handler) {
-        if (areArgumentsInvalid(source, playerName, loggerName)) return 0;
-        getLoggers().subscribePlayer(playerName, loggerName, option, handler);
+    private static int subscribePlayer(ServerCommandSource source, String playerName, Identifier id, String option, LogHandler handler) {
+        if (areArgumentsInvalid(source, playerName, id)) return 0;
+        getLoggers().subscribePlayer(playerName, id, option, handler);
+        String loggerName = QuickCarpetIdentifier.toString(id);
         if (option != null) {
             if (playerName.equalsIgnoreCase(source.getName())) {
                 m(source, ts(Keys.SUBSCRIBED_TO_OPTION, GRAY_ITALIC, loggerName, option));

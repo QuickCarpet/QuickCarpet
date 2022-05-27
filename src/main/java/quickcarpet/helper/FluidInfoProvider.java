@@ -1,21 +1,17 @@
 package quickcarpet.helper;
 
-import com.mojang.serialization.Lifecycle;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.util.registry.SimpleRegistry;
 import quickcarpet.utils.Messenger;
+import quickcarpet.utils.QuickCarpetRegistries;
 
 import static quickcarpet.utils.Messenger.hoverText;
 import static quickcarpet.utils.Messenger.s;
 
 public interface FluidInfoProvider<T extends Comparable<T>> extends StateInfoProvider<FluidState, T> {
-    Registry<FluidInfoProvider<?>> REGISTRY = new SimpleRegistry<>(RegistryKey.ofRegistry(new Identifier("quickcarpet", "fluid_info_provider")), Lifecycle.experimental(), null);
-
     interface Directional<T extends Comparable<T>> extends FluidInfoProvider<T>, StateInfoProvider.Directional<FluidState, T> {}
     static <T extends Comparable<T>> FluidInfoProvider<T> withFormatter(FluidInfoProvider<T> provider, Messenger.Formatter<T> formatter) {
         class WithFormatter extends StateInfoProvider.WithFormatter<FluidState, T> implements FluidInfoProvider.Directional<T> {
@@ -27,7 +23,7 @@ public interface FluidInfoProvider<T extends Comparable<T>> extends StateInfoPro
     }
 
     static <T extends FluidInfoProvider<?>> T register(Identifier id, T provider) {
-        return Registry.register(REGISTRY, id, provider);
+        return Registry.register(QuickCarpetRegistries.FLUID_INFO_PROVIDER, id, provider);
     }
 
     static <T extends FluidInfoProvider<?>> T register(String id, T provider) {

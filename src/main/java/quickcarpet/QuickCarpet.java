@@ -27,10 +27,7 @@ import quickcarpet.helper.Mobcaps;
 import quickcarpet.pubsub.PubSubManager;
 import quickcarpet.pubsub.PubSubNode;
 import quickcarpet.settings.Settings;
-import quickcarpet.utils.CarpetProfiler;
-import quickcarpet.utils.CarpetRegistry;
-import quickcarpet.utils.Translations;
-import quickcarpet.utils.Waypoint;
+import quickcarpet.utils.*;
 import quickcarpet.utils.extensions.WaypointContainer;
 
 import java.io.IOException;
@@ -49,7 +46,6 @@ public final class QuickCarpet implements QuickCarpetAPI, ServerEventListener, T
     public final Set<QuickCarpetModule> modules = new TreeSet<>();
     private QuickCarpetServer server;
     private CommandDispatcher<ServerCommandSource> dispatcher;
-    @SuppressWarnings("UnstableApiUsage")
     private final Multimap<ServerWorld, Runnable> worldUnloadCallbacks = MultimapBuilder.hashKeys().arrayListValues().build();
 
     // Fabric on dedicated server will call getInstance at return of DedicatedServer::<init>(...)
@@ -65,6 +61,7 @@ public final class QuickCarpet implements QuickCarpetAPI, ServerEventListener, T
 
     public void onBootstrapInitialize() {
         CarpetRegistry.init();
+        QuickCarpetRegistries.init();
     }
 
     @Override
