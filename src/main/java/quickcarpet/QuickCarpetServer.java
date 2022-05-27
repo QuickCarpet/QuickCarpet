@@ -24,7 +24,6 @@ import quickcarpet.network.impl.PluginChannelManager;
 import quickcarpet.patches.FakeServerPlayerEntity;
 import quickcarpet.pubsub.PubSubMessenger;
 import quickcarpet.utils.CameraData;
-import quickcarpet.utils.HUDController;
 import quickcarpet.utils.StatHelper;
 
 import javax.annotation.Nullable;
@@ -33,8 +32,6 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
-import static quickcarpet.api.network.server.ServerPluginChannelManager.LOG;
 
 public class QuickCarpetServer implements QuickCarpetServerAPI, ServerEventListener, TelemetryProvider {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -48,6 +45,7 @@ public class QuickCarpetServer implements QuickCarpetServerAPI, ServerEventListe
     public Map<UUID, CameraData> cameraData = new HashMap<>();
 
     private QuickCarpetServer(MinecraftServer server) {
+        instance = this;
         this.server = server;
         pluginChannels = new PluginChannelManager(server);
         pluginChannels.register(pubSubMessenger);
@@ -59,7 +57,7 @@ public class QuickCarpetServer implements QuickCarpetServerAPI, ServerEventListe
     }
 
     public static QuickCarpetServer init(MinecraftServer server) {
-        return instance = new QuickCarpetServer(server);
+        return new QuickCarpetServer(server);
     }
 
     public static void shutdown() {
@@ -102,7 +100,7 @@ public class QuickCarpetServer implements QuickCarpetServerAPI, ServerEventListe
     public void tick(MinecraftServer server) {
         try {
             tickSpeed.tick();
-            HUDController.update(server);
+            loggers.update();
             QuickCarpet.PUBSUB.update(server.getTicks());
             StructureChannel.instance.tick();
         } catch (RuntimeException e) {

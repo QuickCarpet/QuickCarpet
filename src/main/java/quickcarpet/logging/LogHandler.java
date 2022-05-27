@@ -8,7 +8,6 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.TranslatableText;
 import quickcarpet.QuickCarpetServer;
-import quickcarpet.utils.HUDController;
 
 import java.util.List;
 import java.util.Map;

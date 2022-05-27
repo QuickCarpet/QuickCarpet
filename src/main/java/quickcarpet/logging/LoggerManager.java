@@ -19,6 +19,8 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.WorldSavePath;
 import quickcarpet.QuickCarpetServer;
+import quickcarpet.logging.source.LoggerSource;
+import quickcarpet.utils.QuickCarpetRegistries;
 
 import javax.annotation.Nullable;
 import java.io.BufferedWriter;
@@ -36,9 +38,16 @@ public class LoggerManager {
     private final MinecraftServer server;
     private final Map<String, PlayerSubscriptions> playerSubscriptions = new HashMap<>();
     private final Multimap<Logger, String> subscribedOnlinePlayers = MultimapBuilder.hashKeys().hashSetValues().build();
+    private final Map<Logger, LoggerSource> sources = new LinkedHashMap<>();
 
     public LoggerManager(MinecraftServer server) {
         this.server = server;
+        for (Logger logger : QuickCarpetRegistries.LOGGER) {
+            LoggerSource source = logger.createSource();
+            if (source != null) {
+                sources.put(logger, source);
+            }
+        }
     }
 
     public record LoggerOptions(Logger logger, String option, @Nullable LogHandler handler) {
@@ -255,5 +264,18 @@ public class LoggerManager {
         playerSubscriptions.clear();
         subscribedOnlinePlayers.clear();
         for (Logger logger : Loggers.values()) logger.active = false;
+    }
+
+    public void updateSources() {
+        for (var e : sources.entrySet()) {
+            e.getValue().pull(e.getKey());
+        }
+    }
+
+    public void update() {
+        if (server.getTicks() % 20 == 0) {
+            updateSources();
+            HUDController.update();
+        }
     }
 }

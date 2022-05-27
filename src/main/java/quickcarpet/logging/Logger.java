@@ -12,14 +12,12 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Lazy;
 import org.jetbrains.annotations.VisibleForTesting;
 import quickcarpet.QuickCarpetServer;
+import quickcarpet.logging.source.LoggerSource;
 import quickcarpet.utils.QuickCarpetIdentifier;
 import quickcarpet.utils.QuickCarpetRegistries;
 
 import javax.annotation.Nullable;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -29,16 +27,26 @@ public class Logger implements Comparable<Logger> {
 
     boolean active = false;
     private @Nullable BiConsumer<MutableText, Collection<LogParameter>> testListener;
-    private @Nullable Text unavailable;
 
-    private final String[] options;
-    private final String defaultOption;
-    final LogHandler defaultHandler;
 
-    public Logger(String def, String[] options, LogHandler defaultHandler) {
+    private final @Nullable String[] options;
+    private final @Nullable String defaultOption;
+    final @Nullable LogHandler defaultHandler;
+    private @Nullable Supplier<MutableText> unavailabilityReason;
+    private @Nullable Supplier<LoggerSource> sourceCreator;
+
+    public Logger(
+        @Nullable String def,
+        @Nullable String[] options,
+        @Nullable LogHandler defaultHandler,
+        @Nullable Supplier<MutableText> unavailabilityReason,
+        @Nullable Supplier<LoggerSource> source
+    ) {
         this.defaultOption = def;
         this.options = options == null ? new String[0] : options;
         this.defaultHandler = defaultHandler;
+        this.unavailabilityReason = unavailabilityReason;
+        this.sourceCreator = source;
     }
 
     public String getDefault() {
@@ -66,21 +74,26 @@ public class Logger implements Comparable<Logger> {
         return new LiteralText(QuickCarpetIdentifier.toString(getId())).formatted(Formatting.GOLD);
     }
 
+    @Nullable
+    public LoggerSource createSource() {
+        return this.sourceCreator == null ? null : this.sourceCreator.get();
+    }
+
     public void setAvailable() {
-        this.unavailable = null;
+        this.unavailabilityReason = null;
     }
 
     public void setUnavailable(MutableText reason) {
-        this.unavailable = reason;
+        this.unavailabilityReason = reason::copy;
     }
 
     public boolean isAvailable() {
-        return this.unavailable == null;
+        return getUnavailabilityReason() == null;
     }
 
     @Nullable
     public MutableText getUnavailabilityReason() {
-        return isAvailable() ? null : unavailable.copy();
+        return this.unavailabilityReason != null ? this.unavailabilityReason.get() : null;
     }
 
     /**
@@ -176,5 +189,47 @@ public class Logger implements Comparable<Logger> {
             testListener = null;
             active = activeBefore;
         };
+    }
+
+    public static class Builder {
+        private LogHandler defaultHandler;
+        private List<String> options;
+        private String defaultOption;
+        private Supplier<MutableText> unavailabilityReason;
+        private Supplier<LoggerSource> source;
+
+        public Builder withDefaultHandler(LogHandler handler) {
+            this.defaultHandler = handler;
+            return this;
+        }
+
+        public Builder withOptions(List<String> options) {
+            this.options = options;
+            this.defaultOption = options.get(0);
+            return this;
+        }
+
+        public Builder withOptions(String ...options) {
+            return withOptions(Arrays.asList(options));
+        }
+
+        public Builder withDefaultOption(String option) {
+            this.defaultOption = option;
+            return this;
+        }
+
+        public Builder withUnavailabilityReason(Supplier<MutableText> reason) {
+            this.unavailabilityReason = reason;
+            return this;
+        }
+
+        public Builder withSource(Supplier<LoggerSource> source) {
+            this.source = source;
+            return this;
+        }
+
+        public Logger build() {
+            return new Logger(defaultOption, options == null ? null : options.toArray(new String[0]), defaultHandler, unavailabilityReason, source);
+        }
     }
 }
