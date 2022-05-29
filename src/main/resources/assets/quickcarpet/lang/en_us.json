@@ -352,5 +352,8 @@
   "logger.weather.rain.active": "Raining for %s ticks",
   "logger.weather.rain.inactive": "Not raining for %s ticks",
   "logger.weather.thunder.active": "Thundering for %s ticks",
-  "logger.weather.thunder.inactive": "Not thundering for %s ticks"
+  "logger.weather.thunder.inactive": "Not thundering for %s ticks",
+  "logger.kills.1": "%s killed %s entity",
+  "logger.kills.sweeping.1": "%s killed %s entity using sweeping",
+  "logger.kills.sweeping.n": "%s killed %s entities using sweeping"
 }

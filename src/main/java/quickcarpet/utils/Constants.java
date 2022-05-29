@@ -333,5 +333,8 @@ public interface Constants {
         String WEATHER_LOG_ACTIVE_SUFFIX = ".active";
         String WEATHER_LOG_INACTIVE_SUFFIX = ".inactive";
         String STATE_INFO_PROVIDER_2 = "state_info_provider.2";
+        String KILLS_LOG_1 = "logger.kills.1";
+        String KILLS_LOG_SWEEPING_1 = "logger.kills.sweeping.1";
+        String KILLS_LOG_SWEEPING_N = "logger.kills.sweeping.n";
     }
 }
