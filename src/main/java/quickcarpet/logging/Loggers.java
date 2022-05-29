@@ -51,6 +51,9 @@ public final class Loggers {
     public static final Logger LIGHT_QUEUE = register("light_queue", builder(LogHandler.HUD)
         .withSource(LightQueueLoggerSource::new)
         .build());
+    public static final Logger MEMORY = register("memory", builder(LogHandler.HUD)
+        .withSource(MemoryUsageLoggerSource::new)
+        .build());
 
 //    public static final Logger PROJECTILES<Logger.EmptyCommandParameters> = registerLogger("projectiles", "full",  new String[]{"brief", "full"}, LogHandler.CHAT);
 //    public static final Logger FALLING_BLOCKS<Logger.EmptyCommandParameters> = registerLogger("fallingBlocks", "brief", new String[]{"brief", "full"}, LogHandler.CHAT);
