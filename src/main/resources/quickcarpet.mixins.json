@@ -86,6 +86,7 @@
     "lightningKillsDropsFix.ItemEntityMixin",
     "loggers.CommandBlockExecutorMixin",
     "loggers.ServerLightingProviderMixin",
+    "loggers.ServerWorldMixin",
     "movableBlockEntities.PistonBlockEntityMixin",
     "movableBlockEntities.PistonBlockMixin",
     "movableBlockEntities.PistonHandlerMixin",

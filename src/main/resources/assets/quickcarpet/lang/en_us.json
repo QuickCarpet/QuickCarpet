@@ -348,5 +348,9 @@
   "command.fix.fixing": "Fixing chunk [%s, %s]...",
   "command.fix.fixed": "Fixed chunk [%s, %s]",
   "command.datatracker.no_entries": "No entries",
-  "command.datatracker.entry": "%s (%s): %s"
+  "command.datatracker.entry": "%s (%s): %s",
+  "logger.weather.rain.active": "Raining for %s ticks",
+  "logger.weather.rain.inactive": "Not raining for %s ticks",
+  "logger.weather.thunder.active": "Thundering for %s ticks",
+  "logger.weather.thunder.inactive": "Not thundering for %s ticks"
 }

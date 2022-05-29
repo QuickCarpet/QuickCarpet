@@ -329,6 +329,9 @@ public interface Constants {
         String LOCKED = "carpet.locked";
         String GC_LOGGER_UNAVAILABLE = "logger.gc.unavailable";
         String TILE_TICK_LIMIT_REACHED = "logger.tileTickLimit.message";
+        String WEATHER_LOG_TYPE_PREFIX = "logger.weather.";
+        String WEATHER_LOG_ACTIVE_SUFFIX = ".active";
+        String WEATHER_LOG_INACTIVE_SUFFIX = ".inactive";
         String STATE_INFO_PROVIDER_2 = "state_info_provider.2";
     }
 }
