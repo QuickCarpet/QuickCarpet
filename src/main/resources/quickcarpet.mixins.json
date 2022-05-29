@@ -85,6 +85,7 @@
     "infiniteHopper.HopperBlockEntityMixin",
     "lightningKillsDropsFix.ItemEntityMixin",
     "loggers.CommandBlockExecutorMixin",
+    "loggers.ServerLightingProviderMixin",
     "movableBlockEntities.PistonBlockEntityMixin",
     "movableBlockEntities.PistonBlockMixin",
     "movableBlockEntities.PistonHandlerMixin",

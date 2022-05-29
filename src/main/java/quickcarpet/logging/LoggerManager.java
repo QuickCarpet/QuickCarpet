@@ -266,15 +266,14 @@ public class LoggerManager {
         for (Logger logger : Loggers.values()) logger.active = false;
     }
 
-    public void updateSources() {
-        for (var e : sources.entrySet()) {
-            e.getValue().pull(e.getKey());
-        }
-    }
-
     public void update() {
+        for (var e : sources.entrySet()) {
+            e.getValue().tick();
+        }
         if (server.getTicks() % 20 == 0) {
-            updateSources();
+            for (var e : sources.entrySet()) {
+                e.getValue().pull(e.getKey());
+            }
             HUDController.update();
         }
     }

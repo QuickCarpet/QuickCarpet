@@ -48,6 +48,9 @@ public final class Loggers {
         .withUnavailabilityReason(() -> Settings.carefulBreak ? null : new TranslatableText(CarpetCommand.Keys.OPTION_DISABLED, "carefulBreak"))
         .build());
     public static final Logger BLOCK_TICK_LIMIT = register("block_tick_limit", builder(LogHandler.CHAT).build());
+    public static final Logger LIGHT_QUEUE = register("light_queue", builder(LogHandler.HUD)
+        .withSource(LightQueueLoggerSource::new)
+        .build());
 
 //    public static final Logger PROJECTILES<Logger.EmptyCommandParameters> = registerLogger("projectiles", "full",  new String[]{"brief", "full"}, LogHandler.CHAT);
 //    public static final Logger FALLING_BLOCKS<Logger.EmptyCommandParameters> = registerLogger("fallingBlocks", "brief", new String[]{"brief", "full"}, LogHandler.CHAT);
