@@ -336,5 +336,12 @@ public interface Constants {
         String KILLS_LOG_1 = "logger.kills.1";
         String KILLS_LOG_SWEEPING_1 = "logger.kills.sweeping.1";
         String KILLS_LOG_SWEEPING_N = "logger.kills.sweeping.n";
+        String DAMAGE_LOG_REGISTER = "logger.damage.register";
+        String DAMAGE_LOG_REGISTER_ATTACKER = "logger.damage.registerAttacker";
+        String DAMAGE_LOG_REDUCE_0 = "logger.damage.reduce.0";
+        String DAMAGE_LOG_REDUCE = "logger.damage.reduce";
+        String DAMAGE_LOG_INCREASE = "logger.damage.increase";
+        String DAMAGE_LOG_REASON_PREFIX = "logger.damage.reason.";
+        String DAMAGE_LOG_FINAL = "logger.damage.final";
     }
 }

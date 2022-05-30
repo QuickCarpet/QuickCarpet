@@ -56,10 +56,12 @@ public final class Loggers {
         .build());
     public static final Logger WEATHER = register("weather", builder(LogHandler.CHAT).build());
     public static final Logger KILLS = register("kills", builder(LogHandler.CHAT).build());
+    public static final Logger DAMAGE = register("damage", builder(LogHandler.CHAT)
+        .withOptions("all", "players", "me")
+        .build());
 
 //    public static final Logger PROJECTILES<Logger.EmptyCommandParameters> = registerLogger("projectiles", "full",  new String[]{"brief", "full"}, LogHandler.CHAT);
 //    public static final Logger FALLING_BLOCKS<Logger.EmptyCommandParameters> = registerLogger("fallingBlocks", "brief", new String[]{"brief", "full"}, LogHandler.CHAT);
-//    public static final Logger DAMAGE<Logger.EmptyCommandParameters> = registerLogger("damage", "all", new String[]{"all","players","me"}, LogHandler.CHAT);
 
     private Loggers() {}
 
