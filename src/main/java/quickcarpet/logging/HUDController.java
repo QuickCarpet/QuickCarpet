@@ -36,7 +36,7 @@ public class HUDController {
         ((ServerPlayerEntity) player).networkHandler.sendPacket(new PlayerListHeaderS2CPacket(header, footer));
     }
 
-
+    // FIXME: remember which hud was sent in case a logger (like 'tickwarp') stops sending text and it's the only subscribed logger
     public static void update() {
         for (Map.Entry<PlayerEntity, List<MutableText>> playerHud : PLAYER_HUDS.entrySet()) {
             sendHUD(playerHud.getKey(), new LiteralText(""), c(playerHud.getValue().toArray(new MutableText[0])));

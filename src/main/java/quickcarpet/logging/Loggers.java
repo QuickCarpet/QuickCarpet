@@ -59,6 +59,10 @@ public final class Loggers {
     public static final Logger DAMAGE = register("damage", builder(LogHandler.CHAT)
         .withOptions("all", "players", "me")
         .build());
+    public static final Logger TICK_WARP = register("tick_warp", builder(LogHandler.HUD)
+        .withSource(TickWarpLoggerSource::new)
+        .withOptions("full", "bar", "value")
+        .build());
 
 //    public static final Logger PROJECTILES<Logger.EmptyCommandParameters> = registerLogger("projectiles", "full",  new String[]{"brief", "full"}, LogHandler.CHAT);
 //    public static final Logger FALLING_BLOCKS<Logger.EmptyCommandParameters> = registerLogger("fallingBlocks", "brief", new String[]{"brief", "full"}, LogHandler.CHAT);
