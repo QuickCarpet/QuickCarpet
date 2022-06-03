@@ -12,6 +12,11 @@ import static quickcarpet.utils.Messenger.c;
 
 public class HopperCounterLoggerSource implements LoggerSource {
     @Override
+    public List<String> parseOptions(String option) {
+        return LoggerSource.splitOptions(option);
+    }
+
+    @Override
     public void pull(Logger logger) {
         logger.log(key -> {
             HopperCounter counter = HopperCounter.getCounter(key);

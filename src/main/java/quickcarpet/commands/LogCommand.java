@@ -73,7 +73,7 @@ public class LogCommand {
                     getLoggerArgument(c))))
             .then(playerArg)
             .then(handlerArg)
-            .then(argument("option", word())
+            .then(argument("option", string())
                 .suggests(LogCommand::suggestLoggerOptions)
                 .executes(LogCommand::subscribe)
                 .then(playerArg)));

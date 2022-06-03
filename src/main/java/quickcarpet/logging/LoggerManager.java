@@ -50,6 +50,10 @@ public class LoggerManager {
         }
     }
 
+    LoggerSource getSource(Logger logger) {
+        return sources.get(logger);
+    }
+
     public record LoggerOptions(Logger logger, String option, @Nullable LogHandler handler) {
         public static final MapCodec<LoggerOptions> CODEC = RecordCodecBuilder.mapCodec(it -> it.group(
                 Logger.NAME_CODEC.fieldOf("logger").forGetter(o -> o.logger),

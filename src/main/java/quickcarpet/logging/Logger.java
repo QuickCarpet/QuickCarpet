@@ -20,7 +20,6 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 public class Logger implements Comparable<Logger> {
     public static Codec<Logger> NAME_CODEC = QuickCarpetIdentifier.CODEC.comapFlatMap(Loggers::getDataResult, Logger::getId).stable();
@@ -110,9 +109,7 @@ public class Logger implements Comparable<Logger> {
     }
 
     public void log(MessageSupplier message, Supplier<Collection<LogParameter>> commandParams) {
-        getOnlineSubscribers().forEach(player -> {
-            sendMessage(player, message.get(getOption(player), player), commandParams);
-        });
+        forEachSubscription((player, option) -> sendMessage(player, message.get(option, player), commandParams));
     }
 
     /**
@@ -133,7 +130,7 @@ public class Logger implements Comparable<Logger> {
 
     public void log(PlayerIndependentMessageSupplier message, Supplier<Collection<LogParameter>>  commandParams) {
         Map<String, MutableText> messages = new HashMap<>();
-        getOnlineSubscribers().forEach(player -> sendMessage(player, messages.computeIfAbsent(getOption(player), message::get), commandParams));
+        forEachSubscription((player, option) -> sendMessage(player, messages.computeIfAbsent(option, message::get), commandParams));
         if (testListener != null) testListener.accept(messages.computeIfAbsent(getDefault(), message::get), commandParams.get());
     }
 
@@ -143,7 +140,7 @@ public class Logger implements Comparable<Logger> {
 
     public void log(Supplier<MutableText> message, Supplier<Collection<LogParameter>>  commandParams) {
         Lazy<MutableText> messages = new Lazy<>(message);
-        getOnlineSubscribers().forEach(player -> sendMessage(player, messages.get(), commandParams));
+        forEachSubscription((player, option) -> sendMessage(player, messages.get(), commandParams));
         if (testListener != null) testListener.accept(messages.get(), commandParams.get());
     }
 
@@ -152,18 +149,21 @@ public class Logger implements Comparable<Logger> {
         return server == null ? null : server.loggers;
     }
 
-    private String getOption(ServerPlayerEntity player) {
-        return getManager().getPlayerSubscriptions(player.getEntityName()).getOption(this);
+    private void forEachSubscription(BiConsumer<ServerPlayerEntity, String> action) {
+        LoggerManager manager = getManager();
+        if (manager == null) return;
+        LoggerSource source = manager.getSource(this);
+        manager.getOnlineSubscribers(this).forEachOrdered(player -> {
+            String optionString = manager.getPlayerSubscriptions(player.getEntityName()).getOption(this);
+            List<String> options = source == null || optionString == null ? Collections.singletonList(optionString) : source.parseOptions(optionString);
+            for (String option : options) {
+                action.accept(player, option);
+            }
+        });
     }
 
     private LogHandler getHandler(ServerPlayerEntity player) {
         return getManager().getPlayerSubscriptions(player.getEntityName()).getHandler(this);
-    }
-
-    private Stream<ServerPlayerEntity> getOnlineSubscribers() {
-        LoggerManager manager = getManager();
-        if (manager == null) return Stream.empty();
-        return manager.getOnlineSubscribers(this);
     }
 
     private void sendMessage(ServerPlayerEntity player, MutableText message, Supplier<Collection<LogParameter>> commandParams) {
