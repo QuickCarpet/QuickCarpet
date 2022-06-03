@@ -40,7 +40,7 @@ public final class Loggers {
     public static final Logger LOCAL_MOBCAPS = register("local_mobcaps", builder(LogHandler.HUD)
         .withSource(LocalMobcapsLoggerSource::new)
         .build());
-    public static final Logger GC = register("gc", builder(LogHandler.HUD).build());
+    public static final Logger GC = register("gc", builder(LogHandler.CHAT).build());
     public static final Logger COMMAND_BLOCKS = register("command_blocks", builder(LogHandler.CHAT)
         .withOptions("brief", "full")
         .build());
