@@ -84,6 +84,7 @@
     "hopperMinecartItemTransfer.HopperMinecartEntityMixin",
     "infiniteHopper.HopperBlockEntityMixin",
     "lightningKillsDropsFix.ItemEntityMixin",
+    "localDifficulty.LocalDifficultyMixin",
     "loggers.CommandBlockExecutorMixin",
     "loggers.PlayerEntityMixin",
     "loggers.ServerLightingProviderMixin",

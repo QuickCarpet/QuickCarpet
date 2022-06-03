@@ -240,6 +240,9 @@ public class Settings {
     @Rule(category = FIX, bug = @BugFix("MC-206922"))
     public static boolean lightningKillsDropsFix = false;
 
+    @Rule(category = CREATIVE, options = {"-1", "0", "4"})
+    public static double localDifficulty = -1;
+
     @Rule(category = FEATURE)
     public static boolean movableBlockEntities = false;
 

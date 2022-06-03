@@ -470,6 +470,14 @@ Options: `true`, `false`
 Categories: fix  
 Fixes: [MC-206922](https://bugs.mojang.com/browse/MC-206922)  
 
+## localDifficulty
+Set a fixed local difficulty (-1 for vanilla behavior)
+
+Type: `double`  
+Default: `-1.0`  
+Options: `-1`, `0`, `4`  
+Categories: creative  
+
 ## movableBlockEntities
 Pistons can push block entities, like hoppers, chests etc.
 

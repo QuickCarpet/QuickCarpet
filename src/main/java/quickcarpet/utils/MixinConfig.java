@@ -59,6 +59,7 @@ public class MixinConfig {
             "hopperMinecartItemTransfer",
             "infiniteHopper",
             "lightningKillsDropsFix",
+            "localDifficulty",
             "movableBlockEntities",
             "movableBlockOverrides",
             "nbtMotionLimit",
