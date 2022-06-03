@@ -83,7 +83,7 @@ public class Logger implements Comparable<Logger> {
     }
 
     public void setUnavailable(MutableText reason) {
-        this.unavailabilityReason = reason::copy;
+        this.unavailabilityReason = reason::shallowCopy;
     }
 
     public boolean isAvailable() {

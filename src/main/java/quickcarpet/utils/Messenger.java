@@ -232,7 +232,7 @@ public class Messenger {
     }
 
     public static <T> MutableText join(@Nullable Text prefix, Iterable<T> items, Function<T, Text> mapper, Text delimiter, @Nullable Text suffix) {
-        MutableText message = prefix == null ? new LiteralText("") : prefix.copy();
+        MutableText message = prefix == null ? new LiteralText("") : prefix.shallowCopy();
         boolean first = true;
         for (T item : items) {
             if (!first) message.append(delimiter);
@@ -314,10 +314,10 @@ public class Messenger {
 
     public static MutableText join(Text joiner, Text... elements) {
         if (elements.length == 0) return s("");
-        MutableText text = elements[0].copy();
+        MutableText text = elements[0].shallowCopy();
         for (int i = 1; i < elements.length; i++) {
-            text.append(joiner.copy());
-            text.append(elements[i].copy());
+            text.append(joiner.shallowCopy());
+            text.append(elements[i].shallowCopy());
         }
         return text;
     }
@@ -330,10 +330,10 @@ public class Messenger {
         MutableText empty = s("");
         return Collector.of(() -> empty,
             (a, b) -> {
-                if (!a.getSiblings().isEmpty()) a.append(joiner.copy());
+                if (!a.getSiblings().isEmpty()) a.append(joiner.shallowCopy());
                 a.append(b);
             },
-            (a, b) -> a.getSiblings().isEmpty() ? b : a.append(joiner.copy()).append(b.copy()),
+            (a, b) -> a.getSiblings().isEmpty() ? b : a.append(joiner.shallowCopy()).append(b.shallowCopy()),
             Function.identity()
         );
     }
@@ -349,15 +349,15 @@ public class Messenger {
         Formatter<Number> FLOAT = value -> dbl(value.doubleValue());
         Formatter<Boolean> BOOLEAN = value -> s(Boolean.toString(value), value ? Formatting.GREEN : Formatting.RED);
         Formatter<String> STRING = Messenger::s;
-        Formatter<Text> TEXT = Text::copy;
-        Formatter<ItemStack> ITEM_STACK = s -> c(s(s.getCount() + " "), s.toHoverableText().copy());
+        Formatter<Text> TEXT = Text::shallowCopy;
+        Formatter<ItemStack> ITEM_STACK = s -> c(s(s.getCount() + " "), s.toHoverableText().shallowCopy());
         Formatter<EulerAngle> ROTATION = r -> s(r.getYaw() + "° yaw, " + r.getPitch() + "° pitch, " + r.getRoll() + "° roll");
         Formatter<BlockPos> BLOCK_POS = Messenger::tp;
         Formatter<? extends Enum<?>> ENUM = e -> s(e.toString().toLowerCase(Locale.ROOT));
         Formatter<?> OBJECT = o -> s(String.valueOf(o));
         Formatter<BlockState> BLOCK_STATE = Messenger::format;
         Formatter<FluidState> FLUID_STATE = Messenger::format;
-        Formatter<NbtCompound> COMPOUND_TAG = t -> NbtHelper.toPrettyPrintedText(t).copy();
+        Formatter<NbtCompound> COMPOUND_TAG = t -> NbtHelper.toPrettyPrintedText(t).shallowCopy();
         Formatter<ParticleEffect> PARTICLE = p -> s(String.valueOf(Registry.PARTICLE_TYPE.getId(p.getType())));
         Formatter<VillagerData> VILLAGER_DATA = d -> c(
             s("type="), Messenger.format(Registry.VILLAGER_TYPE, d.getType()),

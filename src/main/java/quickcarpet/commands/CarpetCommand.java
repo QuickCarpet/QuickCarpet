@@ -165,7 +165,7 @@ public class CarpetCommand {
         try {
             rule.set(newValue, true);
             String command = "/carpet setDefault " + rule.getName() + " " + rule.getAsString();
-            m(source, s(rule + " "), suggestCommand(CHANGE_PERMANENTLY.copy(), command));
+            m(source, s(rule + " "), suggestCommand(CHANGE_PERMANENTLY.shallowCopy(), command));
         } catch (IllegalArgumentException e) {
             throw commandException(e);
         }
@@ -204,7 +204,7 @@ public class CarpetCommand {
 
     private static Text displayInteractiveSetting(ParsedRule<?> rule) {
         MutableText text = s("- " + rule.getName());
-        runCommand(text, "/carpet " + rule.getName(), style(rule.getDescription().copy(), Formatting.YELLOW));
+        runCommand(text, "/carpet " + rule.getName(), style(rule.getDescription().shallowCopy(), Formatting.YELLOW));
         boolean first = true;
         for (String option : rule.getOptions()) {
             if (first) {
@@ -219,7 +219,7 @@ public class CarpetCommand {
     private static int listSettings(ServerCommandSource source, Text title, Iterable<ParsedRule<?>> rules) {
         if (source.getEntity() instanceof ServerPlayerEntity) {
             title.getStyle().withFormatting(Formatting.BOLD);
-            m(source, title.copy());
+            m(source, title.shallowCopy());
             for (ParsedRule<?> rule : rules) {
                 m(source, displayInteractiveSetting(rule));
             }
