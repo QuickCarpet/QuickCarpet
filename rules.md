@@ -441,6 +441,14 @@ Default: `false`
 Options: `true`, `false`  
 Categories: feature  
 
+## huskSpawningInDesertPyramids
+Husks will spawn in desert pyramids
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: feature  
+
 ## infiniteHopper
 Hoppers "pulling" from wool will keep the items they push out
 

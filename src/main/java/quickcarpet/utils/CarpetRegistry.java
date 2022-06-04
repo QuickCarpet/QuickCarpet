@@ -65,12 +65,15 @@ public class CarpetRegistry {
         TERRACOTTA_BLOCKS.put(Blocks.BLACK_TERRACOTTA, 15);
     }
 
-    public static final Pool<SpawnSettings.SpawnEntry> END_CITY_SPAWN_POOL = Pool.of(new SpawnSettings.SpawnEntry(EntityType.SHULKER, 10, 4, 4));
-    public static final StructureSpawns END_CITY_SPAWNS = new StructureSpawns(StructureSpawns.BoundingBox.PIECE, END_CITY_SPAWN_POOL);
-    public static final Map<SpawnGroup, StructureSpawns> END_CITY_SPAWN_MAP = Map.of(SpawnGroup.MONSTER, END_CITY_SPAWNS);
+    public static final Map<SpawnGroup, StructureSpawns> END_CITY_SPAWN_MAP = Map.of(SpawnGroup.MONSTER, spawns(EntityType.SHULKER, 4));
+    public static final Map<SpawnGroup, StructureSpawns> DESERT_PYRAMID_SPAWN_MAP = Map.of(SpawnGroup.MONSTER, spawns(EntityType.HUSK, 4));
 
     private static <T extends BlockEntity> BlockEntityType<T> registerBlockEntity(String id, BlockEntityType.BlockEntityFactory<? extends T> supplier, Type<?> type, Block... blocks) {
         return Registry.register(Registry.BLOCK_ENTITY_TYPE, id, new BlockEntityType<>(supplier, ImmutableSet.copyOf(blocks), type));
+    }
+
+    private static StructureSpawns spawns(EntityType<?> type, int packSize) {
+        return new StructureSpawns(StructureSpawns.BoundingBox.PIECE, Pool.of(new SpawnSettings.SpawnEntry(type, 10, packSize, packSize)));
     }
 
     public static void init() {
@@ -80,6 +83,4 @@ public class CarpetRegistry {
     public static boolean isIgnoredForSync(Identifier key) {
         return key.getNamespace().equals("carpet");
     }
-
-
 }

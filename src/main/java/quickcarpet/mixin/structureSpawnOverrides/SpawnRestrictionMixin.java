@@ -1,4 +1,4 @@
-package quickcarpet.mixin.shulkerSpawningInEndCities;
+package quickcarpet.mixin.structureSpawnOverrides;
 
 import net.minecraft.entity.SpawnRestriction;
 import org.spongepowered.asm.mixin.Mixin;

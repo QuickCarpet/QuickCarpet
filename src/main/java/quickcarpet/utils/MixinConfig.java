@@ -73,7 +73,6 @@ public class MixinConfig {
             "renewableLava",
             "renewableSoulSand",
             "renewableSponges",
-            "shulkerSpawningInEndCities",
             "sparkingLighter",
             "spawnChunkLevel",
             "spawningAlgorithm",
@@ -94,6 +93,7 @@ public class MixinConfig {
         .putAll("movingBlockDuplicationFix", "carpetDuplicationFix", "railDuplicationFix", "tntDuplicationFix")
         .putAll("renewableFromAnvil", "renewableSand/anvil", "renewableGravel/anvil", "anvilledIce", "anvilledPackedIce", "anvilledBlueIce")
         .putAll("renewableFromSilverfish", "renewableSand/silverfish", "renewableGravel/silverfish")
+        .putAll("structureSpawnOverrides", "huskSpawningInDesertPyramids", "shulkerSpawningInEndCities")
         .putAll("tnt", "tntPrimeMomentum", "tntHardcodeAngle");
         for (String rule : identityMapped) {
             builder.put(rule, rule);

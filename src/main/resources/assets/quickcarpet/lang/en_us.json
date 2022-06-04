@@ -89,6 +89,7 @@
   "carpet.rule.hopperCounters.extra": "Enables /counter command, and actions while placing red and green carpets on wool blocks\nUse /counter <color?> reset to reset the counter, and /counter <color?> to query\nCounters are global and shared between players, 16 channels available\nItems counted are destroyed, count up to one stack per tick per hopper",
   "carpet.rule.hopperMinecartCooldown.description": "Adds a cooldown to the hopper minecart",
   "carpet.rule.hopperMinecartItemTransfer.description": "Hopper minecarts can push out items like normal hoppers",
+  "carpet.rule.huskSpawningInDesertPyramids.description": "Husks will spawn in desert pyramids",
   "carpet.rule.infiniteHopper.description": "Hoppers \"pulling\" from wool will keep the items they push out",
   "carpet.rule.infiniteHopper.extra": "Also works together with hopperCounters and hopperMinecartItemTransfer",
   "carpet.rule.isDevelopment.description": "Sets the isDevelopment constant",

@@ -223,6 +223,9 @@ public class Settings {
     @Rule(category = FEATURE)
     public static boolean hopperMinecartItemTransfer = false;
 
+    @Rule(category = FEATURE)
+    public static boolean huskSpawningInDesertPyramids = false;
+
     @Rule(category = CREATIVE)
     public static boolean infiniteHopper = false;
 
