@@ -124,6 +124,22 @@ Default: `false`
 Options: `true`, `false`  
 Categories: fix  
 
+## carpets
+Executes commands when placing certain carpets
+
+- pink: /spawn list  
+- black: /spawn mobcaps  
+- gray: /blockinfo  
+- blue: /fluidinfo  
+- brown: /measure  
+- green: /counter  
+- red: /counter reset  
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: creative  
+
 ## commandBlockInfo
 Enables /blockinfo command to get info about blocks
 

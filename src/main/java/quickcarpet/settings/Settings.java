@@ -101,6 +101,9 @@ public class Settings {
     @Rule(category = FIX)
     public static boolean carpetDuplicationFix = false;
 
+    @Rule(category = CREATIVE)
+    public static boolean carpets;
+
     @Rule(category = COMMANDS)
     public static boolean cameraModeRestoreLocation = true;
 

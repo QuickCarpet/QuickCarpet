@@ -42,6 +42,7 @@ public class MixinConfig {
             "blockEntityFix",
             "calmNetherFires",
             "carefulBreak",
+            "carpets",
             "commandPlayer",
             "commandScoreboardPublic",
             "connectionTimeout",

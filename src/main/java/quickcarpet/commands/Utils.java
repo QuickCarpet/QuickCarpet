@@ -106,7 +106,7 @@ public class Utils {
             ));
     }
 
-    static <S extends State<?, S>, P extends StateInfoProvider<S, ?>> int executeStateInfo(ServerCommandSource source, BlockPos pos, S state, Registry<P> providers) {
+    public static <S extends State<?, S>, P extends StateInfoProvider<S, ?>> int executeStateInfo(ServerCommandSource source, BlockPos pos, S state, Registry<P> providers) {
         for (P provider : providers) {
             MutableText value = provider.getAndFormat(state, source.getWorld(), pos);
             m(source, c(Translations.translate(providers.getKey(provider).orElseThrow()), s(": "), value));

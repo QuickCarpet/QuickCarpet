@@ -39,6 +39,7 @@
     "carefulBreak.BlockMixin",
     "carefulBreak.ServerPlayerInteractionManagerMixin",
     "carefulBreak.ThreadExecutorMixin",
+    "carpets.DyedCarpetBlockMixin",
     "commandPlayer.PlayerManagerMixin",
     "commandPlayer.ServerPlayerEntityMixin",
     "commandPlayer.ServerPlayNetworkHandlerMixin",

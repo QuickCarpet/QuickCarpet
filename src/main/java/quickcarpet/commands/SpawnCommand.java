@@ -84,7 +84,7 @@ public class SpawnCommand {
         return 1;
     }
 
-    private static int sendMobcaps(ServerCommandSource source, ServerWorld dimension) {
+    public static int sendMobcaps(ServerCommandSource source, ServerWorld dimension) {
         if (dimension == null) {
             dimension = source.getWorld();
         }
@@ -106,7 +106,7 @@ public class SpawnCommand {
         return list(source, new BlockPos(source.getPosition()));
     }
 
-    private static int list(ServerCommandSource source, BlockPos pos) {
+    public static int list(ServerCommandSource source, BlockPos pos) {
         for (var text : SpawnUtils.list(source.getWorld(), pos)) {
             m(source, text);
         }

@@ -38,7 +38,7 @@ public class MeasureCommand {
         return measure(source, from.toAbsolutePos(source),to.toAbsolutePos(source));
     }
 
-    private static int measure(ServerCommandSource source, Vec3d from, Vec3d to) {
+    public static int measure(ServerCommandSource source, Vec3d from, Vec3d to) {
         m(source, t(Keys.TITLE, tp(from, Formatting.BOLD), tp(to, Formatting.BOLD)));
         Vec3d fromCentered = new Vec3d(((int) from.x) + 0.5, (int) from.y, ((int) from.z) + 0.5);
         Vec3d toCentered = new Vec3d(((int) to.x) + 0.5, (int) to.y, ((int) to.z) + 0.5);

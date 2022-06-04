@@ -282,11 +282,11 @@ public class Messenger {
         return s(String.format(Locale.ROOT, format, args), style);
     }
 
-    public static void send(ServerCommandSource source, Collection<Text> lines) {
+    public static void send(ServerCommandSource source, Collection<? extends Text> lines) {
         send(source, lines, false);
     }
 
-    public static void send(ServerCommandSource source, Collection<Text> lines, boolean sendToOps) {
+    public static void send(ServerCommandSource source, Collection<? extends Text> lines, boolean sendToOps) {
         lines.forEach(line -> send(source, line, sendToOps));
     }
 
