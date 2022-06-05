@@ -7,7 +7,6 @@ import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import net.minecraft.block.BlockState;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
@@ -22,7 +21,7 @@ import static quickcarpet.utils.Messenger.*;
 
 public class BlockInfoCommand {
     public static final DynamicCommandExceptionType UNKNOWN_PROVIDER_EXCEPTION = new DynamicCommandExceptionType(
-        id -> new TranslatableText("block_info_provider.unknown", id)
+        id -> t("block_info_provider.unknown", id)
     );
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {

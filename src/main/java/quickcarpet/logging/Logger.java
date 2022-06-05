@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import com.mojang.serialization.Codec;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -20,6 +19,8 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
+
+import static quickcarpet.utils.Messenger.s;
 
 public class Logger implements Comparable<Logger> {
     public static Codec<Logger> NAME_CODEC = QuickCarpetIdentifier.CODEC.comapFlatMap(Loggers::getDataResult, Logger::getId).stable();
@@ -70,7 +71,7 @@ public class Logger implements Comparable<Logger> {
     }
 
     public Text getDisplayName() {
-        return new LiteralText(QuickCarpetIdentifier.toString(getId())).formatted(Formatting.GOLD);
+        return s(QuickCarpetIdentifier.toString(getId())).formatted(Formatting.GOLD);
     }
 
     @Nullable
@@ -83,7 +84,7 @@ public class Logger implements Comparable<Logger> {
     }
 
     public void setUnavailable(MutableText reason) {
-        this.unavailabilityReason = reason::shallowCopy;
+        this.unavailabilityReason = reason::copy;
     }
 
     public boolean isAvailable() {

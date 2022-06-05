@@ -49,7 +49,7 @@ public class HopperTest {
         return HopperCounter.getCounter(WoolTool.getCounterKey(ctx.getWorld(), ctx.getAbsolutePos(pos)));
     }
 
-    @GameTest(structureName = "wool_hopper_wool")
+    @GameTest(templateName = "wool_hopper_wool")
     public void vanilla$woolHopperWool(TestContext ctx) {
         nextWool(ctx, ABOVE_HOPPER_POS);
         nextWool(ctx, BELOW_HOPPER_POS);
@@ -60,7 +60,7 @@ public class HopperTest {
         });
     }
 
-    @GameTest(structureName = "wool_hopper_wool", batchId = "rules/hopperCounters=true")
+    @GameTest(templateName = "wool_hopper_wool", batchId = "rules/hopperCounters=true")
     public void qc$hopperCounters$woolHopperWool(TestContext ctx) {
         clearCounters(ctx);
         nextWool(ctx, ABOVE_HOPPER_POS);
@@ -75,7 +75,7 @@ public class HopperTest {
         });
     }
 
-    @GameTest(structureName = "wool_hopper_wool", batchId = "rules/hopperCounters=true,infiniteHopper=true")
+    @GameTest(templateName = "wool_hopper_wool", batchId = "rules/hopperCounters=true,infiniteHopper=true")
     public void qc$infiniteHopper$woolHopperWool(TestContext ctx) {
         clearCounters(ctx);
         HopperCounter aboveCounter = nextWool(ctx, ABOVE_HOPPER_POS);
@@ -98,7 +98,7 @@ public class HopperTest {
         });
     }
 
-    @GameTest(structureName = "wool_hopper_wool", batchId = "rules/hopperCounters=true,infiniteHopper=true")
+    @GameTest(templateName = "wool_hopper_wool", batchId = "rules/hopperCounters=true,infiniteHopper=true")
     public void qc$infiniteHopper$woolHopperChest(TestContext ctx) {
         clearCounters(ctx);
         HopperCounter aboveCounter = nextWool(ctx, ABOVE_HOPPER_POS);

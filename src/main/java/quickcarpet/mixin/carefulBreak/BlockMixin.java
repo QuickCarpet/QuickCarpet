@@ -30,7 +30,7 @@ public class BlockMixin {
             item.onPlayerCollision(player);
             if (item.isRemoved()) {
                 Vec3d pos = item.getPos();
-                player.networkHandler.sendPacket(new PlaySoundS2CPacket(SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, pos.getX(), pos.getY(), pos.getZ(), 0.2F, (player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 1.4F + 2.0F));
+                player.networkHandler.sendPacket(new PlaySoundS2CPacket(SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, pos.getX(), pos.getY(), pos.getZ(), 0.2F, (player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 1.4F + 2.0F, player.getRandom().nextLong()));
                 ci.cancel();
             }
         }

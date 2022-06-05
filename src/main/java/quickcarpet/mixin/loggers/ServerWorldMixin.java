@@ -18,7 +18,7 @@ import static quickcarpet.utils.Messenger.t;
 public class ServerWorldMixin {
     @Inject(
         method = "tickWeather",
-        at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/math/MathHelper;nextBetween(Ljava/util/Random;II)I", ordinal = 0),
+        at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/math/MathHelper;nextBetween(Lnet/minecraft/util/math/random/Random;II)I", ordinal = 0),
         locals = LocalCapture.CAPTURE_FAILHARD
     )
     private void quickcarpet$log$weather$thunderOn(CallbackInfo ci, boolean raining, int clearDuration, int thunderDuration) {
@@ -27,7 +27,7 @@ public class ServerWorldMixin {
 
     @Inject(
         method = "tickWeather",
-        at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/math/MathHelper;nextBetween(Ljava/util/Random;II)I", ordinal = 1),
+        at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/math/MathHelper;nextBetween(Lnet/minecraft/util/math/random/Random;II)I", ordinal = 1),
         locals = LocalCapture.CAPTURE_FAILHARD
     )
     private void quickcarpet$log$weather$thunderOff(CallbackInfo ci, boolean raining, int clearDuration, int thunderDuration) {
@@ -36,7 +36,7 @@ public class ServerWorldMixin {
 
     @Inject(
         method = "tickWeather",
-        at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/math/MathHelper;nextBetween(Ljava/util/Random;II)I", ordinal = 2),
+        at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/math/MathHelper;nextBetween(Lnet/minecraft/util/math/random/Random;II)I", ordinal = 2),
         locals = LocalCapture.CAPTURE_FAILHARD
     )
     private void quickcarpet$log$weather$rainOn(CallbackInfo ci, boolean raining, int clearDuration, int thunderDuration, int rainDuration) {
@@ -45,7 +45,7 @@ public class ServerWorldMixin {
 
     @Inject(
         method = "tickWeather",
-        at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/math/MathHelper;nextBetween(Ljava/util/Random;II)I", ordinal = 3),
+        at = @At(value = "INVOKE_ASSIGN", target = "Lnet/minecraft/util/math/MathHelper;nextBetween(Lnet/minecraft/util/math/random/Random;II)I", ordinal = 3),
         locals = LocalCapture.CAPTURE_FAILHARD
     )
     private void quickcarpet$log$weather$thunderOff(CallbackInfo ci, boolean raining, int clearDuration, int thunderDuration, int rainDuration) {

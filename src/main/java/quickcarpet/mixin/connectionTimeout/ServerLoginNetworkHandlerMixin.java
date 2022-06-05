@@ -4,7 +4,6 @@ import net.minecraft.network.ClientConnection;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerLoginNetworkHandler;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -13,6 +12,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import quickcarpet.settings.Settings;
+
+import static quickcarpet.utils.Messenger.t;
 
 @Mixin(ServerLoginNetworkHandler.class)
 public abstract class ServerLoginNetworkHandlerMixin {
@@ -33,7 +34,7 @@ public abstract class ServerLoginNetworkHandlerMixin {
     @Inject(method = "tick", at = @At("RETURN"))
     private void quickcarpet$connectionTimeout$fixedTimeout(CallbackInfo ci) {
         if (Settings.connectionTimeout > 0 && System.currentTimeMillis() > timeoutStart + Settings.connectionTimeout * 1000L) {
-            this.disconnect(new TranslatableText("multiplayer.disconnect.slow_login"));
+            this.disconnect(t("multiplayer.disconnect.slow_login"));
         }
     }
 }

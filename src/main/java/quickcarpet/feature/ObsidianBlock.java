@@ -8,9 +8,7 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.registry.Registry;
-
-import java.util.Random;
+import net.minecraft.util.math.random.Random;
 
 public class ObsidianBlock extends Block {
     public ObsidianBlock(Settings settings) {

@@ -17,9 +17,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.gen.feature.ConfiguredStructureFeature;
-import net.minecraft.world.gen.feature.StructureFeature;
-import org.apache.logging.log4j.LogManager;
+import net.minecraft.world.gen.structure.Structure;
 import org.slf4j.Logger;
 import quickcarpet.api.network.server.ServerPluginChannelHandler;
 import quickcarpet.network.impl.PacketSplitter;
@@ -96,11 +94,11 @@ public class StructureChannel implements ServerPluginChannelHandler {
     private void sendUpdate(ServerPlayerEntity player, Collection<ChunkPos> chunks) {
         ServerWorld world = player.getWorld();
         Map<Identifier, LongSet> references = new HashMap<>();
-        var registry = world.getRegistryManager().get(Registry.CONFIGURED_STRUCTURE_FEATURE_KEY);
+        var registry = world.getRegistryManager().get(Registry.STRUCTURE_KEY);
         for (ChunkPos pos : chunks) {
             if (!world.isChunkLoaded(pos.x, pos.z)) continue;
             Chunk chunk = world.getChunk(pos.x, pos.z);
-            for (Map.Entry<ConfiguredStructureFeature<?, ?>, LongSet> e : chunk.getStructureReferences().entrySet()) {
+            for (Map.Entry<Structure, LongSet> e : chunk.getStructureReferences().entrySet()) {
                 references.merge(registry.getId(e.getKey()), e.getValue(), (a, b) -> {
                     LongSet c = new LongOpenHashSet(a);
                     c.addAll(b);

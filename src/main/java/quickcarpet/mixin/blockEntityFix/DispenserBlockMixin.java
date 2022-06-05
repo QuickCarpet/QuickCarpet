@@ -30,7 +30,7 @@ public class DispenserBlockMixin {
         return be;
     }
 
-    @Inject(method = "dispense", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/DispenserBlockEntity;chooseNonEmptySlot()I"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(method = "dispense", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/DispenserBlockEntity;chooseNonEmptySlot(Lnet/minecraft/util/math/random/Random;)I"), cancellable = true, locals = LocalCapture.CAPTURE_FAILHARD)
     private void quickcarpet$blockEntityFix$ignoreNull(ServerWorld serverWorld, BlockPos pos, CallbackInfo ci, BlockPointerImpl blockPointer, DispenserBlockEntity be) {
         if (be == null) ci.cancel();
     }

@@ -5,12 +5,11 @@ import com.mojang.brigadier.arguments.*;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 import quickcarpet.api.module.QuickCarpetModule;
 import quickcarpet.api.settings.*;
 import quickcarpet.network.channels.RulesChannel;
 import quickcarpet.settings.Settings;
-import quickcarpet.utils.Messenger;
 import quickcarpet.utils.MixinConfig;
 import quickcarpet.utils.Reflection;
 import quickcarpet.utils.Translations;
@@ -24,6 +23,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static java.lang.reflect.Modifier.*;
+import static quickcarpet.utils.Messenger.t;
 
 final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T> {
     private final Rule rule;
@@ -33,11 +33,11 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
 
     private final String shortName;
     private final String name;
-    private final TranslatableText description;
+    private final Text description;
     @Nullable
-    private final TranslatableText extraInfo;
+    private final Text extraInfo;
     @Nullable
-    private final TranslatableText deprecated;
+    private final Text deprecated;
     private final List<RuleCategory> categories;
     private final List<String> options;
     private final List<String> enabledOptions;
@@ -70,9 +70,9 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
         this.shortName = SettingsManager.getDefaultRuleName(field, rule);
         this.name = manager.getRuleName(field, rule);
         this.type = (Class<T>) field.getType();
-        this.description = new TranslatableText(manager.getDescriptionTranslationKey(field, rule));
+        this.description = t(manager.getDescriptionTranslationKey(field, rule));
         String extraKey = manager.getExtraTranslationKey(field, rule);
-        this.extraInfo = Translations.hasTranslation(extraKey) ? new TranslatableText(extraKey) : null;
+        this.extraInfo = Translations.hasTranslation(extraKey) ? t(extraKey) : null;
         this.categories = ImmutableList.copyOf(rule.category());
         this.validator = (Validator<T>) Reflection.callDeprecatedPrivateConstructor(rule.validator());
         this.onChange = (ChangeListener<T>) Reflection.callDeprecatedPrivateConstructor(rule.onChange());
@@ -92,7 +92,7 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
             this.enabledOptions = List.of(defaultAsString);
         }
         this.disabled = disabled;
-        this.deprecated = rule.deprecated() ? new TranslatableText(manager.getDeprecationTranslationKey(field, rule)) : null;
+        this.deprecated = rule.deprecated() ? t(manager.getDeprecationTranslationKey(field, rule)) : null;
     }
 
     @Override
@@ -116,19 +116,19 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
     }
 
     @Override
-    public TranslatableText getDescription() {
+    public Text getDescription() {
         return description;
     }
 
     @Nullable
     @Override
-    public TranslatableText getExtraInfo() {
+    public Text getExtraInfo() {
         return extraInfo;
     }
 
     @Nullable
     @Override
-    public TranslatableText getDeprecated() {
+    public Text getDeprecated() {
         return deprecated;
     }
 
@@ -212,12 +212,12 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
     @Override
     public void set(T value, boolean sync) {
         T previousValue = this.get();
-        Optional<TranslatableText> error = this.validator.validate(value);
+        Optional<Text> error = this.validator.validate(value);
         if (error.isPresent()) throw new ParsedRule.ValueException(error.get());
         if (sync) {
             String str = typeAdapter.toString(value);
             if (options.contains(str) && !enabledOptions.contains(str)) {
-                throw new ParsedRule.ValueException(Messenger.t(""));
+                throw new ParsedRule.ValueException(t(""));
             }
         }
         if (this.fieldVolatile) {

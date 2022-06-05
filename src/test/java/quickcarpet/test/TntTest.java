@@ -26,28 +26,28 @@ public class TntTest {
         ctx.getWorld().createExplosion(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 4, type);
     }
 
-    @GameTest(structureName = "contained_explosion")
+    @GameTest(templateName = "contained_explosion")
     public void vanilla$explosionBlockDamage(TestContext ctx) {
         createExplosion(ctx, Explosion.DestructionType.BREAK);
         ctx.expectBlock(Blocks.AIR, CENTER);
         ctx.complete();
     }
 
-    @GameTest(structureName = "contained_explosion")
+    @GameTest(templateName = "contained_explosion")
     public void vanilla$explosionNoBlockDamage(TestContext ctx) {
         createExplosion(ctx, Explosion.DestructionType.NONE);
         ctx.expectBlock(Blocks.WHITE_STAINED_GLASS, CENTER);
         ctx.complete();
     }
 
-    @GameTest(structureName = "contained_explosion", batchId = "rules/explosionBlockDamage=false")
+    @GameTest(templateName = "contained_explosion", batchId = "rules/explosionBlockDamage=false")
     public void qc$explosionNoBlockDamage(TestContext ctx) {
         createExplosion(ctx, Explosion.DestructionType.BREAK);
         ctx.expectBlock(Blocks.WHITE_STAINED_GLASS, CENTER);
         ctx.complete();
     }
 
-    @GameTest(structureName = "contained_explosion")
+    @GameTest(templateName = "contained_explosion")
     public void vanilla$tntUpdateOnPlace(TestContext ctx) {
         ctx.setBlockState(CENTER.down(), Blocks.REDSTONE_BLOCK);
         List<Map<String, Object>> logParams = new ArrayList<>();
@@ -71,7 +71,7 @@ public class TntTest {
         });
     }
 
-    @GameTest(structureName = "contained_explosion", batchId = "rules/tntUpdateOnPlace=false")
+    @GameTest(templateName = "contained_explosion", batchId = "rules/tntUpdateOnPlace=false")
     public void qc$tntUpdateOnPlace(TestContext ctx) {
         ctx.setBlockState(CENTER.down(), Blocks.REDSTONE_BLOCK);
         ctx.setBlockState(CENTER, Blocks.TNT);
@@ -79,7 +79,7 @@ public class TntTest {
         ctx.complete();
     }
 
-    @GameTest(structureName = "contained_explosion", batchId = "rules/tntPrimeMomentum=false")
+    @GameTest(templateName = "contained_explosion", batchId = "rules/tntPrimeMomentum=false")
     public void qc$tntPrimeMomentum(TestContext ctx) {
         ctx.setBlockState(CENTER.down(), Blocks.REDSTONE_BLOCK);
         ctx.setBlockState(CENTER, Blocks.TNT);
@@ -90,7 +90,7 @@ public class TntTest {
         ctx.complete();
     }
 
-    @GameTest(structureName = "contained_explosion", batchId = "rules/tntHardcodeAngle=90")
+    @GameTest(templateName = "contained_explosion", batchId = "rules/tntHardcodeAngle=90")
     public void qc$tntHardcodeAngle(TestContext ctx) {
         ctx.setBlockState(CENTER.down(), Blocks.REDSTONE_BLOCK);
         ctx.setBlockState(CENTER, Blocks.TNT);

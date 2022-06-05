@@ -1,6 +1,7 @@
 package quickcarpet.mixin.commandPlayer;
 
 import com.mojang.authlib.GameProfile;
+import net.minecraft.network.encryption.PlayerPublicKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
@@ -24,7 +25,7 @@ public abstract class ServerPlayerEntityMixin implements ActionPackOwner {
     }
 
     @Inject(method = "<init>", at = @At(value = "RETURN"))
-    private void quickcarpet$player$init(MinecraftServer server, ServerWorld world, GameProfile profile, CallbackInfo ci) {
+    private void quickcarpet$player$init(MinecraftServer server, ServerWorld world, GameProfile profile, PlayerPublicKey publicKey, CallbackInfo ci) {
         this.actionPack = new PlayerActionPack((ServerPlayerEntity) (Object) this);
     }
 

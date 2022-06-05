@@ -2,7 +2,6 @@ package quickcarpet.utils;
 
 import net.minecraft.block.Block;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import quickcarpet.Build;
 import quickcarpet.QuickCarpet;
@@ -305,8 +304,8 @@ public interface Constants {
     }
     interface Validator {
         interface Texts {
-            TranslatableText TNT_ANGLE = t(Keys.TNT_ANGLE);
-            TranslatableText VIEW_DISTANCE_INTEGRATED = t(Keys.VIEW_DISTANCE_INTEGRATED);
+            Text TNT_ANGLE = t(Keys.TNT_ANGLE);
+            Text VIEW_DISTANCE_INTEGRATED = t(Keys.VIEW_DISTANCE_INTEGRATED);
         }
         interface Keys {
             String RANGE = "carpet.validator.range";

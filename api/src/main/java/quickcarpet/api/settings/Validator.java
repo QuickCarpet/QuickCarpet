@@ -1,7 +1,9 @@
 package quickcarpet.api.settings;
 
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.LiteralTextContent;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Formatting;
 
 import java.util.Optional;
@@ -12,7 +14,7 @@ public interface Validator<T> {
      * @param value The new value
      * @return empty if valid, error message if invalid
      */
-    Optional<TranslatableText> validate(T value);
+    Optional<Text> validate(T value);
 
     default String getName() {
         return this.getClass().getName();
@@ -20,16 +22,16 @@ public interface Validator<T> {
 
     class AlwaysTrue<T> implements Validator<T> {
         @Override
-        public Optional<TranslatableText> validate(T value) {
+        public Optional<Text> validate(T value) {
             return Optional.empty();
         }
     }
 
     class Positive<T extends Number> implements Validator<T> {
         @Override
-        public Optional<TranslatableText> validate(T value) {
+        public Optional<Text> validate(T value) {
             if(value.doubleValue() > 0) return Optional.empty();
-            return Optional.of(new TranslatableText("carpet.validator.positive"));
+            return Optional.of(MutableText.of(new TranslatableTextContent("carpet.validator.positive")));
         }
 
         @Override
@@ -40,9 +42,9 @@ public interface Validator<T> {
 
     class NonNegative<T extends Number> implements Validator<T> {
         @Override
-        public Optional<TranslatableText> validate(T value) {
+        public Optional<Text> validate(T value) {
             if(value.doubleValue() >= 0) return Optional.empty();
-            return Optional.of(new TranslatableText("carpet.validator.nonNegative"));
+            return Optional.of(MutableText.of(new TranslatableTextContent("carpet.validator.nonNegative")));
         }
 
         @Override
@@ -53,9 +55,9 @@ public interface Validator<T> {
 
     class Negative<T extends Number> implements Validator<T> {
         @Override
-        public Optional<TranslatableText> validate(T value) {
+        public Optional<Text> validate(T value) {
             if(value.doubleValue() < 0) return Optional.empty();
-            return Optional.of(new TranslatableText("carpet.validator.negative"));
+            return Optional.of(MutableText.of(new TranslatableTextContent("carpet.validator.negative")));
         }
 
         @Override
@@ -66,9 +68,12 @@ public interface Validator<T> {
 
     class OpLevel implements Validator<Integer> {
         @Override
-        public Optional<TranslatableText> validate(Integer value) {
+        public Optional<Text> validate(Integer value) {
             if (value >= 0 && value <= 4) return Optional.empty();
-            return Optional.of(new TranslatableText("carpet.validator.range", new LiteralText("0").formatted(Formatting.AQUA), new LiteralText("4").formatted(Formatting.AQUA)));
+            return Optional.of(MutableText.of(new TranslatableTextContent("carpet.validator.range",
+                MutableText.of(new LiteralTextContent("0")).formatted(Formatting.AQUA),
+                MutableText.of(new LiteralTextContent("4")).formatted(Formatting.AQUA))
+            ));
         }
 
         @Override
@@ -100,11 +105,14 @@ public interface Validator<T> {
         }
 
         @Override
-        public Optional<TranslatableText> validate(T value) {
+        public Optional<Text> validate(T value) {
             int minCompare = value.compareTo(min);
             int maxCompare = value.compareTo(max);
             if ((0 < minCompare && maxCompare < 0) || (minCompare == 0 && minIncluded) || (maxCompare == 0) && maxIncluded) return Optional.empty();
-            return Optional.of(new TranslatableText("carpet.validator.range", new LiteralText(this.min.toString()).formatted(Formatting.AQUA), new LiteralText(this.max.toString()).formatted(Formatting.AQUA)));
+            return Optional.of(MutableText.of(new TranslatableTextContent("carpet.validator.range",
+                MutableText.of(new LiteralTextContent(this.min.toString())).formatted(Formatting.AQUA),
+                MutableText.of(new LiteralTextContent(this.max.toString())).formatted(Formatting.AQUA))
+            ));
         }
     }
 }

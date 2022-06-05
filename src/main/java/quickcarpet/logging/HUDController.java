@@ -3,7 +3,6 @@ package quickcarpet.logging;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.network.packet.s2c.play.PlayerListHeaderS2CPacket;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import quickcarpet.utils.Translations;
@@ -39,7 +38,7 @@ public class HUDController {
     // FIXME: remember which hud was sent in case a logger (like 'tickwarp') stops sending text and it's the only subscribed logger
     public static void update() {
         for (Map.Entry<PlayerEntity, List<MutableText>> playerHud : PLAYER_HUDS.entrySet()) {
-            sendHUD(playerHud.getKey(), new LiteralText(""), c(playerHud.getValue().toArray(new MutableText[0])));
+            sendHUD(playerHud.getKey(), s(""), c(playerHud.getValue().toArray(new MutableText[0])));
         }
         PLAYER_HUDS.clear();
     }

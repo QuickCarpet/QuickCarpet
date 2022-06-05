@@ -169,12 +169,8 @@ public class PlayerCommand {
             m(context.getSource(), ONLY_EXISTING);
             return true;
         }
-        PlayerEntity sendingPlayer;
-        try {
-            sendingPlayer = context.getSource().getPlayer();
-        } catch (CommandSyntaxException e) {
-            return false;
-        }
+        PlayerEntity sendingPlayer= context.getSource().getPlayer();
+        if (player == null) return false;
 
         if (!context.getSource().getServer().getPlayerManager().isOperator(sendingPlayer.getGameProfile())) {
             if (sendingPlayer != player && !(player instanceof FakeServerPlayerEntity)) {
@@ -257,11 +253,11 @@ public class PlayerCommand {
                 source::getWorld);
         GameMode mode = source.getServer().getDefaultGameMode();
         boolean flying = false;
-        try {
-            ServerPlayerEntity player = context.getSource().getPlayer();
+        ServerPlayerEntity player = context.getSource().getPlayer();
+        if (player != null) {
             mode = player.interactionManager.getGameMode();
             flying = player.getAbilities().flying;
-        } catch (CommandSyntaxException ignored) {}
+        }
         if (gameMode != null) mode = gameMode;
         GameMode finalMode = mode;
         boolean finalFlying = flying;

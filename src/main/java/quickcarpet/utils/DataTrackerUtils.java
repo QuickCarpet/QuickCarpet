@@ -53,7 +53,7 @@ public final class DataTrackerUtils {
         COMPOUND_TAG(TrackedDataHandlerRegistry.NBT_COMPOUND, Formatter.COMPOUND_TAG),
         PARTICLE(TrackedDataHandlerRegistry.PARTICLE, Formatter.PARTICLE),
         VILLAGER_DATA(TrackedDataHandlerRegistry.VILLAGER_DATA, Formatter.VILLAGER_DATA),
-        ENTITY_ID(TrackedDataHandlerRegistry.FIREWORK_DATA, Formatter.OPTIONAL_INT),
+        ENTITY_ID(TrackedDataHandlerRegistry.OPTIONAL_INT, Formatter.OPTIONAL_INT),
         ENTITY_POSE(TrackedDataHandlerRegistry.ENTITY_POSE, (Formatter<EntityPose>) Formatter.ENUM),
         ;
 
@@ -128,8 +128,8 @@ public final class DataTrackerUtils {
         register(LivingEntity.class, OPTIONAL_BLOCK_POS, "sleeping_position");
         register(MobEntity.class, BYTE, "mob_flags");
         register(PassiveEntity.class, BOOLEAN, "child");
-        register(HorseBaseEntity.class, BYTE, "horse_flags");
-        register(HorseBaseEntity.class, OPTIONAL_UUID, "owner_uuid");
+        register(AbstractHorseEntity.class, BYTE, "horse_flags");
+        register(AbstractHorseEntity.class, OPTIONAL_UUID, "owner_uuid");
         register(AbstractDonkeyEntity.class, BOOLEAN, "chest");
         register(AbstractMinecartEntity.class, INTEGER, "hit_time");
         register(AbstractMinecartEntity.class, INTEGER, "hit_direction");
@@ -186,7 +186,7 @@ public final class DataTrackerUtils {
         register(EyeOfEnderEntity.class, ITEM_STACK, "item");
         register(FallingBlockEntity.class, BLOCK_POS, "start_pos");
         register(FireworkRocketEntity.class, ITEM_STACK, "item");
-        register(FireworkRocketEntity.class, FIREWORK_DATA, "shooter");
+        register(FireworkRocketEntity.class, OPTIONAL_INT, "shooter");
         register(FireworkRocketEntity.class, BOOLEAN, "shot_at_angle");
         register(FishEntity.class, BOOLEAN, "from_bucket");
         register(FishingBobberEntity.class, INTEGER, "hooked_entity");

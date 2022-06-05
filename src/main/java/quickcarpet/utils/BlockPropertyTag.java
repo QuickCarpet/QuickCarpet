@@ -4,7 +4,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.fluid.FluidState;
-import net.minecraft.tag.Tag;
 import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -16,12 +15,11 @@ import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class BlockPropertyTag extends Tag<Block> {
+public class BlockPropertyTag {
     private final TagKey<Block> key;
     private final Predicate<BlockState> property;
 
     public BlockPropertyTag(Identifier id, BlockPropertyPredicate function) {
-        super(List.of());
         this.key = TagKey.of(Registry.BLOCK_KEY, id);
         this.property = state -> function.test(state, new SingleBlockView(state), BlockPos.ORIGIN);
     }
@@ -34,7 +32,6 @@ public class BlockPropertyTag extends Tag<Block> {
         return this.property.test(block.getDefaultState());
     }
 
-    @Override
     public List<Block> values() {
         return Registry.BLOCK.stream().filter(this::contains).collect(Collectors.toList());
     }

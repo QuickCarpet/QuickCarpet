@@ -1,7 +1,6 @@
 package quickcarpet.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.command.argument.EntityArgumentType;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
@@ -33,17 +32,13 @@ public class CameraModeCommand {
         dispatcher.register(survival);
 
         var toggle = literal("cs")
-            .requires(s -> s.hasPermissionLevel(Settings.commandCameramode))
+            .requires(s -> s.hasPermissionLevel(Settings.commandCameramode) && s.isExecutedByPlayer())
             .executes(c -> toggle(c.getSource(), c.getSource().getPlayer()));
         dispatcher.register(toggle);
     }
 
     private static boolean hasPermission(ServerCommandSource source, PlayerEntity target) {
-        try {
-            return source.hasPermissionLevel(2) || source.getPlayer() == target;
-        } catch (CommandSyntaxException e) {
-            return true; // shoudn't happen because server has all permissions anyways
-        }
+        return source.hasPermissionLevel(2) || source.getPlayer() == target;
     }
 
     private static int cameraMode(ServerCommandSource source, ServerPlayerEntity target) {

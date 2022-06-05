@@ -43,7 +43,7 @@ public final class DispenserBehaviors {
     }
 
     private static DispenserBehavior getBlockItemBehavior(DispenserBehavior vanilla, Item item, boolean isDefault) {
-        if (item.getRegistryEntry().isIn(ItemTags.CARPETS)) return new MultiDispenserBehavior(PLACE_BLOCK, vanilla);
+        if (item.getRegistryEntry().isIn(ItemTags.WOOL_CARPETS)) return new MultiDispenserBehavior(PLACE_BLOCK, vanilla);
         if (item instanceof PowderSnowBucketItem) {
             if (Settings.dispensersInteractCauldron) return new MultiDispenserBehavior(INTERACT_CAULDRON, vanilla);
             return vanilla;

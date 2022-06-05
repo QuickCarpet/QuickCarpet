@@ -15,7 +15,6 @@ import net.minecraft.server.ServerTask;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.WorldSavePath;
 import net.minecraft.util.math.Vec3d;
@@ -40,6 +39,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static quickcarpet.utils.Messenger.t;
+
 public class FakeServerPlayerEntity extends ServerPlayerEntity {
     private static final Logger LOGGER = LogManager.getLogger("QuickCarpet|Bots");
     private boolean hasStartingPos;
@@ -47,12 +48,12 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
     private float startingYaw, startingPitch;
 
     private FakeServerPlayerEntity(MinecraftServer server, ServerWorld world, GameProfile profile) {
-        super(server, world, profile);
+        super(server, world, profile, null);
         this.hasStartingPos = false;
     }
 
     private FakeServerPlayerEntity(MinecraftServer server, ServerWorld world, GameProfile profile, double x, double y, double z, float yaw, float pitch) {
-        super(server, world, profile);
+        super(server, world, profile, null);
         this.hasStartingPos = true;
         this.startingX = x;
         this.startingY = y;
@@ -145,7 +146,7 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
     }
 
     public static void createShadow(MinecraftServer server, ServerPlayerEntity real) {
-        Text reason = new TranslatableText("multiplayer.disconnect.duplicate_login");
+        Text reason = t("multiplayer.disconnect.duplicate_login");
         real.networkHandler.onDisconnected(reason);
         real.networkHandler.disconnect(reason);
         ServerWorld world = (ServerWorld) real.world;

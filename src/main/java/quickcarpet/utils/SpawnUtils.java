@@ -11,6 +11,7 @@ import net.minecraft.util.collection.Weighting;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.SpawnHelper;
 import net.minecraft.world.World;
@@ -23,7 +24,6 @@ import quickcarpet.utils.Constants.SpawnCommand.Keys;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import static quickcarpet.utils.Constants.SpawnCommand.Texts.*;
 import static quickcarpet.utils.Messenger.*;
@@ -71,7 +71,7 @@ public class SpawnUtils {
                 result.add(t(Keys.LIST_ENTRY_PACK, pack));
                 if (!canSpawn || !fits) continue;
                 double spawnChance = 0;
-                Random random = new Random(0);
+                Random random = Random.create(0);
                 for (int i = 0; i < 1000; i++) {
                     if (SpawnRestriction.canSpawn(type, world, SpawnReason.NATURAL, pos, random)) {
                         spawnChance++;

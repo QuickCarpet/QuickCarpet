@@ -21,7 +21,7 @@ repositories {
 }
 
 dependencies {
-    implementation("net.fabricmc:fabric-loom:0.10-SNAPSHOT")
-    implementation("io.github.juuxel:loom-quiltflower-mini:1.2.1")
+    implementation("net.fabricmc:fabric-loom:0.12-SNAPSHOT")
+    //implementation("io.github.juuxel:loom-quiltflower-mini:1.2.1")
     implementation("com.atlauncher:ATLauncher:3.4.12.2")
 }

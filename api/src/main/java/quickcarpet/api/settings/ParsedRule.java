@@ -4,7 +4,7 @@ import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 import quickcarpet.api.module.QuickCarpetModule;
 
 import javax.annotation.Nullable;
@@ -20,11 +20,11 @@ public interface ParsedRule<T> {
     Field getField();
     String getShortName();
     String getName();
-    TranslatableText getDescription();
+    Text getDescription();
     @Nullable
-    TranslatableText getExtraInfo();
+    Text getExtraInfo();
     @Nullable
-    TranslatableText getDeprecated();
+    Text getDeprecated();
     List<RuleCategory> getCategories();
     List<String> getOptions();
     Class<T> getType();
@@ -52,9 +52,9 @@ public interface ParsedRule<T> {
     boolean hasSavedValue();
 
     class ValueException extends IllegalArgumentException {
-        public final TranslatableText message;
+        public final Text message;
 
-        public ValueException(TranslatableText message) {
+        public ValueException(Text message) {
             this.message = message;
         }
 

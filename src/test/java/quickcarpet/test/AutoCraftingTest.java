@@ -53,7 +53,7 @@ public class AutoCraftingTest {
         ctx.setBlockState(NEXT_TO_BELOW_HOPPER_POS, Blocks.REDSTONE_BLOCK);
     }
 
-    @GameTest(structureName = "hopper_table_hopper")
+    @GameTest(templateName = "hopper_table_hopper")
     public void vanilla$noTransfer(TestContext ctx) {
         setAbove(ctx, new ItemStack(Items.REDSTONE_BLOCK));
         ctx.waitAndRun(10, () -> {
@@ -65,7 +65,7 @@ public class AutoCraftingTest {
         });
     }
 
-    @GameTest(structureName = "hopper_table_hopper", batchId = "rules/autoCraftingTable=true")
+    @GameTest(templateName = "hopper_table_hopper", batchId = "rules/autoCraftingTable=true")
     public void qc$unpackRedstoneBlock(TestContext ctx) {
         setAbove(ctx, new ItemStack(Items.REDSTONE_BLOCK));
         ctx.waitAndRun(8, () -> {
@@ -91,7 +91,7 @@ public class AutoCraftingTest {
         });
     }
 
-    @GameTest(structureName = "hopper_table_hopper", batchId = "rules/autoCraftingTable=true")
+    @GameTest(templateName = "hopper_table_hopper", batchId = "rules/autoCraftingTable=true")
     public void qc$packRedstoneBlock(TestContext ctx) {
         setAbove(ctx, new ItemStack(Items.REDSTONE, 9));
         ctx.setBlockState(NEXT_TO_BELOW_HOPPER_POS, Blocks.REDSTONE_BLOCK);

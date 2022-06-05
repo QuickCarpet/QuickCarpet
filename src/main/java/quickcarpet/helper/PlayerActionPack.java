@@ -287,9 +287,9 @@ public class PlayerActionPack {
                         BlockState state = player.world.getBlockState(pos);
                         if (ap.currentBlock == null || !ap.currentBlock.equals(pos)) {
                             if (ap.currentBlock != null) {
-                                player.interactionManager.processBlockBreakingAction(ap.currentBlock, PlayerActionC2SPacket.Action.ABORT_DESTROY_BLOCK, side, player.world.getTopY());
+                                player.interactionManager.processBlockBreakingAction(ap.currentBlock, PlayerActionC2SPacket.Action.ABORT_DESTROY_BLOCK, side, player.world.getTopY(), 0);
                             }
-                            player.interactionManager.processBlockBreakingAction(pos, PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, side, player.world.getTopY());
+                            player.interactionManager.processBlockBreakingAction(pos, PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, side, player.world.getTopY(), 0);
                             boolean notAir = !state.isAir();
                             if (notAir && ap.curBlockDamageMP == 0) {
                                 state.onBlockBreakStart(player.world, pos, player);
@@ -303,7 +303,7 @@ public class PlayerActionPack {
                         } else {
                             ap.curBlockDamageMP += state.calcBlockBreakingDelta(player, player.world, pos);
                             if (ap.curBlockDamageMP >= 1) {
-                                player.interactionManager.processBlockBreakingAction(pos, PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK, side, player.world.getTopY());
+                                player.interactionManager.processBlockBreakingAction(pos, PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK, side, player.world.getTopY(), 0);
                                 ap.curBlockDamageMP = 0;
                             }
                             player.world.setBlockBreakingInfo(-1, pos, (int) (ap.curBlockDamageMP * 10));
@@ -319,7 +319,7 @@ public class PlayerActionPack {
                 PlayerActionPack ap = ((ActionPackOwner) player).quickcarpet$getActionPack();
                 if (ap.currentBlock == null) return;
                 player.world.setBlockBreakingInfo(-1, ap.currentBlock, -1);
-                player.interactionManager.processBlockBreakingAction(ap.currentBlock, PlayerActionC2SPacket.Action.ABORT_DESTROY_BLOCK, Direction.DOWN, player.world.getTopY());
+                player.interactionManager.processBlockBreakingAction(ap.currentBlock, PlayerActionC2SPacket.Action.ABORT_DESTROY_BLOCK, Direction.DOWN, player.world.getTopY(), 0);
                 ap.curBlockDamageMP = 0;
                 ap.currentBlock = null;
             }

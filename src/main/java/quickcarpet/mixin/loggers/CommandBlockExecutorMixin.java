@@ -24,7 +24,7 @@ import static quickcarpet.utils.Messenger.*;
 
 @Mixin(CommandBlockExecutor.class)
 public class CommandBlockExecutorMixin {
-    @Redirect(method = "execute", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/command/CommandManager;execute(Lnet/minecraft/server/command/ServerCommandSource;Ljava/lang/String;)I"))
+    @Redirect(method = "execute", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/command/CommandManager;executeWithPrefix(Lnet/minecraft/server/command/ServerCommandSource;Ljava/lang/String;)I"))
     private int quickcarpet$log$commandBlocks$logExecute(CommandManager manager, ServerCommandSource source, String command) {
         int result = manager.execute(source, command);
         if (Loggers.COMMAND_BLOCKS.isActive()) log(source, command, result);

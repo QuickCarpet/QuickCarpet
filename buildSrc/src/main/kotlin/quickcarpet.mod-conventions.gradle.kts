@@ -1,7 +1,7 @@
 plugins {
     id("quickcarpet.java-conventions")
     id("fabric-loom")
-    id("io.github.juuxel.loom-quiltflower-mini")
+    //id("io.github.juuxel.loom-quiltflower-mini")
 }
 
 val mods = project.extensions.getByType<VersionCatalogsExtension>().named("mods")

@@ -65,12 +65,12 @@ public abstract class LivingEntityMixin {
         DamageLogHelper.modify((LivingEntity) (Object) this, source, amount, amount - lastDamageTaken, "cooldown");
     }
 
-    @Inject(method = "applyEnchantmentsToDamage", at = @At(value = "CONSTANT", args = "floatValue=25"), locals = LocalCapture.CAPTURE_FAILHARD)
+    @Inject(method = "modifyAppliedDamage", at = @At(value = "CONSTANT", args = "floatValue=25"), locals = LocalCapture.CAPTURE_FAILHARD)
     private void quickcarpet$log$damage$modify$resistanceEffect(DamageSource source, float damage, CallbackInfoReturnable<Float> cir, int i, int j, float f) {
         DamageLogHelper.modify((LivingEntity) (Object) this, source, damage, f / 25.0F, "resistanceEffect");
     }
 
-    @Redirect(method = "applyEnchantmentsToDamage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/DamageUtil;getInflictedDamage(FF)F"))
+    @Redirect(method = "modifyAppliedDamage", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/DamageUtil;getInflictedDamage(FF)F"))
     private float quickcarpet$log$damage$modify$enchantments(float damage, float enchantModifiers, DamageSource source) {
         float after = DamageUtil.getInflictedDamage(damage, enchantModifiers);
         DamageLogHelper.modify((LivingEntity) (Object) this, source, damage, after, "enchantments", dbl(enchantModifiers));

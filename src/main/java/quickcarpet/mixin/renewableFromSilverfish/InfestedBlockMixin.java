@@ -7,7 +7,6 @@ import net.minecraft.block.InfestedBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -25,7 +24,7 @@ public abstract class InfestedBlockMixin extends Block {
 
     @Inject(method = "onStacksDropped", at = @At(value = "INVOKE", shift = At.Shift.AFTER,
             target = "Lnet/minecraft/block/InfestedBlock;spawnSilverfish(Lnet/minecraft/server/world/ServerWorld;Lnet/minecraft/util/math/BlockPos;)V"))
-    private void quickcarpet$renewableFromSilverfish$onStacksDropped(BlockState state, ServerWorld world, BlockPos pos, ItemStack stack, CallbackInfo ci) {
+    private void quickcarpet$renewableFromSilverfish$onStacksDropped(BlockState state, ServerWorld world, BlockPos pos, ItemStack stack, boolean dropExperience, CallbackInfo ci) {
         if (renewableGravel == RenewableGravelOrSandOption.SILVERFISH) {
             dropStack(world, pos, new ItemStack(Blocks.GRAVEL));
         } else if (renewableSand == RenewableGravelOrSandOption.SILVERFISH) {

@@ -5,6 +5,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.tag.BlockTags;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryEntry;
 import net.minecraft.util.registry.RegistryEntryList;
@@ -17,7 +18,6 @@ import quickcarpet.settings.Settings;
 import quickcarpet.utils.extensions.ExtendedCoralFeature;
 
 import java.util.List;
-import java.util.Random;
 
 @Mixin(CoralBlock.class)
 public abstract class CoralBlockMixin implements Fertilizable {

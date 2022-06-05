@@ -21,7 +21,6 @@ import net.minecraft.state.property.Property;
 import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.EulerAngle;
@@ -46,22 +45,22 @@ public class Messenger {
 
     public static final Formatting[] GRAY_ITALIC = new Formatting[]{Formatting.GRAY, Formatting.ITALIC};
 
-    public static <T extends MutableText> T style(T text, Formatting style) {
+    public static MutableText style(MutableText text, Formatting style) {
         text.setStyle(text.getStyle().withFormatting(style));
         return text;
     }
 
-    public static <T extends MutableText> T style(T text, Formatting... style) {
+    public static MutableText style(MutableText text, Formatting... style) {
         text.setStyle(text.getStyle().withFormatting(style));
         return text;
     }
 
-    public static <T extends MutableText> T suggestCommand(T text, String command) {
+    public static MutableText suggestCommand(MutableText text, String command) {
         text.setStyle(text.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, command)));
         return text;
     }
 
-    public static <T extends MutableText> T suggestCommand(T text, String command, Text hoverText) {
+    public static MutableText suggestCommand(MutableText text, String command, Text hoverText) {
         Style style = text.getStyle()
                 .withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, command))
                 .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
@@ -69,12 +68,12 @@ public class Messenger {
         return text;
     }
 
-    public static <T extends MutableText> T runCommand(T text, String command) {
+    public static MutableText runCommand(MutableText text, String command) {
         text.setStyle(text.getStyle().withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command)));
         return text;
     }
 
-    public static <T extends MutableText> T runCommand(T text, String command, Text hoverText) {
+    public static MutableText runCommand(MutableText text, String command, Text hoverText) {
         Style style = text.getStyle()
             .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command))
             .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
@@ -82,7 +81,7 @@ public class Messenger {
         return text;
     }
 
-    public static <T extends MutableText> T hoverText(T text, Text hoverText) {
+    public static MutableText hoverText(MutableText text, Text hoverText) {
         Style style = text.getStyle().withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, hoverText));
         text.setStyle(style);
         return text;
@@ -131,7 +130,7 @@ public class Messenger {
     }
 
     public static MutableText format(Direction side) {
-        return new TranslatableText("side." + side.asString());
+        return t("side." + side.asString());
     }
 
     public static <T> MutableText format(Registry<T> registry, T value) {
@@ -213,14 +212,14 @@ public class Messenger {
      * @return Formatted multi-component text
      */
     public static MutableText c(@Nonnull Text... components) {
-        MutableText message = new LiteralText("");
+        MutableText message = s("");
         for (Text t : components) message.append(t);
         return message;
     }
 
     public static MutableText c(@Nonnull Iterable<MutableText> components) {
         Iterator<MutableText> it = components.iterator();
-        MutableText message = it.hasNext() ? it.next() : new LiteralText("");
+        MutableText message = it.hasNext() ? it.next() : s("");
         while (it.hasNext()) {
             message.append(it.next());
         }
@@ -232,7 +231,7 @@ public class Messenger {
     }
 
     public static <T> MutableText join(@Nullable Text prefix, Iterable<T> items, Function<T, Text> mapper, Text delimiter, @Nullable Text suffix) {
-        MutableText message = prefix == null ? new LiteralText("") : prefix.shallowCopy();
+        MutableText message = prefix == null ? s("") : prefix.copy();
         boolean first = true;
         for (T item : items) {
             if (!first) message.append(delimiter);
@@ -246,7 +245,7 @@ public class Messenger {
     //simple text
 
     public static MutableText s(@Nonnull String text) {
-        return new LiteralText(text);
+        return MutableText.of(new LiteralTextContent(text));
     }
 
     public static MutableText s(@Nonnull String text, Formatting style) {
@@ -257,16 +256,16 @@ public class Messenger {
         return style(s(text), style);
     }
 
-    public static TranslatableText t(@Nonnull String key, Object... args) {
+    public static MutableText t(@Nonnull String key, Object... args) {
         for (int i = 0; i < args.length; i++) if (args[i] instanceof Formattable) args[i] = ((Formattable) args[i]).format();
-        return new TranslatableText(key, args);
+        return MutableText.of(new TranslatableTextContent(key, args));
     }
 
-    public static TranslatableText ts(@Nonnull String key, Formatting style, Object... args) {
+    public static MutableText ts(@Nonnull String key, Formatting style, Object... args) {
         return style(t(key, args), style);
     }
 
-    public static TranslatableText ts(@Nonnull String key, Formatting[] style, Object... args) {
+    public static MutableText ts(@Nonnull String key, Formatting[] style, Object... args) {
         return style(t(key, args), style);
     }
 
@@ -298,7 +297,7 @@ public class Messenger {
 
 
     public static void broadcast(MinecraftServer server, String message) {
-        broadcast(server, new LiteralText(message));
+        broadcast(server, s(message));
     }
 
     public static void broadcast(MinecraftServer server, Text message) {
@@ -306,7 +305,7 @@ public class Messenger {
             LOGGER.error("Message not delivered: " + message.getString());
             return;
         }
-        server.sendSystemMessage(message, Util.NIL_UUID);
+        server.sendMessage(message);
         for (PlayerEntity player : server.getPlayerManager().getPlayerList()) {
             send(player.getCommandSource(), message, false);
         }
@@ -314,10 +313,10 @@ public class Messenger {
 
     public static MutableText join(Text joiner, Text... elements) {
         if (elements.length == 0) return s("");
-        MutableText text = elements[0].shallowCopy();
+        MutableText text = elements[0].copy();
         for (int i = 1; i < elements.length; i++) {
-            text.append(joiner.shallowCopy());
-            text.append(elements[i].shallowCopy());
+            text.append(joiner.copy());
+            text.append(elements[i].copy());
         }
         return text;
     }
@@ -330,10 +329,10 @@ public class Messenger {
         MutableText empty = s("");
         return Collector.of(() -> empty,
             (a, b) -> {
-                if (!a.getSiblings().isEmpty()) a.append(joiner.shallowCopy());
+                if (!a.getSiblings().isEmpty()) a.append(joiner.copy());
                 a.append(b);
             },
-            (a, b) -> a.getSiblings().isEmpty() ? b : a.append(joiner.shallowCopy()).append(b.shallowCopy()),
+            (a, b) -> a.getSiblings().isEmpty() ? b : a.append(joiner.copy()).append(b.copy()),
             Function.identity()
         );
     }
@@ -349,15 +348,15 @@ public class Messenger {
         Formatter<Number> FLOAT = value -> dbl(value.doubleValue());
         Formatter<Boolean> BOOLEAN = value -> s(Boolean.toString(value), value ? Formatting.GREEN : Formatting.RED);
         Formatter<String> STRING = Messenger::s;
-        Formatter<Text> TEXT = Text::shallowCopy;
-        Formatter<ItemStack> ITEM_STACK = s -> c(s(s.getCount() + " "), s.toHoverableText().shallowCopy());
+        Formatter<Text> TEXT = Text::copy;
+        Formatter<ItemStack> ITEM_STACK = s -> c(s(s.getCount() + " "), s.toHoverableText().copy());
         Formatter<EulerAngle> ROTATION = r -> s(r.getYaw() + "° yaw, " + r.getPitch() + "° pitch, " + r.getRoll() + "° roll");
         Formatter<BlockPos> BLOCK_POS = Messenger::tp;
         Formatter<? extends Enum<?>> ENUM = e -> s(e.toString().toLowerCase(Locale.ROOT));
         Formatter<?> OBJECT = o -> s(String.valueOf(o));
         Formatter<BlockState> BLOCK_STATE = Messenger::format;
         Formatter<FluidState> FLUID_STATE = Messenger::format;
-        Formatter<NbtCompound> COMPOUND_TAG = t -> NbtHelper.toPrettyPrintedText(t).shallowCopy();
+        Formatter<NbtCompound> COMPOUND_TAG = t -> NbtHelper.toPrettyPrintedText(t).copy();
         Formatter<ParticleEffect> PARTICLE = p -> s(String.valueOf(Registry.PARTICLE_TYPE.getId(p.getType())));
         Formatter<VillagerData> VILLAGER_DATA = d -> c(
             s("type="), Messenger.format(Registry.VILLAGER_TYPE, d.getType()),

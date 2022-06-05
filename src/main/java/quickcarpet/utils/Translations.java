@@ -22,6 +22,9 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static quickcarpet.utils.Messenger.s;
+import static quickcarpet.utils.Messenger.t;
+
 public class Translations {
     public static final String DEFAULT_LOCALE = "en_us";
     private static final Gson GSON = new Gson();
@@ -83,44 +86,40 @@ public class Translations {
     }
 
     private static MutableText translatedCopy(Text text, String locale) {
-        if (!(text instanceof TranslatableText translatable)) return text.copy();
+        if (!(text.getContent() instanceof TranslatableTextContent translatable)) return text.copyContentOnly();
         String key = translatable.getKey();
-        if (!DEFAULT.containsKey(key)) return text.copy();
+        if (!DEFAULT.containsKey(key)) return text.copyContentOnly();
         locale = locale.toLowerCase(Locale.ROOT);
         if (!TRANSLATIONS.containsKey(locale)) locale = "en_us";
         String translated = TRANSLATIONS.get(locale).get(key);
         if (translated == null) translated = DEFAULT.getOrDefault(key, key);
         Matcher matcher = ARG_FORMAT.matcher(translated);
-        List<MutableText> texts = new LinkedList<>();
+        List<MutableText> texts = new ArrayList<>();
         int previousEnd = 0;
         int argIndex = 0;
         while (matcher.find(previousEnd)) {
             int start = matcher.start();
             int end = matcher.end();
             if (start > previousEnd) {
-                MutableText between = new LiteralText(translated.substring(previousEnd, start));
-                between.setStyle(between.getStyle().withParent(translatable.getStyle()));
-                texts.add(between);
+                texts.add(s(translated.substring(previousEnd, start)));
             }
             String completeMatch = translated.substring(start, end);
             if ("%%".equals(completeMatch)) {
-                MutableText percent = new LiteralText("%");
-                percent.setStyle(percent.getStyle().withParent(translatable.getStyle()));
-                texts.add(percent);
+                texts.add(s("%"));
             } else {
                 String format = matcher.group(2);
                 if (!"s".equals(format)) throw new TranslationException(translatable, "Unsupported format: '" + format + "'");
                 String alternateIndex = matcher.group(1);
                 int index = alternateIndex != null ? Integer.parseInt(alternateIndex) - 1 : argIndex++;
                 if (index < translatable.getArgs().length) {
-                    texts.add(getArg(translatable, index, locale));
+                    texts.add(getArg(translatable, index, locale, text.getStyle()));
                 }
             }
             previousEnd = end;
         }
         if (previousEnd < translated.length()) {
-            MutableText end = new LiteralText(translated.substring(previousEnd));
-            end.setStyle(end.getStyle().withParent(translatable.getStyle()));
+            MutableText end = s(translated.substring(previousEnd));
+            end.setStyle(end.getStyle().withParent(text.getStyle()));
             texts.add(end);
         }
         MutableText base = texts.remove(0);
@@ -128,15 +127,15 @@ public class Translations {
         return base;
     }
 
-    private static MutableText getArg(TranslatableText text, int index, String locale) {
-        Object[] args = text.getArgs();
+    private static MutableText getArg(TranslatableTextContent content, int index, String locale, Style style) {
+        Object[] args = content.getArgs();
         if (index >= args.length) {
-            throw new TranslationException(text, index);
+            throw new TranslationException(content, index);
         } else {
             Object arg = args[index];
             if (arg instanceof MutableText) return translate((MutableText) arg, locale);
-            MutableText argFormatted = new LiteralText(String.valueOf(arg));
-            argFormatted.setStyle(argFormatted.getStyle().withParent(text.getStyle()));
+            MutableText argFormatted = s(String.valueOf(arg));
+            argFormatted.setStyle(argFormatted.getStyle().withParent(style));
             return argFormatted;
         }
     }
@@ -149,7 +148,7 @@ public class Translations {
         return DEFAULT.containsKey(key);
     }
 
-    public static TranslatableText translate(RegistryKey<?> key) {
+    public static MutableText translate(RegistryKey<?> key) {
         Identifier reg = ((RegistryKeyAccessor) key).getRegistry();
         Identifier value = key.getValue();
         String translationKey = ("minecraft".equals(reg.getNamespace())
@@ -157,6 +156,6 @@ public class Translations {
                 : reg.getNamespace() + "." + reg.getPath())
                 + "." + value.getNamespace()
                 + "." + value.getPath();
-        return new TranslatableText(translationKey);
+        return t(translationKey);
     }
 }

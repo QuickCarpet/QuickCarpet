@@ -164,7 +164,7 @@ public class WaypointCommand {
         } else if (creator != null) {
             header = t(Keys.LIST_HEADER_CREATOR, s(creator, Formatting.DARK_GREEN));
         } else {
-            header = LIST_HEADER_ALL.shallowCopy();
+            header = LIST_HEADER_ALL.copy();
         }
         if (pages > 1) {
             header.append(" ").append(t(Keys.LIST_PAGE, page, pages));

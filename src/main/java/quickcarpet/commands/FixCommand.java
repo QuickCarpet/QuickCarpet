@@ -34,7 +34,7 @@ public class FixCommand {
 
     private static int fixChunk(ServerCommandSource source, ColumnPos pos) throws CommandSyntaxException {
         ServerWorld world = source.getWorld();
-        ChunkPos cPos = new ChunkPos(pos.x >> 4, pos.z >> 4);
+        ChunkPos cPos = new ChunkPos(pos.x() >> 4, pos.z() >> 4);
         BlockView chunk = world.getChunkAsView(cPos.x, cPos.z);
         if (chunk instanceof WorldChunk worldChunk) {
             m(source, t(Keys.FIXING, cPos.x, cPos.z));

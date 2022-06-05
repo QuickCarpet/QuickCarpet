@@ -1,7 +1,6 @@
 package quickcarpet.logging;
 
 import com.mojang.serialization.DataResult;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
@@ -18,6 +17,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static quickcarpet.utils.Messenger.t;
 
 public final class Loggers {
     public static final Logger TNT = register("tnt", builder(LogHandler.CHAT)
@@ -45,7 +46,7 @@ public final class Loggers {
         .withOptions("brief", "full")
         .build());
     public static final Logger CAREFUL_BREAK = register("careful_break", builder(null)
-        .withUnavailabilityReason(() -> Settings.carefulBreak ? null : new TranslatableText(CarpetCommand.Keys.OPTION_DISABLED, "carefulBreak"))
+        .withUnavailabilityReason(() -> Settings.carefulBreak ? null : t(CarpetCommand.Keys.OPTION_DISABLED, "carefulBreak"))
         .build());
     public static final Logger BLOCK_TICK_LIMIT = register("block_tick_limit", builder(LogHandler.CHAT).build());
     public static final Logger LIGHT_QUEUE = register("light_queue", builder(LogHandler.HUD)

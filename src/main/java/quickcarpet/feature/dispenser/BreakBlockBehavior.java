@@ -71,7 +71,7 @@ public class BreakBlockBehavior extends ItemDispenserBehavior {
         blockState.getDroppedStacks(builder).forEach(drop -> {
             Block.dropStack(world, pos, drop);
         });
-        blockState.onStacksDropped(world, pos, ItemStack.EMPTY);
+        blockState.onStacksDropped(world, pos, ItemStack.EMPTY, true);
         FluidState fluidState = world.getFluidState(pos);
         world.setBlockState(pos, fluidState.getBlockState());
         world.syncWorldEvent(2001, pos, Block.getRawIdFromState(blockState));
