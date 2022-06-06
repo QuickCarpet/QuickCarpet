@@ -13,7 +13,6 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.NotNull;
 import quickcarpet.Build;
@@ -115,10 +114,10 @@ public class CarpetCommand {
 
         m(source, rule.getDescription());
 
-        TranslatableText extraInfo = rule.getExtraInfo();
-        if (extraInfo != null) m(source, style(extraInfo, Formatting.GRAY));
+        Text extraInfo = rule.getExtraInfo();
+        if (extraInfo != null) m(source, style(extraInfo.shallowCopy(), Formatting.GRAY));
 
-        TranslatableText deprecated = rule.getDeprecated();
+        Text deprecated = rule.getDeprecated();
         if (deprecated != null) m(source, ts(Keys.RULE_DEPRECATED, Formatting.RED, deprecated));
 
         m(source, join(CATEGORIES, getAllCategories(rule), CarpetCommand::formatCategory, s(", "), null));
