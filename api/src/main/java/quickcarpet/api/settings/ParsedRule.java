@@ -8,7 +8,6 @@ import net.minecraft.text.Text;
 import quickcarpet.api.module.QuickCarpetModule;
 
 import javax.annotation.Nullable;
-import java.lang.reflect.Field;
 import java.util.List;
 
 public interface ParsedRule<T> {
@@ -17,9 +16,7 @@ public interface ParsedRule<T> {
     SettingsManager getManager();
 
     Rule getRule();
-    @Deprecated
-    @Nullable
-    Field getField();
+
     FieldAccessor<T> getFieldAccessor();
     String getShortName();
     String getName();
