@@ -27,8 +27,6 @@ import static java.lang.reflect.Modifier.*;
 
 final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T> {
     private final Rule rule;
-    @Nullable
-    private final Field field;
     private final FieldAccessor<T> fieldAccessor;
 
     private final String shortName;
@@ -63,8 +61,7 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
             Reflection.callDeprecatedPrivateConstructor(rule.validator()),
             Reflection.callDeprecatedPrivateConstructor(rule.onChange()),
             rule.deprecated(),
-            rule,
-            field
+            rule
         );
     }
 
@@ -141,15 +138,13 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
             validator,
             onChange,
             deprecated,
-            null,
             null
         );
     }
 
-    private ParsedRuleImpl(SettingsManager manager, String name, FieldAccessor<T> fieldAccessor, List<RuleCategory> categories, List<String> staticOptions, @Nullable Validator<T> validator, @Nullable ChangeListener<T> onChange, boolean deprecated, @Nullable Rule rule, @Nullable Field field) {
+    private ParsedRuleImpl(SettingsManager manager, String name, FieldAccessor<T> fieldAccessor, List<RuleCategory> categories, List<String> staticOptions, @Nullable Validator<T> validator, @Nullable ChangeListener<T> onChange, boolean deprecated, @Nullable Rule rule) {
         this.manager = manager;
         this.rule = rule;
-        this.field = field;
         this.fieldAccessor = fieldAccessor;
         this.shortName = name;
         this.name = manager.getRuleName(name, rule);
@@ -183,12 +178,6 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
     @Override
     public Rule getRule() {
         return rule;
-    }
-
-    @Override
-    @Nullable
-    public Field getField() {
-        return field;
     }
 
     @Override
