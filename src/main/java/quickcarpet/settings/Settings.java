@@ -7,7 +7,7 @@ import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.server.world.ChunkTicketType;
 import net.minecraft.server.world.ServerChunkManager;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Pair;
 import net.minecraft.util.Unit;
 import net.minecraft.util.math.ChunkPos;
@@ -329,7 +329,7 @@ public class Settings {
         }
 
         @Override
-        public Optional<TranslatableText> validate(Integer value) {
+        public Optional<Text> validate(Integer value) {
             if (value < 1 || value > 32) return Optional.of(Messenger.t(Constants.Validator.Keys.RANGE, 1, 32));
             return Optional.empty();
         }
@@ -358,7 +358,7 @@ public class Settings {
 
     public static class TNTAngle implements Validator<Double> {
         @Override
-        public Optional<TranslatableText> validate(Double value) {
+        public Optional<Text> validate(Double value) {
             if (value == -1) return Optional.empty();
             if (value >= 0 && value < 360) return Optional.empty();
             return Optional.of(TNT_ANGLE);
@@ -391,7 +391,7 @@ public class Settings {
 
     public static class ViewDistance implements ChangeListener<Integer>, Validator<Integer> {
         @Override
-        public Optional<TranslatableText> validate(Integer value) {
+        public Optional<Text> validate(Integer value) {
             if (value == -1) return Optional.empty();
             MinecraftServer server = QuickCarpetServer.getNullableMinecraftServer();
             if (server != null && !server.isDedicated()) {

@@ -1,6 +1,7 @@
 package quickcarpet.api.settings;
 
 import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 
@@ -11,8 +12,9 @@ public interface Validator<T> {
      * Validate the new value of a rule
      * @param value The new value
      * @return empty if valid, error message if invalid
+     * @revised 2.0.0
      */
-    Optional<TranslatableText> validate(T value);
+    Optional<Text> validate(T value);
 
     default String getName() {
         return this.getClass().getName();
@@ -20,14 +22,14 @@ public interface Validator<T> {
 
     class AlwaysTrue<T> implements Validator<T> {
         @Override
-        public Optional<TranslatableText> validate(T value) {
+        public Optional<Text> validate(T value) {
             return Optional.empty();
         }
     }
 
     class Positive<T extends Number> implements Validator<T> {
         @Override
-        public Optional<TranslatableText> validate(T value) {
+        public Optional<Text> validate(T value) {
             if(value.doubleValue() > 0) return Optional.empty();
             return Optional.of(new TranslatableText("carpet.validator.positive"));
         }
@@ -40,7 +42,7 @@ public interface Validator<T> {
 
     class NonNegative<T extends Number> implements Validator<T> {
         @Override
-        public Optional<TranslatableText> validate(T value) {
+        public Optional<Text> validate(T value) {
             if(value.doubleValue() >= 0) return Optional.empty();
             return Optional.of(new TranslatableText("carpet.validator.nonNegative"));
         }
@@ -53,7 +55,7 @@ public interface Validator<T> {
 
     class Negative<T extends Number> implements Validator<T> {
         @Override
-        public Optional<TranslatableText> validate(T value) {
+        public Optional<Text> validate(T value) {
             if(value.doubleValue() < 0) return Optional.empty();
             return Optional.of(new TranslatableText("carpet.validator.negative"));
         }
@@ -66,7 +68,7 @@ public interface Validator<T> {
 
     class OpLevel implements Validator<Integer> {
         @Override
-        public Optional<TranslatableText> validate(Integer value) {
+        public Optional<Text> validate(Integer value) {
             if (value >= 0 && value <= 4) return Optional.empty();
             return Optional.of(new TranslatableText("carpet.validator.range", new LiteralText("0").formatted(Formatting.AQUA), new LiteralText("4").formatted(Formatting.AQUA)));
         }
@@ -100,7 +102,7 @@ public interface Validator<T> {
         }
 
         @Override
-        public Optional<TranslatableText> validate(T value) {
+        public Optional<Text> validate(T value) {
             int minCompare = value.compareTo(min);
             int maxCompare = value.compareTo(max);
             if ((0 < minCompare && maxCompare < 0) || (minCompare == 0 && minIncluded) || (maxCompare == 0) && maxIncluded) return Optional.empty();

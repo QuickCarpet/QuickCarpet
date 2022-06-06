@@ -5,6 +5,7 @@ import com.mojang.brigadier.arguments.*;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import quickcarpet.api.module.QuickCarpetModule;
 import quickcarpet.api.settings.*;
@@ -301,7 +302,7 @@ final class ParsedRuleImpl<T> implements Comparable<ParsedRule<T>>, ParsedRule<T
     @Override
     public void set(T value, boolean sync) {
         T previousValue = this.get();
-        Optional<TranslatableText> error = this.validator.validate(value);
+        Optional<Text> error = this.validator.validate(value);
         if (error.isPresent()) throw new ParsedRule.ValueException(error.get());
         if (sync) {
             String str = typeAdapter.toString(value);
