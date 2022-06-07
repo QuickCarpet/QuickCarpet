@@ -3,25 +3,25 @@ package quickcarpet.settings.impl;
 import quickcarpet.api.module.QuickCarpetModule;
 import quickcarpet.api.settings.Rule;
 
-import java.lang.reflect.Field;
-
 class ModuleSettingsManager extends SettingsManager implements quickcarpet.api.settings.ModuleSettingsManager {
-    public final QuickCarpetModule module;
     public final String prefix;
 
     protected ModuleSettingsManager(QuickCarpetModule module, Class<?> settingsClass) {
-        super(settingsClass);
-        this.module = module;
+        super(module, settingsClass);
         this.prefix = module.getId() + "/";
     }
 
-    @Override
-    public String getRuleName(Field field, Rule rule) {
-        return this.prefix + super.getRuleName(field, rule);
+    public QuickCarpetModule getModule() {
+        return (QuickCarpetModule) source;
     }
 
     @Override
-    protected String getTranslationKey(Field field, Rule rule, String key) {
-        return module.getId() + ".rule." + getDefaultRuleName(field, rule) + "." + key;
+    public String getRuleName(String fieldName, Rule rule) {
+        return this.prefix + super.getRuleName(fieldName, rule);
+    }
+
+    @Override
+    protected String getTranslationKey(String fieldName, Rule rule, String key) {
+        return getModule().getId() + ".rule." + getDefaultRuleName(fieldName, rule) + "." + key;
     }
 }

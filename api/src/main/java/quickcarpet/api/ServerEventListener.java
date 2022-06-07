@@ -7,11 +7,23 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
+import quickcarpet.api.settings.ParsedRule;
+import quickcarpet.api.settings.RuleCreator;
+
+import java.util.List;
 
 public interface ServerEventListener {
     default Class<?> getSettingsClass() {
         return null;
     }
+    /**
+     * Called on startup to let a module register custom rules
+     * @param creator The method for creating a new rule
+     * @since 1.2.0
+     */
+    default void addRules(RuleCreator creator) {}
+    default boolean isRuleEnabled(ParsedRule<?> rule) { return true; }
+    default List<String> getEnabledOptions(ParsedRule<?> rule, List<String> options) { return options; }
     default void onServerInit(MinecraftServer server) {}
     default void onServerLoaded(MinecraftServer server) {}
     default void tick(MinecraftServer server) {}
@@ -24,14 +36,12 @@ public interface ServerEventListener {
     /**
      * Called when a player connects to the server
      * @param player The player connecting
-     * @since 2.0.0
      */
     default void onPlayerConnect(ServerPlayerEntity player) {}
 
     /**
      * Called when a player disconnects to the server
      * @param player The player disconnecting
-     * @since 2.0.0
      */
     default void onPlayerDisconnect(ServerPlayerEntity player) {}
 

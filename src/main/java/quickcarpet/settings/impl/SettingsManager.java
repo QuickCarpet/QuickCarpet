@@ -1,30 +1,25 @@
 package quickcarpet.settings.impl;
 
-import com.google.common.collect.ImmutableList;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import quickcarpet.Build;
+import quickcarpet.api.ServerEventListener;
 import quickcarpet.api.module.QuickCarpetModule;
-import quickcarpet.api.settings.ParsedRule;
-import quickcarpet.api.settings.Rule;
-import quickcarpet.api.settings.RuleCategory;
-import quickcarpet.api.settings.RuleUpgrader;
+import quickcarpet.api.settings.*;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Predicate;
 
 import static java.lang.reflect.Modifier.*;
 
-abstract class SettingsManager implements quickcarpet.api.settings.SettingsManager {
+abstract class SettingsManager implements quickcarpet.api.settings.SettingsManager, RuleCreator {
     protected static final Logger LOG = LogManager.getLogger(Build.NAME);
     protected final Class<?> settingsClass;
+    protected final ServerEventListener source;
     MinecraftServer server;
     protected boolean parsed;
     protected boolean initialized;
@@ -32,7 +27,8 @@ abstract class SettingsManager implements quickcarpet.api.settings.SettingsManag
     @Nullable
     protected final RuleUpgrader ruleUpgrader;
 
-    protected SettingsManager(Class<?> settingsClass) {
+    protected SettingsManager(ServerEventListener source, Class<?> settingsClass) {
+        this.source = source;
         this.settingsClass = settingsClass;
 
         RuleUpgrader upgrader = null;
@@ -61,7 +57,15 @@ abstract class SettingsManager implements quickcarpet.api.settings.SettingsManag
             ParsedRuleImpl<?> parsed = new ParsedRuleImpl<>(this, f, rule);
             rules.put(parsed.getName(), parsed);
         }
+        source.addRules(this);
         this.parsed = true;
+    }
+
+    @Override
+    public <T> ParsedRule<T> create(String name, FieldAccessor<T> field, List<RuleCategory> categories, List<String> options, Validator<T> validator, ChangeListener<T> changeListener, boolean deprecated) {
+        ParsedRule<T> rule = new ParsedRuleImpl<>(this, name, field, categories, options, validator, changeListener, deprecated);
+        rules.put(rule.getName(), rule);
+        return rule;
     }
 
     @Override
@@ -70,26 +74,26 @@ abstract class SettingsManager implements quickcarpet.api.settings.SettingsManag
         this.initialized = true;
     }
 
-    public static String getDefaultRuleName(Field field, Rule rule) {
-        return rule.name().isEmpty() ? field.getName() : rule.name();
+    public static String getDefaultRuleName(String fieldName, Rule rule) {
+        return rule.name().isEmpty() ? fieldName : rule.name();
     }
 
-    public String getRuleName(Field field, Rule rule) {
-        return getDefaultRuleName(field, rule);
+    public String getRuleName(String fieldName, Rule rule) {
+        return getDefaultRuleName(fieldName, rule);
     }
 
-    protected abstract String getTranslationKey(Field field, Rule rule, String key);
+    protected abstract String getTranslationKey(String fieldName, Rule rule, String key);
 
-    public String getDescriptionTranslationKey(Field field, Rule rule) {
-        return getTranslationKey(field, rule, "description");
+    public String getDescriptionTranslationKey(String fieldName, Rule rule) {
+        return getTranslationKey(fieldName, rule, "description");
     }
 
-    public String getExtraTranslationKey(Field field, Rule rule) {
-        return getTranslationKey(field, rule, "extra");
+    public String getExtraTranslationKey(String fieldName, Rule rule) {
+        return getTranslationKey(fieldName, rule, "extra");
     }
 
-    public String getDeprecationTranslationKey(Field field, Rule rule) {
-        return getTranslationKey(field, rule, "deprecated");
+    public String getDeprecationTranslationKey(String fieldName, Rule rule) {
+        return getTranslationKey(fieldName, rule, "deprecated");
     }
 
     @Override

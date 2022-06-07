@@ -1,9 +1,6 @@
 package quickcarpet.api.settings;
 
-import net.minecraft.text.LiteralTextContent;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Formatting;
 
 import java.util.Optional;
@@ -13,6 +10,7 @@ public interface Validator<T> {
      * Validate the new value of a rule
      * @param value The new value
      * @return empty if valid, error message if invalid
+     * @revised 2.0.0
      */
     Optional<Text> validate(T value);
 
@@ -31,7 +29,7 @@ public interface Validator<T> {
         @Override
         public Optional<Text> validate(T value) {
             if(value.doubleValue() > 0) return Optional.empty();
-            return Optional.of(MutableText.of(new TranslatableTextContent("carpet.validator.positive")));
+            return Optional.of(Text.translatable("carpet.validator.positive"));
         }
 
         @Override
@@ -44,7 +42,7 @@ public interface Validator<T> {
         @Override
         public Optional<Text> validate(T value) {
             if(value.doubleValue() >= 0) return Optional.empty();
-            return Optional.of(MutableText.of(new TranslatableTextContent("carpet.validator.nonNegative")));
+            return Optional.of(Text.translatable("carpet.validator.nonNegative"));
         }
 
         @Override
@@ -57,7 +55,7 @@ public interface Validator<T> {
         @Override
         public Optional<Text> validate(T value) {
             if(value.doubleValue() < 0) return Optional.empty();
-            return Optional.of(MutableText.of(new TranslatableTextContent("carpet.validator.negative")));
+            return Optional.of(Text.translatable("carpet.validator.negative"));
         }
 
         @Override
@@ -70,10 +68,10 @@ public interface Validator<T> {
         @Override
         public Optional<Text> validate(Integer value) {
             if (value >= 0 && value <= 4) return Optional.empty();
-            return Optional.of(MutableText.of(new TranslatableTextContent("carpet.validator.range",
-                MutableText.of(new LiteralTextContent("0")).formatted(Formatting.AQUA),
-                MutableText.of(new LiteralTextContent("4")).formatted(Formatting.AQUA))
-            ));
+            return Optional.of(Text.translatable("carpet.validator.range",
+                Text.literal("0").formatted(Formatting.AQUA),
+                Text.literal("4").formatted(Formatting.AQUA))
+            );
         }
 
         @Override
@@ -109,10 +107,10 @@ public interface Validator<T> {
             int minCompare = value.compareTo(min);
             int maxCompare = value.compareTo(max);
             if ((0 < minCompare && maxCompare < 0) || (minCompare == 0 && minIncluded) || (maxCompare == 0) && maxIncluded) return Optional.empty();
-            return Optional.of(MutableText.of(new TranslatableTextContent("carpet.validator.range",
-                MutableText.of(new LiteralTextContent(this.min.toString())).formatted(Formatting.AQUA),
-                MutableText.of(new LiteralTextContent(this.max.toString())).formatted(Formatting.AQUA))
-            ));
+            return Optional.of(Text.translatable("carpet.validator.range",
+                Text.literal(this.min.toString()).formatted(Formatting.AQUA),
+                Text.literal(this.max.toString()).formatted(Formatting.AQUA))
+            );
         }
     }
 }
