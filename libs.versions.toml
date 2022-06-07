@@ -1,6 +1,6 @@
 [versions]
-minecraft = "1.19-rc2"
-yarn = "1.19-rc2+build.1"
+minecraft = "1.19"
+yarn = "1.19+build.1"
 loader = "0.14.6"
 malilib = "0.11.5"
 
