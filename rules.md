@@ -502,6 +502,15 @@ Default: `-1.0`
 Options: `-1`, `0`, `4`  
 Categories: creative  
 
+## mobcapMultiplier
+Change all mobcaps by this factor (e.g. 1.5 would change hostile mobs from 70 to 105)
+
+Type: `double`  
+Default: `1.0`  
+Options: `0`, `1`, `2`  
+Categories: creative  
+Validator: `>= 0`  
+
 ## movableBlockEntities
 Pistons can push block entities, like hoppers, chests etc.
 

@@ -95,6 +95,7 @@
     "loggers.damage.PlayerEntityMixin",
     "loggers.damage.ServerPlayerEntityMixin",
     "loggers.damage.SlimeEntityMixin",
+    "mobcapMultiplier.SpawnGroupMixin",
     "movableBlockEntities.PistonBlockEntityMixin",
     "movableBlockEntities.PistonBlockMixin",
     "movableBlockEntities.PistonHandlerMixin",

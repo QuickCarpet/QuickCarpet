@@ -249,6 +249,9 @@ public class Settings {
     @Rule(category = CREATIVE, options = {"-1", "0", "4"})
     public static double localDifficulty = -1;
 
+    @Rule(category = CREATIVE, options = {"0", "1", "2"}, validator = Validator.NonNegative.class)
+    public static double mobcapMultiplier = 1;
+
     @Rule(category = FEATURE)
     public static boolean movableBlockEntities = false;
 
