@@ -31,7 +31,7 @@ import quickcarpet.helper.PlayerActionPack.Action;
 import quickcarpet.helper.PlayerActionPack.ActionType;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.Constants.PlayerCommand.Keys;
-import quickcarpet.utils.extensions.ActionPackOwner;
+import quickcarpet.utils.mixin.extensions.ActionPackOwner;
 
 import java.util.Arrays;
 import java.util.Collection;

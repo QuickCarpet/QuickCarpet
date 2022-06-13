@@ -18,8 +18,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import quickcarpet.mixin.accessor.BlockEntityAccessor;
 import quickcarpet.settings.Settings;
-import quickcarpet.utils.extensions.ExtendedPistonBlockEntity;
-import quickcarpet.utils.extensions.ExtendedWorld;
+import quickcarpet.utils.mixin.extensions.ExtendedPistonBlockEntity;
+import quickcarpet.utils.mixin.extensions.ExtendedWorld;
 
 @Mixin(PistonBlockEntity.class)
 public abstract class PistonBlockEntityMixin extends BlockEntity implements ExtendedPistonBlockEntity {

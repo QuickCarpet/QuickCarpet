@@ -1,4 +1,4 @@
-package quickcarpet.utils.extensions;
+package quickcarpet.utils.mixin.extensions;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;

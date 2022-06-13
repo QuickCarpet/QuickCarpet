@@ -28,7 +28,7 @@ import quickcarpet.helper.PlayerActionPack;
 import quickcarpet.mixin.accessor.ServerNetworkIoAccessor;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.Messenger;
-import quickcarpet.utils.extensions.ActionPackOwner;
+import quickcarpet.utils.mixin.extensions.ActionPackOwner;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

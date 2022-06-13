@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import quickcarpet.utils.extensions.ExtendedWorldChunkFillUpdates;
+import quickcarpet.utils.mixin.extensions.ExtendedWorldChunkFillUpdates;
 
 import javax.annotation.Nullable;
 

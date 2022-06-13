@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import quickcarpet.feature.CraftingTableBlockEntity;
-import quickcarpet.utils.extensions.DynamicBlockEntityProvider;
+import quickcarpet.utils.mixin.extensions.DynamicBlockEntityProvider;
 
 import javax.annotation.Nullable;
 

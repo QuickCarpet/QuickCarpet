@@ -30,7 +30,8 @@ import quickcarpet.pubsub.PubSubManager;
 import quickcarpet.pubsub.PubSubNode;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.*;
-import quickcarpet.utils.extensions.WaypointContainer;
+import quickcarpet.utils.mixin.MixinConfig;
+import quickcarpet.utils.mixin.extensions.WaypointContainer;
 
 import java.io.IOException;
 import java.util.*;

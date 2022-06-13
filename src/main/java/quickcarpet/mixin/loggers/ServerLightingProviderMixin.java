@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import quickcarpet.utils.extensions.ExtendedServerLightingProvider;
+import quickcarpet.utils.mixin.extensions.ExtendedServerLightingProvider;
 
 @Mixin(ServerLightingProvider.class)
 public class ServerLightingProviderMixin implements ExtendedServerLightingProvider {

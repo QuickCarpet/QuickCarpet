@@ -4,7 +4,7 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.world.chunk.light.LightingProvider;
 import quickcarpet.QuickCarpetServer;
 import quickcarpet.logging.Logger;
-import quickcarpet.utils.extensions.ExtendedServerLightingProvider;
+import quickcarpet.utils.mixin.extensions.ExtendedServerLightingProvider;
 
 import java.util.HashMap;
 import java.util.Map;

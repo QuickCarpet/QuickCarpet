@@ -1,4 +1,4 @@
-package quickcarpet.utils.extensions;
+package quickcarpet.utils.mixin.extensions;
 
 import java.util.concurrent.atomic.AtomicInteger;
 

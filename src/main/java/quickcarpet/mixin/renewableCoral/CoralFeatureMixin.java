@@ -7,7 +7,7 @@ import net.minecraft.world.WorldAccess;
 import net.minecraft.world.gen.feature.CoralFeature;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import quickcarpet.utils.extensions.ExtendedCoralFeature;
+import quickcarpet.utils.mixin.extensions.ExtendedCoralFeature;
 
 import java.util.Random;
 

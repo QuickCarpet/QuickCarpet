@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import quickcarpet.mixin.accessor.ClientSettingsC2SPacketAccessor;
-import quickcarpet.utils.extensions.PlayerWithLanguage;
+import quickcarpet.utils.mixin.extensions.PlayerWithLanguage;
 
 @Mixin(ServerPlayerEntity.class)
 public abstract class ServerPlayerEntityMixin extends PlayerEntity implements PlayerWithLanguage {

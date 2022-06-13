@@ -10,9 +10,9 @@ import quickcarpet.api.annotation.BugFix;
 import quickcarpet.api.module.QuickCarpetModule;
 import quickcarpet.api.settings.*;
 import quickcarpet.settings.Settings;
-import quickcarpet.utils.MixinConfig;
 import quickcarpet.utils.Reflection;
 import quickcarpet.utils.Translations;
+import quickcarpet.utils.mixin.MixinConfig;
 
 import javax.annotation.Nullable;
 import java.io.BufferedReader;

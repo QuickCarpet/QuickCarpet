@@ -18,7 +18,7 @@ import net.minecraft.util.math.Vec3d;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.Constants.WaypointCommand.Keys;
 import quickcarpet.utils.Waypoint;
-import quickcarpet.utils.extensions.WaypointContainer;
+import quickcarpet.utils.mixin.extensions.WaypointContainer;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;

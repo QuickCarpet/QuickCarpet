@@ -8,7 +8,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.RegistryKey;
 import quickcarpet.api.module.QuickCarpetModule;
 import quickcarpet.mixin.accessor.RegistryKeyAccessor;
-import quickcarpet.utils.extensions.PlayerWithLanguage;
+import quickcarpet.utils.mixin.extensions.PlayerWithLanguage;
 
 import java.io.IOException;
 import java.io.Reader;

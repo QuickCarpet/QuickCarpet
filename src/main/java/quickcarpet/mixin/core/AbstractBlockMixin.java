@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import quickcarpet.utils.extensions.DynamicBlockEntityProvider;
+import quickcarpet.utils.mixin.extensions.DynamicBlockEntityProvider;
 
 @Mixin(AbstractBlock.AbstractBlockState.class)
 public abstract class AbstractBlockMixin {

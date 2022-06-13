@@ -21,7 +21,7 @@ import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.*;
 import quickcarpet.utils.RayTracing;
-import quickcarpet.utils.extensions.ActionPackOwner;
+import quickcarpet.utils.mixin.extensions.ActionPackOwner;
 
 import java.util.*;
 

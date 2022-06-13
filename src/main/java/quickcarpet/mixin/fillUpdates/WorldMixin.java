@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import quickcarpet.utils.extensions.ExtendedWorldChunkFillUpdates;
+import quickcarpet.utils.mixin.extensions.ExtendedWorldChunkFillUpdates;
 
 import static quickcarpet.utils.Constants.SetBlockState.NO_FILL_UPDATE;
 import static quickcarpet.utils.Constants.SetBlockState.NO_OBSERVER_UPDATE;

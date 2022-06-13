@@ -2,7 +2,7 @@
   "required": true,
   "package": "quickcarpet.mixin",
   "compatibilityLevel": "JAVA_16",
-  "plugin": "quickcarpet.utils.MixinConfigPlugin",
+  "plugin": "quickcarpet.utils.mixin.MixinConfigPlugin",
   "mixins": [
     "accessor.AxeItemAccessor",
     "accessor.BlockEntityAccessor",

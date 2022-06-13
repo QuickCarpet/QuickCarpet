@@ -1,4 +1,4 @@
-package quickcarpet.utils.extensions;
+package quickcarpet.utils.mixin.extensions;
 
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
