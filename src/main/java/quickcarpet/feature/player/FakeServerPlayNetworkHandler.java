@@ -1,4 +1,4 @@
-package quickcarpet.patches;
+package quickcarpet.feature.player;
 
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.Packet;

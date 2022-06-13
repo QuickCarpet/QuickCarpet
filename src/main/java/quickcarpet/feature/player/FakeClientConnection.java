@@ -1,4 +1,4 @@
-package quickcarpet.patches;
+package quickcarpet.feature.player;
 
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;

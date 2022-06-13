@@ -14,7 +14,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import quickcarpet.QuickCarpetServer;
-import quickcarpet.patches.FakeServerPlayerEntity;
+import quickcarpet.feature.player.FakeServerPlayerEntity;
 import quickcarpet.utils.extensions.WaypointContainer;
 
 import javax.annotation.Nonnull;

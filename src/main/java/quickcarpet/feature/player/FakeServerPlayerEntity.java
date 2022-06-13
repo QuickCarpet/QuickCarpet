@@ -1,4 +1,4 @@
-package quickcarpet.patches;
+package quickcarpet.feature.player;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.serialization.Codec;
