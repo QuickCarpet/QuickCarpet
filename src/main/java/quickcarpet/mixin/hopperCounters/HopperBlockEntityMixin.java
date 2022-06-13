@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import quickcarpet.helper.WoolTool;
+import quickcarpet.feature.HopperCounter;
 import quickcarpet.settings.Settings;
 
 @Mixin(HopperBlockEntity.class)
@@ -27,7 +27,7 @@ public abstract class HopperBlockEntityMixin extends LootableContainerBlockEntit
 
     @Inject(method = "insert", at = @At("HEAD"), cancellable = true)
     private static void quickcarpet$hopperCounters$onInsert(World world, BlockPos pos, BlockState state, Inventory hopper, CallbackInfoReturnable<Boolean> cir) {
-        if (Settings.hopperCounters && WoolTool.tryCount(world, pos, state, hopper, null)) {
+        if (Settings.hopperCounters && HopperCounter.tryCount(world, pos, state, hopper, null)) {
             markDirty(world, pos, state);
             cir.setReturnValue(false);
         }

@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import quickcarpet.QuickCarpetServer;
-import quickcarpet.helper.HopperCounter;
+import quickcarpet.feature.HopperCounter;
 import quickcarpet.settings.Settings;
 
 @Mixin(ItemEntity.class)

@@ -5,7 +5,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
-import quickcarpet.helper.HopperCounter;
+import quickcarpet.feature.HopperCounter;
 import quickcarpet.logging.source.*;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.Constants.CarpetCommand;

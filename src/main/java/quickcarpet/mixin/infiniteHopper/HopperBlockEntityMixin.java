@@ -19,8 +19,7 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import quickcarpet.helper.HopperCounter;
-import quickcarpet.helper.WoolTool;
+import quickcarpet.feature.HopperCounter;
 import quickcarpet.settings.Settings;
 
 import java.util.function.BooleanSupplier;
@@ -41,7 +40,7 @@ public abstract class HopperBlockEntityMixin extends LootableContainerBlockEntit
     @Inject(method = "insertAndExtract", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/entity/HopperBlockEntity;insert(Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/inventory/Inventory;)Z"), cancellable = true)
     private static void quickcarpet$infiniteHopper$beforeLithiumInsert(World world, BlockPos pos, BlockState state, HopperBlockEntity blockEntity, BooleanSupplier booleanSupplier, CallbackInfoReturnable<Boolean> cir) {
         if (!Settings.infiniteHopper) return;
-        HopperCounter.Key color = WoolTool.getCounterKey(world, pos.up());
+        HopperCounter.Key color = HopperCounter.Key.getCounterKey(world, pos.up());
         if (color == null) return;
         boolean bl = insertInfinite(world, pos, state, blockEntity, color);
         HopperBlockEntityMixin hopper = ((HopperBlockEntityMixin) (Object) blockEntity);
@@ -60,7 +59,7 @@ public abstract class HopperBlockEntityMixin extends LootableContainerBlockEntit
     @Unique
     private static boolean insertInfinite(World world, BlockPos pos, BlockState state, Inventory hopper, HopperCounter.Key color) {
         HopperCounter from = HopperCounter.getCounter(color);
-        if (Settings.hopperCounters && WoolTool.tryCount(world, pos, state, hopper, from)) {
+        if (Settings.hopperCounters && HopperCounter.tryCount(world, pos, state, hopper, from)) {
             return false;
         }
         Inventory output = getOutputInventory(world, pos, state);

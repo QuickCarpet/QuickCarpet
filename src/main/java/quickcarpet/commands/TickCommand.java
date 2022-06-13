@@ -4,7 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import quickcarpet.helper.TickSpeed;
+import quickcarpet.feature.TickSpeed;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.CarpetProfiler;
 import quickcarpet.utils.Constants.TickCommand.Keys;

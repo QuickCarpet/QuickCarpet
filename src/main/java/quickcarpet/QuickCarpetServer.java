@@ -15,15 +15,15 @@ import quickcarpet.api.QuickCarpetServerAPI;
 import quickcarpet.api.ServerEventListener;
 import quickcarpet.api.TelemetryProvider;
 import quickcarpet.api.network.server.ServerPluginChannelManager;
+import quickcarpet.feature.TickSpeed;
 import quickcarpet.feature.player.FakeServerPlayerEntity;
-import quickcarpet.helper.Mobcaps;
-import quickcarpet.helper.TickSpeed;
 import quickcarpet.logging.LoggerManager;
 import quickcarpet.network.channels.RulesChannel;
 import quickcarpet.network.channels.StructureChannel;
 import quickcarpet.network.impl.PluginChannelManager;
 import quickcarpet.pubsub.PubSubMessenger;
 import quickcarpet.utils.CameraData;
+import quickcarpet.utils.Mobcaps;
 import quickcarpet.utils.StatHelper;
 
 import javax.annotation.Nullable;

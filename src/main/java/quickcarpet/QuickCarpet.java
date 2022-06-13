@@ -25,7 +25,6 @@ import quickcarpet.api.module.QuickCarpetModule;
 import quickcarpet.api.settings.CoreSettingsManager;
 import quickcarpet.api.settings.ParsedRule;
 import quickcarpet.commands.*;
-import quickcarpet.helper.Mobcaps;
 import quickcarpet.pubsub.PubSubManager;
 import quickcarpet.pubsub.PubSubNode;
 import quickcarpet.settings.Settings;

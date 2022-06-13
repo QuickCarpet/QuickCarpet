@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import quickcarpet.helper.PlayerActionPack;
+import quickcarpet.feature.player.PlayerActionPack;
 import quickcarpet.utils.mixin.extensions.ActionPackOwner;
 
 @Mixin(ServerPlayerEntity.class)

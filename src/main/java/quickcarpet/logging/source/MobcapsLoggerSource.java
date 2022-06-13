@@ -9,8 +9,8 @@ import net.minecraft.util.Pair;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import quickcarpet.QuickCarpetServer;
-import quickcarpet.helper.Mobcaps;
 import quickcarpet.logging.Logger;
+import quickcarpet.utils.Mobcaps;
 import quickcarpet.utils.SpawnUtils;
 
 import java.util.ArrayList;

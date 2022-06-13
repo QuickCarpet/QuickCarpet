@@ -1,4 +1,4 @@
-package quickcarpet.helper;
+package quickcarpet.feature.stateinfo;
 
 import net.minecraft.fluid.FluidState;
 import net.minecraft.util.Identifier;

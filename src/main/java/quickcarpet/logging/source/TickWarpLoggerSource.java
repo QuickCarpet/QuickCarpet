@@ -4,7 +4,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
-import quickcarpet.helper.TickSpeed;
+import quickcarpet.feature.TickSpeed;
 import quickcarpet.logging.LogParameter;
 import quickcarpet.logging.Logger;
 

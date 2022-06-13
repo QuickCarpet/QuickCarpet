@@ -1,4 +1,4 @@
-package quickcarpet.helper;
+package quickcarpet.utils;
 
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.item.BlockItem;

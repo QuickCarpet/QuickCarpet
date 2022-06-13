@@ -11,8 +11,7 @@ import net.minecraft.world.World;
 import quickcarpet.commands.MeasureCommand;
 import quickcarpet.commands.SpawnCommand;
 import quickcarpet.commands.Utils;
-import quickcarpet.helper.HopperCounter;
-import quickcarpet.helper.WoolTool;
+import quickcarpet.feature.HopperCounter;
 import quickcarpet.settings.Settings;
 
 import javax.annotation.Nullable;
@@ -98,7 +97,7 @@ public final class Carpets {
 
     private static HopperCounter.Key getCounterKey(ServerWorld world, BlockPos pos) {
         var targetPos = pos.down();
-        var woolColor = WoolTool.getCounterKey(world, targetPos);
+        var woolColor = HopperCounter.Key.getCounterKey(world, targetPos);
         if (woolColor != null) return woolColor;
         var state = world.getBlockState(targetPos);
         return state.isOf(Blocks.CACTUS) ? HopperCounter.Key.CACTUS : HopperCounter.Key.ALL;

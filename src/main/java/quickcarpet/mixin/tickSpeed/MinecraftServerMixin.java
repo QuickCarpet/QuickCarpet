@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.*;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import quickcarpet.helper.TickSpeed;
+import quickcarpet.feature.TickSpeed;
 
 @Mixin(MinecraftServer.class)
 public abstract class MinecraftServerMixin {

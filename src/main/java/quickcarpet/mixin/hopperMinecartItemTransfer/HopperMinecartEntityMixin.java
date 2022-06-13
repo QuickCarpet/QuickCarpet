@@ -24,8 +24,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import quickcarpet.helper.HopperCounter;
-import quickcarpet.helper.WoolTool;
+import quickcarpet.feature.HopperCounter;
 import quickcarpet.settings.Settings;
 
 import java.util.List;
@@ -64,7 +63,7 @@ public abstract class HopperMinecartEntityMixin extends StorageMinecartEntity im
                 if (Settings.infiniteHopper) {
                     BlockPos pos = this.getBlockPos();
                     for (int j = 1; j <= 2; j++) {
-                        HopperCounter.Key color = WoolTool.getCounterKey(world, pos.up(j));
+                        HopperCounter.Key color = HopperCounter.Key.getCounterKey(world, pos.up(j));
                         if (color != null) {
                             if (Settings.hopperCounters) {
                                 HopperCounter.COUNTERS.get(color).add(world.getServer(), stack.getItem(), -1);

@@ -2,7 +2,7 @@ package quickcarpet.logging.source;
 
 import net.minecraft.text.MutableText;
 import quickcarpet.QuickCarpetServer;
-import quickcarpet.helper.HopperCounter;
+import quickcarpet.feature.HopperCounter;
 import quickcarpet.logging.Logger;
 
 import java.util.Collections;

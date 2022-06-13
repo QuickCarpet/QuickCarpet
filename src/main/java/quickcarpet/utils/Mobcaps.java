@@ -1,4 +1,4 @@
-package quickcarpet.helper;
+package quickcarpet.utils;
 
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;

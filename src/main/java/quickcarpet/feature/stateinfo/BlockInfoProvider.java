@@ -1,4 +1,4 @@
-package quickcarpet.helper;
+package quickcarpet.feature.stateinfo;
 
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;

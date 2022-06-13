@@ -1,7 +1,7 @@
 package quickcarpet.logging.source;
 
 import net.minecraft.util.Formatting;
-import quickcarpet.helper.TickSpeed;
+import quickcarpet.feature.TickSpeed;
 import quickcarpet.logging.LogParameter;
 import quickcarpet.logging.Logger;
 

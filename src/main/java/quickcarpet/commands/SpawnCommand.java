@@ -8,9 +8,9 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockPos;
-import quickcarpet.helper.Mobcaps;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.Constants.SpawnCommand.Keys;
+import quickcarpet.utils.Mobcaps;
 import quickcarpet.utils.SpawnTracker;
 import quickcarpet.utils.SpawnUtils;
 

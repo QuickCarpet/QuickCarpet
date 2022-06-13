@@ -6,8 +6,8 @@ import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.MutableText;
 import net.minecraft.util.math.ChunkPos;
 import quickcarpet.QuickCarpetServer;
-import quickcarpet.helper.Mobcaps;
 import quickcarpet.logging.Logger;
+import quickcarpet.utils.Mobcaps;
 import quickcarpet.utils.SpawnUtils;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package quickcarpet.helper;
+package quickcarpet.feature.player;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;

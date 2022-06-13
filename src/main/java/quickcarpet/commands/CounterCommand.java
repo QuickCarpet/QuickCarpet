@@ -5,7 +5,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
-import quickcarpet.helper.HopperCounter;
+import quickcarpet.feature.HopperCounter;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.Constants.CounterCommand.Keys;
 
