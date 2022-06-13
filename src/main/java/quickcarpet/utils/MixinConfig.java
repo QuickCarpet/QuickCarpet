@@ -61,6 +61,7 @@ public class MixinConfig {
             "infiniteHopper",
             "lightningKillsDropsFix",
             "localDifficulty",
+            "mobcapMultiplier",
             "movableBlockEntities",
             "movableBlockOverrides",
             "nbtMotionLimit",
