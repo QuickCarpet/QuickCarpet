@@ -1,12 +1,8 @@
-name: Releases
-
-on:
-  release:
-    types:
-      - created
+name: Publish API to Maven
+on: workflow_dispatch
 
 jobs:
-  release:
+  publish:
     runs-on: ubuntu-latest
     container:
       image: gradle:7.4-jdk17
@@ -35,21 +31,9 @@ jobs:
           key: ${{ runner.os }}-loom-${{ hashFiles('*gradle.*', '*/*gradle.kts', 'buildSrc/src/**', '*.versions.toml', 'src/main/resource/quickcarpet.accesswidener') }}
           restore-keys: |
             ${{ runner.os }}-loom-
-      - name: Build with Gradle
-        run: ./gradlew build
-      - name: Attach JARs to release
-        uses: AButler/upload-release-assets@v2.0
-        with:
-          files: build/libs/*.jar;api/build/libs/*.jar
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Publish Unit Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v1.19
-        if: always()
-        with:
-          files: build/test-results/**/*.xml
-      - name: Publish Test World
-        uses: actions/upload-artifact@v2.2.0
-        if: always()
-        with:
-          name: gametestworld
-          path: run/gametestworld/*
+      - name: Publish to Maven
+        env:
+          MAVEN_URL: ${{ secrets.MAVEN_URL }}
+          MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
+        run: ./gradlew publish
