@@ -20,7 +20,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import org.slf4j.Logger;
 import quickcarpet.QuickCarpetServer;
-import quickcarpet.utils.extensions.WaypointContainer;
+import quickcarpet.utils.mixin.extensions.WaypointContainer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

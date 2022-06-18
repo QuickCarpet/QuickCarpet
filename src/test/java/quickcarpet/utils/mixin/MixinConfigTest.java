@@ -1,4 +1,4 @@
-package quickcarpet.utils;
+package quickcarpet.utils.mixin;
 
 import com.google.common.collect.ImmutableMap;
 import org.junit.jupiter.api.Test;

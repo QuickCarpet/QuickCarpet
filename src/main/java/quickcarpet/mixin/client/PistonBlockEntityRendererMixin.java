@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import quickcarpet.settings.Settings;
-import quickcarpet.utils.extensions.ExtendedPistonBlockEntity;
+import quickcarpet.utils.mixin.extensions.ExtendedPistonBlockEntity;
 
 @Mixin(PistonBlockEntityRenderer.class)
 public abstract class PistonBlockEntityRendererMixin implements BlockEntityRenderer<PistonBlockEntity> {

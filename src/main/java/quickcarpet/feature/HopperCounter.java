@@ -1,9 +1,14 @@
-package quickcarpet.helper;
+package quickcarpet.feature;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Maps;
 import it.unimi.dsi.fastutil.objects.Object2LongLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.HopperBlock;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -12,6 +17,8 @@ import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import quickcarpet.QuickCarpet;
 import quickcarpet.logging.LogParameter;
 import quickcarpet.pubsub.PubSubInfoProvider;
@@ -67,6 +74,23 @@ public class HopperCounter {
         counter.put(item, counter.getLong(item) + count);
         pubSubProvider.publish();
         combined.update();
+    }
+
+    public static boolean tryCount(World world, BlockPos pos, BlockState state, Inventory hopper, HopperCounter from) {
+        HopperCounter to = COUNTERS.get(Key.getCounterKey(world, pos.offset(state.get(HopperBlock.FACING))));
+        if (to == null) return false;
+        for (int i = 0; i < hopper.size(); ++i) {
+            if (!hopper.getStack(i).isEmpty()) {
+                ItemStack stack = hopper.getStack(i);
+                to.add(world.getServer(), stack);
+                if (from == null) {
+                    hopper.setStack(i, ItemStack.EMPTY);
+                } else {
+                    from.add(world.getServer(), stack.getItem(), -stack.getCount());
+                }
+            }
+        }
+        return true;
     }
 
     public void reset(MinecraftServer server) {
@@ -170,45 +194,49 @@ public class HopperCounter {
     }
 
     public enum Key {
-        WHITE(DyeColor.WHITE),
-        ORANGE(DyeColor.ORANGE),
-        MAGENTA(DyeColor.MAGENTA),
-        LIGHT_BLUE(DyeColor.LIGHT_BLUE),
-        YELLOW(DyeColor.YELLOW),
-        LIME(DyeColor.LIME),
-        PINK(DyeColor.PINK),
-        GRAY(DyeColor.GRAY),
-        LIGHT_GRAY(DyeColor.LIGHT_GRAY),
-        CYAN(DyeColor.CYAN),
-        PURPLE(DyeColor.PURPLE),
-        BLUE(DyeColor.BLUE),
-        BROWN(DyeColor.BROWN),
-        GREEN(DyeColor.GREEN),
-        RED(DyeColor.RED),
-        BLACK(DyeColor.BLACK),
+        WHITE(DyeColor.WHITE, Blocks.WHITE_WOOL),
+        ORANGE(DyeColor.ORANGE, Blocks.ORANGE_WOOL),
+        MAGENTA(DyeColor.MAGENTA, Blocks.MAGENTA_WOOL),
+        LIGHT_BLUE(DyeColor.LIGHT_BLUE, Blocks.LIGHT_BLUE_WOOL),
+        YELLOW(DyeColor.YELLOW, Blocks.YELLOW_WOOL),
+        LIME(DyeColor.LIME, Blocks.LIME_WOOL),
+        PINK(DyeColor.PINK, Blocks.PINK_WOOL),
+        GRAY(DyeColor.GRAY, Blocks.GRAY_WOOL),
+        LIGHT_GRAY(DyeColor.LIGHT_GRAY, Blocks.LIGHT_GRAY_WOOL),
+        CYAN(DyeColor.CYAN, Blocks.CYAN_WOOL),
+        PURPLE(DyeColor.PURPLE, Blocks.PURPLE_WOOL),
+        BLUE(DyeColor.BLUE, Blocks.BLUE_WOOL),
+        BROWN(DyeColor.BROWN, Blocks.BROWN_WOOL),
+        GREEN(DyeColor.GREEN, Blocks.GREEN_WOOL),
+        RED(DyeColor.RED, Blocks.RED_WOOL),
+        BLACK(DyeColor.BLACK, Blocks.BLACK_WOOL),
         CACTUS("cactus", Items.CACTUS.getTranslationKey()),
         ALL("all", "gui.all", Combined::new)
         ;
 
         private static final Map<String, Key> BY_NAME;
         private static final Map<DyeColor, Key> BY_COLOR = new HashMap<>(16, 1);
+        private static final Map<Block, Key> BY_BLOCK = new HashMap<>(16, 1);
         static {
             Key[] values = values();
             BY_NAME = new HashMap<>(values.length, 1);
             for (Key k : values()) {
                 BY_NAME.put(k.name, k);
                 if (k.color != null) BY_COLOR.put(k.color, k);
+                if (k.block != null) BY_BLOCK.put(k.block, k);
             }
         }
 
         private @Nullable DyeColor color;
+        private @Nullable Block block;
         public final String name;
         private final String translationKey;
         private final Function<Key, HopperCounter> creator;
 
-        Key(DyeColor color) {
+        Key(DyeColor color, Block block) {
             this(color.getName(), "color.minecraft." + color.getName());
             this.color = color;
+            this.block = block;
         }
 
         Key(String name, String translationKey) {
@@ -237,6 +265,16 @@ public class HopperCounter {
         @Nullable
         public static Key get(String name) {
             return BY_NAME.get(name);
+        }
+
+        @Nullable
+        public static Key get(Block block) {
+            return BY_BLOCK.get(block);
+        }
+
+        @Nullable
+        public static Key getCounterKey(World world, BlockPos pos) {
+            return get(world.getBlockState(pos).getBlock());
         }
 
         public HopperCounter createCounter() {

@@ -15,7 +15,7 @@ import net.minecraft.world.gen.feature.CoralFeature;
 import net.minecraft.world.gen.feature.Feature;
 import org.spongepowered.asm.mixin.Mixin;
 import quickcarpet.settings.Settings;
-import quickcarpet.utils.extensions.ExtendedCoralFeature;
+import quickcarpet.utils.mixin.extensions.ExtendedCoralFeature;
 
 import java.util.List;
 

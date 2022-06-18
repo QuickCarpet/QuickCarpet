@@ -1,4 +1,4 @@
-package quickcarpet.helper;
+package quickcarpet.feature.player;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -21,7 +21,7 @@ import net.minecraft.util.hit.EntityHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.*;
 import quickcarpet.utils.RayTracing;
-import quickcarpet.utils.extensions.ActionPackOwner;
+import quickcarpet.utils.mixin.extensions.ActionPackOwner;
 
 import java.util.*;
 

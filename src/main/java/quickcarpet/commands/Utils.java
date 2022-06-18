@@ -22,7 +22,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.BlockView;
-import quickcarpet.helper.StateInfoProvider;
+import quickcarpet.feature.stateinfo.StateInfoProvider;
 import quickcarpet.utils.Translations;
 
 import java.util.ArrayList;

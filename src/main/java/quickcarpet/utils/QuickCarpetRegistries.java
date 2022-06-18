@@ -8,8 +8,8 @@ import net.minecraft.util.registry.MutableRegistry;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.util.registry.SimpleRegistry;
-import quickcarpet.helper.BlockInfoProvider;
-import quickcarpet.helper.FluidInfoProvider;
+import quickcarpet.feature.stateinfo.BlockInfoProvider;
+import quickcarpet.feature.stateinfo.FluidInfoProvider;
 import quickcarpet.logging.Logger;
 import quickcarpet.logging.Loggers;
 

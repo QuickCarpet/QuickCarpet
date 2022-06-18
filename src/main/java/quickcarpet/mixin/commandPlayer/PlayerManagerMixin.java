@@ -14,8 +14,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import quickcarpet.patches.FakeServerPlayNetworkHandler;
-import quickcarpet.patches.FakeServerPlayerEntity;
+import quickcarpet.feature.player.FakeServerPlayNetworkHandler;
+import quickcarpet.feature.player.FakeServerPlayerEntity;
 
 import java.util.List;
 

@@ -20,7 +20,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import quickcarpet.QuickCarpet;
 import quickcarpet.QuickCarpetServer;
-import quickcarpet.helper.TickSpeed;
+import quickcarpet.feature.TickSpeed;
 import quickcarpet.logging.LogParameter;
 import quickcarpet.logging.Loggers;
 import quickcarpet.utils.Constants.OtherKeys;

@@ -7,8 +7,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import quickcarpet.helper.Mobcaps;
 import quickcarpet.settings.Settings;
+import quickcarpet.utils.Mobcaps;
 
 @Mixin(PhantomSpawner.class)
 public class PhantomSpawnerMixin {

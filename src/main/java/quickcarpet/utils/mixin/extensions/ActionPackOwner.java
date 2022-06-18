@@ -1,6 +1,6 @@
-package quickcarpet.utils.extensions;
+package quickcarpet.utils.mixin.extensions;
 
-import quickcarpet.helper.PlayerActionPack;
+import quickcarpet.feature.player.PlayerActionPack;
 
 public interface ActionPackOwner {
     PlayerActionPack quickcarpet$getActionPack();

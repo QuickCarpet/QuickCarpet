@@ -10,7 +10,7 @@ import net.minecraft.world.dimension.DimensionType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import quickcarpet.utils.Waypoint;
-import quickcarpet.utils.extensions.WaypointContainer;
+import quickcarpet.utils.mixin.extensions.WaypointContainer;
 
 import java.util.Map;
 import java.util.TreeMap;

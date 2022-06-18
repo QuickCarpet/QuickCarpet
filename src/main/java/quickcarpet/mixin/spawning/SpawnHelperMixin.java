@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import quickcarpet.helper.Mobcaps;
+import quickcarpet.utils.Mobcaps;
 import quickcarpet.utils.SpawnTracker;
 
 @Mixin(SpawnHelper.class)

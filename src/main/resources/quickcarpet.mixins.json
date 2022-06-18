@@ -2,7 +2,7 @@
   "required": true,
   "package": "quickcarpet.mixin",
   "compatibilityLevel": "JAVA_17",
-  "plugin": "quickcarpet.utils.MixinConfigPlugin",
+  "plugin": "quickcarpet.utils.mixin.MixinConfigPlugin",
   "mixins": [
     "accessor.AxeItemAccessor",
     "accessor.BlockEntityAccessor",
@@ -95,6 +95,7 @@
     "loggers.damage.PlayerEntityMixin",
     "loggers.damage.ServerPlayerEntityMixin",
     "loggers.damage.SlimeEntityMixin",
+    "mobcapMultiplier.SpawnGroupMixin",
     "movableBlockEntities.PistonBlockEntityMixin",
     "movableBlockEntities.PistonBlockMixin",
     "movableBlockEntities.PistonHandlerMixin",

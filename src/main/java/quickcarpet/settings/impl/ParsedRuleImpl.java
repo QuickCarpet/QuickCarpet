@@ -10,8 +10,6 @@ import quickcarpet.api.module.QuickCarpetModule;
 import quickcarpet.api.settings.*;
 import quickcarpet.network.channels.RulesChannel;
 import quickcarpet.settings.Settings;
-import quickcarpet.utils.Messenger;
-import quickcarpet.utils.MixinConfig;
 import quickcarpet.utils.Reflection;
 import quickcarpet.utils.Translations;
 

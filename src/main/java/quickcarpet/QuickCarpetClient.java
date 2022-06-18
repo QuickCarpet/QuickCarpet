@@ -11,7 +11,7 @@ import quickcarpet.client.ClientInit;
 import quickcarpet.client.ClientPluginChannelManager;
 import quickcarpet.client.ClientPubSubListener;
 import quickcarpet.client.ClientRulesChannel;
-import quickcarpet.helper.TickSpeed;
+import quickcarpet.feature.TickSpeed;
 import quickcarpet.settings.Settings;
 
 @Environment(EnvType.CLIENT)

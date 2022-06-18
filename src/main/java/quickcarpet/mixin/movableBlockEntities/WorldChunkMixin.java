@@ -20,7 +20,7 @@ import net.minecraft.world.gen.chunk.BlendingData;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import quickcarpet.utils.extensions.ExtendedWorldChunk;
+import quickcarpet.utils.mixin.extensions.ExtendedWorldChunk;
 
 import javax.annotation.Nullable;
 

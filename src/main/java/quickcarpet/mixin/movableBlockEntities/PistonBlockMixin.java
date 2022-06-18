@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-import quickcarpet.utils.extensions.ExtendedPistonBlockEntity;
+import quickcarpet.utils.mixin.extensions.ExtendedPistonBlockEntity;
 
 import java.util.ArrayList;
 import java.util.List;

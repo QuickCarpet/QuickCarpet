@@ -25,13 +25,13 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.GameMode;
-import quickcarpet.helper.PlayerActionPack;
-import quickcarpet.helper.PlayerActionPack.Action;
-import quickcarpet.helper.PlayerActionPack.ActionType;
-import quickcarpet.patches.FakeServerPlayerEntity;
+import quickcarpet.feature.player.FakeServerPlayerEntity;
+import quickcarpet.feature.player.PlayerActionPack;
+import quickcarpet.feature.player.PlayerActionPack.Action;
+import quickcarpet.feature.player.PlayerActionPack.ActionType;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.Constants.PlayerCommand.Keys;
-import quickcarpet.utils.extensions.ActionPackOwner;
+import quickcarpet.utils.mixin.extensions.ActionPackOwner;
 
 import java.util.Arrays;
 import java.util.Collection;

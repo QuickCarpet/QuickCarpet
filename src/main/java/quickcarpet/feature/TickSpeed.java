@@ -1,4 +1,4 @@
-package quickcarpet.helper;
+package quickcarpet.feature;
 
 import com.google.gson.JsonObject;
 import net.minecraft.server.MinecraftServer;

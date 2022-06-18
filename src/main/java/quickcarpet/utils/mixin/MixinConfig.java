@@ -1,4 +1,4 @@
-package quickcarpet.utils;
+package quickcarpet.utils.mixin;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
@@ -61,6 +61,7 @@ public class MixinConfig {
             "infiniteHopper",
             "lightningKillsDropsFix",
             "localDifficulty",
+            "mobcapMultiplier",
             "movableBlockEntities",
             "movableBlockOverrides",
             "nbtMotionLimit",
