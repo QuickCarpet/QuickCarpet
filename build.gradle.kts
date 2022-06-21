@@ -1,4 +1,4 @@
-import quickcarpet.build.*
+import quickcarpet.build.GitHelper
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -45,9 +45,9 @@ dependencies {
 	include(project(":quickcarpet-api"))
 
 	modImplementation(libs.fabric.resource.loader)
-	//modImplementation(libs.fabric.networking)
-	//modImplementation(libs.fabric.registry.sync)
-	modCompileOnly(libs.fabric.api)
+	modCompileOnly(libs.fabric.networking)
+	modCompileOnly(libs.fabric.registry.sync)
+	//modCompileOnly(libs.fabric.api)
 	modCompileOnly(libs.modmenu)
 
 	include(libs.fabric.resource.loader)
