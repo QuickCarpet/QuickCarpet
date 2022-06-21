@@ -12,14 +12,20 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.MusicDiscItem;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldEvents;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import quickcarpet.settings.Settings;
 
 @Mixin(JukeboxBlockEntity.class)
 public abstract class JukeboxBlockEntityMixin extends BlockEntity implements Inventory {
     @Shadow private ItemStack record;
+
+    @Shadow public abstract void setRecord(ItemStack stack);
 
     public JukeboxBlockEntityMixin(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -51,7 +57,7 @@ public abstract class JukeboxBlockEntityMixin extends BlockEntity implements Inv
         world.setBlockState(pos, getCachedState().with(JukeboxBlock.HAS_RECORD, false), 2);
         world.syncWorldEvent(WorldEvents.MUSIC_DISC_PLAYED, pos, 0);
         ItemStack stack = record;
-        record = ItemStack.EMPTY;
+        setRecord(ItemStack.EMPTY);
         return stack;
     }
 
@@ -74,5 +80,15 @@ public abstract class JukeboxBlockEntityMixin extends BlockEntity implements Inv
     @Override
     public boolean isValid(int slot, ItemStack stack) {
         return Settings.autoJukebox && slot == 0 && stack.getItem() instanceof MusicDiscItem;
+    }
+
+    @Inject(method = "tick", at = @At(value = "FIELD", target = "Lnet/minecraft/block/entity/JukeboxBlockEntity;isPlaying:Z", shift = At.Shift.AFTER))
+    private static void quickcarpet$autoJukebox$updateComparators(World world, BlockPos pos, BlockState state, JukeboxBlockEntity blockEntity, CallbackInfo ci) {
+        if (Settings.autoJukebox) blockEntity.markDirty();
+    }
+
+    @Inject(method = "startPlaying", at = @At("TAIL"))
+    private void quickcarpet$autoJukebox$updateComparators(CallbackInfo ci) {
+        if (Settings.autoJukebox) this.markDirty();
     }
 }
