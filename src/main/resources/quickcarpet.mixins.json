@@ -29,6 +29,7 @@
     "antiCheat.ServerPlayNetworkHandlerMixin",
     "autoCraftingTable.CraftingTableBlockMixin",
     "autoCraftingTable.compat.multiconnect.BlockEntityMixin",
+    "autoJukebox.JukeboxBlockEntityMixin",
     "betterChunkLoading.ChunkTicketManagerMixin",
     "betterChunkLoading.MinecraftServerMixin",
     "betterChunkLoading.ServerChunkManagerMixin",
