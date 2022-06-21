@@ -60,6 +60,7 @@ public class MixinConfig {
             "hopperMinecartCooldown",
             "hopperMinecartItemTransfer",
             "infiniteHopper",
+            "jukeboxRedstoneSignal",
             "lightningKillsDropsFix",
             "localDifficulty",
             "mobcapMultiplier",

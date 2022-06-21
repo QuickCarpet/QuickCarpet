@@ -493,6 +493,14 @@ Default: `false`
 Options: `true`, `false`  
 Categories: experimental  
 
+## jukeboxRedstoneSignal
+Output a redstone signal while a jukebox is playing a record
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: feature  
+
 ## lightningKillsDropsFix
 Prevents lightning strikes from destroying the items it creates
 

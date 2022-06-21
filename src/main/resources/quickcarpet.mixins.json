@@ -87,6 +87,8 @@
     "hopperMinecartCooldown.HopperMinecartEntityMixin",
     "hopperMinecartItemTransfer.HopperMinecartEntityMixin",
     "infiniteHopper.HopperBlockEntityMixin",
+    "jukeboxRedstoneSignal.JukeboxBlockEntityMixin",
+    "jukeboxRedstoneSignal.JukeboxBlockMixin",
     "lightningKillsDropsFix.ItemEntityMixin",
     "localDifficulty.LocalDifficultyMixin",
     "loggers.CommandBlockExecutorMixin",

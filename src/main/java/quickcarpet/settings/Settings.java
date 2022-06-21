@@ -246,6 +246,9 @@ public class Settings {
         }
     }
 
+    @Rule(category = FEATURE)
+    public static boolean jukeboxRedstoneSignal = false;
+
     @Rule(category = FIX, bug = @BugFix("MC-206922"))
     public static boolean lightningKillsDropsFix = false;
 

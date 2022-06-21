@@ -97,6 +97,7 @@
   "carpet.rule.infiniteHopper.extra": "Also works together with hopperCounters and hopperMinecartItemTransfer",
   "carpet.rule.isDevelopment.description": "Sets the isDevelopment constant",
   "carpet.rule.isDevelopment.extra": "For example enables the /test command",
+  "carpet.rule.jukeboxRedstoneSignal.description": "Output a redstone signal while a jukebox is playing a record",
   "carpet.rule.lightningKillsDropsFix.description": "Prevents lightning strikes from destroying the items it creates",
   "carpet.rule.localDifficulty.description": "Set a fixed local difficulty (-1 for vanilla behavior)",
   "carpet.rule.mobcapMultiplier.description": "Change all mobcaps by this factor (e.g. 1.5 would change hostile mobs from 70 to 105)",
