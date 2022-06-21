@@ -83,6 +83,9 @@ public class Settings {
     @Rule(category = FEATURE)
     public static boolean autoCraftingTable = false;
 
+    @Rule(category = FEATURE)
+    public static boolean autoJukebox = false;
+
     @Rule(category = {FEATURE, EXPERIMENTAL})
     public static boolean betterChunkLoading = false;
 

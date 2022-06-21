@@ -37,6 +37,7 @@
   "carpet.rule.anvilledPackedIce.description": "Drop an anvil on ice blocks to get packed ice",
   "carpet.rule.anvilledPackedIce.extra": "Value is the number of ice blocks required, 0 is disabled",
   "carpet.rule.autoCraftingTable.description": "Automatic crafting table",
+  "carpet.rule.autoJukebox.description": "Automatic jukebox",
   "carpet.rule.betterChunkLoading.description": "Makes things load chunks again",
   "carpet.rule.betterStatistics.description": "Scoreboards initialize to the statistic values",
   "carpet.rule.blockEntityFix.description": "Fixes a crash when activating droppers or dispensers with invalid block entities",

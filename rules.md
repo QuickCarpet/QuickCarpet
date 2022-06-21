@@ -58,6 +58,14 @@ Default: `false`
 Options: `true`, `false`  
 Categories: feature  
 
+## autoJukebox
+Automatic jukebox
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: feature  
+
 ## betterChunkLoading
 Makes things load chunks again
 

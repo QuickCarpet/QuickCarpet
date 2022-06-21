@@ -37,6 +37,7 @@ public class MixinConfig {
             "alwaysBaby",
             "antiCheat",
             "autoCraftingTable",
+            "autoJukebox",
             "betterChunkLoading",
             "betterStatistics",
             "blockEntityFix",
