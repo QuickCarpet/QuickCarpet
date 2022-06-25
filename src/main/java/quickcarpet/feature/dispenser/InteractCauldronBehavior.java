@@ -1,3 +1,4 @@
+
 package quickcarpet.feature.dispenser;
 
 import net.minecraft.block.*;
@@ -65,13 +66,14 @@ public class InteractCauldronBehavior extends FallibleItemDispenserBehavior {
 
     private ItemStack handleGlassBottle(BlockPointer blockPointer, ItemStack stack, ServerWorld world, BlockPos target, BlockState state) {
         LeveledCauldronBlock.decrementFluidLevel(state, world, target);
+        ItemStack waterBottle = PotionUtil.setPotion(new ItemStack(Items.POTION), Potions.WATER));
         stack.decrement(1);
         this.setSuccess(true);
         if(stack.isEmpty()){
-            return PotionUtil.setPotion(new ItemStack(Items.POTION), Potions.WATER);
+            return waterBottle;
         } else {
-            if (((DispenserBlockEntity) blockPointer.getBlockEntity()).addToFirstFreeSlot(new ItemStack(Items.POTION)) < 0) {
-                super.dispenseSilently(blockPointer, PotionUtil.setPotion(new ItemStack(Items.POTION), Potions.WATER));
+            if (((DispenserBlockEntity) blockPointer.getBlockEntity()).addToFirstFreeSlot(waterBottle) < 0) {
+                super.dispenseSilently(blockPointer, waterBottle);
             }
         }
         return stack;
