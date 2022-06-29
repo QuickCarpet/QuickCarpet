@@ -21,6 +21,7 @@ public final class DispenserBehaviors {
     public static final FireChargeConvertsToNetherrackBehavior FIRE_CHARGE = new FireChargeConvertsToNetherrackBehavior();
     public static final ShearVinesBehavior SHEAR_VINES = new ShearVinesBehavior();
     public static final ScrapeCopperBehavior SCRAPE_COPPER = new ScrapeCopperBehavior();
+    public static final MilkCowsAndGoatsBehavior MILK_COWS_AND_GOATS = new MilkCowsAndGoatsBehavior();
 
     private DispenserBehaviors() {}
 
@@ -72,6 +73,7 @@ public final class DispenserBehaviors {
         List<DispenserBehavior> matching = new ArrayList<>(3);
         if (Settings.dispensersInteractCauldron) matching.add(INTERACT_CAULDRON);
         if (Settings.dispensersPickupBucketables) matching.add(PICKUP_BUCKETABLES);
+        if (Settings.dispensersMilkCowsAndGoats) matching.add(MILK_COWS_AND_GOATS);
         matching.add(vanilla);
         return MultiDispenserBehavior.of(matching);
     }
