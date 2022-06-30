@@ -168,7 +168,7 @@ public class Settings {
     public static boolean dispensersInteractCauldron = false;
 
     @Rule(category = FEATURE)
-    public static boolean dispensersMilkCowsAndGoats = false;
+    public static boolean dispensersMilkMilkables = false;
 
     @Rule(category = FEATURE)
     public static boolean dispensersPickupBucketables = false;

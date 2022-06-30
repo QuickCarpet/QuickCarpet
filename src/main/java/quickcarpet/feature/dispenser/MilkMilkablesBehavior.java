@@ -14,7 +14,7 @@ import net.minecraft.util.math.Box;
 
 import java.util.List;
 
-public class MilkCowsAndGoatsBehavior extends FallibleItemDispenserBehavior {
+public class MilkMilkablesBehavior extends FallibleItemDispenserBehavior {
     public ItemStack dispenseSilently(BlockPointer pointer, ItemStack stack) {
         BlockPos blockPos = pointer.getPos().offset(pointer.getBlockState().get(DispenserBlock.FACING));
         List<LivingEntity> list = pointer.getWorld().getEntitiesByClass(LivingEntity.class, new Box(blockPos), entity -> entity instanceof CowEntity || entity instanceof GoatEntity);

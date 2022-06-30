@@ -69,7 +69,7 @@
   "carpet.rule.creativeNoClip.description": "Enables players to noclip while in creative mode if they have the client-side setting enabled",
   "carpet.rule.dispensersBreakBlocks.description": "Gives dispensers the ability to break blocks using gunpowder",
   "carpet.rule.dispensersInteractCauldron.description": "Dispensers can interact with a cauldron with a bucket, as if it was a normal liquid block",
-  "carpet.rule.dispensersMilkCowsAndGoats.description": "Dispensers can milk cows and goats. Made by Cow! Heh, ironic",
+  "carpet.rule.dispensersMilkMilkables.description": "Dispensers can milk cows and goats. Made by Cow! Heh, ironic",
   "carpet.rule.dispensersPickupBucketables.description": "Dispensers can pickup all bucketable mobs, such as fish and axolotls. Combined with dispensersInteractCauldron, dispensers can pickup bucketable mobs inside cauldrons",
   "carpet.rule.dispensersPlaceBlocks.description": "Dispensers can place most blocks",
   "carpet.rule.dispensersScrapeCopper.description": "Dispensers with axes can scrape and unwax copper",
