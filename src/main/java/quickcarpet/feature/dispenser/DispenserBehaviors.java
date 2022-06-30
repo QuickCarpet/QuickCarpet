@@ -24,6 +24,8 @@ public final class DispenserBehaviors {
     public static final MilkMilkablesBehavior MILK_MILKABLES = new MilkMilkablesBehavior();
     public static final BowlBowlablesBehavior BOWL_BOWLABLES = new BowlBowlablesBehavior();
 
+    public static final DyeSheepBehavior DYE_SHEEP = new DyeSheepBehavior();
+
     private DispenserBehaviors() {}
 
     public static DispenserBehavior getDispenserBehavior(Item item, Map<Item, DispenserBehavior> behaviors) {
@@ -35,6 +37,7 @@ public final class DispenserBehaviors {
         if (item == Items.BUCKET) return getBucketBehavior(vanilla);
         if (item == Items.POTION || item == Items.GLASS_BOTTLE) return getInteractCauldronBehavior(vanilla);
         if (item == Items.BOWL) return getBowlBehavior(vanilla);
+        if (item instanceof DyeItem) return getDyeSheepBehavior(vanilla);
         if (item instanceof HoeItem) return getHoeBehavior(vanilla);
         if (item instanceof AxeItem) return getAxeBehavior(vanilla);
         if (item instanceof FluidModificationItem) return getInteractCauldronBehavior(vanilla);
@@ -63,6 +66,9 @@ public final class DispenserBehaviors {
         return Settings.dispensersBreakBlocks != BreakBlockBehavior.Option.FALSE ? BREAK_BLOCK : vanilla;
     }
 
+    private static DispenserBehavior getDyeSheepBehavior(DispenserBehavior vanilla) {
+        return Settings.dispensersDyeSheep ? DYE_SHEEP : vanilla;
+    }
     private static DispenserBehavior getSaddleBehavior(DispenserBehavior vanilla) {
         return Settings.smartSaddleDispenser ? SMART_SADDLE : vanilla;
     }

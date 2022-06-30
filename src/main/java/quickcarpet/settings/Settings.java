@@ -168,6 +168,9 @@ public class Settings {
     public static boolean dispensersBowlBowlables = false;
 
     @Rule(category = FEATURE)
+    public static boolean dispensersDyeSheep = false;
+
+    @Rule(category = FEATURE)
     public static boolean dispensersInteractCauldron = false;
 
     @Rule(category = FEATURE)
