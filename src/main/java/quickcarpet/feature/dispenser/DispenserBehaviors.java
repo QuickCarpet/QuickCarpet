@@ -23,6 +23,7 @@ public final class DispenserBehaviors {
     public static final ScrapeCopperBehavior SCRAPE_COPPER = new ScrapeCopperBehavior();
     public static final MilkMilkablesBehavior MILK_MILKABLES = new MilkMilkablesBehavior();
     public static final BowlBowlablesBehavior BOWL_BOWLABLES = new BowlBowlablesBehavior();
+    public static final UseNameTagsBehavior USE_NAME_TAG = new UseNameTagsBehavior();
 
     public static final DyeSheepBehavior DYE_SHEEP = new DyeSheepBehavior();
 
@@ -37,6 +38,7 @@ public final class DispenserBehaviors {
         if (item == Items.BUCKET) return getBucketBehavior(vanilla);
         if (item == Items.POTION || item == Items.GLASS_BOTTLE) return getInteractCauldronBehavior(vanilla);
         if (item == Items.BOWL) return getBowlBehavior(vanilla);
+        if (item == Items.NAME_TAG) return getNameTagBehavior(vanilla);
         if (item instanceof DyeItem) return getDyeSheepBehavior(vanilla);
         if (item instanceof HoeItem) return getHoeBehavior(vanilla);
         if (item instanceof AxeItem) return getAxeBehavior(vanilla);
@@ -71,6 +73,10 @@ public final class DispenserBehaviors {
     }
     private static DispenserBehavior getSaddleBehavior(DispenserBehavior vanilla) {
         return Settings.smartSaddleDispenser ? SMART_SADDLE : vanilla;
+    }
+
+    private static DispenserBehavior getNameTagBehavior(DispenserBehavior vanilla) {
+        return Settings.dispensersUseNameTags ? USE_NAME_TAG : vanilla;
     }
 
     private static DispenserBehavior getFireChargeBehavior(DispenserBehavior vanilla) {

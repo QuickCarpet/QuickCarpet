@@ -177,6 +177,9 @@ public class Settings {
     public static boolean dispensersMilkMilkables = false;
 
     @Rule(category = FEATURE)
+    public static boolean dispensersUseNameTags = false;
+
+    @Rule(category = FEATURE)
     public static boolean dispensersPickupBucketables = false;
 
 
