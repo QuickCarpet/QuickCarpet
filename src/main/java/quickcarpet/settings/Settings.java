@@ -165,6 +165,9 @@ public class Settings {
     public static BreakBlockBehavior.Option dispensersBreakBlocks = BreakBlockBehavior.Option.FALSE;
 
     @Rule(category = FEATURE)
+    public static boolean dispensersBowlBowlables = false;
+
+    @Rule(category = FEATURE)
     public static boolean dispensersInteractCauldron = false;
 
     @Rule(category = FEATURE)

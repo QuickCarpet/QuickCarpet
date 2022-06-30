@@ -22,6 +22,7 @@ public final class DispenserBehaviors {
     public static final ShearVinesBehavior SHEAR_VINES = new ShearVinesBehavior();
     public static final ScrapeCopperBehavior SCRAPE_COPPER = new ScrapeCopperBehavior();
     public static final MilkMilkablesBehavior MILK_MILKABLES = new MilkMilkablesBehavior();
+    public static final BowlBowlablesBehavior BOWL_BOWLABLES = new BowlBowlablesBehavior();
 
     private DispenserBehaviors() {}
 
@@ -33,6 +34,7 @@ public final class DispenserBehaviors {
         if (item == Items.SHEARS) return getShearBehavior(vanilla);
         if (item == Items.BUCKET) return getBucketBehavior(vanilla);
         if (item == Items.POTION || item == Items.GLASS_BOTTLE) return getInteractCauldronBehavior(vanilla);
+        if (item == Items.BOWL) return getBowlBehavior(vanilla);
         if (item instanceof HoeItem) return getHoeBehavior(vanilla);
         if (item instanceof AxeItem) return getAxeBehavior(vanilla);
         if (item instanceof FluidModificationItem) return getInteractCauldronBehavior(vanilla);
@@ -51,6 +53,10 @@ public final class DispenserBehaviors {
         }
         if (isDefault) return PLACE_BLOCK;
         return vanilla;
+    }
+
+    private static DispenserBehavior getBowlBehavior(DispenserBehavior vanilla) {
+        return Settings.dispensersBowlBowlables ? BOWL_BOWLABLES : vanilla;
     }
 
     private static DispenserBehavior getGunpowderBehavior(DispenserBehavior vanilla) {
