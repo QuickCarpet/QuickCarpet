@@ -182,9 +182,11 @@ public class Settings {
     @Rule(category = FEATURE)
     public static boolean dispensersPickupBucketables = false;
 
-
     @Rule(category = FEATURE)
     public static PlaceBlockBehavior.Option dispensersPlaceBlocks = PlaceBlockBehavior.Option.FALSE;
+
+    @Rule(category = FEATURE)
+    public static boolean dispensersRepairIronGolems = false;
 
     @Rule(category = FEATURE)
     public static boolean dispensersScrapeCopper = false;

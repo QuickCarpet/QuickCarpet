@@ -24,6 +24,7 @@ public final class DispenserBehaviors {
     public static final MilkMilkablesBehavior MILK_MILKABLES = new MilkMilkablesBehavior();
     public static final BowlBowlablesBehavior BOWL_BOWLABLES = new BowlBowlablesBehavior();
     public static final UseNameTagsBehavior USE_NAME_TAG = new UseNameTagsBehavior();
+    public static final RepairIronGolemBehavior REPAIR_IRON_GOLEM = new RepairIronGolemBehavior();
 
     public static final DyeSheepBehavior DYE_SHEEP = new DyeSheepBehavior();
 
@@ -39,6 +40,7 @@ public final class DispenserBehaviors {
         if (item == Items.POTION || item == Items.GLASS_BOTTLE) return getInteractCauldronBehavior(vanilla);
         if (item == Items.BOWL) return getBowlBehavior(vanilla);
         if (item == Items.NAME_TAG) return getNameTagBehavior(vanilla);
+        if (item == Items.IRON_INGOT) return getRepairIronGolemBehavior(vanilla);
         if (item instanceof DyeItem) return getDyeSheepBehavior(vanilla);
         if (item instanceof HoeItem) return getHoeBehavior(vanilla);
         if (item instanceof AxeItem) return getAxeBehavior(vanilla);
@@ -81,6 +83,10 @@ public final class DispenserBehaviors {
 
     private static DispenserBehavior getFireChargeBehavior(DispenserBehavior vanilla) {
         return Settings.renewableNetherrack ? new MultiDispenserBehavior(FIRE_CHARGE, vanilla) : vanilla;
+    }
+
+    private static DispenserBehavior getRepairIronGolemBehavior(DispenserBehavior vanilla) {
+        return Settings.dispensersRepairIronGolems ? new MultiDispenserBehavior(REPAIR_IRON_GOLEM, vanilla) : vanilla;
     }
 
     private static DispenserBehavior getShearBehavior(DispenserBehavior vanilla) {
