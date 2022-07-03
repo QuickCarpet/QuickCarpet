@@ -1,6 +1,7 @@
 package quickcarpet.feature.dispenser;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.dispenser.DispenserBehavior;
 import net.minecraft.item.*;
 import net.minecraft.tag.ItemTags;
@@ -27,6 +28,7 @@ public final class DispenserBehaviors {
     public static final RepairIronGolemBehavior REPAIR_IRON_GOLEM = new RepairIronGolemBehavior();
     public static final DyeSheepBehavior DYE_SHEEP = new DyeSheepBehavior();
     public static final CarvePumpkinBehavior CARVE_PUMPKIN = new CarvePumpkinBehavior();
+    public static final IgniteCreeperBehavior IGNITE_CREEPER = new IgniteCreeperBehavior();
 
     private DispenserBehaviors() {}
 
@@ -41,6 +43,7 @@ public final class DispenserBehaviors {
         if (item == Items.BOWL) return getBowlBehavior(vanilla);
         if (item == Items.NAME_TAG) return getNameTagBehavior(vanilla);
         if (item == Items.IRON_INGOT) return getRepairIronGolemBehavior(vanilla);
+        if (item == Items.FLINT_AND_STEEL) return getFlintAndSteelBehavior(vanilla);
         if (item instanceof DyeItem) return getDyeSheepBehavior(vanilla);
         if (item instanceof HoeItem) return getHoeBehavior(vanilla);
         if (item instanceof AxeItem) return getAxeBehavior(vanilla);
@@ -51,6 +54,8 @@ public final class DispenserBehaviors {
         }
         return vanilla;
     }
+
+
 
     private static DispenserBehavior getBlockItemBehavior(DispenserBehavior vanilla, Item item, boolean isDefault) {
         if (item.getRegistryEntry().isIn(ItemTags.CARPETS)) return new MultiDispenserBehavior(PLACE_BLOCK, vanilla);
@@ -64,6 +69,13 @@ public final class DispenserBehaviors {
 
     private static DispenserBehavior getBowlBehavior(DispenserBehavior vanilla) {
         return Settings.dispensersBowlBowlables ? BOWL_BOWLABLES : vanilla;
+    }
+
+    private static DispenserBehavior getFlintAndSteelBehavior(DispenserBehavior vanilla) {
+        List<DispenserBehavior> matching = new ArrayList<>(3);
+        if(Settings.dispensersIgniteCreeper) matching.add(IGNITE_CREEPER);
+        matching.add(vanilla);
+        return MultiDispenserBehavior.of(matching);
     }
 
     private static DispenserBehavior getGunpowderBehavior(DispenserBehavior vanilla) {

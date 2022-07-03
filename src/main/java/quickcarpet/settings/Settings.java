@@ -174,6 +174,9 @@ public class Settings {
     public static boolean dispensersDyeSheep = false;
 
     @Rule(category = FEATURE)
+    public static boolean dispensersIgniteCreeper = false;
+
+    @Rule(category = FEATURE)
     public static boolean dispensersInteractCauldron = false;
 
     @Rule(category = FEATURE)
