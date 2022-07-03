@@ -25,8 +25,8 @@ public final class DispenserBehaviors {
     public static final BowlBowlablesBehavior BOWL_BOWLABLES = new BowlBowlablesBehavior();
     public static final UseNameTagsBehavior USE_NAME_TAG = new UseNameTagsBehavior();
     public static final RepairIronGolemBehavior REPAIR_IRON_GOLEM = new RepairIronGolemBehavior();
-
     public static final DyeSheepBehavior DYE_SHEEP = new DyeSheepBehavior();
+    public static final CarvePumpkinBehavior CARVE_PUMPKIN = new CarvePumpkinBehavior();
 
     private DispenserBehaviors() {}
 
@@ -90,11 +90,15 @@ public final class DispenserBehaviors {
     }
 
     private static DispenserBehavior getShearBehavior(DispenserBehavior vanilla) {
-        return Settings.dispensersShearVines ? new MultiDispenserBehavior(vanilla, SHEAR_VINES) : vanilla;
+        List<DispenserBehavior> matching = new ArrayList<>(3);
+        if (Settings.dispensersShearVines) matching.add(SHEAR_VINES);
+        if (Settings.dispensersCarvePumpkins) matching.add(CARVE_PUMPKIN);
+        matching.add(vanilla);
+        return MultiDispenserBehavior.of(matching);
     }
 
     private static DispenserBehavior getBucketBehavior(DispenserBehavior vanilla) {
-        List<DispenserBehavior> matching = new ArrayList<>(3);
+        List<DispenserBehavior> matching = new ArrayList<>(4);
         if (Settings.dispensersInteractCauldron) matching.add(INTERACT_CAULDRON);
         if (Settings.dispensersPickupBucketables) matching.add(PICKUP_BUCKETABLES);
         if (Settings.dispensersMilkMilkables) matching.add(MILK_MILKABLES);
