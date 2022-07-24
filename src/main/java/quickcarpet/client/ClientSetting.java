@@ -22,6 +22,7 @@ public class ClientSetting<T> {
     public static final ClientSetting<Boolean> CREATIVE_NO_CLIP = new ClientSetting<>("creativeNoClip", false, () -> Configs.Generic.CREATIVE_NO_CLIP.getBooleanValue());
     public static final ClientSetting<Boolean> CREATIVE_NO_CLIP_OVERRIDE = new ClientSetting<>("creativeNoClipOverride", false, () -> Configs.Generic.CREATIVE_NO_CLIP_OVERRIDE.getBooleanValue());
     public static final ClientSetting<Boolean> SOUND_ENGINE_FIX = new ClientSetting<>("soundEngineFix", true, () -> Configs.Generic.SOUND_ENGINE_FIX.getBooleanValue());
+    public static final ClientSetting<Boolean> REMOVE_NBT_SIZE_LIMIT = new ClientSetting<>("removeNbtSizeLimit", true, () -> Configs.Generic.REMOVE_NBT_SIZE_LIMIT.getBooleanValue());
 
     public final String id;
     public final T defaultValue;

@@ -173,6 +173,7 @@
     "client.InGameHudMixin",
     "client.IntegratedServerMixin",
     "client.MinecraftClientMixin",
+    "client.PacketByteBufMixin",
     "client.PistonBlockEntityRendererMixin",
     "client.RenderTickCounterMixin",
     "client.SoundEngineSourceSetImplMixin",

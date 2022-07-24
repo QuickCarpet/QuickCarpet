@@ -1,6 +1,5 @@
 package quickcarpet.client;
 
-import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import fi.dy.masa.malilib.config.*;
@@ -34,6 +33,7 @@ public class Configs implements IConfigHandler {
         public static final ConfigBooleanHotkeyed CREATIVE_NO_CLIP = booleanHotkeyed(ClientSetting.CREATIVE_NO_CLIP, "");
         public static final ConfigBooleanHotkeyed CREATIVE_NO_CLIP_OVERRIDE = booleanHotkeyed(ClientSetting.CREATIVE_NO_CLIP_OVERRIDE, "");
         public static final ConfigBooleanHotkeyed SOUND_ENGINE_FIX = booleanHotkeyed(ClientSetting.SOUND_ENGINE_FIX, "");
+        public static final ConfigBooleanHotkeyed REMOVE_NBT_SIZE_LIMIT = booleanHotkeyed(ClientSetting.REMOVE_NBT_SIZE_LIMIT, "");
 
         public static final List<IConfigBase> OPTIONS = List.of(
             SYNC_LOW_TPS,
