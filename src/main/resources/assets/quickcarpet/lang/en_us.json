@@ -131,6 +131,7 @@
   "carpet.rule.spawningAlgorithm.extra": "- smart: select blocks from the lowest non-air block up instead of the lowest buildable block",
   "carpet.rule.stackableShulkerBoxes.description": "Empty shulker boxes can stack to 64 when dropped on the ground",
   "carpet.rule.stackableShulkerBoxes.extra": "To move them around between inventories, use shift click to move entire stacks",
+  "carpet.rule.stackableShulkerBoxesInHoppers.description": "If disabled hoppers and droppers will unstack shulker boxes when transferring items",
   "carpet.rule.stackableShulkerBoxesInInventories.description": "Empty shulker boxes stack to 64 inside of inventories",
   "carpet.rule.terracottaRepeaters.description": "Multiplies the repeater delay by the legacy block data (1-15) of terracotta below or 100 (data value 0: white) instead of the default 2gt",
   "carpet.rule.tileTickLimit.description": "Maximum number of tile-ticks executed per tick",

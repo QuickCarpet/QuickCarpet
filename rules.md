@@ -735,6 +735,14 @@ Default: `false`
 Options: `true`, `false`  
 Categories: survival  
 
+## stackableShulkerBoxesInHoppers
+If disabled hoppers and droppers will unstack shulker boxes when transferring items
+
+Type: `boolean`  
+Default: `false`  
+Options: `true`, `false`  
+Categories: survival  
+
 ## stackableShulkerBoxesInInventories
 Empty shulker boxes stack to 64 inside of inventories
 

@@ -13,6 +13,7 @@ public abstract class ItemStackMixin {
     @Inject(method = "getMaxCount", at = @At("HEAD"), cancellable = true)
     private void quickcarpet$stackableShulkerBoxesInInventories(CallbackInfoReturnable<Integer> cir) {
         if (Settings.stackableShulkerBoxesInInventories && NBTHelper.isEmptyShulkerBox((ItemStack) (Object) this)) {
+            NBTHelper.cleanUpShulkerBoxTag((ItemStack) (Object) this);
             cir.setReturnValue(64);
         }
     }

@@ -50,8 +50,12 @@ public class NBTHelper {
         return items != null && !items.isEmpty();
     }
 
-    public static boolean isEmptyShulkerBox(ItemStack stack) {
+    public static boolean isShulkerBox(ItemStack stack) {
         Item item = stack.getItem();
-        return item instanceof BlockItem && ((BlockItem) item).getBlock() instanceof ShulkerBoxBlock && !hasShulkerBoxItems(stack);
+        return item instanceof BlockItem && ((BlockItem) item).getBlock() instanceof ShulkerBoxBlock;
+    }
+
+    public static boolean isEmptyShulkerBox(ItemStack stack) {
+        return isShulkerBox(stack) && !hasShulkerBoxItems(stack);
     }
 }
