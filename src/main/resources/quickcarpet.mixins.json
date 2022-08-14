@@ -143,6 +143,7 @@
     "spawningAlgorithm.SpawnHelperMixin",
     "stackableShulkerBoxes.ItemEntityMixin",
     "stackableShulkerBoxesInHoppers.HopperBlockEntityMixin",
+    "stackableShulkerBoxesInHoppers.compat.lithium.HopperHelperMixin",
     "stackableShulkerBoxesInInventories.ItemStackMixin",
     "structureSpawnOverrides.ChunkGeneratorMixin",
     "structureSpawnOverrides.HuskEntityMixin",

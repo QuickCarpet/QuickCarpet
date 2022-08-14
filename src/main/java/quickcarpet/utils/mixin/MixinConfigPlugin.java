@@ -12,11 +12,9 @@ import java.util.Set;
 
 public class MixinConfigPlugin implements IMixinConfigPlugin {
     private static final Logger LOGGER = LogManager.getLogger("QuickCarpet|MixinConfig");
-    private boolean multiconnect;
 
     @Override
     public void onLoad(String mixinPackage) {
-        multiconnect = FabricLoader.getInstance().isModLoaded("multiconnect");
     }
 
     @Override
@@ -34,19 +32,22 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
             LOGGER.debug("{} disabled by config", mixinClassName);
             return false;
         }
-        switch (mixinClassName) {
-            case "quickcarpet.mixin.autoCraftingTable.compat.multiconnect.BlockEntityMixin" -> {
-                return multiconnect;
+        String relative = mixinClassName.substring(MixinConfig.MIXIN_PACKAGE.length() + 1);
+        String[] parts = relative.split("\\.");
+        if (parts.length > 2 && parts[1].equals("compat")) {
+            boolean apply = FabricLoader.getInstance().isModLoaded(parts[2]);
+            if (apply) {
+                LOGGER.info("Detected {}, loading {}", parts[2], relative);
             }
+            return apply;
+        }
+        switch (mixinClassName) {
             case "quickcarpet.mixin.fabricApi.RegistrySyncManagerMixin" -> {
                 if (FabricLoader.getInstance().isModLoaded("fabric-registry-sync-v0")) {
                     LOGGER.info("Applying Fabric API Registry Sync workaround");
                     return true;
                 }
                 return false;
-            }
-            case "quickcarpet.mixin.tileTickLimit.compat.lithium.LithiumServerTickSchedulerMixin" -> {
-                return FabricLoader.getInstance().isModLoaded("lithium");
             }
         }
         return true;
