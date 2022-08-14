@@ -71,6 +71,7 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
     @Override
     public void kill() {
         this.server.send(new ServerTask(this.server.getTicks(), () -> {
+            this.dismountVehicle();
             ((ActionPackOwner) this).quickcarpet$getActionPack().stop();
             this.networkHandler.onDisconnected(Messenger.s("Killed"));
         }));
@@ -122,6 +123,7 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
         abilities.flying = abilities.allowFlying && flying;
         player.networkHandler.requestTeleport(x, y, z, (float) yaw, (float) pitch);
         player.interactionManager.changeGameMode(gamemode);
+        player.dismountVehicle();
         postCreate(server, player);
     }
 
