@@ -35,7 +35,7 @@ public class NBTHelper {
             changed = true;
         }
 
-        if (bet.isEmpty()) {
+        if (bet.isEmpty() || (bet.getSize() == 1 && bet.contains("id", NbtElement.STRING_TYPE))) {
             stack.setNbt(null);
             changed = true;
         }
