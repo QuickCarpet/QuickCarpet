@@ -380,6 +380,15 @@ Default: `true`
 Options: `true`, `false`  
 Categories: tnt  
 
+## explosionRange
+Random range of explosions, vanilla (rule value -1) picks a random value in [0,1)
+
+Type: `double`  
+Default: `-1.0`  
+Options: `-1`, `0`, `0.5`, `1`  
+Categories: tnt  
+Validator: `>= 0 or -1`  
+
 ## extremeBehaviors
 Increases the odds of rare behaviors
 

@@ -28,8 +28,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import static quickcarpet.api.settings.RuleCategory.*;
-import static quickcarpet.utils.Constants.Validator.Texts.TNT_ANGLE;
-import static quickcarpet.utils.Constants.Validator.Texts.VIEW_DISTANCE_INTEGRATED;
+import static quickcarpet.utils.Constants.Validator.Texts.*;
 
 public class Settings {
     private static final Logger LOGGER = LogUtils.getLogger();
@@ -197,6 +196,22 @@ public class Settings {
 
     @Rule(category = TNT)
     public static boolean explosionBlockDamage = true;
+
+    public static class ExplosionRange implements Validator<Double> {
+        @Override
+        public Optional<Text> validate(Double value) {
+            if (value == -1 || value >= 0) return Optional.empty();
+            return Optional.of(EXPLOSION_RANGE);
+        }
+
+        @Override
+        public String getName() {
+            return ">= 0 or -1";
+        }
+    }
+
+    @Rule(category = TNT, options = {"-1", "0", "0.5", "1"}, validator = ExplosionRange.class)
+    public static double explosionRange = -1;
 
     @Rule(category = CREATIVE)
     public static boolean extremeBehaviors = false;

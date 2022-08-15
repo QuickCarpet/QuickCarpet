@@ -305,11 +305,13 @@ public interface Constants {
     interface Validator {
         interface Texts {
             Text TNT_ANGLE = t(Keys.TNT_ANGLE);
+            Text EXPLOSION_RANGE = t(Keys.EXPLOSION_RANGE);
             Text VIEW_DISTANCE_INTEGRATED = t(Keys.VIEW_DISTANCE_INTEGRATED);
         }
         interface Keys {
             String RANGE = "carpet.validator.range";
             String TNT_ANGLE = "carpet.validator.tntAngle";
+            String EXPLOSION_RANGE = "carpet.validator.explosionRange";
             String VIEW_DISTANCE_INTEGRATED = "carpet.validator.viewDistance.integrated";
         }
     }

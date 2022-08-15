@@ -68,6 +68,7 @@
     "drownedEnchantedTridentsFix.DrownedEntityMixin",
     "dustOnPistons.RedstoneWireBlockMixin",
     "explosionBlockDamage.ExplosionMixin",
+    "explosionRange.ExplosionMixin",
     "extremeBehaviors.RandomMixin",
     "extremeBehaviors.WitherEntityMixin",
     "fabricApi.RegistrySyncManagerMixin",
