@@ -7,6 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
+import quickcarpet.settings.Settings;
 
 import javax.annotation.Nullable;
 
@@ -57,5 +58,9 @@ public class NBTHelper {
 
     public static boolean isEmptyShulkerBox(ItemStack stack) {
         return isShulkerBox(stack) && !hasShulkerBoxItems(stack);
+    }
+
+    public static int getMaxCountForRedstone(ItemStack stack) {
+        return !Settings.stackableShulkerBoxesInHoppers && NBTHelper.isShulkerBox(stack) ? 1 : stack.getMaxCount();
     }
 }
