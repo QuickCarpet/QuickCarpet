@@ -33,7 +33,7 @@ public class RayTracing {
         Vec3d pos = source.getCameraPosVec(partialTicks);
         Vec3d reachVec = source.getRotationVec(partialTicks).multiply(reach);
         Box box = source.getBoundingBox().stretch(reachVec).expand(1);
-        return rayTraceEntities(source, pos, pos.add(reachVec), box, e -> !e.isSpectator() && e.collides(), maxSqDist);
+        return rayTraceEntities(source, pos, pos.add(reachVec), box, e -> !e.isSpectator() && e.canHit(), maxSqDist);
     }
 
     public static EntityHitResult rayTraceEntities(Entity source, Vec3d start, Vec3d end, Box box, Predicate<Entity> predicate, double maxSqDistance) {

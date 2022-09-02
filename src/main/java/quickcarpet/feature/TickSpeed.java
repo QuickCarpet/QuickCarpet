@@ -127,7 +127,7 @@ public class TickSpeed implements TelemetryProvider {
         if (tickWarpCallback != null) {
             CommandManager cmdManager = server.getCommandManager();
             try {
-                int j = cmdManager.execute(tickWarpSender, tickWarpCallback);
+                int j = cmdManager.executeWithPrefix(tickWarpSender, tickWarpCallback);
 
                 if (j < 1) {
                     if (tickWarpSender != null) {

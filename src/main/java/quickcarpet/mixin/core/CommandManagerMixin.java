@@ -1,13 +1,13 @@
 package quickcarpet.mixin.core;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.ParseResults;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.CommandRegistryAccess;
 import net.minecraft.entity.Entity;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Final;
@@ -46,15 +46,15 @@ public abstract class CommandManagerMixin {
 
     @BugFix(value = "MC-124493", status = "WAI")
     @Inject(method = "execute", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;isDebugEnabled()Z", remap = false), locals = LocalCapture.CAPTURE_FAILHARD)
-    private void quickcarpet$printStackTrace(ServerCommandSource source, String command, CallbackInfoReturnable<Integer> cir, Exception e) {
+    private void quickcarpet$printStackTrace(ParseResults<ServerCommandSource> parsed, String command, CallbackInfoReturnable<Integer> cir, ServerCommandSource source, Exception e) {
         e.printStackTrace();
     }
 
     @Redirect(method = "execute", at = @At(value = "INVOKE", target = "Lnet/minecraft/command/CommandException;getTextMessage()Lnet/minecraft/text/Text;"))
-    private Text quickcarpet$translateError(CommandException e, ServerCommandSource source, String command) {
-        Entity entity = source.getEntity();
+    private Text quickcarpet$translateError(CommandException e, ParseResults<ServerCommandSource> parsed, String command) {
+        Entity entity = parsed.getContext().getSource().getEntity();
         if (entity instanceof ServerPlayerEntity) {
-            return Translations.translate((MutableText) e.getTextMessage(), (ServerPlayerEntity) entity);
+            return Translations.translate(e.getTextMessage(), (ServerPlayerEntity) entity);
         }
         return e.getTextMessage();
     }

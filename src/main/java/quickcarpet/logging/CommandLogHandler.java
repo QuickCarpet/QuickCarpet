@@ -27,6 +27,6 @@ public class CommandLogHandler implements LogHandler {
         if (command.contains("$text")) {
             command = command.replace("$text",  Text.Serializer.toJson(message));
         }
-        player.server.getCommandManager().execute(player.getCommandSource(), command);
+        player.server.getCommandManager().executeWithPrefix(player.getCommandSource(), command);
     }
 }

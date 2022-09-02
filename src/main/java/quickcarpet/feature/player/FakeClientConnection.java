@@ -1,12 +1,10 @@
 package quickcarpet.feature.player;
 
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.NetworkSide;
 import net.minecraft.network.Packet;
-
-import javax.annotation.Nullable;
+import net.minecraft.network.PacketCallbacks;
+import org.jetbrains.annotations.Nullable;
 
 public class FakeClientConnection extends ClientConnection {
     public boolean open = true;
@@ -26,7 +24,7 @@ public class FakeClientConnection extends ClientConnection {
     }
 
     @Override
-    public void send(Packet<?> packet_1, @Nullable GenericFutureListener<? extends Future<? super Void>> genericFutureListener_1) {}
+    public void send(Packet<?> packet, @Nullable PacketCallbacks callbacks) {}
 
     @Override
     public void disableAutoRead() {}
