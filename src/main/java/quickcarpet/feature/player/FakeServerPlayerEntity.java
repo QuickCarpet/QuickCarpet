@@ -18,7 +18,9 @@ import net.minecraft.text.Text;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.WorldSavePath;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.GameMode;
+import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import quickcarpet.QuickCarpet;
@@ -42,7 +44,7 @@ import static quickcarpet.utils.Messenger.t;
 
 public class FakeServerPlayerEntity extends ServerPlayerEntity {
     private static final Logger LOGGER = LogManager.getLogger("QuickCarpet|Bots");
-    private boolean hasStartingPos;
+    private final boolean hasStartingPos;
     private double startingX, startingY, startingZ;
     private float startingYaw, startingPitch;
 
@@ -51,14 +53,14 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
         this.hasStartingPos = false;
     }
 
-    private FakeServerPlayerEntity(MinecraftServer server, ServerWorld world, GameProfile profile, double x, double y, double z, float yaw, float pitch) {
+    private FakeServerPlayerEntity(MinecraftServer server, ServerWorld world, GameProfile profile, Properties properties) {
         super(server, world, profile, null);
         this.hasStartingPos = true;
-        this.startingX = x;
-        this.startingY = y;
-        this.startingZ = z;
-        this.startingYaw = yaw;
-        this.startingPitch = pitch;
+        this.startingX = properties.x;
+        this.startingY = properties.y;
+        this.startingZ = properties.z;
+        this.startingYaw = properties.yaw;
+        this.startingPitch = properties.pitch;
     }
 
     public void applyStartingPosition() {
@@ -98,31 +100,34 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
         kill();
     }
 
-    public static void createFake(GameProfile profile, MinecraftServer server, double x, double y, double z, double yaw, double pitch, ServerWorld dimension, GameMode gamemode, boolean flying) {
+    public record Properties(double x, double y, double z, float yaw, float pitch, RegistryKey<World> dimension, GameMode gamemode, boolean flying) { }
+
+    public static void createFake(GameProfile profile, MinecraftServer server, Properties props) {
+        ServerWorld dimension = server.getWorld(props.dimension());
         if (profile.getProperties().containsKey("textures")) {
             profile = server.getSessionService().fillProfileProperties(profile, false);
             server.getUserCache().add(profile);
         }
-        FakeServerPlayerEntity player = new FakeServerPlayerEntity(server, dimension, profile, x, y, z, (float) yaw, (float) pitch);
+        FakeServerPlayerEntity player = new FakeServerPlayerEntity(server, dimension, profile, props);
         FakeClientConnection connection = new FakeClientConnection(NetworkSide.SERVERBOUND);
         ((ServerNetworkIoAccessor) server.getNetworkIo()).getConnections().add(connection);
         server.getPlayerManager().onPlayerConnect(connection, player);
-        if (!player.world.getRegistryKey().equals(dimension.getRegistryKey())) {
-            ServerWorld old_world = (ServerWorld) player.world;
-            old_world.removePlayer(player, RemovalReason.CHANGED_DIMENSION);
+        if (!player.world.getRegistryKey().equals(props.dimension())) {
+            ServerWorld oldWorld = (ServerWorld) player.world;
+            oldWorld.removePlayer(player, RemovalReason.CHANGED_DIMENSION);
             player.unsetRemoved();
             dimension.spawnEntity(player);
             player.setWorld(dimension);
-            server.getPlayerManager().sendWorldInfo(player, old_world);
-            player.networkHandler.requestTeleport(x, y, z, (float) yaw, (float) pitch);
+            server.getPlayerManager().sendWorldInfo(player, oldWorld);
+            player.networkHandler.requestTeleport(props.x(), props.y(), props.z(), props.yaw(), props.pitch());
             player.interactionManager.setWorld(dimension);
         }
         player.setHealth(20.0F);
         player.unsetRemoved();
         PlayerAbilities abilities = player.getAbilities();
-        abilities.flying = abilities.allowFlying && flying;
-        player.networkHandler.requestTeleport(x, y, z, (float) yaw, (float) pitch);
-        player.interactionManager.changeGameMode(gamemode);
+        abilities.flying = abilities.allowFlying && props.flying();
+        player.networkHandler.requestTeleport(props.x(), props.y(), props.z(), props.yaw(), props.pitch());
+        player.interactionManager.changeGameMode(props.gamemode());
         player.dismountVehicle();
         postCreate(server, player);
     }

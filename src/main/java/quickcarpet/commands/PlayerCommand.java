@@ -9,10 +9,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.client.render.entity.PlayerModelPart;
 import net.minecraft.command.CommandSource;
-import net.minecraft.command.argument.DimensionArgumentType;
 import net.minecraft.command.argument.EntityAnchorArgumentType;
-import net.minecraft.command.argument.RotationArgumentType;
-import net.minecraft.command.argument.Vec3ArgumentType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
@@ -21,6 +18,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.UserCache;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
@@ -33,10 +31,12 @@ import quickcarpet.settings.Settings;
 import quickcarpet.utils.Constants.PlayerCommand.Keys;
 import quickcarpet.utils.mixin.extensions.ActionPackOwner;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
 import static com.mojang.brigadier.arguments.FloatArgumentType.floatArg;
 import static com.mojang.brigadier.arguments.FloatArgumentType.getFloat;
@@ -45,6 +45,7 @@ import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
 import static com.mojang.brigadier.arguments.StringArgumentType.getString;
 import static com.mojang.brigadier.arguments.StringArgumentType.word;
 import static net.minecraft.command.argument.DimensionArgumentType.dimension;
+import static net.minecraft.command.argument.DimensionArgumentType.getDimensionArgument;
 import static net.minecraft.command.argument.EntityArgumentType.entity;
 import static net.minecraft.command.argument.EntityArgumentType.getEntity;
 import static net.minecraft.command.argument.RotationArgumentType.getRotation;
@@ -163,30 +164,48 @@ public class PlayerCommand {
         return server.getPlayerManager().getPlayer(playerName);
     }
 
-    private static boolean cantManipulate(CommandContext<ServerCommandSource> context) {
-        PlayerEntity player = getPlayer(context);
-        if (player == null) {
-            m(context.getSource(), ONLY_EXISTING);
-            return true;
-        }
-        PlayerEntity sendingPlayer= context.getSource().getPlayer();
-        if (player == null) return false;
+    private static boolean isOp(CommandContext<ServerCommandSource> context, PlayerEntity sendingPlayer) {
+        return context.getSource().getServer().getPlayerManager().isOperator(sendingPlayer.getGameProfile());
+    }
 
-        if (!context.getSource().getServer().getPlayerManager().isOperator(sendingPlayer.getGameProfile())) {
-            if (sendingPlayer != player && !(player instanceof FakeServerPlayerEntity)) {
-                m(context.getSource(), NOT_OPERATOR);
-                return true;
-            }
-        }
+    private static boolean isSameOrFake(PlayerEntity sendingPlayer, PlayerEntity targetedPlayer) {
+        return targetedPlayer == sendingPlayer || targetedPlayer instanceof FakeServerPlayerEntity;
+    }
+
+    private static boolean canManipulate(CommandContext<ServerCommandSource> context, PlayerEntity targetedPlayer) {
+        PlayerEntity sendingPlayer = context.getSource().getPlayer();
+        // Server console can manipulate
+        if (sendingPlayer == null) return true;
+        if (isOp(context, sendingPlayer)) return true;
+        if (isSameOrFake(sendingPlayer, targetedPlayer)) return true;
+        m(context.getSource(), NOT_OPERATOR);
         return false;
     }
 
-    private static boolean cantReMove(CommandContext<ServerCommandSource> context) {
-        if (cantManipulate(context)) return true;
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    private static boolean canManipulate(CommandContext<ServerCommandSource> context) {
         PlayerEntity player = getPlayer(context);
-        if (player instanceof FakeServerPlayerEntity) return false;
+        if (player != null) return canManipulate(context, player);
+        m(context.getSource(), ONLY_EXISTING);
+        return false;
+    }
+
+    private static boolean canManipulateFakePlayer(CommandContext<ServerCommandSource> context) {
+        PlayerEntity player = getPlayer(context);
+        if (!canManipulate(context, player)) return false;
+        if (player instanceof FakeServerPlayerEntity) return true;
         m(context.getSource(), NOT_FAKE);
-        return true;
+        return false;
+    }
+
+    private static <T> CompletableFuture<T> toFuture(Consumer<Consumer<T>> callback) {
+        CompletableFuture<T> future = new CompletableFuture<>();
+        callback.accept(future::complete);
+        return future;
+    }
+
+    private static CompletableFuture<GameProfile> findByName(UserCache cache, String name) {
+        return toFuture(cb -> cache.findByNameAsync(name, p -> cb.accept(p.orElse(null))));
     }
 
     private static CompletableFuture<GameProfile> getSpawnableProfile(CommandContext<ServerCommandSource> context) {
@@ -198,27 +217,29 @@ public class PlayerCommand {
             m(context.getSource(), ts(Keys.ALREADY_ONLINE, Formatting.RED, s(playerName, Formatting.BOLD)));
             return CompletableFuture.completedFuture(null);
         }
-        CompletableFuture<GameProfile> future = new CompletableFuture<>();
-        server.getUserCache().findByNameAsync(playerName, opt -> future.complete(opt.orElse(null)));
-        return future.thenApply(profile -> {
-            if (profile == null) {
-                m(context.getSource(), ts(Keys.DOES_NOT_EXIST, Formatting.RED, s(playerName, Formatting.BOLD)));
-                return null;
-            }
-            if (manager.getUserBanList().contains(profile)) {
-                m(context.getSource(), ts(Keys.BANNED, Formatting.RED, s(playerName, Formatting.BOLD)));
-                return null;
-            }
-            if (manager.isWhitelistEnabled() && manager.isWhitelisted(profile) && !context.getSource().hasPermissionLevel(2)) {
-                m(context.getSource(), ts(Keys.WHITELISTED, Formatting.RED));
-                return null;
-            }
-            return profile;
-        });
+        return findByName(server.getUserCache(), playerName)
+            .thenApply(profile -> checkSpawnableProfile(context, profile, playerName));
+    }
+
+    private static GameProfile checkSpawnableProfile(CommandContext<ServerCommandSource> context, @Nullable GameProfile profile, String name) {
+        PlayerManager manager = context.getSource().getServer().getPlayerManager();
+        if (profile == null) {
+            m(context.getSource(), ts(Keys.DOES_NOT_EXIST, Formatting.RED, s(name, Formatting.BOLD)));
+            return null;
+        }
+        if (manager.getUserBanList().contains(profile)) {
+            m(context.getSource(), ts(Keys.BANNED, Formatting.RED, s(name, Formatting.BOLD)));
+            return null;
+        }
+        if (manager.isWhitelistEnabled() && manager.isWhitelisted(profile) && !context.getSource().hasPermissionLevel(2)) {
+            m(context.getSource(), ts(Keys.WHITELISTED, Formatting.RED));
+            return null;
+        }
+        return profile;
     }
 
     private static int kill(CommandContext<ServerCommandSource> context) {
-        if (cantReMove(context)) return 0;
+        if (!canManipulateFakePlayer(context)) return 0;
         getPlayer(context).kill();
         return 1;
     }
@@ -240,17 +261,11 @@ public class PlayerCommand {
         return spawn(context, null);
     }
 
-    private static int spawn(CommandContext<ServerCommandSource> context, GameMode gameMode) throws CommandSyntaxException {
+    private static FakeServerPlayerEntity.Properties getSpawnProperties(CommandContext<ServerCommandSource> context, GameMode gameMode) throws CommandSyntaxException {
         ServerCommandSource source = context.getSource();
-        Vec3d pos = tryGetArg(
-                () -> Vec3ArgumentType.getVec3(context, "position"),
-                source::getPosition);
-        Vec2f facing = tryGetArg(
-                () -> RotationArgumentType.getRotation(context, "direction").toAbsoluteRotation(context.getSource()),
-                source::getRotation);
-        ServerWorld dim = tryGetArg(
-                () -> DimensionArgumentType.getDimensionArgument(context, "dimension"),
-                source::getWorld);
+        Vec3d pos = tryGetArg(() -> getVec3(context, "position"), source::getPosition);
+        Vec2f facing = tryGetArg(() -> getRotation(context, "direction").toAbsoluteRotation(source), source::getRotation);
+        ServerWorld dim = tryGetArg(() -> getDimensionArgument(context, "dimension"), source::getWorld);
         GameMode mode = source.getServer().getDefaultGameMode();
         boolean flying = false;
         ServerPlayerEntity player = context.getSource().getPlayer();
@@ -259,34 +274,36 @@ public class PlayerCommand {
             flying = player.getAbilities().flying;
         }
         if (gameMode != null) mode = gameMode;
-        GameMode finalMode = mode;
-        boolean finalFlying = flying;
+        return new FakeServerPlayerEntity.Properties(pos.x, pos.y, pos.z, facing.y, facing.x, dim.getRegistryKey(), mode, flying);
+    }
+
+    private static int spawn(CommandContext<ServerCommandSource> context, GameMode gameMode) throws CommandSyntaxException {
+        FakeServerPlayerEntity.Properties props = getSpawnProperties(context, gameMode);
         getSpawnableProfile(context).thenAccept(profile -> {
             if (profile == null) return;
-            MinecraftServer server = source.getServer();
-            server.send(new ServerTask(server.getTicks(), () -> FakeServerPlayerEntity.createFake(profile, server, pos.x, pos.y, pos.z, facing.y, facing.x, dim, finalMode, finalFlying)));
+            MinecraftServer server = context.getSource().getServer();
+            server.send(new ServerTask(server.getTicks(), () -> FakeServerPlayerEntity.createFake(profile, server, props)));
         });
         return 1;
     }
 
     private static int login(CommandContext<ServerCommandSource> context) {
-        ServerCommandSource source = context.getSource();
         getSpawnableProfile(context).thenAccept(profile -> {
-            MinecraftServer server = source.getServer();
+            MinecraftServer server = context.getSource().getServer();
             server.send(new ServerTask(server.getTicks(), () -> FakeServerPlayerEntity.createFake(profile, server)));
         });
         return 1;
     }
 
     private static int stop(CommandContext<ServerCommandSource> context) {
-        if (cantManipulate(context)) return 0;
+        if (!canManipulate(context)) return 0;
         ServerPlayerEntity player = getPlayer(context);
         ((ActionPackOwner) player).quickcarpet$getActionPack().stop();
         return 1;
     }
 
     private static int reach(CommandContext<ServerCommandSource> context, float dist) {
-        if (cantManipulate(context)) return 0;
+        if (!canManipulate(context)) return 0;
         ServerPlayerEntity player = getPlayer(context);
         ((ActionPackOwner) player).quickcarpet$getActionPack().reach = dist;
         return 1;
@@ -298,7 +315,7 @@ public class PlayerCommand {
     }
 
     private static int manipulate(CommandContext<ServerCommandSource> context, PlayerAction action) throws CommandSyntaxException {
-        if (cantManipulate(context)) return 0;
+        if (!canManipulate(context)) return 0;
         ServerPlayerEntity player = getPlayer(context);
         action.doAction(((ActionPackOwner) player).quickcarpet$getActionPack());
         return 1;
@@ -313,7 +330,7 @@ public class PlayerCommand {
     }
 
     private static int shadow(CommandContext<ServerCommandSource> context) {
-        if (cantManipulate(context)) return 0;
+        if (!canManipulate(context)) return 0;
         ServerPlayerEntity player = getPlayer(context);
         if (player instanceof FakeServerPlayerEntity) {
             m(context.getSource(), SHADOW_FAKE);
@@ -324,7 +341,7 @@ public class PlayerCommand {
     }
 
     private static int dropAll(CommandContext<ServerCommandSource> context) {
-        if (cantManipulate(context)) return 0;
+        if (!canManipulate(context)) return 0;
         ServerPlayerEntity player = getPlayer(context);
         int count = player.getInventory().size();
         for (int i = 0; i < count; i++) {
@@ -335,7 +352,7 @@ public class PlayerCommand {
     }
 
     private static int changeGameMode(CommandContext<ServerCommandSource> context, GameMode mode) {
-        if (cantManipulate(context)) return 0;
+        if (!canManipulate(context)) return 0;
         ServerPlayerEntity player = getPlayer(context);
         player.interactionManager.changeGameMode(mode);
         return 1;
