@@ -60,6 +60,7 @@
     "core.TagGroupLoaderMixin",
     "core.TestCommandMixin",
     "core.ThreadedAnvilChunkStorageMixin",
+    "core.compat.fabric_networking_api_v1.ServerPlayNetworkHandlerMixin",
     "core.compat.fabric_registry_sync_v0.RegistrySyncManagerMixin",
     "creativeNoClip.BlockItemMixin",
     "creativeNoClip.PistonBlockEntityMixin",
