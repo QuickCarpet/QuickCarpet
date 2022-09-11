@@ -23,11 +23,9 @@ import quickcarpet.logging.source.LoggerSource;
 import quickcarpet.utils.QuickCarpetRegistries;
 
 import javax.annotation.Nullable;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
@@ -35,6 +33,7 @@ import java.util.stream.Stream;
 public class LoggerManager {
     private static final org.slf4j.Logger LOGGER = LogUtils.getLogger();
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+    private static final WorldSavePath CONFIG_PATH = new WorldSavePath("loggerData.json");
     private final MinecraftServer server;
     private final Map<String, PlayerSubscriptions> playerSubscriptions = new HashMap<>();
     private final Multimap<Logger, String> subscribedOnlinePlayers = MultimapBuilder.hashKeys().hashSetValues().build();
@@ -204,20 +203,15 @@ public class LoggerManager {
         return server.getPlayerManager().getPlayer(name);
     }
 
-    private Path getSaveFile() {
-        return QuickCarpetServer.getConfigFile(new WorldSavePath("loggerData.json"));
-    }
-
     public void readSaveFile() {
-        Path path = getSaveFile();
-        if (!Files.isRegularFile(path)) return;
         clear();
-        try {
-            JsonObject root = JsonHelper.deserialize(Files.newBufferedReader(path, StandardCharsets.UTF_8));
+        try (BufferedReader reader = QuickCarpetServer.readConfigFile(CONFIG_PATH)) {
+            if (reader == null) return;
+            JsonObject root = JsonHelper.deserialize(reader);
             JsonObject players = root.getAsJsonObject("players");
-            readPlayers(players, error -> LOGGER.error("Couldn't read {}: {}", path, error));
+            readPlayers(players, error -> LOGGER.error("Couldn't read {}: {}", QuickCarpetServer.getConfigFile(CONFIG_PATH), error));
         } catch (IOException | RuntimeException e) {
-            LOGGER.error("Couldn't read {}", path, e);
+            LOGGER.error("Couldn't read {}", QuickCarpetServer.getConfigFile(CONFIG_PATH), e);
         }
     }
 
@@ -240,22 +234,16 @@ public class LoggerManager {
     }
 
     public void writeSaveFile() {
-        Path path = getSaveFile();
-        if (Files.exists(path) && !Files.isRegularFile(path)) {
-            LOGGER.error("Couldn't write {}: already exists but is not a regular file", path);
-            return;
-        }
         try {
             DataResult<JsonElement> result = PlayerSubscriptions.CODEC.encodeStart(JsonOps.INSTANCE, playerSubscriptions);
-            JsonElement players = result.getOrThrow(true, error -> LOGGER.warn("Couldn't write {}: {}", path, error));
+            JsonElement players = result.getOrThrow(true, error -> LOGGER.warn("Couldn't write {}: {}", QuickCarpetServer.getConfigFile(CONFIG_PATH), error));
             JsonObject obj = new JsonObject();
             obj.add("players", players);
-            Files.createDirectories(path.getParent());
-            try (BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)) {
+            try (BufferedWriter writer = QuickCarpetServer.writeConfigFile(CONFIG_PATH)) {
                 GSON.toJson(obj, writer);
             }
         } catch (IOException | RuntimeException e) {
-            LOGGER.error("Couldn't write {}", path, e);
+            LOGGER.error("Couldn't write {}", QuickCarpetServer.getConfigFile(CONFIG_PATH), e);
         }
     }
 

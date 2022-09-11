@@ -27,7 +27,12 @@ import quickcarpet.utils.Mobcaps;
 import quickcarpet.utils.StatHelper;
 
 import javax.annotation.Nullable;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
@@ -85,6 +90,38 @@ public class QuickCarpetServer implements QuickCarpetServerAPI, ServerEventListe
 
     public static Path getConfigFile(WorldSavePath name) {
         return getMinecraftServer().getSavePath(name);
+    }
+
+    public static BufferedReader readConfigFile(WorldSavePath name) {
+        Path path = getConfigFile(name);
+        if (!Files.isRegularFile(path)) return null;
+        try {
+            return Files.newBufferedReader(path, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            LOGGER.error("Failed to read config file {}", path, e);
+            return null;
+        }
+    }
+
+    public static BufferedWriter writeConfigFile(WorldSavePath name) {
+        Path path = getConfigFile(name);
+        if (Files.exists(path) && !Files.isRegularFile(path)) {
+            LOGGER.error("Couldn't write {}: already exists but is not a regular file", path);
+            return null;
+        }
+        try {
+            Files.createDirectories(path.getParent());
+        } catch (FileAlreadyExistsException ignored) {
+        } catch (IOException e) {
+            LOGGER.error("Failed to create directory {} for {}", path.getParent(), path.getFileName(), e);
+            return null;
+        }
+        try {
+            return Files.newBufferedWriter(path, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            LOGGER.error("Failed to write config file {}", path, e);
+            return null;
+        }
     }
 
     @Override

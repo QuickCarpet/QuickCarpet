@@ -15,17 +15,13 @@ import quickcarpet.utils.Translations;
 import quickcarpet.utils.mixin.MixinConfig;
 
 import javax.annotation.Nullable;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.nio.file.Files;
+import java.io.*;
 import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class CoreSettingsManager extends SettingsManager implements quickcarpet.api.settings.CoreSettingsManager {
+    private static final WorldSavePath CONFIG_PATH = new WorldSavePath("carpet.conf");
     private final Map<QuickCarpetModule, ModuleSettingsManager> moduleSettings = new HashMap<>();
     private final List<ParsedRule<?>> allRules = new ArrayList<>();
     private final Map<String, ParsedRule<?>> rulesByName = new HashMap<>();
@@ -105,19 +101,16 @@ public class CoreSettingsManager extends SettingsManager implements quickcarpet.
         return "carpet.rule." + getDefaultRuleName(fieldName, rule) + "." + key;
     }
 
-    private Path getFile() {
-        if (!initialized) throw new IllegalStateException("Not initialized");
-        return QuickCarpetServer.getConfigFile(new WorldSavePath("carpet.conf"));
-    }
-
     @Override
     public Collection<ParsedRule<?>> getRules() {
         return allRules;
     }
 
     void load() {
+        if (!initialized) throw new IllegalStateException("Not initialized");
         for (ParsedRule<?> rule : allRules) rule.resetToDefault(false);
-        try (BufferedReader reader = Files.newBufferedReader(getFile())) {
+        try (BufferedReader reader = QuickCarpetServer.readConfigFile(CONFIG_PATH)) {
+            if (reader == null) return;
             for (String line; (line = reader.readLine()) != null;) {
                 line = line.trim();
                 if (line.isEmpty()) continue;
@@ -178,10 +171,12 @@ public class CoreSettingsManager extends SettingsManager implements quickcarpet.
     @Override
     public void save() {
         if (locked) return;
-        try (PrintStream out = new PrintStream(Files.newOutputStream(getFile()))) {
-            for (ParsedRule<?> rule : getNonDefault()) {
+        try (BufferedWriter writer = QuickCarpetServer.writeConfigFile(CONFIG_PATH)) {
+            if (writer == null) return;
+            for (var rule : getNonDefault()) {
                 if (!rule.hasSavedValue()) continue;
-                out.println(rule.getName() + " " + rule.getSavedAsString());
+                writer.write(rule.getName() + " " + rule.getSavedAsString());
+                writer.newLine();
             }
         } catch (IOException e) {
             LOG.error("Error saving settings", e);

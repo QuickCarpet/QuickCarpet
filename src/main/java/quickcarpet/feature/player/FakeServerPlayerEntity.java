@@ -34,7 +34,6 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +43,7 @@ import static quickcarpet.utils.Messenger.t;
 
 public class FakeServerPlayerEntity extends ServerPlayerEntity {
     private static final Logger LOGGER = LogManager.getLogger("QuickCarpet|Bots");
+    private static final WorldSavePath CONFIG_PATH = new WorldSavePath("bots.json");
     private final boolean hasStartingPos;
     private double startingX, startingY, startingZ;
     private float startingYaw, startingPitch;
@@ -175,15 +175,10 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
 
     private static final Codec<Map<UUID, PlayerActionPack.State>> BOTS_CODEC = Codec.unboundedMap(Codec.STRING.xmap(UUID::fromString, UUID::toString), PlayerActionPack.State.CODEC.codec());
 
-    private static Path getFile() {
-        return QuickCarpetServer.getConfigFile(new WorldSavePath("bots.json"));
-    }
-
     public static void loadPersistent(MinecraftServer server) throws IOException {
         if (!Settings.persistentPlayers) return;
-        Path file = getFile();
-        if (!Files.isRegularFile(file)) return;
-        try (BufferedReader reader = Files.newBufferedReader(file)) {
+        try (BufferedReader reader = QuickCarpetServer.readConfigFile(CONFIG_PATH)) {
+            if (reader == null) return;
             Map<UUID, PlayerActionPack.State> bots =  new LinkedHashMap<>(BOTS_CODEC.decode(JsonOps.INSTANCE, JsonHelper.deserialize(reader))
                 .getOrThrow(false, e -> LOGGER.error("Could not read persistent players: {}", e))
                 .getFirst());
@@ -218,13 +213,13 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
             var state = ((ActionPackOwner) player).quickcarpet$getActionPack().getState();
             bots.put(player.getUuid(), state);
         }
-        Path file = getFile();
         if (bots.isEmpty()) {
-            Files.deleteIfExists(file);
+            Files.deleteIfExists(QuickCarpetServer.getConfigFile(CONFIG_PATH));
             return;
         }
 
-        try(BufferedWriter writer = Files.newBufferedWriter(file)) {
+        try(BufferedWriter writer = QuickCarpetServer.writeConfigFile(CONFIG_PATH)) {
+            if (writer == null) return;
             BOTS_CODEC.encodeStart(JsonOps.INSTANCE, bots)
                 .resultOrPartial(e -> LOGGER.error("Could not write persistent players: {}", e))
                 .ifPresent(obj -> QuickCarpet.GSON.toJson(obj, writer));
