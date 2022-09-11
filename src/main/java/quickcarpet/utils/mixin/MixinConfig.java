@@ -111,7 +111,6 @@ public class MixinConfig {
      * Mixins that can be disabled without affecting rules
      */
     static final Set<String> MIXINS_WITHOUT_RULES = Set.of(
-        "fabricApi",
         "packetCounter",
         "spawning"
     );

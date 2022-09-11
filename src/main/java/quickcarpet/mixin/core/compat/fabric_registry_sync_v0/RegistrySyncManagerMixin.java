@@ -1,4 +1,4 @@
-package quickcarpet.mixin.fabricApi;
+package quickcarpet.mixin.core.compat.fabric_registry_sync_v0;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.fabricmc.fabric.impl.registry.sync.RegistrySyncManager;

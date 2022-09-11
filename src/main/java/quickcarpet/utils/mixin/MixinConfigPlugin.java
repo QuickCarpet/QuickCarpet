@@ -35,20 +35,12 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
         String relative = mixinClassName.substring(MixinConfig.MIXIN_PACKAGE.length() + 1);
         String[] parts = relative.split("\\.");
         if (parts.length > 2 && parts[1].equals("compat")) {
-            boolean apply = FabricLoader.getInstance().isModLoaded(parts[2]);
+            String modid = parts[2].replace('_', '-');
+            boolean apply = FabricLoader.getInstance().isModLoaded(modid);
             if (apply) {
-                LOGGER.info("Detected {}, loading {}", parts[2], relative);
+                LOGGER.info("Detected {}, loading {}", modid, relative);
             }
             return apply;
-        }
-        switch (mixinClassName) {
-            case "quickcarpet.mixin.fabricApi.RegistrySyncManagerMixin" -> {
-                if (FabricLoader.getInstance().isModLoaded("fabric-registry-sync-v0")) {
-                    LOGGER.info("Applying Fabric API Registry Sync workaround");
-                    return true;
-                }
-                return false;
-            }
         }
         return true;
     }
