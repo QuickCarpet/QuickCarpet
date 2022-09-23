@@ -18,21 +18,7 @@ import static net.minecraft.server.command.CommandManager.literal;
 
 public class CameraModeCommand {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        var camera = literal("c")
-            .requires(s -> s.hasPermissionLevel(Settings.commandCameramode))
-            .executes(c -> cameraMode(c.getSource(), c.getSource().getPlayer()))
-            .then(argument("player", EntityArgumentType.player())
-                .executes(c -> cameraMode(c.getSource(), EntityArgumentType.getPlayer(c, "player"))));
-        dispatcher.register(camera);
-
-        var survival = literal("s")
-            .requires(s -> s.hasPermissionLevel(Settings.commandCameramode))
-            .executes(c -> serverMode(c.getSource(), c.getSource().getPlayer()))
-            .then(argument("player", EntityArgumentType.player())
-                .executes(c -> serverMode(c.getSource(), EntityArgumentType.getPlayer(c, "player"))));
-        dispatcher.register(survival);
-
-        var toggle = literal("cs")
+        var toggle = literal("s")
             .requires(s -> s.hasPermissionLevel(Settings.commandCameramode))
             .executes(c -> toggle(c.getSource(), c.getSource().getPlayer()));
         dispatcher.register(toggle);
