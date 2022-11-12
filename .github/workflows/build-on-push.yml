@@ -208,4 +208,4 @@ jobs:
         if: ${{ !env.ACT }}
         with:
           check_name: Test Results
-          files: artifacts/**/*.xml
+          junit_files: artifacts/**/*.xml
