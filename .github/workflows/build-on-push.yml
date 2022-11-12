@@ -3,14 +3,24 @@ name: Development Builds
 on: [push, pull_request]
 
 jobs:
-  build:
+  setup-workflow:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'no-ci')"
+    outputs:
+      matrix-default: ${{ steps.setup-workflow.outputs.matrix-default }}
+      matrix-mods: ${{ steps.setup-workflow.outputs.matrix-mods }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Workflow
+        id: setup-workflow
+        uses: ./.github/actions/setup-workflow
+  build:
+    runs-on: ubuntu-latest
+    needs: setup-workflow
     strategy:
       fail-fast: false
-      matrix:
-        java: [17]
-        gradle: [7.4]
+      matrix: ${{ fromJson(needs.setup-workflow.outputs.matrix-default) }}
     container:
       image: gradle:${{ matrix.gradle }}-jdk${{ matrix.java }}
     steps:
@@ -56,12 +66,10 @@ jobs:
           path: api/build/libs/*.jar
   unit-test:
     runs-on: ubuntu-latest
-    needs: build
+    needs: [setup-workflow, build]
     strategy:
       fail-fast: false
-      matrix:
-        java: [17]
-        gradle: [7.4]
+      matrix: ${{ fromJson(needs.setup-workflow.outputs.matrix-default) }}
     container:
       image: gradle:${{ matrix.gradle }}-jdk${{ matrix.java }}
     steps:
@@ -101,12 +109,10 @@ jobs:
           path: build/test-results/**/*.xml
   game-test:
     runs-on: ubuntu-latest
-    needs: build
+    needs: [setup-workflow, build]
     strategy:
       fail-fast: false
-      matrix:
-        java: [17]
-        gradle: [7.4]
+      matrix: ${{ fromJson(needs.setup-workflow.outputs.matrix-default) }}
     container:
       image: gradle:${{ matrix.gradle }}-jdk${{ matrix.java }}
     steps:
@@ -144,13 +150,10 @@ jobs:
           test-results-name: Game Test Results (Java ${{ matrix.java }}, Gradle ${{ matrix.gradle }})
   game-test-with-mods:
     runs-on: ubuntu-latest
-    needs: build
+    needs: [setup-workflow, build]
     strategy:
       fail-fast: false
-      matrix:
-        java: [17]
-        gradle: [7.4]
-        lithium: [mc1.19.2-0.10.2]
+      matrix: ${{ fromJson(needs.setup-workflow.outputs.matrix-mods) }}
     container:
       image: gradle:${{ matrix.gradle }}-jdk${{ matrix.java }}
     steps:
@@ -193,8 +196,8 @@ jobs:
           test-results-name: Game Test Results (Java ${{ matrix.java }}, Gradle ${{ matrix.gradle }}, Lithium ${{ matrix.lithium }})
   publish-test-results:
     runs-on: ubuntu-latest
-    needs: [unit-test, game-test, game-test-with-mods]
-    if: success() || failure()
+    needs: [build, unit-test, game-test, game-test-with-mods]
+    if: needs.build.result == 'success' && (success() || failure())
     steps:
       - name: Download Artifacts
         uses: actions/download-artifact@v2

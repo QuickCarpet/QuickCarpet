@@ -1,0 +1,6 @@
+name: 'Setup Workflow'
+author: 'skyrising'
+description: 'Sets up the workflow matrixes'
+runs:
+    using: 'node16'
+    main: 'main.js'

@@ -1,8 +1,11 @@
 [versions]
+java = "17"
 minecraft = "1.19.2"
 yarn = "1.19.2+build.8"
 loader = "0.14.9"
 malilib = "0.13.0"
+
+lithium = "mc1.19.2-0.10.2"
 
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
