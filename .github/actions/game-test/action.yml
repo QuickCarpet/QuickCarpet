@@ -1,0 +1,37 @@
+name: 'Game Test'
+author: 'skyrising'
+description: 'Runs game tests'
+inputs:
+  mods:
+    description: 'Mods to download'
+    required: true
+  world-artifact-name:
+    description: 'Name of the artifact containing the test world'
+    required: true
+    default: 'gametestworld'
+  test-results-name:
+    description: 'Name of the artifact containing the test results'
+    required: true
+    default: 'Game Test Results'
+runs:
+  using: 'composite'
+  steps:
+    - name: Download Mods
+      uses: ./.github/actions/download-mods
+      with:
+        mods: ${{ inputs.mods }}
+    - name: Run Game Tests
+      run: gradle runTestServer --stacktrace --no-daemon
+      shell: bash
+    - name: Publish Test World
+      uses: actions/upload-artifact@v3
+      if: always() && !env.ACT
+      with:
+        name: ${{ inputs.world-artifact-name }}
+        path: run/gametestworld/*
+    - name: Upload Test Results
+      uses: actions/upload-artifact@v3
+      if: always() && !env.ACT
+      with:
+        name: ${{ inputs.test-results-name }}
+        path: build/test-results/**/*.xml
