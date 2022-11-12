@@ -1,0 +1,18 @@
+name: 'Download Mods'
+author: 'skyrising'
+description: 'Downloads mods for compatibility testing'
+inputs:
+    game-version:
+        description: 'The game version to download mods for'
+    mods:
+        description: 'Mods to download'
+        required: true
+    loader:
+        description: 'Type of mod loader'
+        default: 'fabric'
+    replace:
+        description: 'Whether to replace existing files'
+        default: 'true'
+runs:
+    using: 'node16'
+    main: 'main.js'
