@@ -204,7 +204,7 @@ jobs:
         with:
           path: artifacts
       - name: Publish Test Results
-        uses: EnricoMi/publish-unit-test-result-action@v1.19
+        uses: EnricoMi/publish-unit-test-result-action@v2
         if: ${{ !env.ACT }}
         with:
           check_name: Test Results
