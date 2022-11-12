@@ -43,13 +43,13 @@ jobs:
       - name: Build with Gradle
         run: gradle clean build -x check --stacktrace --no-daemon --profile
       - name: Upload Main JARs
-        uses: actions/upload-artifact@v2.2.0
+        uses: actions/upload-artifact@v3
         if: ${{ !env.ACT }}
         with:
           name: quickcarpet-jars
           path: build/libs/*.jar
       - name: Upload API JARs
-        uses: actions/upload-artifact@v2.2.0
+        uses: actions/upload-artifact@v3
         if: ${{ !env.ACT }}
         with:
           name: quickcarpet-api-jars
@@ -94,7 +94,7 @@ jobs:
       - name: Run Unit Tests
         run: gradle test --stacktrace --no-daemon
       - name: Upload Test Results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: always() && !env.ACT
         with:
           name: Unit Test Results (Java ${{ matrix.java }}, Gradle ${{ matrix.gradle }})
@@ -144,13 +144,13 @@ jobs:
       - name: Run Game Tests
         run: gradle runTestServer --stacktrace --no-daemon
       - name: Publish Test World
-        uses: actions/upload-artifact@v2.2.0
+        uses: actions/upload-artifact@v3
         if: always() && !env.ACT
         with:
           name: gametestworld
           path: run/gametestworld/*
       - name: Upload Test Results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: always() && !env.ACT
         with:
           name: Game Test Results (Java ${{ matrix.java }}, Gradle ${{ matrix.gradle }})
@@ -205,13 +205,13 @@ jobs:
 #      - name: Run Game Tests
 #        run: gradle runTestServer --stacktrace --no-daemon
 #      - name: Publish Test World
-#        uses: actions/upload-artifact@v2.2.0
+#        uses: actions/upload-artifact@v3
 #        if: always() && !env.ACT
 #        with:
 #          name: gametestworld-mods
 #          path: run/gametestworld/*
 #      - name: Upload Test Results
-#        uses: actions/upload-artifact@v2
+#        uses: actions/upload-artifact@v3
 #        if: always() && !env.ACT
 #        with:
 #          name: Game Test Results (Java ${{ matrix.java }}, Gradle ${{ matrix.gradle }}, Lithium ${{ matrix.lithium }})
