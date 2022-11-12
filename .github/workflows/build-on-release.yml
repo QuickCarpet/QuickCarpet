@@ -18,7 +18,7 @@ jobs:
       - name: Set repository as a safe directory
         run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
       - name: Cache Gradle packages
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             ~/.gradle/caches
@@ -27,7 +27,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-4.7-jdk17-
       - name: Cache Loom Files
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: |
             build/loom-cache
