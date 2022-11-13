@@ -1,87 +1,127 @@
 package quickcarpet.utils;
 
-import net.minecraft.block.*;
+import org.jetbrains.annotations.Nullable;
+import net.minecraft.block.BedBlock;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.ComparatorBlock;
+import net.minecraft.block.RepeaterBlock;
 import net.minecraft.block.enums.BlockHalf;
 import net.minecraft.block.enums.ComparatorMode;
+import net.minecraft.block.enums.SlabType;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemUsageContext;
+import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.Properties;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.hit.HitResult;
+import net.minecraft.state.property.Property;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import quickcarpet.mixin.accessor.ItemUsageContextAccessor;
 import quickcarpet.settings.Settings;
 
 public class AccurateBlockPlacement {
-    public static BlockState getPlacementState(Block block, ItemPlacementContext ctx) {
-        if (!Settings.accurateBlockPlacement) return block.getPlacementState(ctx);
-        Vec3d hitPos = ctx.getHitPos();
-        BlockPos pos = ctx.getBlockPos();
-        double hitX = hitPos.x - pos.getX();
-        if (hitX < 2) return block.getPlacementState(ctx);
-        int code = (int) (hitX - 2) / 2;
-        adjustHitX(ctx, pos.getX() + hitX % 2);
-        return getPlacementStateForCode(block, ctx, code);
-    }
 
-    public static BlockState getPlacementStateForCode(Block block, ItemPlacementContext ctx, int code) {
-        BlockState state = block.getPlacementState(ctx);
-        if (state == null) return null;
-        if (block instanceof ObserverBlock) {
-            return state
-                    .with(ObserverBlock.FACING, Direction.byId(code))
-                    .with(ObserverBlock.POWERED, false);
-        }
-        if (block instanceof RepeaterBlock) {
-            int delay = MathHelper.clamp(code >> 4, 1, 4);
-            return state
-                    .with(RepeaterBlock.FACING, getHorizontalFacing(ctx, code & 0xf))
-                    .with(RepeaterBlock.DELAY, delay);
-        }
-        if (block instanceof TrapdoorBlock) {
-            return state
-                    .with(TrapdoorBlock.FACING, Direction.byId(code & 0xf))
-                    .with(TrapdoorBlock.HALF, code > 0xf ? BlockHalf.TOP : BlockHalf.BOTTOM)
-                    .with(TrapdoorBlock.OPEN, ctx.getWorld().isReceivingRedstonePower(ctx.getBlockPos()));
-        }
-        if (block instanceof ComparatorBlock) {
-            ComparatorMode mode = code > 0xf ? ComparatorMode.SUBTRACT : ComparatorMode.COMPARE;
-            return block.getDefaultState()
-                    .with(ComparatorBlock.FACING, getHorizontalFacing(ctx, code & 0xf))
-                    .with(ComparatorBlock.MODE, mode);
-        }
-        if (block instanceof StairsBlock) {
-            return state.with(StairsBlock.FACING, Direction.byId(code & 0xf)).with(StairsBlock.HALF, code > 0xf ? BlockHalf.TOP : BlockHalf.BOTTOM);
-        }
-        if (state.contains(Properties.HORIZONTAL_FACING)) {
-            Direction facing = getHorizontalFacing(ctx, code);
-            if (block instanceof BedBlock) {
-                BlockPos headPos = ctx.getBlockPos().offset(facing);
-                if (!ctx.getWorld().getBlockState(headPos).canReplace(ctx)) return null;
+    public static BlockState getPlacementState(Block block, ItemPlacementContext context)
+    {
+        if (!Settings.accurateBlockPlacement) return block.getPlacementState(context);
+        Vec3d hitPos = context.getHitPos();
+        BlockPos blockPos = context.getBlockPos();
+        double relativeHitX = hitPos.x - blockPos.getX();
+        BlockState state = block.getPlacementState(context);
+
+        if (relativeHitX < 2 || state == null) // vanilla handling
+            return block.getPlacementState(context);;
+
+        // It would be nice if relativeHitX was adjusted in context to original range from 0.0 to 1.0,
+        // since some blocks are actually using it.
+        DirectionProperty directionProp = getFirstDirectionProperty(state);
+        int protocolValue = ((int) relativeHitX - 2) / 2;
+
+        if (directionProp != null)
+        {
+            Direction origFacing = state.get(directionProp);
+            Direction facing = origFacing;
+            int facingIndex = protocolValue & 0xF;
+
+            if (facingIndex == 6) // the opposite of the normal facing requested
+            {
+                facing = facing.getOpposite();
             }
-            return state.with(Properties.HORIZONTAL_FACING, facing);
+            else if (facingIndex >= 0 && facingIndex <= 5)
+            {
+                facing = Direction.byId(facingIndex);
+            }
+
+            if (directionProp.getValues().contains(facing) == false)
+            {
+                facing = context.getPlayer().getHorizontalFacing().getOpposite();
+            }
+
+            if (facing != origFacing && directionProp.getValues().contains(facing))
+            {
+                if (state.getBlock() instanceof BedBlock)
+                {
+                    BlockPos headPos = blockPos.offset(facing);
+
+                    if (context.getWorld().getBlockState(headPos).canReplace(context) == false)
+                    {
+                        return null;
+                    }
+                }
+
+                state = state.with(directionProp, facing);
+            }
         }
-        if (state.contains(Properties.FACING)) {
-            return state.with(Properties.FACING, Direction.byId(code));
+        else if (state.contains(Properties.AXIS))
+        {
+            Direction.Axis axis = Direction.Axis.VALUES[protocolValue % 3];
+            state = state.with(Properties.AXIS, axis);
+        }
+
+        protocolValue &= 0xFFFFFFF0;
+
+        if (protocolValue >= 16)
+        {
+            if (block instanceof RepeaterBlock)
+            {
+                Integer delay = (protocolValue / 16);
+
+                if (RepeaterBlock.DELAY.getValues().contains(delay))
+                {
+                    state = state.with(RepeaterBlock.DELAY, delay);
+                }
+            }
+            else if (protocolValue == 16)
+            {
+                if (block instanceof ComparatorBlock)
+                {
+                    state = state.with(ComparatorBlock.MODE, ComparatorMode.SUBTRACT);
+                }
+                else if (state.contains(Properties.BLOCK_HALF) &&
+                         state.get(Properties.BLOCK_HALF) == BlockHalf.BOTTOM)
+                {
+                    state = state.with(Properties.BLOCK_HALF, BlockHalf.TOP);
+                }
+                else if (state.contains(Properties.SLAB_TYPE) &&
+                         state.get(Properties.SLAB_TYPE) == SlabType.BOTTOM)
+                {
+                    state = state.with(Properties.SLAB_TYPE, SlabType.TOP);
+                }
+            }
         }
         return state;
     }
 
-    private static Direction getHorizontalFacing(ItemPlacementContext ctx, int code) {
-        Direction facing = Direction.byId(code);
-        if (facing.getAxis() == Direction.Axis.Y) return ctx.getPlayer().getHorizontalFacing().getOpposite();
-        return facing;
-    }
+    @Nullable
+    public static DirectionProperty getFirstDirectionProperty(BlockState state)
+    {
+        for (Property<?> prop : state.getProperties())
+        {
+            if (prop instanceof DirectionProperty)
+            {
+                return (DirectionProperty) prop;
+            }
+        }
 
-    private static void adjustHitX(ItemUsageContext ctx, double x) {
-        BlockHitResult hitResult = ((ItemUsageContextAccessor) ctx).getHitResult();
-        Vec3d hitPos = hitResult.getPos();
-        hitPos = new Vec3d(x, hitPos.y, hitPos.z);
-        if (hitResult.getType() == HitResult.Type.MISS) hitResult = BlockHitResult.createMissed(hitPos, hitResult.getSide(), hitResult.getBlockPos());
-        else hitResult = new BlockHitResult(hitPos, hitResult.getSide(), hitResult.getBlockPos(), hitResult.isInsideBlock());
-        ((ItemUsageContextAccessor) ctx).setHitResult(hitResult);
+        return null;
     }
 }
