@@ -89,6 +89,7 @@
   "carpet.rule.fillUpdatesPostProcessing.description": "Whether fillUpdates=false post-processes the block state (like when upgrading a world)",
   "carpet.rule.flippinCactus.description": "Players can flip and rotate blocks when holding cactus",
   "carpet.rule.flippinCactus.extra": "Doesn't cause block updates when rotated/flipped\nApplies to pistons, observers, droppers, repeaters, stairs, glazed terracotta etc.",
+  "carpet.rule.fluidDamage.description": "If false fluids can only wash away replaceable blocks",
   "carpet.rule.hopperCounters.description": "Hoppers pointing to wool will count items passing through them",
   "carpet.rule.hopperCounters.extra": "Enables /counter command, and actions while placing red and green carpets on wool blocks\nUse /counter <color?> reset to reset the counter, and /counter <color?> to query\nCounters are global and shared between players, 16 channels available\nItems counted are destroyed, count up to one stack per tick per hopper",
   "carpet.rule.hopperMinecartCooldown.description": "Adds a cooldown to the hopper minecart",

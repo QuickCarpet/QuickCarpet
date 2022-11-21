@@ -57,6 +57,7 @@ public class MixinConfig {
             "fallingBlockDuplicationFix",
             "fillLimit",
             "flippinCactus",
+            "fluidDamage",
             "hopperCounters",
             "hopperMinecartCooldown",
             "hopperMinecartItemTransfer",

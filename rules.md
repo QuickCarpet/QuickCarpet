@@ -444,6 +444,14 @@ Default: `false`
 Options: `true`, `false`  
 Categories: creative, survival  
 
+## fluidDamage
+If false fluids can only wash away replaceable blocks
+
+Type: `boolean`  
+Default: `true`  
+Options: `true`, `false`  
+Categories: creative  
+
 ## hopperCounters
 Hoppers pointing to wool will count items passing through them
 

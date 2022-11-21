@@ -84,6 +84,7 @@
     "fillUpdates.WorldChunkMixin",
     "fillUpdates.WorldMixin",
     "flippinCactus.ServerPlayInteractionManagerMixin",
+    "fluidDamage.FlowableFluidMixin",
     "hopperCounters.HopperBlockEntityMixin",
     "hopperCounters.ItemEntityMixin",
     "hopperMinecartCooldown.HopperMinecartEntityMixin",

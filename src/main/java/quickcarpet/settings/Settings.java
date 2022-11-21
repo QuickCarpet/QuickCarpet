@@ -235,6 +235,9 @@ public class Settings {
     @Rule(category = {CREATIVE, SURVIVAL})
     public static boolean flippinCactus = false;
 
+    @Rule(category = CREATIVE)
+    public static boolean fluidDamage = true;
+
     @Rule(category = COMMANDS)
     public static boolean hopperCounters = false;
 
