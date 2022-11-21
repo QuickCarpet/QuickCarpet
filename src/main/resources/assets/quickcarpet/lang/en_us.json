@@ -165,6 +165,8 @@
   "counter.format": "%s: %s, %s/h, %s min",
   "counter.format.item": "- %s: %s, %s/h",
   "counter.action.reset": "Reset",
+  "counter.key.despawn": "Despawned",
+  "counter.key.destroy": "Destroyed",
   "command.log.playerOnly": "For players only",
   "command.log.availableOptions": "Available logging options:",
   "command.log.subscribed": "Subscribed",

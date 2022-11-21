@@ -211,6 +211,9 @@ public class HopperCounter {
         RED(DyeColor.RED, Blocks.RED_WOOL),
         BLACK(DyeColor.BLACK, Blocks.BLACK_WOOL),
         CACTUS("cactus", Items.CACTUS.getTranslationKey()),
+        DESPAWN("despawn", "counter.key.despawn"),
+        DESTROY("destroy", "counter.key.destroy"),
+        PICKUP("pickup", "stat_type.minecraft.picked_up"),
         ALL("all", "gui.all", Combined::new)
         ;
 
