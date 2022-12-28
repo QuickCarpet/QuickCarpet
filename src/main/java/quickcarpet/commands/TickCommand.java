@@ -1,13 +1,20 @@
 package quickcarpet.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import quickcarpet.feature.TickSpeed;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.CarpetProfiler;
+import quickcarpet.utils.CarpetProfiler.ReportBoundingBox;
 import quickcarpet.utils.Constants.TickCommand.Keys;
+
+import javax.annotation.Nullable;
+import java.util.function.ToIntBiFunction;
 
 import static com.mojang.brigadier.arguments.FloatArgumentType.floatArg;
 import static com.mojang.brigadier.arguments.FloatArgumentType.getFloat;
@@ -16,6 +23,8 @@ import static com.mojang.brigadier.arguments.IntegerArgumentType.integer;
 import static com.mojang.brigadier.arguments.StringArgumentType.getString;
 import static com.mojang.brigadier.arguments.StringArgumentType.greedyString;
 import static net.minecraft.command.CommandSource.suggestMatching;
+import static net.minecraft.command.argument.BlockPosArgumentType.blockPos;
+import static net.minecraft.command.argument.BlockPosArgumentType.getBlockPos;
 import static net.minecraft.server.command.CommandManager.argument;
 import static net.minecraft.server.command.CommandManager.literal;
 import static quickcarpet.utils.Constants.TickCommand.Texts.*;
@@ -46,18 +55,31 @@ public class TickCommand {
                     .suggests((c, b) -> suggestMatching(new String[]{"20"},b))
                     .executes(c -> step(getInteger(c, "ticks")))))
             .then(literal("health")
-                .executes(c -> healthReport(100))
-                .then(argument("ticks", integer(20, 24000))
-                    .executes(c -> healthReport(getInteger(c, "ticks")))))
-            .then(literal("entities")
-                .executes(c -> healthEntities(100))
-                .then(argument("ticks", integer(20, 24000))
-                    .executes(c -> healthEntities(getInteger(c, "ticks")))))
+                    .executes(c -> healthReport(100))
+                    .then(argument("ticks", integer(20, 24000))
+                            .executes(c -> healthReport(getInteger(c, "ticks")))))
+            .then(createReportCommand("entities", TickCommand::healthEntities))
             .then(literal("measure")
                 .executes(c -> measureCurrent(c.getSource()))
                 .then(argument("ticks", integer(10, 24000))
                     .executes(c -> measure(c.getSource(), getInteger(c, "ticks")))));
         dispatcher.register(tick);
+    }
+
+    private static LiteralArgumentBuilder<ServerCommandSource> createReportCommand(String name, ToIntBiFunction<Integer, ReportBoundingBox> schedule) {
+        return literal(name)
+            .executes(c -> schedule.applyAsInt(100, null))
+            .then(argument("ticks", integer(20, 24000))
+                .executes(c -> schedule.applyAsInt(getInteger(c, "ticks"), null)))
+            .then(argument("from", blockPos())
+                .then(argument("to", blockPos())
+                    .executes(c -> schedule.applyAsInt(100, getBoundingBox(c)))
+                    .then(argument("ticks", integer(20, 24000))
+                        .executes(c -> schedule.applyAsInt(getInteger(c, "ticks"), getBoundingBox(c))))));
+    }
+
+    private static ReportBoundingBox getBoundingBox(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
+        return new ReportBoundingBox(ctx.getSource().getWorld().getRegistryKey(), getBlockPos(ctx, "from"), getBlockPos(ctx, "to"));
     }
 
     private static int setTps(ServerCommandSource source, float tps) {
@@ -113,8 +135,8 @@ public class TickCommand {
         return 1;
     }
 
-    private static int healthEntities(int ticks) {
-        CarpetProfiler.scheduleEntitiesReport(ticks);
+    private static int healthEntities(int ticks, @Nullable ReportBoundingBox bbox) {
+        CarpetProfiler.scheduleEntitiesReport(ticks, bbox);
         return 1;
     }
 

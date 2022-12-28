@@ -12,6 +12,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
@@ -158,9 +159,11 @@ public class CarpetProfiler {
         }
 
         void endEntity() {
+            if (currentBlockEntityStart == 0) return;
             long previousTime = entityTimes.getOrDefault(currentEntity, 0);
             entityTimes.put(currentEntity, previousTime + System.nanoTime() - currentEntityStart);
             entityCount.put(currentEntity, entityCount.getOrDefault(currentEntity, 0) + 1);
+            currentEntityStart = 0;
         }
 
         void startBlockEntity(BlockEntityType<?> type) {
@@ -169,9 +172,11 @@ public class CarpetProfiler {
         }
 
         void endBlockEntity() {
+            if (currentBlockEntityStart == 0) return;
             long previousTime = blockEntityTimes.getOrDefault(currentBlockEntity, 0);
             blockEntityTimes.put(currentBlockEntity, previousTime + System.nanoTime() - currentBlockEntityStart);
             blockEntityCount.put(currentBlockEntity, blockEntityCount.getOrDefault(currentBlockEntity, 0) + 1);
+            currentBlockEntityStart = 0;
         }
 
         void gc(long ms) {
@@ -277,8 +282,15 @@ public class CarpetProfiler {
     }
 
     private static class EntitiesReport extends Report {
-        public EntitiesReport(int ticks) {
+        private final @Nullable ReportBoundingBox box;
+
+        public EntitiesReport(int ticks, @Nullable ReportBoundingBox box) {
             super(ticks);
+            this.box = box;
+        }
+
+        public boolean contains(World world, BlockPos pos) {
+            return box == null || box.contains(world, pos);
         }
 
         public void startEntity(World world, EntityType<?> type) {
@@ -286,6 +298,7 @@ public class CarpetProfiler {
         }
 
         public void endEntity(World world) {
+            if (box != null && !box.dimension.equals(world.getRegistryKey())) return;
             getMeasurement(world).endEntity();
         }
 
@@ -294,6 +307,7 @@ public class CarpetProfiler {
         }
 
         public void endBlockEntity(World world) {
+            if (box != null && !box.dimension.equals(world.getRegistryKey())) return;
             getMeasurement(world).endBlockEntity();
         }
 
@@ -328,8 +342,17 @@ public class CarpetProfiler {
         }
     }
 
-    public static void scheduleEntitiesReport(int ticks) {
-        scheduledReport = new EntitiesReport(ticks);
+    public record ReportBoundingBox(RegistryKey<World> dimension, BlockPos from, BlockPos to) {
+        public boolean contains(World world, BlockPos pos) {
+            if (!dimension.equals(world.getRegistryKey())) return false;
+            return pos.getX() >= from.getX() && pos.getX() <= to.getX() &&
+                pos.getY() >= from.getY() && pos.getY() <= to.getY() &&
+                pos.getZ() >= from.getZ() && pos.getZ() <= to.getZ();
+        }
+    }
+
+    public static void scheduleEntitiesReport(int ticks, @Nullable ReportBoundingBox bbox) {
+        scheduledReport = new EntitiesReport(ticks, bbox);
     }
 
     public static void scheduleHealthReport(int ticks) {
@@ -343,14 +366,14 @@ public class CarpetProfiler {
     }
 
     public static void startEntity(World world, Entity e) {
-        if (report instanceof EntitiesReport r) {
+        if (report instanceof EntitiesReport r && r.contains(world, e.getBlockPos())) {
             r.startEntity(world, e.getType());
         }
     }
 
     public static void startBlockEntity(World world, BlockEntityTickInvoker ticker) {
         try {
-            if (report instanceof EntitiesReport r) {
+            if (report instanceof EntitiesReport r && r.contains(world, ticker.getPos())) {
                 BlockEntityType<?> type = Registry.BLOCK_ENTITY_TYPE.get(new Identifier(ticker.getName()));
                 r.startBlockEntity(world, type);
             }
