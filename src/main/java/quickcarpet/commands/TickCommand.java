@@ -7,6 +7,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.math.BlockBox;
 import quickcarpet.feature.TickSpeed;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.CarpetProfiler;
@@ -79,7 +80,7 @@ public class TickCommand {
     }
 
     private static ReportBoundingBox getBoundingBox(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
-        return new ReportBoundingBox(ctx.getSource().getWorld().getRegistryKey(), getBlockPos(ctx, "from"), getBlockPos(ctx, "to"));
+        return new ReportBoundingBox(ctx.getSource().getWorld().getRegistryKey(), BlockBox.create(getBlockPos(ctx, "from"), getBlockPos(ctx, "to")));
     }
 
     private static int setTps(ServerCommandSource source, float tps) {

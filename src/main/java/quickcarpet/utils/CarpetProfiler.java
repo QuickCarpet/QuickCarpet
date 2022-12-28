@@ -12,6 +12,7 @@ import net.minecraft.text.MutableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
+import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.util.registry.RegistryKey;
@@ -159,7 +160,7 @@ public class CarpetProfiler {
         }
 
         void endEntity() {
-            if (currentBlockEntityStart == 0) return;
+            if (currentEntityStart == 0) return;
             long previousTime = entityTimes.getOrDefault(currentEntity, 0);
             entityTimes.put(currentEntity, previousTime + System.nanoTime() - currentEntityStart);
             entityCount.put(currentEntity, entityCount.getOrDefault(currentEntity, 0) + 1);
@@ -298,7 +299,6 @@ public class CarpetProfiler {
         }
 
         public void endEntity(World world) {
-            if (box != null && !box.dimension.equals(world.getRegistryKey())) return;
             getMeasurement(world).endEntity();
         }
 
@@ -307,7 +307,6 @@ public class CarpetProfiler {
         }
 
         public void endBlockEntity(World world) {
-            if (box != null && !box.dimension.equals(world.getRegistryKey())) return;
             getMeasurement(world).endBlockEntity();
         }
 
@@ -342,12 +341,10 @@ public class CarpetProfiler {
         }
     }
 
-    public record ReportBoundingBox(RegistryKey<World> dimension, BlockPos from, BlockPos to) {
+    public record ReportBoundingBox(RegistryKey<World> dimension, BlockBox box) {
         public boolean contains(World world, BlockPos pos) {
             if (!dimension.equals(world.getRegistryKey())) return false;
-            return pos.getX() >= from.getX() && pos.getX() <= to.getX() &&
-                pos.getY() >= from.getY() && pos.getY() <= to.getY() &&
-                pos.getZ() >= from.getZ() && pos.getZ() <= to.getZ();
+            return box.contains(pos);
         }
     }
 
