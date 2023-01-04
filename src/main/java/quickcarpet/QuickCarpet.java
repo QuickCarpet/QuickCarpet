@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 import quickcarpet.api.QuickCarpetAPI;
 import quickcarpet.api.ServerEventListener;
 import quickcarpet.api.TelemetryProvider;
+import quickcarpet.api.data.PlayerDataKey;
 import quickcarpet.api.module.QuickCarpetModule;
 import quickcarpet.api.settings.CoreSettingsManager;
 import quickcarpet.api.settings.ParsedRule;
@@ -280,6 +281,11 @@ public final class QuickCarpet implements QuickCarpetAPI, ServerEventListener, T
     @Override
     public String getVersion() {
         return Build.VERSION;
+    }
+
+    @Override
+    public <T> PlayerDataKey<T> registerPlayerData(Class<T> type) {
+        return quickcarpet.data.impl.PlayerDataKey.create(type);
     }
 
     public static String getFullVersionString() {

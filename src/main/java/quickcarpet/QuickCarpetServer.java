@@ -15,6 +15,7 @@ import quickcarpet.api.QuickCarpetServerAPI;
 import quickcarpet.api.ServerEventListener;
 import quickcarpet.api.TelemetryProvider;
 import quickcarpet.api.network.server.ServerPluginChannelManager;
+import quickcarpet.data.impl.PlayerDataContainer;
 import quickcarpet.feature.TickSpeed;
 import quickcarpet.feature.player.FakeServerPlayerEntity;
 import quickcarpet.logging.LoggerManager;
@@ -48,6 +49,7 @@ public class QuickCarpetServer implements QuickCarpetServerAPI, ServerEventListe
     public LoggerManager loggers;
     public TickSpeed tickSpeed;
     public Map<UUID, CameraData> cameraData = new HashMap<>();
+    public PlayerDataContainer playerData = new PlayerDataContainer();
 
     private QuickCarpetServer(MinecraftServer server) {
         instance = this;
