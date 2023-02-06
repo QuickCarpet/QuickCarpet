@@ -24,6 +24,7 @@ import quickcarpet.network.channels.StructureChannel;
 import quickcarpet.network.impl.PluginChannelManager;
 import quickcarpet.pubsub.PubSubMessenger;
 import quickcarpet.utils.CameraData;
+import quickcarpet.utils.CarpetRegistry;
 import quickcarpet.utils.Mobcaps;
 import quickcarpet.utils.StatHelper;
 
@@ -35,7 +36,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -48,7 +48,6 @@ public class QuickCarpetServer implements QuickCarpetServerAPI, ServerEventListe
     public ServerPluginChannelManager pluginChannels;
     public LoggerManager loggers;
     public TickSpeed tickSpeed;
-    public Map<UUID, CameraData> cameraData = new HashMap<>();
     public PlayerDataContainer playerData = new PlayerDataContainer();
 
     private QuickCarpetServer(MinecraftServer server) {
@@ -151,7 +150,10 @@ public class QuickCarpetServer implements QuickCarpetServerAPI, ServerEventListe
     public void onServerLoaded(MinecraftServer server) {
         loggers.readSaveFile();
         try {
-            cameraData = CameraData.readSaveFile();
+            Map<UUID, CameraData> data = CameraData.readSaveFile();
+            for (Map.Entry<UUID, CameraData> e : data.entrySet()) {
+                CarpetRegistry.CAMERA_DATA_KEY.set(e.getKey(), e.getValue());
+            }
         } catch (IOException e) {
             LOGGER.error("Error loading camera data", e);
         }
@@ -166,7 +168,7 @@ public class QuickCarpetServer implements QuickCarpetServerAPI, ServerEventListe
     public void onWorldsSaved(MinecraftServer server) {
         loggers.writeSaveFile();
         try {
-            CameraData.writeSaveFile(cameraData);
+            CameraData.writeSaveFile(CarpetRegistry.CAMERA_DATA_KEY.getAllNonnull());
         } catch (IOException e) {
             LOGGER.error("Error saving camera data", e);
         }

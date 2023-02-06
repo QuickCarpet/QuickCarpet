@@ -21,6 +21,8 @@ import net.minecraft.util.collection.Pool;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.StructureSpawns;
 import net.minecraft.world.biome.SpawnSettings;
+import quickcarpet.QuickCarpet;
+import quickcarpet.api.data.PlayerDataKey;
 import quickcarpet.feature.CraftingTableBlockEntity;
 
 import java.util.List;
@@ -67,6 +69,8 @@ public class CarpetRegistry {
 
     public static final Map<SpawnGroup, StructureSpawns> END_CITY_SPAWN_MAP = Map.of(SpawnGroup.MONSTER, spawns(EntityType.SHULKER, 4));
     public static final Map<SpawnGroup, StructureSpawns> DESERT_PYRAMID_SPAWN_MAP = Map.of(SpawnGroup.MONSTER, spawns(EntityType.HUSK, 4));
+
+    public static final PlayerDataKey<CameraData> CAMERA_DATA_KEY = QuickCarpet.getInstance().registerPlayerData(CameraData.class);
 
     private static <T extends BlockEntity> BlockEntityType<T> registerBlockEntity(String id, BlockEntityType.BlockEntityFactory<? extends T> supplier, Type<?> type, Block... blocks) {
         return Registry.register(Registry.BLOCK_ENTITY_TYPE, id, new BlockEntityType<>(supplier, ImmutableSet.copyOf(blocks), type));
