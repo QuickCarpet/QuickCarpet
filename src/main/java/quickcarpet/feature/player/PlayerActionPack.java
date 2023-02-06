@@ -42,6 +42,7 @@ public class PlayerActionPack {
     private float sideways;
 
     public float reach;
+    private ActionType currentAction;
 
     public PlayerActionPack(ServerPlayerEntity player) {
         this.player = player;
@@ -212,6 +213,15 @@ public class PlayerActionPack {
             }
             return nonNull;
         }
+    }
+
+    public boolean isExecuting(ActionType type) {
+        return currentAction == type;
+    }
+
+    public static boolean isExecuting(PlayerEntity player, ActionType type) {
+        if (!(player instanceof ActionPackOwner)) return false;
+        return ((ActionPackOwner) player).quickcarpet$getActionPack().isExecuting(type);
     }
 
     public enum ActionType {
@@ -442,7 +452,12 @@ public class PlayerActionPack {
             if (next <= 0) {
                 if (!type.preventSpectator || !actionPack.player.isSpectator()) {
                     for (int i = 0; i < perTick; i++) {
-                        type.execute(actionPack.player, this);
+                        try {
+                            actionPack.currentAction = type;
+                            type.execute(actionPack.player, this);
+                        } finally {
+                            actionPack.currentAction = null;
+                        }
                     }
                 }
                 count++;
