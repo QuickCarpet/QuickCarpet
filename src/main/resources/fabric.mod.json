@@ -38,6 +38,9 @@
       "links": {
         "modmenu.discord": "https://discord.gg/scicraft"
       }
+    },
+    "lithium:options": {
+      "world.player_chunk_tick": false
     }
   }
 }
