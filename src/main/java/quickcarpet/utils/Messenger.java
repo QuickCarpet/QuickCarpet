@@ -259,7 +259,7 @@ public class Messenger {
 
     public static MutableText t(@Nonnull String key, Object... args) {
         for (int i = 0; i < args.length; i++) if (args[i] instanceof Formattable) args[i] = ((Formattable) args[i]).format();
-        return MutableText.of(new TranslatableTextContent(key, args));
+        return MutableText.of(new TranslatableTextContent(key, key, args));
     }
 
     public static MutableText ts(@Nonnull String key, Formatting style, Object... args) {

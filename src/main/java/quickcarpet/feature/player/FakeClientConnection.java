@@ -2,8 +2,8 @@ package quickcarpet.feature.player;
 
 import net.minecraft.network.ClientConnection;
 import net.minecraft.network.NetworkSide;
-import net.minecraft.network.Packet;
 import net.minecraft.network.PacketCallbacks;
+import net.minecraft.network.packet.Packet;
 import org.jetbrains.annotations.Nullable;
 
 public class FakeClientConnection extends ClientConnection {
@@ -19,7 +19,7 @@ public class FakeClientConnection extends ClientConnection {
     }
 
     @Override
-    public boolean hasChannel() {
+    public boolean isChannelAbsent() {
         return false;
     }
 

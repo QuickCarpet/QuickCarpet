@@ -82,9 +82,6 @@ public class Settings {
     @Rule(category = FEATURE)
     public static boolean autoCraftingTable = false;
 
-    @Rule(category = FEATURE)
-    public static boolean autoJukebox = false;
-
     @Rule(category = {FEATURE, EXPERIMENTAL})
     public static boolean betterChunkLoading = false;
 
@@ -216,13 +213,6 @@ public class Settings {
     @Rule(category = CREATIVE)
     public static boolean extremeBehaviors = false;
 
-    @Rule(
-            options = {"32768", "250000", "1000000"},
-            validator = Validator.Positive.class,
-            category = CREATIVE
-    )
-    public static int fillLimit = 32768;
-
     @Rule(category = FIX)
     public static boolean fallingBlockDuplicationFix = false;
 
@@ -240,9 +230,6 @@ public class Settings {
 
     @Rule(category = COMMANDS)
     public static boolean hopperCounters = false;
-
-    @Rule(category = FIX, options = {"0", "4", "8"}, validator = Validator.NonNegative.class)
-    public static int hopperMinecartCooldown = 0;
 
     @Rule(category = FEATURE)
     public static boolean hopperMinecartItemTransfer = false;
@@ -263,9 +250,6 @@ public class Settings {
             MANAGER.resendCommandTree();
         }
     }
-
-    @Rule(category = FEATURE)
-    public static boolean jukeboxRedstoneSignal = false;
 
     @Rule(category = FIX, bug = @BugFix("MC-206922"))
     public static boolean lightningKillsDropsFix = false;

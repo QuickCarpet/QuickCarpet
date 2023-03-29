@@ -55,8 +55,8 @@ public class PlaceBlockBehavior extends FallibleItemDispenserBehavior {
                 }
 
                 @Override
-                public Direction getPlayerFacing() {
-                    return ffacing.getAxis() == Direction.Axis.Y ? Direction.NORTH : ffacing;
+                public Direction getVerticalPlayerLookDirection() {
+                    return ffacing.getAxis() != Direction.Axis.Y ? Direction.UP : ffacing;
                 }
 
                 @Override

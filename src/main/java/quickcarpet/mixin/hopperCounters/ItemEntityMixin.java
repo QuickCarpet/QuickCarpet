@@ -4,6 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -32,7 +33,7 @@ public abstract class ItemEntityMixin extends Entity {
     private void quickcarpet$hopperCounters$countDestroy(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         if (!world.isClient() && Settings.hopperCounters) {
             MinecraftServer server = QuickCarpetServer.getMinecraftServer();
-            if (source == DamageSource.CACTUS) {
+            if (source.isOf(DamageTypes.CACTUS)) {
                 HopperCounter.getCounter(HopperCounter.Key.CACTUS).add(server, getStack());
             } else {
                 HopperCounter.getCounter(HopperCounter.Key.DESTROY).add(server, getStack());

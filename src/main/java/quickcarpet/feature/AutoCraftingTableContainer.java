@@ -152,8 +152,9 @@ public class AutoCraftingTableContainer extends AbstractRecipeScreenHandler<Craf
         return this.blockEntity.canPlayerUse(player);
     }
 
-    public void close(PlayerEntity player) {
-        super.close(player);
+    @Override
+    public void onClosed(PlayerEntity player) {
+        super.onClosed(player);
         this.blockEntity.onContainerClose(this);
     }
 

@@ -22,7 +22,7 @@ public final class QuickCarpetIdentifier {
         try {
             return DataResult.success(of(id));
         } catch (InvalidIdentifierException e) {
-            return DataResult.error("Not a valid identifier: " + id + " " + e.getMessage());
+            return DataResult.error(() -> "Not a valid identifier: " + id + " " + e.getMessage());
         }
     }
 }

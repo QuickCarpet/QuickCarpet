@@ -1,21 +1,36 @@
 [versions]
 java = "17"
-minecraft = "1.19.3"
-yarn = "1.19.3+build.3"
-loader = "0.14.11"
-malilib = "0.14.0"
 
-lithium = "mc1.19.3-0.11.1"
+# https://fabricmc.net/develop/
+minecraft = "1.19.4"
+yarn = "1.19.4+build.1"
+loader = "0.14.18"
+
+# https://maven.fabricmc.net/net/fabricmc/fabric-api/fabric-api/
+fabric-api = "0.76.0+1.19.4"
+fabric-resource-loader = "0.11.0+938a1d56f4"
+fabric-networking = "1.2.22+ca5f59aaf4"
+fabric-registry-sync = "2.1.2+a383ab97f4"
+
+# https://masa.dy.fi/maven/fi/dy/masa/malilib/
+malilib = "0.15.2"
+
+# https://maven.terraformersmc.com/releases/com/terraformersmc/modmenu/
+modmenu = "5.0.2"
+
+# https://modrinth.com/mod/lithium
+lithium = "mc1.19.4-0.11.1"
 
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
 yarn = { module = "net.fabricmc:yarn", version.ref = "yarn" }
 loader = { module = "net.fabricmc:fabric-loader", version.ref = "loader" }
 
-fabric-api = "net.fabricmc.fabric-api:fabric-api:0.69.1+1.19.3"
-fabric-resource-loader = "net.fabricmc.fabric-api:fabric-resource-loader-v0:0.10.3+a10d22bd85"
-fabric-networking = "net.fabricmc.fabric-api:fabric-networking-api-v1:1.2.14+d9ac3c3985"
-fabric-registry-sync = "net.fabricmc.fabric-api:fabric-registry-sync-v0:2.0.1+2608564685"
+fabric-api = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabric-api" }
+fabric-resource-loader = { module = "net.fabricmc.fabric-api:fabric-resource-loader-v0", version.ref = "fabric-resource-loader" }
+fabric-networking = { module = "net.fabricmc.fabric-api:fabric-networking-api-v1", version.ref = "fabric-networking" }
+fabric-registry-sync = { module = "net.fabricmc.fabric-api:fabric-registry-sync-v0", version.ref = "fabric-registry-sync" }
 
-malilib = { module = "fi.dy.masa.malilib:malilib-fabric-1.19.3", version.ref = "malilib" }
-modmenu = "com.terraformersmc:modmenu:5.0.2"
+malilib = { module = "fi.dy.masa.malilib:malilib-fabric-1.19.4", version.ref = "malilib" }
+
+modmenu = { module = "com.terraformersmc:modmenu", version.ref = "modmenu" }

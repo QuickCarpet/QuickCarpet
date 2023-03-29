@@ -36,7 +36,7 @@ public abstract class FallingBlockEntityMixin extends Entity {
             cancellable = true)
     private void quickcarpet$renewableFromAnvil$onTick(CallbackInfo ci, Block block, BlockPos pos) {
         if (this.block.isIn(BlockTags.ANVIL)) {
-            BlockPos posBelow = new BlockPos(this.getX(), this.getY() - 0.06, this.getZ());
+            BlockPos posBelow = BlockPos.ofFloored(this.getX(), this.getY() - 0.06, this.getZ());
             Block blockBelow = this.world.getBlockState(posBelow).getBlock();
             if (blockBelow == Blocks.COBBLESTONE) {
                 if (Settings.renewableSand == Settings.RenewableGravelOrSandOption.ANVIL) {

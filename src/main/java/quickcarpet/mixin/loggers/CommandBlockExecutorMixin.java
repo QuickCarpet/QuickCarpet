@@ -34,7 +34,7 @@ public class CommandBlockExecutorMixin {
     @Unique
     private static void log(ServerCommandSource source, String command, int result) {
         Vec3d pos = source.getPosition();
-        BlockPos blockPos = new BlockPos(pos);
+        BlockPos blockPos = BlockPos.ofFloored(pos);
         Vec3d center = Vec3d.ofCenter(blockPos);
         String commandWithoutSlash = command.startsWith("/") ? command.substring(1) : command;
         Loggers.COMMAND_BLOCKS.log(option -> {

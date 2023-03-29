@@ -104,7 +104,7 @@ public abstract class HopperMinecartEntityMixin extends StorageMinecartEntity im
         double y = getY() + offY + 0.5;
         double z = getZ() + offZ;
         Inventory inventory = null;
-        BlockPos blockPos = new BlockPos(x, y, z);
+        BlockPos blockPos = BlockPos.ofFloored(x, y, z);
         BlockState blockState = world.getBlockState(blockPos);
         Block block = blockState.getBlock();
         if (block instanceof InventoryProvider) {

@@ -58,14 +58,6 @@ Default: `false`
 Options: `true`, `false`  
 Categories: feature  
 
-## autoJukebox
-Automatic jukebox
-
-Type: `boolean`  
-Default: `false`  
-Options: `true`, `false`  
-Categories: feature  
-
 ## betterChunkLoading
 Makes things load chunks again
 
@@ -408,15 +400,6 @@ Default: `false`
 Options: `true`, `false`  
 Categories: fix  
 
-## fillLimit
-Customizable fill/clone volume limit
-
-Type: `int`  
-Default: `32768`  
-Options: `32768`, `250000`, `1000000`  
-Categories: creative  
-Validator: `> 0`  
-
 ## fillUpdates
 fill/clone/setblock and structure blocks cause block updates
 
@@ -465,15 +448,6 @@ Default: `false`
 Options: `true`, `false`  
 Categories: commands  
 
-## hopperMinecartCooldown
-Adds a cooldown to the hopper minecart
-
-Type: `int`  
-Default: `0`  
-Options: `0`, `4`, `8`  
-Categories: fix  
-Validator: `>= 0`  
-
 ## hopperMinecartItemTransfer
 Hopper minecarts can push out items like normal hoppers
 
@@ -509,14 +483,6 @@ Type: `boolean`
 Default: `false`  
 Options: `true`, `false`  
 Categories: experimental  
-
-## jukeboxRedstoneSignal
-Output a redstone signal while a jukebox is playing a record
-
-Type: `boolean`  
-Default: `false`  
-Options: `true`, `false`  
-Categories: feature  
 
 ## lightningKillsDropsFix
 Prevents lightning strikes from destroying the items it creates

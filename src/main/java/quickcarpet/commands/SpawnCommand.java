@@ -103,7 +103,7 @@ public class SpawnCommand {
     }
 
     private static int list(ServerCommandSource source) {
-        return list(source, new BlockPos(source.getPosition()));
+        return list(source, BlockPos.ofFloored(source.getPosition()));
     }
 
     public static int list(ServerCommandSource source, BlockPos pos) {

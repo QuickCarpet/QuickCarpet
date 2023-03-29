@@ -29,7 +29,7 @@ public interface BlockInfoProvider<T extends Comparable<T>> extends StateInfoPro
         return register(new Identifier("quickcarpet", id), provider);
     }
 
-    BlockInfoProvider<Boolean> PROPAGATES_SKYLIGHT = register("propagates_skylight", AbstractBlock.AbstractBlockState::isTranslucent);
+    BlockInfoProvider<Boolean> PROPAGATES_SKYLIGHT = register("propagates_skylight", AbstractBlock.AbstractBlockState::isTransparent);
     BlockInfoProvider<Integer> OPACITY = register("opacity", AbstractBlock.AbstractBlockState::getOpacity);
     BlockInfoProvider<Boolean> LARGE_COLLISION_SHAPE = register("large_collision_shape", (state, world, pos) -> state.exceedsCube());
     BlockInfoProvider<Boolean> USE_SHAPE_FOR_LIGHT_OCCLUSION = register("use_shape_for_light_occlusion", (state, world, pos) -> state.hasSidedTransparency());

@@ -98,9 +98,9 @@ public final class Loggers {
 
     public static DataResult<Logger> getDataResult(Identifier name) {
         Logger logger = QuickCarpetRegistries.LOGGER.get(name);
-        if (logger == null) return DataResult.error("Unknown logger: " + name);
+        if (logger == null) return DataResult.error(() -> "Unknown logger: " + name);
         if (!logger.isAvailable()) {
-            return DataResult.error(Translations.translate(logger.getUnavailabilityReason(), Translations.DEFAULT_LOCALE).getString());
+            return DataResult.error(() -> Translations.translate(logger.getUnavailabilityReason(), Translations.DEFAULT_LOCALE).getString());
         }
         return DataResult.success(logger);
     }

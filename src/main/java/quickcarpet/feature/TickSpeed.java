@@ -7,7 +7,6 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
-import net.minecraft.util.math.MathHelper;
 import quickcarpet.QuickCarpet;
 import quickcarpet.QuickCarpetServer;
 import quickcarpet.api.TelemetryProvider;
@@ -192,7 +191,7 @@ public class TickSpeed implements TelemetryProvider {
     }
 
     public double getCurrentMSPT() {
-        return server == null ? 0 : MathHelper.average(server.lastTickLengths) * 1.0E-6D;
+        return server == null ? 0 : Arrays.stream(server.lastTickLengths).average().getAsDouble() * 1.0E-6D;
     }
 
     public static boolean resetLoadAvg = true;

@@ -2,7 +2,6 @@ package quickcarpet.mixin.loggers.damage;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.MobEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -29,6 +28,6 @@ public class MobEntityMixin {
 
     @Inject(method = "tryAttack", at = @At(value = "INVOKE", target = "Lnet/minecraft/enchantment/EnchantmentHelper;getKnockback(Lnet/minecraft/entity/LivingEntity;)I"), locals = LocalCapture.CAPTURE_FAILHARD)
     private void quickcarpet$log$damage$modify$attackerEnchantments(Entity entity, CallbackInfoReturnable<Boolean> cir, float attackDamage) {
-        DamageLogHelper.modify((LivingEntity)entity, DamageSource.mob((MobEntity) (Object) this), attackDamagePre, attackDamage, "attackerEnchantments");
+        DamageLogHelper.modify((LivingEntity)entity, entity.world.getDamageSources().mobAttack((MobEntity) (Object) this), attackDamagePre, attackDamage, "attackerEnchantments");
     }
 }

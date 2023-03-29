@@ -5,6 +5,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.registry.tag.DamageTypeTags;
 import net.minecraft.util.Formatting;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public class DamageLogHelper {
     }
 
     private static boolean shouldIgnore(LivingEntity target, DamageSource source) {
-        return source.isFire() && (target.isFireImmune() || target.hasStatusEffect(StatusEffects.FIRE_RESISTANCE));
+        return source.isIn(DamageTypeTags.IS_FIRE) && (target.isFireImmune() || target.hasStatusEffect(StatusEffects.FIRE_RESISTANCE));
     }
 
     public static void register(LivingEntity target, DamageSource source, float amount) {

@@ -144,7 +144,7 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
     }
 
     private static void postCreate(MinecraftServer server, FakeServerPlayerEntity player) {
-        player.stepHeight = 0.6F;
+        player.setStepHeight(0.6F);
         server.getPlayerManager().sendToDimension(new EntitySetHeadYawS2CPacket(player, (byte) (player.headYaw * 256 / 360)), player.world.getRegistryKey());
         server.getPlayerManager().sendToDimension(new EntityPositionS2CPacket(player), player.world.getRegistryKey());
         player.getWorld().getChunkManager().updatePosition(player);
@@ -164,7 +164,7 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
 
         shadow.setHealth(real.getHealth());
         shadow.networkHandler.requestTeleport(real.getX(), real.getY(), real.getZ(), real.getYaw(), real.getPitch());
-        shadow.stepHeight = 0.6F;
+        shadow.setStepHeight(0.6F);
         shadow.interactionManager.changeGameMode(real.interactionManager.getGameMode());
         server.getPlayerManager().sendToDimension(new EntitySetHeadYawS2CPacket(shadow, (byte) (real.headYaw * 256 / 360)), shadow.world.getRegistryKey());
         server.getPlayerManager().sendToAll(new PlayerListS2CPacket(PlayerListS2CPacket.Action.ADD_PLAYER, shadow));

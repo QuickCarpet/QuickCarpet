@@ -1,7 +1,7 @@
 package quickcarpet.feature.player;
 
 import net.minecraft.network.ClientConnection;
-import net.minecraft.network.Packet;
+import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.play.KeepAliveC2SPacket;
 import net.minecraft.network.packet.s2c.play.KeepAliveS2CPacket;
 import net.minecraft.server.MinecraftServer;
@@ -9,6 +9,7 @@ import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import quickcarpet.mixin.accessor.KeepAliveS2CPacketAccessor;
+import quickcarpet.mixin.accessor.ServerPlayNetworkHandlerAccessor;
 
 public class FakeServerPlayNetworkHandler extends ServerPlayNetworkHandler {
     public FakeServerPlayNetworkHandler(MinecraftServer server, ClientConnection cc, ServerPlayerEntity playerIn) {
@@ -33,9 +34,9 @@ public class FakeServerPlayNetworkHandler extends ServerPlayNetworkHandler {
     }
 
     @Override
-    public void onDisconnected(Text text_1) {
-        super.onDisconnected(text_1);
-        ((FakeClientConnection) this.getConnection()).open = false;
+    public void onDisconnected(Text message) {
+        super.onDisconnected(message);
+        ((FakeClientConnection) ((ServerPlayNetworkHandlerAccessor) this).getConnection()).open = false;
     }
 }
 
