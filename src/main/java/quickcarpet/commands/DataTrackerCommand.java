@@ -10,11 +10,12 @@ import net.minecraft.entity.data.TrackedData;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Text;
 import org.apache.commons.lang3.tuple.Pair;
+import quickcarpet.mixin.accessor.DataTrackerAccessor;
 import quickcarpet.settings.Settings;
 import quickcarpet.utils.Constants.DataTrackerCommand.Keys;
 import quickcarpet.utils.DataTrackerUtils;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Locale;
 
 import static net.minecraft.command.argument.EntityArgumentType.entity;
@@ -37,7 +38,7 @@ public class DataTrackerCommand {
     private static int list(CommandContext<ServerCommandSource> ctx) throws CommandSyntaxException {
         Entity target = getEntity(ctx, "entity");
         DataTracker tracker = target.getDataTracker();
-        List<DataTracker.Entry<?>> entries = tracker.getAllEntries();
+        Collection<DataTracker.Entry<?>> entries = ((DataTrackerAccessor) tracker).getEntries().values();
         if (entries == null || entries.isEmpty()) {
             m(ctx.getSource(), NO_ENTRIES);
             return 0;

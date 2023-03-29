@@ -1,10 +1,10 @@
 package quickcarpet.feature.stateinfo;
 
 import net.minecraft.fluid.FluidState;
+import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.registry.Registry;
 import quickcarpet.utils.Messenger;
 import quickcarpet.utils.QuickCarpetRegistries;
 

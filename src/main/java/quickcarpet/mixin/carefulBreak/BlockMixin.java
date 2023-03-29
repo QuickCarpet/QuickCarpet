@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.PlaySoundS2CPacket;
+import net.minecraft.registry.Registries;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -30,7 +31,7 @@ public class BlockMixin {
             item.onPlayerCollision(player);
             if (item.isRemoved()) {
                 Vec3d pos = item.getPos();
-                player.networkHandler.sendPacket(new PlaySoundS2CPacket(SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, pos.getX(), pos.getY(), pos.getZ(), 0.2F, (player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 1.4F + 2.0F, player.getRandom().nextLong()));
+                player.networkHandler.sendPacket(new PlaySoundS2CPacket(Registries.SOUND_EVENT.getEntry(SoundEvents.ENTITY_ITEM_PICKUP), SoundCategory.PLAYERS, pos.getX(), pos.getY(), pos.getZ(), 0.2F, (player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 1.4F + 2.0F, player.getRandom().nextLong()));
                 ci.cancel();
             }
         }

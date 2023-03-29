@@ -6,14 +6,14 @@ import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.entity.Entity;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.WorldSavePath;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -37,7 +37,7 @@ public record CameraData(RegistryKey<World> dimension, Vec3d position) {
             Codec.DOUBLE.fieldOf("x").forGetter(d -> d.position().x),
             Codec.DOUBLE.fieldOf("y").forGetter(d -> d.position().y),
             Codec.DOUBLE.fieldOf("z").forGetter(d -> d.position().z)
-    ).apply(it, (dim, x, y, z) -> new CameraData(RegistryKey.of(Registry.WORLD_KEY, dim), new Vec3d(x, y, z))));
+    ).apply(it, (dim, x, y, z) -> new CameraData(RegistryKey.of(RegistryKeys.WORLD, dim), new Vec3d(x, y, z))));
     public static final Codec<Map<UUID, CameraData>> MAP_CODEC = Codec.unboundedMap(Codec.STRING.xmap(UUID::fromString, UUID::toString), CODEC.codec());
     private static final Logger LOGGER = LogManager.getLogger("QuickCarpet|CameraData");
 

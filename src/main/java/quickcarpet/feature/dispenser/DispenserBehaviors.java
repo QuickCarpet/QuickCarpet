@@ -3,7 +3,7 @@ package quickcarpet.feature.dispenser;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import net.minecraft.block.dispenser.DispenserBehavior;
 import net.minecraft.item.*;
-import net.minecraft.tag.ItemTags;
+import net.minecraft.registry.tag.ItemTags;
 import quickcarpet.settings.Settings;
 
 import java.util.ArrayList;

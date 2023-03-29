@@ -1,16 +1,16 @@
 package quickcarpet.mixin.renewableCoral;
 
 import net.minecraft.block.*;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.entry.RegistryEntryList;
+import net.minecraft.registry.tag.BlockTags;
+import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.tag.BlockTags;
-import net.minecraft.tag.FluidTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryEntry;
-import net.minecraft.util.registry.RegistryEntryList;
-import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldView;
 import net.minecraft.world.gen.feature.CoralFeature;
 import net.minecraft.world.gen.feature.Feature;
 import org.spongepowered.asm.mixin.Mixin;
@@ -22,8 +22,8 @@ import java.util.List;
 @Mixin(CoralBlock.class)
 public abstract class CoralBlockMixin implements Fertilizable {
     @Override
-    public boolean isFertilizable(BlockView var1, BlockPos var2, BlockState var3, boolean var4) {
-        return Settings.renewableCoral && var3.get(CoralParentBlock.WATERLOGGED) && var1.getFluidState(var2.up()).isIn(FluidTags.WATER);
+    public boolean isFertilizable(WorldView world, BlockPos pos, BlockState state, boolean isClient) {
+        return Settings.renewableCoral && state.get(CoralParentBlock.WATERLOGGED) && world.getFluidState(pos.up()).isIn(FluidTags.WATER);
     }
 
     @Override
@@ -38,7 +38,7 @@ public abstract class CoralBlockMixin implements Fertilizable {
         CoralFeature coral = features.get(random.nextInt(features.size()));
         MapColor color = blockUnder.getMapColor(world, pos);
         BlockState properBlock = blockUnder;
-        RegistryEntryList.Named<Block> blocks = Registry.BLOCK.getEntryList(BlockTags.CORAL_BLOCKS).orElse(null);
+        RegistryEntryList.Named<Block> blocks = Registries.BLOCK.getEntryList(BlockTags.CORAL_BLOCKS).orElse(null);
         if (blocks == null) return;
         for (RegistryEntry<Block> block : blocks) {
             properBlock = block.value().getDefaultState();

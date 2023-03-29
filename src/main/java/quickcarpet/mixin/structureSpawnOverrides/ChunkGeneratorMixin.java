@@ -1,8 +1,8 @@
 package quickcarpet.mixin.structureSpawnOverrides;
 
 import net.minecraft.entity.SpawnGroup;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryEntry;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.world.StructureSpawns;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.gen.StructureAccessor;
@@ -21,7 +21,7 @@ public class ChunkGeneratorMixin {
     private Map<SpawnGroup, StructureSpawns> quickcarpet$overrideSpawns(Structure feature, RegistryEntry<Biome> biome, StructureAccessor accessor) {
         var spawns = feature.getStructureSpawns();
         if (!StructureSpawnOverrides.hasOverrides() || spawns.containsKey(SpawnGroup.MONSTER)) return spawns;
-        var registry = accessor.getRegistryManager().get(Registry.STRUCTURE_KEY);
+        var registry = accessor.getRegistryManager().get(RegistryKeys.STRUCTURE);
         var key = registry.getKey(feature);
         if (key.isEmpty()) return spawns;
         var override = StructureSpawnOverrides.getOverride(key.get());

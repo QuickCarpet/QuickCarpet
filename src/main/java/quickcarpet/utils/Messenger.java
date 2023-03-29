@@ -10,6 +10,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.particle.ParticleEffect;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -25,7 +27,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.EulerAngle;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.village.VillagerData;
 import org.slf4j.Logger;
 
@@ -95,11 +96,11 @@ public class Messenger {
     }
 
     public static MutableText format(BlockState state) {
-        return format(Registry.BLOCK, BlockState::getBlock, state);
+        return format(Registries.BLOCK, BlockState::getBlock, state);
     }
 
     public static MutableText format(FluidState state) {
-        return format(Registry.FLUID, FluidState::getFluid, state);
+        return format(Registries.FLUID, FluidState::getFluid, state);
     }
 
     private static <O, S extends State<O, S>> MutableText format(Registry<O> ownerRegistry, Function<S, O> ownerGetter, S state) {
@@ -143,7 +144,7 @@ public class Messenger {
     }
 
     public static MutableText format(EntityType<?> entity) {
-        return format(Registry.ENTITY_TYPE.getId(entity));
+        return format(Registries.ENTITY_TYPE.getId(entity));
     }
 
     public static MutableText tp(Vec3d pos, Formatting... style) {
@@ -357,10 +358,10 @@ public class Messenger {
         Formatter<BlockState> BLOCK_STATE = Messenger::format;
         Formatter<FluidState> FLUID_STATE = Messenger::format;
         Formatter<NbtCompound> COMPOUND_TAG = t -> NbtHelper.toPrettyPrintedText(t).copy();
-        Formatter<ParticleEffect> PARTICLE = p -> s(String.valueOf(Registry.PARTICLE_TYPE.getId(p.getType())));
+        Formatter<ParticleEffect> PARTICLE = p -> s(String.valueOf(Registries.PARTICLE_TYPE.getId(p.getType())));
         Formatter<VillagerData> VILLAGER_DATA = d -> c(
-            s("type="), Messenger.format(Registry.VILLAGER_TYPE, d.getType()),
-            s(", profession="), Messenger.format(Registry.VILLAGER_PROFESSION, d.getProfession()),
+            s("type="), Messenger.format(Registries.VILLAGER_TYPE, d.getType()),
+            s(", profession="), Messenger.format(Registries.VILLAGER_PROFESSION, d.getProfession()),
             s(", level=" + d.getLevel())
         );
         Formatter<OptionalInt> OPTIONAL_INT = o -> s(o.isPresent() ? Integer.toString(o.getAsInt()) : "empty");

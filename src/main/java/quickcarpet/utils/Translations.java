@@ -2,12 +2,11 @@ package quickcarpet.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.*;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.RegistryKey;
 import quickcarpet.api.module.QuickCarpetModule;
-import quickcarpet.mixin.accessor.RegistryKeyAccessor;
 import quickcarpet.utils.mixin.extensions.PlayerWithLanguage;
 
 import java.io.IOException;
@@ -149,7 +148,7 @@ public class Translations {
     }
 
     public static MutableText translate(RegistryKey<?> key) {
-        Identifier reg = ((RegistryKeyAccessor) key).getRegistry();
+        Identifier reg = key.getRegistry();
         Identifier value = key.getValue();
         String translationKey = ("minecraft".equals(reg.getNamespace())
                 ? reg.getPath()

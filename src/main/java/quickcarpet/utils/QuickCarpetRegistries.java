@@ -3,11 +3,11 @@ package quickcarpet.utils;
 import com.google.common.collect.Maps;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Lifecycle;
+import net.minecraft.registry.MutableRegistry;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.SimpleRegistry;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.MutableRegistry;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
-import net.minecraft.util.registry.SimpleRegistry;
 import quickcarpet.feature.stateinfo.BlockInfoProvider;
 import quickcarpet.feature.stateinfo.FluidInfoProvider;
 import quickcarpet.logging.Logger;
@@ -20,7 +20,7 @@ public final class QuickCarpetRegistries {
     private static final org.slf4j.Logger LOG = LogUtils.getLogger();
     private static final Map<Identifier, Supplier<?>> DEFAULT_ENTRIES = Maps.newLinkedHashMap();
 
-    private static final MutableRegistry<MutableRegistry<?>> ROOT = new SimpleRegistry<>(createRegistryKey("root"), Lifecycle.experimental(), null);
+    private static final MutableRegistry<MutableRegistry<?>> ROOT = new SimpleRegistry<>(createRegistryKey("root"), Lifecycle.experimental(), false);
     public static final Registry<? extends Registry<?>> REGISTRIES = ROOT;
 
     public static final RegistryKey<Registry<BlockInfoProvider<?>>> BLOCK_INFO_PROVIDER_KEY = createRegistryKey("block_info_provider");
@@ -38,24 +38,28 @@ public final class QuickCarpetRegistries {
             }
 
         });
-        Registry.validate(ROOT);
     }
 
-    public static void init() {}
+    public static void init() {
+        REGISTRIES.freeze();
+        for (Registry<?> registry : REGISTRIES) {
+            registry.freeze();
+        }
+    }
 
     private static <T> RegistryKey<Registry<T>> createRegistryKey(String registryId) {
         return RegistryKey.ofRegistry(new Identifier("quickcarpet", registryId));
     }
 
     private static <T> Registry<T> create(RegistryKey<? extends Registry<T>> key, DefaultEntryGetter<T> defaultEntryGetter) {
-        return create(key, new SimpleRegistry<>(key, Lifecycle.experimental(), null), defaultEntryGetter, Lifecycle.experimental());
+        return create(key, new SimpleRegistry<>(key, Lifecycle.experimental(), false), defaultEntryGetter, Lifecycle.experimental());
     }
 
     @SuppressWarnings("unchecked")
     private static <T, R extends MutableRegistry<T>> R create(RegistryKey<? extends Registry<T>> key, R registry, DefaultEntryGetter<T> defaultEntryGetter, Lifecycle lifecycle) {
         Identifier identifier = key.getValue();
         DEFAULT_ENTRIES.put(identifier, () -> defaultEntryGetter.run(registry));
-        ROOT.add((RegistryKey<MutableRegistry<?>>) (RegistryKey<?>) key, registry, lifecycle);
+        ROOT.add((RegistryKey<MutableRegistry<?>>) key, registry, lifecycle);
         return registry;
     }
 

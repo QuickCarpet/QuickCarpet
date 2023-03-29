@@ -5,8 +5,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.SideShapeType;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.entity.ai.pathing.NavigationType;
+import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import quickcarpet.utils.Messenger;
 import quickcarpet.utils.QuickCarpetRegistries;
 

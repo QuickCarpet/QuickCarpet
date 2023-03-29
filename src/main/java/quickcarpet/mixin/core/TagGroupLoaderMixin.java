@@ -1,11 +1,11 @@
 package quickcarpet.mixin.core;
 
 import net.minecraft.block.Block;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.tag.TagEntry;
+import net.minecraft.registry.tag.TagGroupLoader;
 import net.minecraft.resource.ResourceManager;
-import net.minecraft.tag.TagEntry;
-import net.minecraft.tag.TagGroupLoader;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -31,7 +31,7 @@ public abstract class TagGroupLoaderMixin<T> {
             for (BlockPropertyTag t : CarpetRegistry.VIRTUAL_BLOCK_TAGS) {
                 List<TagGroupLoader.TrackedEntry> entries = new ArrayList<>();
                 for (Block b : t.values()) {
-                    entries.add(new TagGroupLoader.TrackedEntry(TagEntry.create(Registry.BLOCK.getId(b)), Build.ID));
+                    entries.add(new TagGroupLoader.TrackedEntry(TagEntry.create(Registries.BLOCK.getId(b)), Build.ID));
                 }
                 tags.put(t.getKey().id(), entries);
             }

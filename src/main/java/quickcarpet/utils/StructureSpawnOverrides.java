@@ -1,10 +1,10 @@
 package quickcarpet.utils;
 
 import net.minecraft.entity.SpawnGroup;
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.StructureSpawns;
 import net.minecraft.world.gen.structure.Structure;
-import net.minecraft.world.gen.structure.Structures;
+import net.minecraft.world.gen.structure.StructureKeys;
 import quickcarpet.settings.Settings;
 
 import javax.annotation.Nullable;
@@ -19,10 +19,10 @@ public final class StructureSpawnOverrides {
 
     @Nullable
     public static Map<SpawnGroup, StructureSpawns> getOverride(RegistryKey<Structure> feature) {
-        if (Settings.shulkerSpawningInEndCities && Structures.END_CITY.matchesKey(feature)) {
+        if (Settings.shulkerSpawningInEndCities && StructureKeys.END_CITY.equals(feature)) {
             return CarpetRegistry.END_CITY_SPAWN_MAP;
         }
-        if (Settings.huskSpawningInDesertPyramids && Structures.DESERT_PYRAMID.matchesKey(feature)) {
+        if (Settings.huskSpawningInDesertPyramids && StructureKeys.DESERT_PYRAMID.equals(feature)) {
             return CarpetRegistry.DESERT_PYRAMID_SPAWN_MAP;
         }
         return null;

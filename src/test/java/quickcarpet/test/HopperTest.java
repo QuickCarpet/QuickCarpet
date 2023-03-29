@@ -6,11 +6,11 @@ import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.entity.HopperBlockEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.tag.BlockTags;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.tag.BlockTags;
 import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
 import quickcarpet.feature.HopperCounter;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -21,7 +21,7 @@ public class HopperTest {
     private static final BlockPos HOPPER_POS = new BlockPos(0, 3, 0);
     private static final BlockPos ABOVE_HOPPER_POS = HOPPER_POS.up();
     private static final BlockPos BELOW_HOPPER_POS = HOPPER_POS.down();
-    private static final Block[] WOOL_BLOCKS = Registry.BLOCK.stream().filter(block -> block.getDefaultState().isIn(BlockTags.WOOL)).toArray(Block[]::new);
+    private static final Block[] WOOL_BLOCKS = Registries.BLOCK.stream().filter(block -> block.getDefaultState().isIn(BlockTags.WOOL)).toArray(Block[]::new);
     private static int woolIndex;
 
     private void clearCounters(TestContext ctx) {

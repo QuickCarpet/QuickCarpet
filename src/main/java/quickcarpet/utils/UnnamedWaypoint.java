@@ -4,14 +4,14 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.entity.Entity;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import quickcarpet.QuickCarpetServer;
 import quickcarpet.feature.player.FakeServerPlayerEntity;
@@ -62,7 +62,7 @@ public record UnnamedWaypoint(@Nonnull WaypointContainer world,
             Codec.STRING.optionalFieldOf("creatorUuid").xmap(s -> s.map(UUID::fromString).orElse(null), u -> Optional.ofNullable(u).map(UUID::toString)).forGetter(w -> w.creatorUuid)
     ).apply(it, (dim, x, y, z, yaw, pitch, creator, uuid) -> {
         MinecraftServer server = QuickCarpetServer.getMinecraftServer();
-        WaypointContainer world = (WaypointContainer) server.getWorld(RegistryKey.of(Registry.WORLD_KEY, dim));
+        WaypointContainer world = (WaypointContainer) server.getWorld(RegistryKey.of(RegistryKeys.WORLD, dim));
         return new UnnamedWaypoint(world, creator, uuid, new Vec3d(x, y, z), new Vec2f(pitch, yaw));
     }));
 

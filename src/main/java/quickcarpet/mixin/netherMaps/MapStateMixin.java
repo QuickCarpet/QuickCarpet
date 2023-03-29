@@ -1,7 +1,7 @@
 package quickcarpet.mixin.netherMaps;
 
 import net.minecraft.item.map.MapState;
-import net.minecraft.util.registry.RegistryKey;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -13,7 +13,7 @@ import quickcarpet.settings.Settings;
 public abstract class MapStateMixin extends PersistentState {
     @Redirect(method = "addIcon", at = @At(
         value = "FIELD",
-        target = "Lnet/minecraft/item/map/MapState;dimension:Lnet/minecraft/util/registry/RegistryKey;"
+        target = "Lnet/minecraft/item/map/MapState;dimension:Lnet/minecraft/registry/RegistryKey;"
     ))
     private RegistryKey<World> quickcarpet$netherMaps$getDimension(MapState state) {
         if (Settings.netherMaps && state.dimension == World.NETHER) {

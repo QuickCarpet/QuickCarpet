@@ -10,12 +10,12 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructureContext;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.structure.Structure;
 import org.slf4j.Logger;
@@ -94,7 +94,7 @@ public class StructureChannel implements ServerPluginChannelHandler {
     private void sendUpdate(ServerPlayerEntity player, Collection<ChunkPos> chunks) {
         ServerWorld world = player.getWorld();
         Map<Identifier, LongSet> references = new HashMap<>();
-        var registry = world.getRegistryManager().get(Registry.STRUCTURE_KEY);
+        var registry = world.getRegistryManager().get(RegistryKeys.STRUCTURE);
         for (ChunkPos pos : chunks) {
             if (!world.isChunkLoaded(pos.x, pos.z)) continue;
             Chunk chunk = world.getChunk(pos.x, pos.z);

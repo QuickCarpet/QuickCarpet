@@ -15,13 +15,14 @@ import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.recipe.*;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.text.Text;
 import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.registry.Registry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import quickcarpet.mixin.accessor.CraftingInventoryAccessor;
@@ -66,7 +67,7 @@ public class CraftingTableBlockEntity extends LockableContainerBlockEntity imple
 
     public static void addBackMapping() {
         LOGGER.info("Adding back removed crafting table block entity mapping");
-        Registry.register(Registry.BLOCK_ENTITY_TYPE, "carpet:crafting_table", CarpetRegistry.CRAFTING_TABLE_BLOCK_ENTITY_TYPE);
+        Registry.register(Registries.BLOCK_ENTITY_TYPE, "carpet:crafting_table", CarpetRegistry.CRAFTING_TABLE_BLOCK_ENTITY_TYPE);
     }
 
     @Override
@@ -237,7 +238,7 @@ public class CraftingTableBlockEntity extends LockableContainerBlockEntity imple
             if (!remainingStack.isEmpty()) {
                 if (current.isEmpty()) {
                     inventory.set(i, remainingStack);
-                } else if (ItemStack.areItemsEqualIgnoreDamage(current, remainingStack) && ItemStack.areNbtEqual(current, remainingStack)) {
+                } else if (ItemStack.areItemsEqual(current, remainingStack) && ItemStack.areNbtEqual(current, remainingStack)) {
                     current.increment(remainingStack.getCount());
                 } else {
                     ItemScatterer.spawn(world, pos.getX(), pos.getY(), pos.getZ(), remainingStack);

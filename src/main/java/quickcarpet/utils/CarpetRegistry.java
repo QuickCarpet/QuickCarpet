@@ -15,10 +15,12 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.datafixer.Schemas;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.SpawnGroup;
-import net.minecraft.tag.TagKey;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.Pool;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.StructureSpawns;
 import net.minecraft.world.biome.SpawnSettings;
 import quickcarpet.QuickCarpet;
@@ -36,15 +38,15 @@ public class CarpetRegistry {
     public static final BlockPropertyTag FULL_CUBE = new BlockPropertyTag(new Identifier("carpet:full_cube"), BlockState::isFullCube);
     public static final List<BlockPropertyTag> VIRTUAL_BLOCK_TAGS = List.of(SIMPLE_FULL_BLOCK, FULL_CUBE);
 
-    public static final TagKey<Block> DISPENSER_BLOCK_WHITELIST = TagKey.of(Registry.BLOCK_KEY, new Identifier("carpet:dispenser_placeable_whitelist"));
-    public static final TagKey<Block> DISPENSER_BLOCK_BLACKLIST = TagKey.of(Registry.BLOCK_KEY, new Identifier("carpet:dispenser_placeable_blacklist"));
+    public static final TagKey<Block> DISPENSER_BLOCK_WHITELIST = TagKey.of(RegistryKeys.BLOCK, new Identifier("carpet:dispenser_placeable_whitelist"));
+    public static final TagKey<Block> DISPENSER_BLOCK_BLACKLIST = TagKey.of(RegistryKeys.BLOCK, new Identifier("carpet:dispenser_placeable_blacklist"));
 
     //Additional Movable Blocks
-    public static final TagKey<Block> PISTON_OVERRIDE_MOVABLE = TagKey.of(Registry.BLOCK_KEY, new Identifier("carpet:piston_movable"));
-    public static final TagKey<Block> PISTON_OVERRIDE_PUSH_ONLY = TagKey.of(Registry.BLOCK_KEY, new Identifier("carpet:piston_push_only"));
-    public static final TagKey<Block> PISTON_OVERRIDE_IMMOVABLE = TagKey.of(Registry.BLOCK_KEY, new Identifier("carpet:piston_immovable"));
-    public static final TagKey<Block> PISTON_OVERRIDE_DESTROY = TagKey.of(Registry.BLOCK_KEY, new Identifier("carpet:piston_destroy"));
-    public static final TagKey<Block> PISTON_OVERRIDE_WEAK_STICKY = TagKey.of(Registry.BLOCK_KEY, new Identifier("carpet:piston_weak_sticky"));
+    public static final TagKey<Block> PISTON_OVERRIDE_MOVABLE = TagKey.of(RegistryKeys.BLOCK, new Identifier("carpet:piston_movable"));
+    public static final TagKey<Block> PISTON_OVERRIDE_PUSH_ONLY = TagKey.of(RegistryKeys.BLOCK, new Identifier("carpet:piston_push_only"));
+    public static final TagKey<Block> PISTON_OVERRIDE_IMMOVABLE = TagKey.of(RegistryKeys.BLOCK, new Identifier("carpet:piston_immovable"));
+    public static final TagKey<Block> PISTON_OVERRIDE_DESTROY = TagKey.of(RegistryKeys.BLOCK, new Identifier("carpet:piston_destroy"));
+    public static final TagKey<Block> PISTON_OVERRIDE_WEAK_STICKY = TagKey.of(RegistryKeys.BLOCK, new Identifier("carpet:piston_weak_sticky"));
 
     public static final Object2IntMap<Block> TERRACOTTA_BLOCKS = new Object2IntOpenHashMap<>();
 
@@ -73,7 +75,7 @@ public class CarpetRegistry {
     public static final PlayerDataKey<CameraData> CAMERA_DATA_KEY = QuickCarpet.getInstance().registerPlayerData(CameraData.class);
 
     private static <T extends BlockEntity> BlockEntityType<T> registerBlockEntity(String id, BlockEntityType.BlockEntityFactory<? extends T> supplier, Type<?> type, Block... blocks) {
-        return Registry.register(Registry.BLOCK_ENTITY_TYPE, id, new BlockEntityType<>(supplier, ImmutableSet.copyOf(blocks), type));
+        return Registry.register(Registries.BLOCK_ENTITY_TYPE, id, new BlockEntityType<>(supplier, ImmutableSet.copyOf(blocks), type));
     }
 
     private static StructureSpawns spawns(EntityType<?> type, int packSize) {

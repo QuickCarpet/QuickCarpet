@@ -10,6 +10,7 @@ import net.minecraft.network.NetworkSide;
 import net.minecraft.network.packet.s2c.play.EntityPositionS2CPacket;
 import net.minecraft.network.packet.s2c.play.EntitySetHeadYawS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerListS2CPacket;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerTask;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -18,7 +19,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.WorldSavePath;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.GameMode;
 import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
@@ -49,12 +49,12 @@ public class FakeServerPlayerEntity extends ServerPlayerEntity {
     private float startingYaw, startingPitch;
 
     private FakeServerPlayerEntity(MinecraftServer server, ServerWorld world, GameProfile profile) {
-        super(server, world, profile, null);
+        super(server, world, profile);
         this.hasStartingPos = false;
     }
 
     private FakeServerPlayerEntity(MinecraftServer server, ServerWorld world, GameProfile profile, Properties properties) {
-        super(server, world, profile, null);
+        super(server, world, profile);
         this.hasStartingPos = true;
         this.startingX = properties.x;
         this.startingY = properties.y;

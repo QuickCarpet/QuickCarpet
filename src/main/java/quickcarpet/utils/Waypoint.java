@@ -5,6 +5,8 @@ import com.google.gson.GsonBuilder;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
@@ -14,8 +16,6 @@ import net.minecraft.util.JsonHelper;
 import net.minecraft.util.WorldSavePath;
 import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import net.minecraft.world.dimension.DimensionType;
 import org.slf4j.Logger;
@@ -112,7 +112,7 @@ public record Waypoint(UnnamedWaypoint location, String name) implements Compara
         RegistryKey<World> dimension = null;
         int slash = name.indexOf('/');
         if (slash >= 0) {
-            dimension = RegistryKey.of(Registry.WORLD_KEY, new Identifier(name.substring(0, slash)));
+            dimension = RegistryKey.of(RegistryKeys.WORLD, new Identifier(name.substring(0, slash)));
             if (dimension != null) name = name.substring(slash + 1);
         }
         if (dimension == null) {

@@ -7,7 +7,7 @@ import net.minecraft.test.GameTest;
 import net.minecraft.test.TestContext;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.explosion.Explosion;
+import net.minecraft.world.World;
 import quickcarpet.logging.Loggers;
 
 import java.util.ArrayList;
@@ -21,28 +21,28 @@ import static quickcarpet.test.TestUtils.testAt;
 public class TntTest {
     private static final BlockPos CENTER = new BlockPos(2, 3, 2);
 
-    private static void createExplosion(TestContext ctx, Explosion.DestructionType type) {
+    private static void createExplosion(TestContext ctx, World.ExplosionSourceType type) {
         BlockPos pos = ctx.getAbsolutePos(CENTER);
         ctx.getWorld().createExplosion(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, 4, type);
     }
 
     @GameTest(templateName = "contained_explosion")
     public void vanilla$explosionBlockDamage(TestContext ctx) {
-        createExplosion(ctx, Explosion.DestructionType.BREAK);
+        createExplosion(ctx, World.ExplosionSourceType.TNT);
         ctx.expectBlock(Blocks.AIR, CENTER);
         ctx.complete();
     }
 
     @GameTest(templateName = "contained_explosion")
     public void vanilla$explosionNoBlockDamage(TestContext ctx) {
-        createExplosion(ctx, Explosion.DestructionType.NONE);
+        createExplosion(ctx, World.ExplosionSourceType.NONE);
         ctx.expectBlock(Blocks.WHITE_STAINED_GLASS, CENTER);
         ctx.complete();
     }
 
     @GameTest(templateName = "contained_explosion", batchId = "rules/explosionBlockDamage=false")
     public void qc$explosionNoBlockDamage(TestContext ctx) {
-        createExplosion(ctx, Explosion.DestructionType.BREAK);
+        createExplosion(ctx, World.ExplosionSourceType.TNT);
         ctx.expectBlock(Blocks.WHITE_STAINED_GLASS, CENTER);
         ctx.complete();
     }

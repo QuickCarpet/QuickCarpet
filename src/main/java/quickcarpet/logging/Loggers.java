@@ -1,9 +1,9 @@
 package quickcarpet.logging;
 
 import com.mojang.serialization.DataResult;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import quickcarpet.feature.HopperCounter;
 import quickcarpet.logging.source.*;
 import quickcarpet.settings.Settings;

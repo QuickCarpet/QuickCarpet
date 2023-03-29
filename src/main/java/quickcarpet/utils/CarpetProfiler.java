@@ -6,6 +6,8 @@ import it.unimi.dsi.fastutil.objects.*;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.MutableText;
@@ -14,8 +16,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.registry.RegistryKey;
 import net.minecraft.world.World;
 import net.minecraft.world.chunk.BlockEntityTickInvoker;
 import org.apache.logging.log4j.LogManager;
@@ -371,7 +371,7 @@ public class CarpetProfiler {
     public static void startBlockEntity(World world, BlockEntityTickInvoker ticker) {
         try {
             if (report instanceof EntitiesReport r && r.contains(world, ticker.getPos())) {
-                BlockEntityType<?> type = Registry.BLOCK_ENTITY_TYPE.get(new Identifier(ticker.getName()));
+                BlockEntityType<?> type = Registries.BLOCK_ENTITY_TYPE.get(new Identifier(ticker.getName()));
                 r.startBlockEntity(world, type);
             }
         } catch (RuntimeException e) {

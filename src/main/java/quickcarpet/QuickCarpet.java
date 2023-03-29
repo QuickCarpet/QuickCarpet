@@ -62,7 +62,7 @@ public final class QuickCarpet implements QuickCarpetAPI, ServerEventListener, T
         return instance;
     }
 
-    public void onBootstrapInitialize() {
+    public void onRegistryInit() {
         CarpetRegistry.init();
         QuickCarpetRegistries.init();
     }
