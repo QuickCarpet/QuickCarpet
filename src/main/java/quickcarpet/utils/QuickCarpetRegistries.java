@@ -59,7 +59,8 @@ public final class QuickCarpetRegistries {
     private static <T, R extends MutableRegistry<T>> R create(RegistryKey<? extends Registry<T>> key, R registry, DefaultEntryGetter<T> defaultEntryGetter, Lifecycle lifecycle) {
         Identifier identifier = key.getValue();
         DEFAULT_ENTRIES.put(identifier, () -> defaultEntryGetter.run(registry));
-        ROOT.add((RegistryKey<MutableRegistry<?>>) key, registry, lifecycle);
+        //noinspection RedundantCast
+        ROOT.add((RegistryKey<MutableRegistry<?>>) (RegistryKey<?>) key, registry, lifecycle);
         return registry;
     }
 
