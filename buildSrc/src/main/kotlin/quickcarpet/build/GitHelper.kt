@@ -51,7 +51,7 @@ object GitHelper {
     }
 
     fun getVersion(dir: File, next: String): SemVer {
-        val description = run(dir, "describe --tags --dirty --match v*.*.*").split("-")
+        val description = run(dir, "describe --tags --dirty --match v*.*.* --exclude v*[-+]*").split("-")
         if (description.size == 1) return SemVer(description[0].substring(1))
         val semver = SemVer(next)
         if (semver.pre.isEmpty()) semver.pre.add("dev")
