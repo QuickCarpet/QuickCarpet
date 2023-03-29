@@ -17,7 +17,7 @@ public class ClientConnectionMixin {
         PacketCounterLoggerSource.out();
     }
 
-    @Inject(method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/Packet;)V", at = @At("HEAD"))
+    @Inject(method = "channelRead0(Lio/netty/channel/ChannelHandlerContext;Lnet/minecraft/network/packet/Packet;)V", at = @At("HEAD"))
     private void quickcarpet$packetCounter$in(ChannelHandlerContext channelHandlerContext_1, Packet<?> packet_1, CallbackInfo ci) {
         PacketCounterLoggerSource.in();
     }
