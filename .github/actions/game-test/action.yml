@@ -5,6 +5,7 @@ inputs:
   mods:
     description: 'Mods to download'
     required: true
+    default: ''
   world-artifact-name:
     description: 'Name of the artifact containing the test world'
     required: true

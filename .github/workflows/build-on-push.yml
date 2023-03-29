@@ -145,7 +145,6 @@ jobs:
       - name: Run game tests
         uses: ./.github/actions/game-test
         with:
-          mods: lazydfu
           world-artifact-name: gametestworld
           test-results-name: Game Test Results (Java ${{ matrix.java }}, Gradle ${{ matrix.gradle }})
   game-test-with-mods:
@@ -191,7 +190,6 @@ jobs:
         with:
           mods: |
             lithium=${{ matrix.lithium }}
-            lazydfu
           world-artifact-name: gametestworld-mods
           test-results-name: Game Test Results (Java ${{ matrix.java }}, Gradle ${{ matrix.gradle }}, Lithium ${{ matrix.lithium }})
   publish-test-results:

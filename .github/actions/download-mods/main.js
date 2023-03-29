@@ -32,7 +32,7 @@ async function findVersion(id, version) {
     core.startGroup('Setting up mods/ directory')
     const createdDir = await fs.mkdir(MODS_DIR, { recursive: true })
     if (createdDir) {
-        core.info(`Created ${createdDir}`)
+        core.info(`Created ${MODS_DIR}`)
     } else {
         core.info('Directory exists')
     }
