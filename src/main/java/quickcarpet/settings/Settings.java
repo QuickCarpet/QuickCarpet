@@ -161,14 +161,34 @@ public class Settings {
     public static BreakBlockBehavior.Option dispensersBreakBlocks = BreakBlockBehavior.Option.FALSE;
 
     @Rule(category = FEATURE)
+    public static boolean dispensersBowlBowlables = false;
+
+    @Rule(category = FEATURE)
+    public static boolean dispensersCarvePumpkins = false;
+
+    @Rule(category = FEATURE)
+    public static boolean dispensersDyeSheep = false;
+
+    @Rule(category = FEATURE)
+    public static boolean dispensersIgniteCreeper = false;
+
+    @Rule(category = FEATURE)
     public static boolean dispensersInteractCauldron = false;
+
+    @Rule(category = FEATURE)
+    public static boolean dispensersMilkMilkables = false;
+
+    @Rule(category = FEATURE)
+    public static boolean dispensersUseNameTags = false;
 
     @Rule(category = FEATURE)
     public static boolean dispensersPickupBucketables = false;
 
-
     @Rule(category = FEATURE)
     public static PlaceBlockBehavior.Option dispensersPlaceBlocks = PlaceBlockBehavior.Option.FALSE;
+
+    @Rule(category = FEATURE)
+    public static boolean dispensersRepairIronGolems = false;
 
     @Rule(category = FEATURE)
     public static boolean dispensersScrapeCopper = false;

@@ -1,6 +1,7 @@
 package quickcarpet.feature.dispenser;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import net.minecraft.block.DispenserBlock;
 import net.minecraft.block.dispenser.DispenserBehavior;
 import net.minecraft.item.*;
 import net.minecraft.registry.tag.ItemTags;
@@ -21,6 +22,13 @@ public final class DispenserBehaviors {
     public static final FireChargeConvertsToNetherrackBehavior FIRE_CHARGE = new FireChargeConvertsToNetherrackBehavior();
     public static final ShearVinesBehavior SHEAR_VINES = new ShearVinesBehavior();
     public static final ScrapeCopperBehavior SCRAPE_COPPER = new ScrapeCopperBehavior();
+    public static final MilkMilkablesBehavior MILK_MILKABLES = new MilkMilkablesBehavior();
+    public static final BowlBowlablesBehavior BOWL_BOWLABLES = new BowlBowlablesBehavior();
+    public static final UseNameTagsBehavior USE_NAME_TAG = new UseNameTagsBehavior();
+    public static final RepairIronGolemBehavior REPAIR_IRON_GOLEM = new RepairIronGolemBehavior();
+    public static final DyeSheepBehavior DYE_SHEEP = new DyeSheepBehavior();
+    public static final CarvePumpkinBehavior CARVE_PUMPKIN = new CarvePumpkinBehavior();
+    public static final IgniteCreeperBehavior IGNITE_CREEPER = new IgniteCreeperBehavior();
 
     private DispenserBehaviors() {}
 
@@ -32,6 +40,11 @@ public final class DispenserBehaviors {
         if (item == Items.SHEARS) return getShearBehavior(vanilla);
         if (item == Items.BUCKET) return getBucketBehavior(vanilla);
         if (item == Items.POTION || item == Items.GLASS_BOTTLE) return getInteractCauldronBehavior(vanilla);
+        if (item == Items.BOWL) return getBowlBehavior(vanilla);
+        if (item == Items.NAME_TAG) return getNameTagBehavior(vanilla);
+        if (item == Items.IRON_INGOT) return getRepairIronGolemBehavior(vanilla);
+        if (item == Items.FLINT_AND_STEEL) return getFlintAndSteelBehavior(vanilla);
+        if (item instanceof DyeItem) return getDyeSheepBehavior(vanilla);
         if (item instanceof HoeItem) return getHoeBehavior(vanilla);
         if (item instanceof AxeItem) return getAxeBehavior(vanilla);
         if (item instanceof FluidModificationItem) return getInteractCauldronBehavior(vanilla);
@@ -41,6 +54,8 @@ public final class DispenserBehaviors {
         }
         return vanilla;
     }
+
+
 
     private static DispenserBehavior getBlockItemBehavior(DispenserBehavior vanilla, Item item, boolean isDefault) {
         if (item.getRegistryEntry().isIn(ItemTags.WOOL_CARPETS)) return new MultiDispenserBehavior(PLACE_BLOCK, vanilla);
@@ -52,26 +67,53 @@ public final class DispenserBehaviors {
         return vanilla;
     }
 
+    private static DispenserBehavior getBowlBehavior(DispenserBehavior vanilla) {
+        return Settings.dispensersBowlBowlables ? BOWL_BOWLABLES : vanilla;
+    }
+
+    private static DispenserBehavior getFlintAndSteelBehavior(DispenserBehavior vanilla) {
+        List<DispenserBehavior> matching = new ArrayList<>(3);
+        if(Settings.dispensersIgniteCreeper) matching.add(IGNITE_CREEPER);
+        matching.add(vanilla);
+        return MultiDispenserBehavior.of(matching);
+    }
+
     private static DispenserBehavior getGunpowderBehavior(DispenserBehavior vanilla) {
         return Settings.dispensersBreakBlocks != BreakBlockBehavior.Option.FALSE ? BREAK_BLOCK : vanilla;
     }
 
+    private static DispenserBehavior getDyeSheepBehavior(DispenserBehavior vanilla) {
+        return Settings.dispensersDyeSheep ? DYE_SHEEP : vanilla;
+    }
     private static DispenserBehavior getSaddleBehavior(DispenserBehavior vanilla) {
         return Settings.smartSaddleDispenser ? SMART_SADDLE : vanilla;
+    }
+
+    private static DispenserBehavior getNameTagBehavior(DispenserBehavior vanilla) {
+        return Settings.dispensersUseNameTags ? USE_NAME_TAG : vanilla;
     }
 
     private static DispenserBehavior getFireChargeBehavior(DispenserBehavior vanilla) {
         return Settings.renewableNetherrack ? new MultiDispenserBehavior(FIRE_CHARGE, vanilla) : vanilla;
     }
 
+    private static DispenserBehavior getRepairIronGolemBehavior(DispenserBehavior vanilla) {
+        return Settings.dispensersRepairIronGolems ? new MultiDispenserBehavior(REPAIR_IRON_GOLEM, vanilla) : vanilla;
+    }
+
     private static DispenserBehavior getShearBehavior(DispenserBehavior vanilla) {
-        return Settings.dispensersShearVines ? new MultiDispenserBehavior(vanilla, SHEAR_VINES) : vanilla;
+        List<DispenserBehavior> matching = new ArrayList<>(3);
+        if (Settings.dispensersShearVines) matching.add(SHEAR_VINES);
+        if (Settings.dispensersCarvePumpkins) matching.add(CARVE_PUMPKIN);
+        matching.add(vanilla);
+        return MultiDispenserBehavior.of(matching);
     }
 
     private static DispenserBehavior getBucketBehavior(DispenserBehavior vanilla) {
-        List<DispenserBehavior> matching = new ArrayList<>(3);
+        List<DispenserBehavior> matching = new ArrayList<>(4);
         if (Settings.dispensersInteractCauldron) matching.add(INTERACT_CAULDRON);
         if (Settings.dispensersPickupBucketables) matching.add(PICKUP_BUCKETABLES);
+        if (Settings.dispensersMilkMilkables) matching.add(MILK_MILKABLES);
         matching.add(vanilla);
         return MultiDispenserBehavior.of(matching);
     }
